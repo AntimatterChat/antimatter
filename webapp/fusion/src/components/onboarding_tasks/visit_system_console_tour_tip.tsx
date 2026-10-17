@@ -40,7 +40,7 @@ export const VisitSystemConsoleTour = () => {
         <p>
             <FormattedMessage
                 id='onboardingTask.visitSystemConsole.Description'
-                defaultMessage={'More detailed configuration settings for your workspace can be accessed here.'}
+                defaultMessage={'More detailed configuration settings for your server can be accessed here.'}
             />
         </p>
     );

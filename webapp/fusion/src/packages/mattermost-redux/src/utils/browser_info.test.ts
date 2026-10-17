@@ -28,10 +28,16 @@ describe('utils/browser_info', () => {
     describe('getBrowserInfo', () => {
         const browserTestCases = [
             {
-                name: 'Mattermost Desktop App',
+                name: 'Desktop app (Mattermost user agent)',
                 userAgent: 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.6834.83 Electron/34.0.1 Safari/537.36 Mattermost/34.0.1',
-                expectedBrowser: 'Mattermost Desktop App',
+                expectedBrowser: 'Antimatter Desktop App',
                 expectedVersion: '34.0.1',
+            },
+            {
+                name: 'Antimatter desktop app',
+                userAgent: 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.6834.83 Electron/34.0.1 Safari/537.36 Antimatter/0.9.2 Mattermost/0.9.2',
+                expectedBrowser: 'Antimatter Desktop App',
+                expectedVersion: '0.9.2',
             },
             {
                 name: 'Edge (Legacy)',

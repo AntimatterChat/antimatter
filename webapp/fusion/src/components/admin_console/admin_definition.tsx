@@ -762,7 +762,7 @@ const AdminDefinition: AdminDefinitionType = {
                             type: 'text',
                             key: 'ServiceSettings.SiteURL',
                             label: defineMessage({id: 'admin.service.siteURL', defaultMessage: 'Site URL:'}),
-                            help_text: defineMessage({id: 'admin.service.siteURLDescription', defaultMessage: 'The URL that users will use to access Antimatter. Standard ports, such as 80 and 443, can be omitted, but non-standard ports are required. For example: http://example.com:8065. This setting is required.\n \nAntimatter may be hosted at a subpath. For example: http://example.com:8065/company/mattermost. A restart is required before the server will work correctly.'}), // eslint-disable-line formatjs/no-multiple-whitespaces
+                            help_text: defineMessage({id: 'admin.service.siteURLDescription', defaultMessage: 'The URL that users will use to access Antimatter. Standard ports, such as 80 and 443, can be omitted, but non-standard ports are required. For example: http://example.com:8065. This setting is required.\n \nAntimatter may be hosted at a subpath. For example: http://example.com:8065/company/antimatter. A restart is required before the server will work correctly.'}), // eslint-disable-line formatjs/no-multiple-whitespaces
                             help_text_markdown: true,
                             placeholder: defineMessage({id: 'admin.service.siteURLExample', defaultMessage: 'E.g.: "http://example.com:8065"'}),
                             isDisabled: it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.ENVIRONMENT.WEB_SERVER)),
@@ -1124,7 +1124,7 @@ const AdminDefinition: AdminDefinitionType = {
                             key: 'FileSettings.AmazonS3Bucket',
                             label: defineMessage({id: 'admin.image.amazonS3BucketTitle', defaultMessage: 'Amazon S3 Bucket:'}),
                             help_text: defineMessage({id: 'admin.image.amazonS3BucketDescription', defaultMessage: 'Name you selected for your S3 bucket in AWS.'}),
-                            placeholder: defineMessage({id: 'admin.image.amazonS3BucketExample', defaultMessage: 'E.g.: "mattermost-media"'}),
+                            placeholder: defineMessage({id: 'admin.image.amazonS3BucketExample', defaultMessage: 'E.g.: "antimatter-media"'}),
                             isDisabled: it.any(
                                 it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.ENVIRONMENT.FILE_STORAGE)),
                                 it.not(it.stateEquals('FileSettings.DriverName', FILE_STORAGE_DRIVER_S3)),
@@ -1288,7 +1288,7 @@ const AdminDefinition: AdminDefinitionType = {
                             key: 'FileSettings.AzureStorageAccount',
                             label: defineMessage({id: 'admin.image.azureStorageAccountTitle', defaultMessage: 'Azure Storage Account:'}),
                             help_text: defineMessage({id: 'admin.image.azureStorageAccountDescription', defaultMessage: 'The name of your Azure Storage account.'}),
-                            placeholder: defineMessage({id: 'admin.image.azureStorageAccountExample', defaultMessage: 'E.g.: "mattermoststorage"'}),
+                            placeholder: defineMessage({id: 'admin.image.azureStorageAccountExample', defaultMessage: 'E.g.: "antimatterstorage"'}),
                             isDisabled: it.any(
                                 it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.ENVIRONMENT.FILE_STORAGE)),
                                 it.not(it.stateEquals('FileSettings.DriverName', FILE_STORAGE_DRIVER_AZURE)),
@@ -1300,7 +1300,7 @@ const AdminDefinition: AdminDefinitionType = {
                             key: 'FileSettings.AzureContainer',
                             label: defineMessage({id: 'admin.image.azureContainerTitle', defaultMessage: 'Azure Container:'}),
                             help_text: defineMessage({id: 'admin.image.azureContainerDescription', defaultMessage: 'Name of the container in your Azure Storage account.'}),
-                            placeholder: defineMessage({id: 'admin.image.azureContainerExample', defaultMessage: 'E.g.: "mattermost-media"'}),
+                            placeholder: defineMessage({id: 'admin.image.azureContainerExample', defaultMessage: 'E.g.: "antimatter-media"'}),
                             isDisabled: it.any(
                                 it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.ENVIRONMENT.FILE_STORAGE)),
                                 it.not(it.stateEquals('FileSettings.DriverName', FILE_STORAGE_DRIVER_AZURE)),
@@ -1361,7 +1361,7 @@ const AdminDefinition: AdminDefinitionType = {
                             type: 'text',
                             key: 'FileSettings.AzureEndpoint',
                             label: defineMessage({id: 'admin.image.azureEndpointTitle', defaultMessage: 'Custom Azure Endpoint:'}),
-                            help_text: defineMessage({id: 'admin.image.azureEndpointDescription', defaultMessage: 'Full Blob service URL, including scheme and storage account. Antimatter does not modify this URL, so the storage account must already be embedded in the hostname (vhost-style, e.g. "https://acmemattermost.blob.core.chinacloudapi.cn/") or in the path (path-style, e.g. "http://localhost:10000/devstoreaccount1/"). Shared-key auth signs against the host this URL points at, so make sure it actually serves the storage account named above.'}),
+                            help_text: defineMessage({id: 'admin.image.azureEndpointDescription', defaultMessage: 'Full Blob service URL, including scheme and storage account. Antimatter does not modify this URL, so the storage account must already be embedded in the hostname (vhost-style, e.g. "https://acmeantimatter.blob.core.chinacloudapi.cn/") or in the path (path-style, e.g. "http://localhost:10000/devstoreaccount1/"). Shared-key auth signs against the host this URL points at, so make sure it actually serves the storage account named above.'}),
                             placeholder: defineMessage({id: 'admin.image.azureEndpointExample', defaultMessage: 'E.g.: "http://localhost:10000/devstoreaccount1/"'}),
                             isDisabled: it.any(
                                 it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.ENVIRONMENT.FILE_STORAGE)),
@@ -2134,7 +2134,7 @@ const AdminDefinition: AdminDefinitionType = {
                                     type: 'bool',
                                     key: 'IntuneSettings.Enable',
                                     label: defineMessage({id: 'admin.intune.enableTitle', defaultMessage: 'Enable Microsoft Intune MAM:'}),
-                                    help_text: defineMessage({id: 'admin.intune.enableDescription', defaultMessage: 'When enabled, Mattermost Mobile uses Microsoft Entra ID (Azure AD) for app authentication and policy enforcement. Users authenticate using MSAL tokens, and Intune MAM policies (App Protection Policies) are applied to protect corporate data.'}),
+                                    help_text: defineMessage({id: 'admin.intune.enableDescription', defaultMessage: 'When enabled, the Antimatter mobile app uses Microsoft Entra ID (Azure AD) for app authentication and policy enforcement. Users authenticate using MSAL tokens, and Intune MAM policies (App Protection Policies) are applied to protect corporate data.'}),
                                 },
                                 {
                                     type: 'dropdown',
@@ -2180,7 +2180,7 @@ const AdminDefinition: AdminDefinitionType = {
                                     type: 'text',
                                     key: 'IntuneSettings.ClientId',
                                     label: defineMessage({id: 'admin.intune.clientIdTitle', defaultMessage: 'Application (Client) ID:'}),
-                                    help_text: defineMessage({id: 'admin.intune.clientIdDescription', defaultMessage: 'The Application (Client) ID of your Intune MAM–enabled app registration in Microsoft Entra ID.\nThis is the client identifier that the Mattermost Mobile app uses to request MSAL tokens for Intune MAM enrollment and policy evaluation.'}),
+                                    help_text: defineMessage({id: 'admin.intune.clientIdDescription', defaultMessage: 'The Application (Client) ID of your Intune MAM–enabled app registration in Microsoft Entra ID.\nThis is the client identifier that the Antimatter mobile app uses to request MSAL tokens for Intune MAM enrollment and policy evaluation.'}),
                                     placeholder: defineMessage({id: 'admin.intune.clientIdPlaceholder', defaultMessage: 'E.g.: "87654321-4321-4321-4321-210987654321"'}),
                                     isDisabled: it.stateIsFalse('IntuneSettings.Enable'),
                                     default: (value, config, state) => {
@@ -2409,7 +2409,7 @@ const AdminDefinition: AdminDefinitionType = {
                             type: 'bool',
                             key: 'SupportSettings.EnableAskCommunityLink',
                             label: defineMessage({id: 'admin.support.enableAskCommunityTitle', defaultMessage: 'Enable Ask Community Link:'}),
-                            help_text: defineMessage({id: 'admin.support.enableAskCommunityDesc', defaultMessage: 'When true, "Ask the community" link appears on the Antimatter user interface and Help Menu, which allows users to join the Mattermost Community to ask questions and help others troubleshoot issues. When false, the link is hidden from users.'}),
+                            help_text: defineMessage({id: 'admin.support.enableAskCommunityDesc', defaultMessage: 'When true, "Ask the community" link appears on the Antimatter user interface and Help Menu, which allows users to join the Antimatter community to ask questions and help others troubleshoot issues. When false, the link is hidden from users.'}),
                             isDisabled: it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.SITE.CUSTOMIZATION)),
                         },
                         {
@@ -2423,7 +2423,7 @@ const AdminDefinition: AdminDefinitionType = {
                             type: 'text',
                             key: 'SupportSettings.TermsOfServiceLink',
                             label: defineMessage({id: 'admin.support.termsTitle', defaultMessage: 'Terms of Use Link:'}),
-                            help_text: defineMessage({id: 'admin.support.termsDesc', defaultMessage: 'Link to the terms under which users may use your online service. By default, this includes the "Mattermost Acceptable Use Policy" explaining the terms under which Antimatter software is provided to end users. If you change the default link to add your own terms for using the service you provide, your new terms must include a link to the default terms so end users are aware of the Mattermost Acceptable Use Policy for Antimatter software.'}),
+                            help_text: defineMessage({id: 'admin.support.termsDesc', defaultMessage: 'Link to the terms under which users may use your online service. By default, this is the terms of use of the Antimatter software, on antimatter.chat. Replace it with your own terms for the service you provide.'}),
                             isDisabled: it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.SITE.CUSTOMIZATION)),
                             isHidden: it.configIsTrue('ExperimentalSettings', 'RestrictSystemAdmin'),
                         },
@@ -2455,7 +2455,7 @@ const AdminDefinition: AdminDefinitionType = {
                             type: 'dropdown',
                             key: 'SupportSettings.ReportAProblemType',
                             label: defineMessage({id: 'admin.support.reportAProblemTypeTitle', defaultMessage: 'Report a Problem:'}),
-                            help_text: defineMessage({id: 'admin.support.reportAProblemTypeDescriptionLicensed', defaultMessage: 'By default, selecting "Report a Problem" from the help menu opens a pre-filled email draft to the Mattermost technical support team. You may provide a custom URL or email address for end user support by choosing "Custom link" or "Email address". "Hide link" removes the "Report a Problem" option from the app.'}),
+                            help_text: defineMessage({id: 'admin.support.reportAProblemTypeDescriptionLicensed', defaultMessage: 'By default, selecting "Report a Problem" from the help menu opens the antimatter.chat page for reporting problems with Antimatter. You may provide a custom URL or email address for end user support by choosing "Custom link" or "Email address". "Hide link" removes the "Report a Problem" option from the app.'}),
                             isDisabled: it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.SITE.CUSTOMIZATION)),
                             isHidden: it.configIsTrue('ExperimentalSettings', 'RestrictSystemAdmin'),
                             options: reportAProblemTypeOptions,
@@ -2506,8 +2506,8 @@ const AdminDefinition: AdminDefinitionType = {
                         {
                             type: 'text',
                             key: 'NativeAppSettings.AppDownloadLink',
-                            label: defineMessage({id: 'admin.customization.appDownloadLinkTitle', defaultMessage: 'Mattermost Apps Download Page Link:'}),
-                            help_text: defineMessage({id: 'admin.customization.appDownloadLinkDesc', defaultMessage: 'Add a link to a download page for the Mattermost apps. When a link is present, an option to "Download Mattermost Apps" will be added in the Product Menu so users can find the download page. Leave this field blank to hide the option from the Product Menu.'}),
+                            label: defineMessage({id: 'admin.customization.appDownloadLinkTitle', defaultMessage: 'Antimatter Apps Download Page Link:'}),
+                            help_text: defineMessage({id: 'admin.customization.appDownloadLinkDesc', defaultMessage: 'Add a link to a download page for the Antimatter apps. When a link is present, an option to "Download Apps" will be added in the Product Menu so users can find the download page. Leave this field blank to hide the option from the Product Menu.'}),
                             isDisabled: it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.SITE.CUSTOMIZATION)),
                             isHidden: it.configIsTrue('ExperimentalSettings', 'RestrictSystemAdmin'),
                         },
@@ -2563,7 +2563,7 @@ const AdminDefinition: AdminDefinitionType = {
                             }),
                             help_text: defineMessage({
                                 id: 'admin.customization.minimumDesktopAppVersionDesc',
-                                defaultMessage: 'Specify the minimum version of the Mattermost Desktop App required to connect to this server (e.g., 5.10.0). Users connecting with a Desktop App version below this minimum will be shown an update required page and will not be able to use the application until they update. Leave this field blank to allow all Desktop App versions to connect without restriction.',
+                                defaultMessage: 'Specify the minimum version of the Antimatter desktop app required to connect to this server (e.g., 5.10.0). Users connecting with a Desktop App version below this minimum will be shown an update required page and will not be able to use the application until they update. Leave this field blank to allow all Desktop App versions to connect without restriction.',
                             }),
                             isDisabled: it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.SITE.CUSTOMIZATION)),
                             validate: (value) => {
@@ -2940,7 +2940,7 @@ const AdminDefinition: AdminDefinitionType = {
                             type: 'text',
                             key: 'EmailSettings.FeedbackEmail',
                             label: defineMessage({id: 'admin.environment.notifications.feedbackEmail.label', defaultMessage: 'Notification From Address:'}),
-                            placeholder: defineMessage({id: 'admin.environment.notifications.feedbackEmail.placeholder', defaultMessage: 'Ex: "mattermost@yourcompany.com", "admin@yourcompany.com"'}),
+                            placeholder: defineMessage({id: 'admin.environment.notifications.feedbackEmail.placeholder', defaultMessage: 'Ex: "antimatter@yourcompany.com", "admin@yourcompany.com"'}),
                             help_text: defineMessage({id: 'admin.environment.notifications.feedbackEmail.help', defaultMessage: 'Email address displayed on email account used when sending notification emails from Antimatter.'}),
                             isHidden: it.configIsTrue('ExperimentalSettings', 'RestrictSystemAdmin'),
                             isDisabled: it.any(
@@ -2962,7 +2962,7 @@ const AdminDefinition: AdminDefinitionType = {
                             type: 'text',
                             key: 'EmailSettings.ReplyToAddress',
                             label: defineMessage({id: 'admin.environment.notifications.replyToAddress.label', defaultMessage: 'Notification Reply-To Address:'}),
-                            placeholder: defineMessage({id: 'admin.environment.notifications.replyToAddress.placeholder', defaultMessage: 'Ex: "mattermost@yourcompany.com", "admin@yourcompany.com"'}),
+                            placeholder: defineMessage({id: 'admin.environment.notifications.replyToAddress.placeholder', defaultMessage: 'Ex: "antimatter@yourcompany.com", "admin@yourcompany.com"'}),
                             help_text: defineMessage({id: 'admin.environment.notifications.replyToAddress.help', defaultMessage: 'Email address used in the Reply-To header when sending notification emails from Antimatter.'}),
                             isDisabled: it.any(
                                 it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.SITE.NOTIFICATIONS)),
@@ -3136,24 +3136,6 @@ const AdminDefinition: AdminDefinitionType = {
                                     key: 'ServiceSettings.CollapsedThreads',
                                     label: defineMessage({id: 'admin.experimental.collapsedThreads.title', defaultMessage: 'Threaded Discussions'}),
                                     help_text: defineMessage({id: 'admin.experimental.collapsedThreads.desc', defaultMessage: 'When enabled (default off), users have the option to enable Threaded Discussions in Account Settings. When enabled (default on), users see Threaded Discussions by default and have the option to disable it in Account Settings. When always on, users are required to use Threaded Discussions and cannot disable it.'}),
-                                    help_text_values: {
-                                        linkKnownIssues: (msg: string) => (
-                                            <ExternalLink
-                                                location='admin_console'
-                                                href='https://support.mattermost.com/hc/en-us/articles/4413183568276'
-                                            >
-                                                {msg}
-                                            </ExternalLink>
-                                        ),
-                                        linkCommunityChannel: (msg: string) => (
-                                            <ExternalLink
-                                                location='admin_console'
-                                                href='https://community-daily.mattermost.com/core/channels/folded-reply-threads'
-                                            >
-                                                {msg}
-                                            </ExternalLink>
-                                        ),
-                                    },
                                     help_text_markdown: false,
                                     options: [
                                         {
@@ -3989,8 +3971,8 @@ const AdminDefinition: AdminDefinitionType = {
                             type: 'text',
                             key: 'TeamSettings.RestrictCreationToDomains',
                             label: defineMessage({id: 'admin.team.restrictTitle', defaultMessage: 'Restrict new system and team members to specified email domains:'}),
-                            help_text: defineMessage({id: 'admin.team.restrictGuestDescription', defaultMessage: 'New user accounts are restricted to the above specified email domain (e.g. "mattermost.com") or list of comma-separated domains (e.g. "corp.mattermost.com, mattermost.com"). New teams can only be created by users from the above domain(s). This setting affects email login for users. For Guest users, please add domains under Signup > Guest Access.'}),
-                            placeholder: defineMessage({id: 'admin.team.restrictExample', defaultMessage: 'E.g.: "corp.mattermost.com, mattermost.com"'}),
+                            help_text: defineMessage({id: 'admin.team.restrictGuestDescription', defaultMessage: 'New user accounts are restricted to the above specified email domain (e.g. "example.com") or list of comma-separated domains (e.g. "corp.example.com, example.com"). New teams can only be created by users from the above domain(s). This setting affects email login for users. For Guest users, please add domains under Signup > Guest Access.'}),
+                            placeholder: defineMessage({id: 'admin.team.restrictExample', defaultMessage: 'E.g.: "corp.example.com, example.com"'}),
                             isDisabled: it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.AUTHENTICATION.SIGNUP)),
                         },
                         {
@@ -4304,7 +4286,7 @@ const AdminDefinition: AdminDefinitionType = {
                             key: 'SamlSettings.AssertionConsumerServiceURL',
                             label: defineMessage({id: 'admin.saml.assertionConsumerServiceURLTitle', defaultMessage: 'Service Provider Login URL:'}),
                             help_text: defineMessage({id: 'admin.saml.assertionConsumerServiceURLPopulatedDesc', defaultMessage: 'This field is also known as the Assertion Consumer Service URL.'}),
-                            placeholder: defineMessage({id: 'admin.saml.assertionConsumerServiceURLEx', defaultMessage: 'E.g.: "<urlChunk>your-mattermost-url</urlChunk>"'}), // eslint-disable-line formatjs/enforce-placeholders -- placeholders provided
+                            placeholder: defineMessage({id: 'admin.saml.assertionConsumerServiceURLEx', defaultMessage: 'E.g.: "<urlChunk>your-antimatter-url</urlChunk>"'}), // eslint-disable-line formatjs/enforce-placeholders -- placeholders provided
                             placeholder_values: {
                                 urlChunk: (chunk: string) => `https://'<${chunk}>'/login/sso/saml`,
                             },
@@ -4326,7 +4308,7 @@ const AdminDefinition: AdminDefinitionType = {
                             key: 'SamlSettings.ServiceProviderIdentifier',
                             label: defineMessage({id: 'admin.saml.serviceProviderIdentifierTitle', defaultMessage: 'Service Provider Identifier:'}),
                             help_text: defineMessage({id: 'admin.saml.serviceProviderIdentifierDesc', defaultMessage: 'The unique identifier for the Service Provider, usually the same as Service Provider Login URL. In ADFS, this MUST match the Relying Party Identifier.'}),
-                            placeholder: defineMessage({id: 'admin.saml.serviceProviderIdentifierEx', defaultMessage: 'E.g.: "<urlChunk>your-mattermost-url</urlChunk>"'}), // eslint-disable-line formatjs/enforce-placeholders -- placeholders provided
+                            placeholder: defineMessage({id: 'admin.saml.serviceProviderIdentifierEx', defaultMessage: 'E.g.: "<urlChunk>your-antimatter-url</urlChunk>"'}), // eslint-disable-line formatjs/enforce-placeholders -- placeholders provided
                             placeholder_values: {
                                 urlChunk: (chunk: string) => `https://'<${chunk}>'/login/sso/saml`,
                             },
@@ -4662,7 +4644,7 @@ const AdminDefinition: AdminDefinitionType = {
                                 {
                                     value: Constants.GITLAB_SERVICE,
                                     display_name: defineMessage({id: 'admin.oauth.gitlab', defaultMessage: 'GitLab'}),
-                                    help_text: defineMessage({id: 'admin.gitlab.EnableMarkdownDesc', defaultMessage: '1. Log in to your GitLab account and go to Profile Settings -> Applications.\n2. Enter Redirect URIs "<loginUrlChunk>your-mattermost-url</loginUrlChunk>" (example: http://localhost:8065/login/gitlab/complete) and "<signupUrlChunk>your-mattermost-url</signupUrlChunk>".\n3. Then use "Application Secret Key" and "Application ID" fields from GitLab to complete the options below.\n4. Complete the Endpoint URLs below.'}), // eslint-disable-line formatjs/enforce-placeholders -- placeholders provided
+                                    help_text: defineMessage({id: 'admin.gitlab.EnableMarkdownDesc', defaultMessage: '1. Log in to your GitLab account and go to Profile Settings -> Applications.\n2. Enter Redirect URIs "<loginUrlChunk>your-antimatter-url</loginUrlChunk>" (example: http://localhost:8065/login/gitlab/complete) and "<signupUrlChunk>your-antimatter-url</signupUrlChunk>".\n3. Then use "Application Secret Key" and "Application ID" fields from GitLab to complete the options below.\n4. Complete the Endpoint URLs below.'}), // eslint-disable-line formatjs/enforce-placeholders -- placeholders provided
                                     help_text_values: {
                                         loginUrlChunk: (chunk: string) => `<${chunk}>/login/gitlab/complete`,
                                         signupUrlChunk: (chunk: string) => `<${chunk}>/signup/gitlab/complete`,
@@ -4672,7 +4654,7 @@ const AdminDefinition: AdminDefinitionType = {
                                 {
                                     value: Constants.GOOGLE_SERVICE,
                                     display_name: defineMessage({id: 'admin.oauth.google', defaultMessage: 'Google Apps'}),
-                                    help_text: defineMessage({id: 'admin.google.EnableMarkdownDesc', defaultMessage: '1. <linkLogin>Log in</linkLogin> to your Google account.\n2. Go to <linkConsole>https://console.developers.google.com</linkConsole>, click <strong>Credentials</strong> in the left hand side.\n 3. Under the <strong>Credentials</strong> header, click <strong>Create credentials</strong>, choose <strong>OAuth client ID</strong> and select <strong>Web Application</strong>.\n 4. Enter "Antimatter - your-company-name" as the <strong>Name</strong>.\n 5. Under <strong>Authorized redirect URIs</strong> enter <strong>"your-mattermost-url/signup/google/complete"</strong> (example: http://localhost:8065/signup/google/complete). Click <strong>Create</strong>.\n 6. Paste the <strong>Client ID</strong> and <strong>Client Secret</strong> to the fields below, then click <strong>Save</strong>.\n 7. Go to the <linkAPI>Google People API</linkAPI> and click <strong>Enable</strong>.'}), // eslint-disable-line formatjs/enforce-placeholders -- placeholders provided
+                                    help_text: defineMessage({id: 'admin.google.EnableMarkdownDesc', defaultMessage: '1. <linkLogin>Log in</linkLogin> to your Google account.\n2. Go to <linkConsole>https://console.developers.google.com</linkConsole>, click <strong>Credentials</strong> in the left hand side.\n 3. Under the <strong>Credentials</strong> header, click <strong>Create credentials</strong>, choose <strong>OAuth client ID</strong> and select <strong>Web Application</strong>.\n 4. Enter "Antimatter - your-company-name" as the <strong>Name</strong>.\n 5. Under <strong>Authorized redirect URIs</strong> enter <strong>"your-antimatter-url/signup/google/complete"</strong> (example: http://localhost:8065/signup/google/complete). Click <strong>Create</strong>.\n 6. Paste the <strong>Client ID</strong> and <strong>Client Secret</strong> to the fields below, then click <strong>Save</strong>.\n 7. Go to the <linkAPI>Google People API</linkAPI> and click <strong>Enable</strong>.'}), // eslint-disable-line formatjs/enforce-placeholders -- placeholders provided
                                     help_text_markdown: false,
                                     help_text_values: {
                                         linkLogin: (msg: string) => (
@@ -4705,7 +4687,7 @@ const AdminDefinition: AdminDefinitionType = {
                                 {
                                     value: Constants.OFFICE365_SERVICE,
                                     display_name: defineMessage({id: 'admin.oauth.office365', defaultMessage: 'Entra ID'}),
-                                    help_text: defineMessage({id: 'admin.office365.EnableMarkdownDesc', defaultMessage: '1. <linkLogin>Log in</linkLogin> to your Microsoft account. \n2. In Microsoft, go to <strong>Applications</strong> and <strong>App Registrations</strong> in the left pane.\n3. Select <strong>New registration</strong>, then enter "Antimatter - your-company-name" as the <strong>Application Name</strong>. \n4. Under <strong>Redirect URI</strong>, select <strong>Web</strong>, and enter "your-mattermost-url/signup/office365/complete" as the <strong>Redirect URI</strong>. Select <strong>Register</strong>.\n5. Copy the Microsoft <strong>Application (client) ID</strong> value, and paste it below as the <strong>Client ID</strong> value. \n6. Copy the Microsoft <strong>Directory (tenant) ID</strong> value, and paste it below as the <strong>Directory (tenant) ID</strong> value. \n7. In Microsoft, create a new client secret. Copy the resulting client secret value, and paste it below as the <strong>Client Secret</strong> value. Select <strong>Save</strong>.'}), // eslint-disable-line formatjs/enforce-placeholders -- placeholders provided
+                                    help_text: defineMessage({id: 'admin.office365.EnableMarkdownDesc', defaultMessage: '1. <linkLogin>Log in</linkLogin> to your Microsoft account. \n2. In Microsoft, go to <strong>Applications</strong> and <strong>App Registrations</strong> in the left pane.\n3. Select <strong>New registration</strong>, then enter "Antimatter - your-company-name" as the <strong>Application Name</strong>. \n4. Under <strong>Redirect URI</strong>, select <strong>Web</strong>, and enter "your-antimatter-url/signup/office365/complete" as the <strong>Redirect URI</strong>. Select <strong>Register</strong>.\n5. Copy the Microsoft <strong>Application (client) ID</strong> value, and paste it below as the <strong>Client ID</strong> value. \n6. Copy the Microsoft <strong>Directory (tenant) ID</strong> value, and paste it below as the <strong>Directory (tenant) ID</strong> value. \n7. In Microsoft, create a new client secret. Copy the resulting client secret value, and paste it below as the <strong>Client Secret</strong> value. Select <strong>Save</strong>.'}), // eslint-disable-line formatjs/enforce-placeholders -- placeholders provided
                                     help_text_markdown: false,
                                     help_text_values: {
                                         linkLogin: (msg: string) => (
@@ -4995,7 +4977,7 @@ const AdminDefinition: AdminDefinitionType = {
                                 {
                                     value: Constants.GITLAB_SERVICE,
                                     display_name: defineMessage({id: 'admin.openid.gitlab', defaultMessage: 'GitLab'}),
-                                    help_text: defineMessage({id: 'admin.gitlab.EnableMarkdownDesc', defaultMessage: '1. Log in to your GitLab account and go to Profile Settings -> Applications.\n2. Enter Redirect URIs "<loginUrlChunk>your-mattermost-url</loginUrlChunk>" (example: http://localhost:8065/login/gitlab/complete) and "<signupUrlChunk>your-mattermost-url</signupUrlChunk>".\n3. Then use "Application Secret Key" and "Application ID" fields from GitLab to complete the options below.\n4. Complete the Endpoint URLs below.'}), // eslint-disable-line formatjs/enforce-placeholders -- placeholders provided
+                                    help_text: defineMessage({id: 'admin.gitlab.EnableMarkdownDesc', defaultMessage: '1. Log in to your GitLab account and go to Profile Settings -> Applications.\n2. Enter Redirect URIs "<loginUrlChunk>your-antimatter-url</loginUrlChunk>" (example: http://localhost:8065/login/gitlab/complete) and "<signupUrlChunk>your-antimatter-url</signupUrlChunk>".\n3. Then use "Application Secret Key" and "Application ID" fields from GitLab to complete the options below.\n4. Complete the Endpoint URLs below.'}), // eslint-disable-line formatjs/enforce-placeholders -- placeholders provided
                                     help_text_values: {
                                         loginUrlChunk: (chunk: string) => `<${chunk}>/login/gitlab/complete`,
                                         signupUrlChunk: (chunk: string) => `<${chunk}>/signup/gitlab/complete`,
@@ -5005,7 +4987,7 @@ const AdminDefinition: AdminDefinitionType = {
                                 {
                                     value: Constants.GOOGLE_SERVICE,
                                     display_name: defineMessage({id: 'admin.openid.google', defaultMessage: 'Google Apps'}),
-                                    help_text: defineMessage({id: 'admin.google.EnableMarkdownDesc', defaultMessage: '1. <linkLogin>Log in</linkLogin> to your Google account.\n2. Go to <linkConsole>https://console.developers.google.com</linkConsole>, click <strong>Credentials</strong> in the left hand side.\n 3. Under the <strong>Credentials</strong> header, click <strong>Create credentials</strong>, choose <strong>OAuth client ID</strong> and select <strong>Web Application</strong>.\n 4. Enter "Antimatter - your-company-name" as the <strong>Name</strong>.\n 5. Under <strong>Authorized redirect URIs</strong> enter <strong>"your-mattermost-url/signup/google/complete"</strong> (example: http://localhost:8065/signup/google/complete). Click <strong>Create</strong>.\n 6. Paste the <strong>Client ID</strong> and <strong>Client Secret</strong> to the fields below, then click <strong>Save</strong>.\n 7. Go to the <linkAPI>Google People API</linkAPI> and click <strong>Enable</strong>.'}), // eslint-disable-line formatjs/enforce-placeholders -- placeholders provided
+                                    help_text: defineMessage({id: 'admin.google.EnableMarkdownDesc', defaultMessage: '1. <linkLogin>Log in</linkLogin> to your Google account.\n2. Go to <linkConsole>https://console.developers.google.com</linkConsole>, click <strong>Credentials</strong> in the left hand side.\n 3. Under the <strong>Credentials</strong> header, click <strong>Create credentials</strong>, choose <strong>OAuth client ID</strong> and select <strong>Web Application</strong>.\n 4. Enter "Antimatter - your-company-name" as the <strong>Name</strong>.\n 5. Under <strong>Authorized redirect URIs</strong> enter <strong>"your-antimatter-url/signup/google/complete"</strong> (example: http://localhost:8065/signup/google/complete). Click <strong>Create</strong>.\n 6. Paste the <strong>Client ID</strong> and <strong>Client Secret</strong> to the fields below, then click <strong>Save</strong>.\n 7. Go to the <linkAPI>Google People API</linkAPI> and click <strong>Enable</strong>.'}), // eslint-disable-line formatjs/enforce-placeholders -- placeholders provided
                                     help_text_markdown: false,
                                     help_text_values: {
                                         linkLogin: (msg: string) => (
@@ -5038,7 +5020,7 @@ const AdminDefinition: AdminDefinitionType = {
                                 {
                                     value: Constants.OFFICE365_SERVICE,
                                     display_name: defineMessage({id: 'admin.openid.office365', defaultMessage: 'Entra ID'}),
-                                    help_text: defineMessage({id: 'admin.office365.EnableMarkdownDesc', defaultMessage: '1. <linkLogin>Log in</linkLogin> to your Microsoft account. \n2. In Microsoft, go to <strong>Applications</strong> and <strong>App Registrations</strong> in the left pane.\n3. Select <strong>New registration</strong>, then enter "Antimatter - your-company-name" as the <strong>Application Name</strong>. \n4. Under <strong>Redirect URI</strong>, select <strong>Web</strong>, and enter "your-mattermost-url/signup/office365/complete" as the <strong>Redirect URI</strong>. Select <strong>Register</strong>.\n5. Copy the Microsoft <strong>Application (client) ID</strong> value, and paste it below as the <strong>Client ID</strong> value. \n6. Copy the Microsoft <strong>Directory (tenant) ID</strong> value, and paste it below as the <strong>Directory (tenant) ID</strong> value. \n7. In Microsoft, create a new client secret. Copy the resulting client secret value, and paste it below as the <strong>Client Secret</strong> value. Select <strong>Save</strong>.'}), // eslint-disable-line formatjs/enforce-placeholders -- placeholders provided
+                                    help_text: defineMessage({id: 'admin.office365.EnableMarkdownDesc', defaultMessage: '1. <linkLogin>Log in</linkLogin> to your Microsoft account. \n2. In Microsoft, go to <strong>Applications</strong> and <strong>App Registrations</strong> in the left pane.\n3. Select <strong>New registration</strong>, then enter "Antimatter - your-company-name" as the <strong>Application Name</strong>. \n4. Under <strong>Redirect URI</strong>, select <strong>Web</strong>, and enter "your-antimatter-url/signup/office365/complete" as the <strong>Redirect URI</strong>. Select <strong>Register</strong>.\n5. Copy the Microsoft <strong>Application (client) ID</strong> value, and paste it below as the <strong>Client ID</strong> value. \n6. Copy the Microsoft <strong>Directory (tenant) ID</strong> value, and paste it below as the <strong>Directory (tenant) ID</strong> value. \n7. In Microsoft, create a new client secret. Copy the resulting client secret value, and paste it below as the <strong>Client Secret</strong> value. Select <strong>Save</strong>.'}), // eslint-disable-line formatjs/enforce-placeholders -- placeholders provided
                                     help_text_markdown: false,
                                     help_text_values: {
                                         linkLogin: (msg: string) => (
@@ -5071,7 +5053,7 @@ const AdminDefinition: AdminDefinitionType = {
                                 {
                                     value: Constants.OPENID_SERVICE,
                                     display_name: defineMessage({id: 'admin.oauth.openid', defaultMessage: 'OpenID Connect (Other)'}),
-                                    help_text: defineMessage({id: 'admin.openid.EnableMarkdownDesc', defaultMessage: 'Follow provider directions for creating an OpenID Application. Most OpenID Connect providers require authorization of all redirect URIs. In the appropriate field, enter "your-mattermost-url/signup/openid/complete" (example: http://domain.com/signup/openid/complete)'}),
+                                    help_text: defineMessage({id: 'admin.openid.EnableMarkdownDesc', defaultMessage: 'Follow provider directions for creating an OpenID Application. Most OpenID Connect providers require authorization of all redirect URIs. In the appropriate field, enter "your-antimatter-url/signup/openid/complete" (example: http://domain.com/signup/openid/complete)'}),
                                     help_text_markdown: false,
                                 },
                             ],

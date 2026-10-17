@@ -57,11 +57,7 @@ exports[`components/integrations/InstalledOAuthApps should match snapshot 1`] = 
       >
         OAuth 2.0 applications
       </a>
-       to securely integrate bots and third-party apps with Antimatter. Visit the 
-      <span>
-        App Directory
-      </span>
-       to find available self-hosted apps.
+       to securely integrate bots and third-party apps with Antimatter.
     </span>
     <div
       class="backstage-list"
@@ -397,11 +393,7 @@ exports[`components/integrations/InstalledOAuthApps should match snapshot for Ap
       >
         OAuth 2.0 applications
       </a>
-       to securely integrate bots and third-party apps with Antimatter. Visit the 
-      <span>
-        App Directory
-      </span>
-       to find available self-hosted apps.
+       to securely integrate bots and third-party apps with Antimatter.
     </span>
     <div
       class="backstage-list"

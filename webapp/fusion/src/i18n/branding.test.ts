@@ -31,78 +31,17 @@ const ALLOWED: Record<string, string> = {
 };
 
 // Known branding debt: strings inherited from Mattermost that should be reworded (and translated into the 37
-// languages, rule 25). Listed so this test catches new ones; fix them and remove them from here.
-const KNOWN_DEBT: Record<string, string> = {
-
-    // Links and contacts at Mattermost, Inc. (rules 6 and 10).
-    'announcement_bar.warn.contact_support_text': 'licence renewal through support@mattermost.com',
-    'user.settings.languages.promote2': 'the Mattermost Translation Server',
-    'admin.general.localization.availableLocalesDescription': 'the Mattermost Translation Server',
-    'admin.support.enableAskCommunityDesc': 'the Mattermost Community',
-    'admin.support.reportAProblemTypeDescriptionLicensed': 'the Mattermost technical support team',
-    'admin.support.termsDesc': 'the Mattermost Acceptable Use Policy',
-
-    // Mattermost's apps, plugin and command names.
-    'admin.customization.appDownloadLinkDesc': 'the Mattermost apps',
-    'admin.customization.appDownloadLinkTitle': 'the Mattermost apps',
-    'admin.customization.minimumDesktopAppVersionDesc': 'the Mattermost Desktop App',
-    'channel_notifications.desktopNotificationsDesc': 'the Mattermost Desktop App',
-    'admin.intune.clientIdDescription': 'the Mattermost Mobile app',
-    'admin.intune.enableDescription': 'Mattermost Mobile',
-    'app.agents.bridge.not_available.plugin_not_active': 'the Mattermost Agents plugin',
-    'app.agents.bridge.not_available.plugin_not_registered': 'the Mattermost Agents plugin',
-    'app.agents.bridge.not_available.plugin_version_too_old': 'the Mattermost Agents plugin',
-    'app.agents.bridge.unavailable_reason': 'the Mattermost Agents plugin',
-    'admin.ldap.idAttrDesc': 'the "mattermost ldap idmigrate" command (the binary is antimatter)',
-
-    // Example values with mattermost in them (example.com would do).
-    'admin.complianceExport.globalRelayEmailAddress.example': 'globalrelay@mattermost.com',
-    'admin.complianceExport.globalRelaySenderAddress.example': 'compliance-export@mattermost.com',
-    'admin.environment.notifications.feedbackEmail.placeholder': 'mattermost@yourcompany.com',
-    'admin.environment.notifications.replyToAddress.placeholder': 'mattermost@yourcompany.com',
-    'admin.image.amazonS3BucketExample': 'mattermost-media',
-    'admin.image.azureContainerExample': 'mattermost-media',
-    'admin.image.azureStorageAccountExample': 'mattermoststorage',
-    'admin.image.azureEndpointDescription': 'acmemattermost.blob.core...',
-    'admin.team.restrictExample': 'corp.mattermost.com, mattermost.com',
-    'admin.team.restrictGuestDescription': 'mattermost.com domains',
-    'general_tab.AllowedDomainsExample': 'corp.mattermost.com, mattermost.com',
-    'general_tab.AllowedDomainsInfo': 'mattermost.org',
-    'admin.service.siteURLDescription': 'http://example.com:8065/company/mattermost',
-    'admin.saml.assertionConsumerServiceURLEx': 'your-mattermost-url',
-    'admin.saml.serviceProviderIdentifierEx': 'your-mattermost-url',
-    'admin.gitlab.EnableMarkdownDesc': 'your-mattermost-url',
-    'admin.google.EnableMarkdownDesc': 'your-mattermost-url',
-    'admin.office365.EnableMarkdownDesc': 'your-mattermost-url',
-    'admin.openid.EnableMarkdownDesc': 'your-mattermost-url',
-};
+// languages, rule 25). Listed so this test catches new ones; fix them and remove them from here. It is empty: keep it
+// that way.
+const KNOWN_DEBT: Record<string, string> = {};
 
 // Translations of strings that en.json rebranded but the translation still says Mattermost, per language: stale
 // upstream translations (rule 26). Unlisted languages have none. The counts may only go down; lower them when you fix
-// translations.
-const STALE_TRANSLATIONS: Record<string, number> = {
-    ar: 1,
-    bg: 1,
-    bn: 1,
-    de: 54,
-    fa: 1,
-    fr: 1,
-    hu: 39,
-    it: 2,
-    ja: 162,
-    ko: 81,
-    nl: 12,
-    pl: 2,
-    'pt-BR': 1,
-    ro: 1,
-    sv: 37,
-    ta: 1,
-    th: 1,
-    uk: 1,
-    ur: 1,
-    vi: 2,
-    'zh-CN': 1,
-};
+// translations. All are fixed: keep it that way.
+const STALE_TRANSLATIONS: Record<string, number> = {};
+
+// Mattermost in the Latin script, or transliterated as some translations did (Korean, Japanese).
+const MATTERMOST_IN_TRANSLATION = /mattermost|매터모스트|マターモスト/i;
 
 type Catalog = Record<string, string | {defaultMessage: string}>;
 
@@ -189,7 +128,7 @@ describe('branding: the web UI says Antimatter, not Mattermost', () => {
         for (const file of locales) {
             const catalog = readCatalog(file);
             counts[file.replace(/\.json$/, '')] = Object.entries(catalog).
-                filter(([id, text]) => rebranded.has(id) && MATTERMOST.test(text)).length;
+                filter(([id, text]) => rebranded.has(id) && MATTERMOST_IN_TRANSLATION.test(text)).length;
         }
 
         for (const [locale, count] of Object.entries(counts)) {

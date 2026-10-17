@@ -27,9 +27,14 @@ exports[`components/onboarding_tasklist/onboarding_tasklist_completed.tsx should
     >
       <span>
         Now that you’re all set up, 
-        <span>
+        <a
+          href="https://github.com/AntimatterChat/desktop-app/releases"
+          location="onboarding_tasklist_completed"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
           download our apps.
-        </span>
+        </a>
       </span>
     </div>
   </div>

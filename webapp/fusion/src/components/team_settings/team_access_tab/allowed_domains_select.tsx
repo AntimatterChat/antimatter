@@ -55,7 +55,7 @@ const AllowedDomainsSelect = ({allowedDomains, setAllowedDomains, setHasChanges,
                 })}
                 description={formatMessage({
                     id: 'general_tab.AllowedDomainsInfo',
-                    defaultMessage: 'When enabled, users can only join the team if their email matches a specific domain (e.g. "mattermost.org")',
+                    defaultMessage: 'When enabled, users can only join the team if their email matches a specific domain (e.g. "example.com")',
                 })}
                 descriptionAboveContent={true}
                 inputFieldData={{name: 'showAllowedDomains'}}
@@ -65,7 +65,7 @@ const AllowedDomainsSelect = ({allowedDomains, setAllowedDomains, setHasChanges,
             {showAllowedDomains &&
             <SelectTextInput
                 id='allowedDomains'
-                placeholder={formatMessage({id: 'general_tab.AllowedDomainsExample', defaultMessage: 'corp.mattermost.com, mattermost.com'})}
+                placeholder={formatMessage({id: 'general_tab.AllowedDomainsExample', defaultMessage: 'corp.example.com, example.com'})}
                 aria-label={formatMessage({id: 'general_tab.allowedDomains.ariaLabel', defaultMessage: 'Allowed Domains'})}
                 value={allowedDomains}
                 onChange={handleOnChangeDomains}

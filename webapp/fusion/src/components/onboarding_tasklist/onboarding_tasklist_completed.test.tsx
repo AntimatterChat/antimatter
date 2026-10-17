@@ -50,6 +50,23 @@ describe('components/onboarding_tasklist/onboarding_tasklist_completed.tsx', () 
         expect(container.querySelectorAll('.download-apps')).toHaveLength(1);
     });
 
+    test('links to the Antimatter desktop app releases by default', () => {
+        isDesktopAppMock.mockReturnValue(false);
+        const {container} = renderWithContext(<Completed {...props}/>, initialState);
+        const link = container.querySelector('.download-apps a');
+        expect(link?.getAttribute('href')).toBe('https://github.com/AntimatterChat/desktop-app/releases');
+    });
+
+    test('links to the download page the server sets', () => {
+        isDesktopAppMock.mockReturnValue(false);
+        const {container} = renderWithContext(<Completed {...props}/>, {
+            entities: {general: {config: {AppDownloadLink: 'https://downloads.example.com/chat'}}},
+        });
+        const link = container.querySelector('.download-apps a');
+        expect(link?.getAttribute('href')).toBe('https://downloads.example.com/chat');
+        expect(container.innerHTML).not.toMatch(/mattermost\.com/);
+    });
+
     test('hides download apps link when in desktop app', () => {
         isDesktopAppMock.mockReturnValue(true);
         const {container} = renderWithContext(<Completed {...props}/>, initialState);

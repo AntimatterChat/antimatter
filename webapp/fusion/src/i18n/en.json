@@ -3256,7 +3256,7 @@
     "description": "Admin console help text for the Global Relay Email Address field on the Compliance Export admin page."
   },
   "admin.complianceExport.globalRelayEmailAddress.example": {
-    "defaultMessage": "E.g.: \"globalrelay@mattermost.com\"",
+    "defaultMessage": "E.g.: \"globalrelay@example.com\"",
     "description": "Placeholder in the Global Relay Email Address input showing an example email address."
   },
   "admin.complianceExport.globalRelayEmailAddress.title": {
@@ -3268,7 +3268,7 @@
     "description": "Help text under the Sender Address field in System Console > Compliance > Compliance Export, shown when the export format is GlobalRelay. 'From', 'To' and 'SMTP envelope sender' are email header/protocol terms; EML is the exported email file format."
   },
   "admin.complianceExport.globalRelaySenderAddress.example": {
-    "defaultMessage": "E.g.: \"compliance-export@mattermost.com\"",
+    "defaultMessage": "E.g.: \"compliance-export@example.com\"",
     "description": "Placeholder in the GlobalRelay Sender Address input in System Console > Compliance > Compliance Export. 'E.g.:' introduces a sample value; the email address inside the quotes is literal and must not be translated."
   },
   "admin.complianceExport.globalRelaySenderAddress.title": {
@@ -3432,12 +3432,12 @@
     "description": "Admin console setting label (toggle) on the Announcement Banner page that turns the site-wide banner on."
   },
   "admin.customization.appDownloadLinkDesc": {
-    "defaultMessage": "Add a link to a download page for the Mattermost apps. When a link is present, an option to \"Download Mattermost Apps\" will be added in the Product Menu so users can find the download page. Leave this field blank to hide the option from the Product Menu.",
-    "description": "Admin console help text under the apps download page link field on the Customization page; 'Download Mattermost Apps' is a menu item name shown to users."
+    "defaultMessage": "Add a link to a download page for the Antimatter apps. When a link is present, an option to \"Download Apps\" will be added in the Product Menu so users can find the download page. Leave this field blank to hide the option from the Product Menu.",
+    "description": "Admin console help text under the apps download page link field on the Customization page; 'Download Apps' is a menu item name shown to users."
   },
   "admin.customization.appDownloadLinkTitle": {
-    "defaultMessage": "Mattermost Apps Download Page Link:",
-    "description": "Admin console field label on the Customization page for the Mattermost apps download page URL."
+    "defaultMessage": "Antimatter Apps Download Page Link:",
+    "description": "Admin console field label on the Customization page for the download page URL of the Antimatter apps."
   },
   "admin.customization.clientSideUserIds": {
     "defaultMessage": "Client side user ids:",
@@ -3628,7 +3628,7 @@
     "description": "Admin console field label on the Posts page limiting Markdown elements per text block."
   },
   "admin.customization.minimumDesktopAppVersionDesc": {
-    "defaultMessage": "Specify the minimum version of the Mattermost Desktop App required to connect to this server (e.g., 5.10.0). Users connecting with a Desktop App version below this minimum will be shown an update required page and will not be able to use the application until they update. Leave this field blank to allow all Desktop App versions to connect without restriction.",
+    "defaultMessage": "Specify the minimum version of the Antimatter desktop app required to connect to this server (e.g., 5.10.0). Users connecting with a Desktop App version below this minimum will be shown an update required page and will not be able to use the application until they update. Leave this field blank to allow all Desktop App versions to connect without restriction.",
     "description": "Admin console help text for the minimum desktop app version field on the Customization page; '5.10.0' is an example version number."
   },
   "admin.customization.minimumDesktopAppVersionError": {
@@ -4524,7 +4524,7 @@
     "description": "Setting label (ends with a colon) for the email 'From' address used in notification emails."
   },
   "admin.environment.notifications.feedbackEmail.placeholder": {
-    "defaultMessage": "Ex: \"mattermost@yourcompany.com\", \"admin@yourcompany.com\"",
+    "defaultMessage": "Ex: \"antimatter@yourcompany.com\", \"admin@yourcompany.com\"",
     "description": "Placeholder example email addresses for the Notification From Address input."
   },
   "admin.environment.notifications.feedbackEmail.required": {
@@ -4592,7 +4592,7 @@
     "description": "Setting label (ends with a colon) for the Reply-To email address used in notification emails."
   },
   "admin.environment.notifications.replyToAddress.placeholder": {
-    "defaultMessage": "Ex: \"mattermost@yourcompany.com\", \"admin@yourcompany.com\"",
+    "defaultMessage": "Ex: \"antimatter@yourcompany.com\", \"admin@yourcompany.com\"",
     "description": "Placeholder example email addresses for the Notification Reply-To Address input."
   },
   "admin.environment.notifications.supportAddress.placeholder": {
@@ -5028,8 +5028,8 @@
     "description": "Heading of the admin console filter popover, above the filter option groups."
   },
   "admin.general.localization.availableLocalesDescription": {
-    "defaultMessage": "Set which languages are available for users in <strong>Settings > Display > Language</strong> (leave this field blank to have all supported languages available). If you're manually adding new languages, the <strong>Default Client Language</strong> must be added before saving this setting.\n \nWould like to help with translations? Join the <link>Mattermost Translation Server</link> to contribute.",
-    "description": "Help text for the Available Languages setting in System Console > Localization; <strong> highlights UI paths and setting names, and <link> wraps the Mattermost Translation Server link text."
+    "defaultMessage": "Set which languages are available for users in <strong>Settings > Display > Language</strong> (leave this field blank to have all supported languages available). If you're manually adding new languages, the <strong>Default Client Language</strong> must be added before saving this setting.\n \nFound a mistake in a translation? Tell us in the <link>Antimatter community</link>.",
+    "description": "Help text for the Available Languages setting in System Console > Localization; <strong> highlights UI paths and setting names, and <link> wraps a link to the Antimatter community on GitHub, where translation mistakes can be reported."
   },
   "admin.general.localization.availableLocalesNoResults": {
     "defaultMessage": "No results found",
@@ -5092,8 +5092,8 @@
     "description": "Admin console help text under the Discovery Endpoint field in the GitLab OpenID Connect settings."
   },
   "admin.gitlab.EnableMarkdownDesc": {
-    "defaultMessage": "1. Log in to your GitLab account and go to Profile Settings -> Applications.\n2. Enter Redirect URIs \"<loginUrlChunk>your-mattermost-url</loginUrlChunk>\" (example: http://localhost:8065/login/gitlab/complete) and \"<signupUrlChunk>your-mattermost-url</signupUrlChunk>\".\n3. Then use \"Application Secret Key\" and \"Application ID\" fields from GitLab to complete the options below.\n4. Complete the Endpoint URLs below.",
-    "description": "Numbered step-by-step setup instructions shown under the GitLab option on the OAuth/OpenID admin page; loginUrlChunk and signupUrlChunk tags are replaced with URL templates at runtime, so keep the your-mattermost-url text inside them."
+    "defaultMessage": "1. Log in to your GitLab account and go to Profile Settings -> Applications.\n2. Enter Redirect URIs \"<loginUrlChunk>your-antimatter-url</loginUrlChunk>\" (example: http://localhost:8065/login/gitlab/complete) and \"<signupUrlChunk>your-antimatter-url</signupUrlChunk>\".\n3. Then use \"Application Secret Key\" and \"Application ID\" fields from GitLab to complete the options below.\n4. Complete the Endpoint URLs below.",
+    "description": "Numbered step-by-step setup instructions shown under the GitLab option on the OAuth/OpenID admin page; loginUrlChunk and signupUrlChunk tags are replaced with URL templates at runtime, so keep the your-antimatter-url text inside them."
   },
   "admin.gitlab.siteUrl": {
     "defaultMessage": "GitLab Site URL:",
@@ -6204,7 +6204,7 @@
     "description": "Admin console help text under the Discovery Endpoint field in the Google OpenID Connect settings."
   },
   "admin.google.EnableMarkdownDesc": {
-    "defaultMessage": "1. <linkLogin>Log in</linkLogin> to your Google account.\n2. Go to <linkConsole>https://console.developers.google.com</linkConsole>, click <strong>Credentials</strong> in the left hand side.\n 3. Under the <strong>Credentials</strong> header, click <strong>Create credentials</strong>, choose <strong>OAuth client ID</strong> and select <strong>Web Application</strong>.\n 4. Enter \"Antimatter - your-company-name\" as the <strong>Name</strong>.\n 5. Under <strong>Authorized redirect URIs</strong> enter <strong>\"your-mattermost-url/signup/google/complete\"</strong> (example: http://localhost:8065/signup/google/complete). Click <strong>Create</strong>.\n 6. Paste the <strong>Client ID</strong> and <strong>Client Secret</strong> to the fields below, then click <strong>Save</strong>.\n 7. Go to the <linkAPI>Google People API</linkAPI> and click <strong>Enable</strong>.",
+    "defaultMessage": "1. <linkLogin>Log in</linkLogin> to your Google account.\n2. Go to <linkConsole>https://console.developers.google.com</linkConsole>, click <strong>Credentials</strong> in the left hand side.\n 3. Under the <strong>Credentials</strong> header, click <strong>Create credentials</strong>, choose <strong>OAuth client ID</strong> and select <strong>Web Application</strong>.\n 4. Enter \"Antimatter - your-company-name\" as the <strong>Name</strong>.\n 5. Under <strong>Authorized redirect URIs</strong> enter <strong>\"your-antimatter-url/signup/google/complete\"</strong> (example: http://localhost:8065/signup/google/complete). Click <strong>Create</strong>.\n 6. Paste the <strong>Client ID</strong> and <strong>Client Secret</strong> to the fields below, then click <strong>Save</strong>.\n 7. Go to the <linkAPI>Google People API</linkAPI> and click <strong>Enable</strong>.",
     "description": "Numbered step-by-step setup instructions shown under the Google option on the OAuth/OpenID admin page; <strong> wraps UI element names in the Google console and link tags wrap clickable links."
   },
   "admin.google.tokenTitle": {
@@ -6544,7 +6544,7 @@
     "description": "Admin console help text under the Amazon S3 Bucket field on the Environment > File Storage page."
   },
   "admin.image.amazonS3BucketExample": {
-    "defaultMessage": "E.g.: \"mattermost-media\"",
+    "defaultMessage": "E.g.: \"antimatter-media\"",
     "description": "Placeholder text inside the Amazon S3 Bucket field showing an example bucket name."
   },
   "admin.image.amazonS3BucketTitle": {
@@ -6708,7 +6708,7 @@
     "description": "Admin console help text under the Azure Container field on the File Storage page; container is an Azure Blob Storage concept."
   },
   "admin.image.azureContainerExample": {
-    "defaultMessage": "E.g.: \"mattermost-media\"",
+    "defaultMessage": "E.g.: \"antimatter-media\"",
     "description": "Placeholder text inside the Azure Container field showing an example container name."
   },
   "admin.image.azureContainerTitle": {
@@ -6716,7 +6716,7 @@
     "description": "Setting label for a text field on the File Storage admin page; the Azure Blob Storage container name. Ends with a colon."
   },
   "admin.image.azureEndpointDescription": {
-    "defaultMessage": "Full Blob service URL, including scheme and storage account. Antimatter does not modify this URL, so the storage account must already be embedded in the hostname (vhost-style, e.g. \"https://acmemattermost.blob.core.chinacloudapi.cn/\") or in the path (path-style, e.g. \"http://localhost:10000/devstoreaccount1/\"). Shared-key auth signs against the host this URL points at, so make sure it actually serves the storage account named above.",
+    "defaultMessage": "Full Blob service URL, including scheme and storage account. Antimatter does not modify this URL, so the storage account must already be embedded in the hostname (vhost-style, e.g. \"https://acmeantimatter.blob.core.chinacloudapi.cn/\") or in the path (path-style, e.g. \"http://localhost:10000/devstoreaccount1/\"). Shared-key auth signs against the host this URL points at, so make sure it actually serves the storage account named above.",
     "description": "Admin console help text under the Custom Azure Endpoint field; vhost-style and path-style are URL addressing styles and the quoted URLs are literal examples."
   },
   "admin.image.azureEndpointExample": {
@@ -6764,7 +6764,7 @@
     "description": "Admin console help text under the Azure Storage Account field on the File Storage page."
   },
   "admin.image.azureStorageAccountExample": {
-    "defaultMessage": "E.g.: \"mattermoststorage\"",
+    "defaultMessage": "E.g.: \"antimatterstorage\"",
     "description": "Placeholder text inside the Azure Storage Account field showing an example account name."
   },
   "admin.image.azureStorageAccountTitle": {
@@ -6928,7 +6928,7 @@
     "description": "Setting label for a dropdown in the Microsoft Intune section of the Mobile Security admin page; ends with a colon."
   },
   "admin.intune.clientIdDescription": {
-    "defaultMessage": "The Application (Client) ID of your Intune MAM–enabled app registration in Microsoft Entra ID.\nThis is the client identifier that the Mattermost Mobile app uses to request MSAL tokens for Intune MAM enrollment and policy evaluation.",
+    "defaultMessage": "The Application (Client) ID of your Intune MAM–enabled app registration in Microsoft Entra ID.\nThis is the client identifier that the Antimatter mobile app uses to request MSAL tokens for Intune MAM enrollment and policy evaluation.",
     "description": "Admin console help text under the Application (Client) ID field in the Intune settings; MSAL, MAM, and Microsoft Entra ID are Microsoft terms and must not be translated."
   },
   "admin.intune.clientIdPlaceholder": {
@@ -6940,7 +6940,7 @@
     "description": "Setting label for a text field in the Intune section of the Mobile Security admin page; Application (Client) ID is Microsoft Entra terminology. Ends with a colon."
   },
   "admin.intune.enableDescription": {
-    "defaultMessage": "When enabled, Mattermost Mobile uses Microsoft Entra ID (Azure AD) for app authentication and policy enforcement. Users authenticate using MSAL tokens, and Intune MAM policies (App Protection Policies) are applied to protect corporate data.",
+    "defaultMessage": "When enabled, the Antimatter mobile app uses Microsoft Entra ID (Azure AD) for app authentication and policy enforcement. Users authenticate using MSAL tokens, and Intune MAM policies (App Protection Policies) are applied to protect corporate data.",
     "description": "Admin console help text under the Enable Microsoft Intune MAM toggle; MSAL, Intune MAM, App Protection Policies, and Microsoft Entra ID (Azure AD) are Microsoft product terms."
   },
   "admin.intune.enableTitle": {
@@ -7476,8 +7476,8 @@
     "description": "Field label on the AD/LDAP settings page for the filter identifying guest accounts; ends with a colon."
   },
   "admin.ldap.idAttrDesc": {
-    "defaultMessage": "The attribute in the AD/LDAP server used as a unique identifier in Antimatter. If you need to change this field after users have already logged in, use the <link>mattermost ldap idmigrate</link> CLI tool.",
-    "description": "Admin console help text for the ID Attribute field; <link></link> wraps the CLI command name 'mattermost ldap idmigrate', which should not be translated."
+    "defaultMessage": "The attribute in the AD/LDAP server used as a unique identifier in Antimatter. If you need to change this field after users have already logged in, use the <link>amctl ldap idmigrate</link> CLI tool.",
+    "description": "Admin console help text for the ID Attribute field; <link></link> wraps the CLI command name 'amctl ldap idmigrate', which should not be translated."
   },
   "admin.ldap.idAttrDescHover": {
     "defaultMessage": "It should be an AD/LDAP attribute with a value that does not change such as uid for LDAP or objectGUID for Active Directory. If a user's ID Attribute changes, it will create a new Antimatter account unassociated with their old one.",
@@ -8468,7 +8468,7 @@
     "description": "Admin console help text under the Discovery Endpoint field in the Entra ID OpenID Connect settings; Entra ID is a Microsoft product name."
   },
   "admin.office365.EnableMarkdownDesc": {
-    "defaultMessage": "1. <linkLogin>Log in</linkLogin> to your Microsoft account. \n2. In Microsoft, go to <strong>Applications</strong> and <strong>App Registrations</strong> in the left pane.\n3. Select <strong>New registration</strong>, then enter \"Antimatter - your-company-name\" as the <strong>Application Name</strong>. \n4. Under <strong>Redirect URI</strong>, select <strong>Web</strong>, and enter \"your-mattermost-url/signup/office365/complete\" as the <strong>Redirect URI</strong>. Select <strong>Register</strong>.\n5. Copy the Microsoft <strong>Application (client) ID</strong> value, and paste it below as the <strong>Client ID</strong> value. \n6. Copy the Microsoft <strong>Directory (tenant) ID</strong> value, and paste it below as the <strong>Directory (tenant) ID</strong> value. \n7. In Microsoft, create a new client secret. Copy the resulting client secret value, and paste it below as the <strong>Client Secret</strong> value. Select <strong>Save</strong>.",
+    "defaultMessage": "1. <linkLogin>Log in</linkLogin> to your Microsoft account. \n2. In Microsoft, go to <strong>Applications</strong> and <strong>App Registrations</strong> in the left pane.\n3. Select <strong>New registration</strong>, then enter \"Antimatter - your-company-name\" as the <strong>Application Name</strong>. \n4. Under <strong>Redirect URI</strong>, select <strong>Web</strong>, and enter \"your-antimatter-url/signup/office365/complete\" as the <strong>Redirect URI</strong>. Select <strong>Register</strong>.\n5. Copy the Microsoft <strong>Application (client) ID</strong> value, and paste it below as the <strong>Client ID</strong> value. \n6. Copy the Microsoft <strong>Directory (tenant) ID</strong> value, and paste it below as the <strong>Directory (tenant) ID</strong> value. \n7. In Microsoft, create a new client secret. Copy the resulting client secret value, and paste it below as the <strong>Client Secret</strong> value. Select <strong>Save</strong>.",
     "description": "Numbered step-by-step setup instructions shown under the Entra ID option on the OAuth/OpenID admin page; <strong> wraps UI element names in the Microsoft portal and linkLogin wraps a sign-in link."
   },
   "admin.office365.tokenTitle": {
@@ -8536,7 +8536,7 @@
     "description": "Setting label for a text field in the OpenID Connect admin settings; the discovery document URL. Ends with a colon."
   },
   "admin.openid.EnableMarkdownDesc": {
-    "defaultMessage": "Follow provider directions for creating an OpenID Application. Most OpenID Connect providers require authorization of all redirect URIs. In the appropriate field, enter \"your-mattermost-url/signup/openid/complete\" (example: http://domain.com/signup/openid/complete)",
+    "defaultMessage": "Follow provider directions for creating an OpenID Application. Most OpenID Connect providers require authorization of all redirect URIs. In the appropriate field, enter \"your-antimatter-url/signup/openid/complete\" (example: http://domain.com/signup/openid/complete)",
     "description": "Setup instructions shown under the generic OpenID Connect provider option on the Authentication admin page; the quoted URL path is a literal template the admin must enter."
   },
   "admin.openid.gitlab": {
@@ -11612,8 +11612,8 @@
     "description": "Admin console label for the SAML setting naming the assertion attribute that designates System Admins; ends with a colon."
   },
   "admin.saml.assertionConsumerServiceURLEx": {
-    "defaultMessage": "E.g.: \"<urlChunk>your-mattermost-url</urlChunk>\"",
-    "description": "Placeholder text for the SAML Service Provider Login URL input; <urlChunk> wraps text inserted into an example URL like https://<your-mattermost-url>/login/sso/saml."
+    "defaultMessage": "E.g.: \"<urlChunk>your-antimatter-url</urlChunk>\"",
+    "description": "Placeholder text for the SAML Service Provider Login URL input; <urlChunk> wraps text inserted into an example URL like https://<your-antimatter-url>/login/sso/saml."
   },
   "admin.saml.assertionConsumerServiceURLPopulatedDesc": {
     "defaultMessage": "This field is also known as the Assertion Consumer Service URL.",
@@ -11916,8 +11916,8 @@
     "description": "Admin console help text for the SAML Service Provider Identifier setting; 'ADFS' and 'Relying Party Identifier' are Microsoft federation terms."
   },
   "admin.saml.serviceProviderIdentifierEx": {
-    "defaultMessage": "E.g.: \"<urlChunk>your-mattermost-url</urlChunk>\"",
-    "description": "Placeholder text for the SAML Service Provider Identifier input; <urlChunk> wraps text inserted into an example URL like https://<your-mattermost-url>/login/sso/saml."
+    "defaultMessage": "E.g.: \"<urlChunk>your-antimatter-url</urlChunk>\"",
+    "description": "Placeholder text for the SAML Service Provider Identifier input; <urlChunk> wraps text inserted into an example URL like https://<your-antimatter-url>/login/sso/saml."
   },
   "admin.saml.serviceProviderIdentifierTitle": {
     "defaultMessage": "Service Provider Identifier:",
@@ -12704,7 +12704,7 @@
     "description": "Admin console label for the text input holding the server's base URL; ends with a colon."
   },
   "admin.service.siteURLDescription": {
-    "defaultMessage": "The URL that users will use to access Antimatter. Standard ports, such as 80 and 443, can be omitted, but non-standard ports are required. For example: http://example.com:8065. This setting is required.\n \nAntimatter may be hosted at a subpath. For example: http://example.com:8065/company/mattermost. A restart is required before the server will work correctly.",
+    "defaultMessage": "The URL that users will use to access Antimatter. Standard ports, such as 80 and 443, can be omitted, but non-standard ports are required. For example: http://example.com:8065. This setting is required.\n \nAntimatter may be hosted at a subpath. For example: http://example.com:8065/company/antimatter. A restart is required before the server will work correctly.",
     "description": "Help text for the Site URL setting on the System Console Web Server page; multi-paragraph, URLs are examples."
   },
   "admin.service.siteURLExample": {
@@ -13580,7 +13580,7 @@
     "description": "Admin console label for the text input holding the URL of the 'About' link shown on login/signup pages; ends with a colon."
   },
   "admin.support.enableAskCommunityDesc": {
-    "defaultMessage": "When true, \"Ask the community\" link appears on the Antimatter user interface and Help Menu, which allows users to join the Mattermost Community to ask questions and help others troubleshoot issues. When false, the link is hidden from users.",
+    "defaultMessage": "When true, \"Ask the community\" link appears on the Antimatter user interface and Help Menu, which allows users to join the Antimatter community to ask questions and help others troubleshoot issues. When false, the link is hidden from users.",
     "description": "Admin console help text for the 'Enable Ask Community Link' toggle; 'Ask the community' is the label of the end-user help menu link it controls."
   },
   "admin.support.enableAskCommunityTitle": {
@@ -13668,16 +13668,16 @@
     "description": "Admin console label for the text input holding a custom URL for the Report a Problem help menu option; ends with a colon."
   },
   "admin.support.reportAProblemTypeDescriptionLicensed": {
-    "defaultMessage": "By default, selecting \"Report a Problem\" from the help menu opens a pre-filled email draft to the Mattermost technical support team. You may provide a custom URL or email address for end user support by choosing \"Custom link\" or \"Email address\". \"Hide link\" removes the \"Report a Problem\" option from the app.",
-    "description": "Admin console help text for the Report a Problem type dropdown, shown on licensed servers; the quoted phrases are the dropdown option labels defined elsewhere."
+    "defaultMessage": "By default, selecting \"Report a Problem\" from the help menu opens the antimatter.chat page for reporting problems with Antimatter. You may provide a custom URL or email address for end user support by choosing \"Custom link\" or \"Email address\". \"Hide link\" removes the \"Report a Problem\" option from the app.",
+    "description": "Admin console help text for the Report a Problem type dropdown; the quoted phrases are the dropdown option labels defined elsewhere, and antimatter.chat is the website of the Antimatter project."
   },
   "admin.support.reportAProblemTypeTitle": {
     "defaultMessage": "Report a Problem:",
     "description": "Admin console label for the dropdown choosing how the 'Report a Problem' help menu option behaves; ends with a colon."
   },
   "admin.support.termsDesc": {
-    "defaultMessage": "Link to the terms under which users may use your online service. By default, this includes the \"Mattermost Acceptable Use Policy\" explaining the terms under which Antimatter software is provided to end users. If you change the default link to add your own terms for using the service you provide, your new terms must include a link to the default terms so end users are aware of the Mattermost Acceptable Use Policy for Antimatter software.",
-    "description": "Admin console help text for the Terms of Use Link customization setting; 'Mattermost Acceptable Use Policy' is the name of the default terms document."
+    "defaultMessage": "Link to the terms under which users may use your online service. By default, this is the terms of use of the Antimatter software, on antimatter.chat. Replace it with your own terms for the service you provide.",
+    "description": "Admin console help text for the Terms of Use Link customization setting; antimatter.chat is the website of the Antimatter project."
   },
   "admin.support.termsOfServiceReAcceptanceHelp": {
     "defaultMessage": "The number of days before Terms of Service acceptance expires, and the terms must be re-accepted.",
@@ -15088,11 +15088,11 @@
     "description": "Help text for the System Console setting controlling who users can direct message; the quoted phrases are the dropdown option labels and should match their translations."
   },
   "admin.team.restrictExample": {
-    "defaultMessage": "E.g.: \"corp.mattermost.com, mattermost.com\"",
+    "defaultMessage": "E.g.: \"corp.example.com, example.com\"",
     "description": "Placeholder in the restricted email domains input showing an example comma-separated domain list."
   },
   "admin.team.restrictGuestDescription": {
-    "defaultMessage": "New user accounts are restricted to the above specified email domain (e.g. \"mattermost.com\") or list of comma-separated domains (e.g. \"corp.mattermost.com, mattermost.com\"). New teams can only be created by users from the above domain(s). This setting affects email login for users. For Guest users, please add domains under Signup > Guest Access.",
+    "defaultMessage": "New user accounts are restricted to the above specified email domain (e.g. \"example.com\") or list of comma-separated domains (e.g. \"corp.example.com, example.com\"). New teams can only be created by users from the above domain(s). This setting affects email login for users. For Guest users, please add domains under Signup > Guest Access.",
     "description": "Admin console help text for the setting restricting account creation to specific email domains; 'Signup > Guest Access' refers to another System Console page."
   },
   "admin.team.restrictTitle": {
@@ -15951,18 +15951,6 @@
     "defaultMessage": "Email verified",
     "description": "Success text in the announcement bar confirming the user's email address was verified."
   },
-  "announcement_bar.warn.contact_support_email": {
-    "defaultMessage": "<a>Contact support</a>.",
-    "description": "Sentence appended to the license renewal banner when renewal fails; <a> wraps 'Contact support' as a mailto link. Keep the trailing period."
-  },
-  "announcement_bar.warn.contact_support_text": {
-    "defaultMessage": "To renew your license, contact support at support@mattermost.com.",
-    "description": "Fallback text in the license renewal announcement banner directing admins to email support."
-  },
-  "announcement_bar.warn.no_internet_connection": {
-    "defaultMessage": "Looks like you do not have access to the internet.",
-    "description": "Announcement banner text when the server cannot reach the internet to complete a license renewal."
-  },
   "announcementBar.notification.permissionNeverGrantedBar.cta": {
     "defaultMessage": "Manage notification preferences",
     "description": "Button in the announcement banner asking for browser notification permission; opens notification preferences."
@@ -16072,24 +16060,24 @@
     "description": "Error message shown when the AI Agents feature is unavailable because the server's plugin environment has not been initialized; developer/admin oriented."
   },
   "app.agents.bridge.not_available.plugin_not_active": {
-    "defaultMessage": "Mattermost Agents plugin is not active.",
-    "description": "Error message shown when the AI Agents feature is unavailable because the Mattermost Agents plugin is not enabled; 'Mattermost Agents' is a product name."
+    "defaultMessage": "The Agents plugin is not active.",
+    "description": "Error message shown when the AI Agents feature is unavailable because the Agents plugin is not enabled; 'Agents' is the plugin's name."
   },
   "app.agents.bridge.not_available.plugin_not_registered": {
-    "defaultMessage": "Mattermost Agents plugin is not registered.",
-    "description": "Error message shown when the AI Agents feature is unavailable because the Mattermost Agents plugin is not registered with the server."
+    "defaultMessage": "The Agents plugin is not registered.",
+    "description": "Error message shown when the AI Agents feature is unavailable because the Agents plugin is not registered with the server; 'Agents' is the plugin's name."
   },
   "app.agents.bridge.not_available.plugin_version_parse_failed": {
     "defaultMessage": "Failed to parse AI plugin version.",
     "description": "Error message shown when the installed AI plugin's version string could not be parsed."
   },
   "app.agents.bridge.not_available.plugin_version_too_old": {
-    "defaultMessage": "Mattermost Agents plugin version is too old. Please update to the latest version.",
-    "description": "Error message shown when the installed Mattermost Agents plugin version is below the required minimum; asks the user to update it."
+    "defaultMessage": "The Agents plugin version is too old. Please update to the latest version.",
+    "description": "Error message shown when the installed Agents plugin version is below the required minimum; asks the user to update it."
   },
   "app.agents.bridge.unavailable_reason": {
-    "defaultMessage": "Mattermost Agents plugin is unavailable.",
-    "description": "Generic fallback error shown when the Mattermost Agents plugin cannot be used and no more specific reason applies."
+    "defaultMessage": "The Agents plugin is unavailable.",
+    "description": "Generic fallback error shown when the Agents plugin cannot be used and no more specific reason applies."
   },
   "app.channel.post_update_channel_purpose_message.removed": {
     "defaultMessage": "{username} removed the channel purpose (was: {old})",
@@ -18100,8 +18088,8 @@
     "description": "Subsection heading in the channel notification preferences modal for the notification sound options."
   },
   "channel_notifications.desktopNotificationsDesc": {
-    "defaultMessage": "Available on Chrome, Edge, Firefox, and the Mattermost Desktop App.",
-    "description": "Help text under the Desktop Notifications heading in the channel notification preferences modal, listing supported browsers/apps (product names, do not translate)."
+    "defaultMessage": "Available on Chrome, Edge, Firefox, and the Antimatter desktop app.",
+    "description": "Help text under the Desktop Notifications heading in the channel notification preferences modal, listing supported browsers and the Antimatter desktop app (browser names are product names, do not translate them)."
   },
   "channel_notifications.desktopNotificationsTitle": {
     "defaultMessage": "Desktop Notifications",
@@ -19146,26 +19134,6 @@
   "combined_system_message.you": {
     "defaultMessage": "You",
     "description": "Pronoun substituted for the current user's own username inside combined join/leave system messages (e.g. 'You joined the channel'); subject position."
-  },
-  "commercial_support_modal.description": {
-    "defaultMessage": "If you're experiencing issues, <supportLink>submit a support ticket</supportLink>. To help with troubleshooting, it's recommended to download the Support Packet below that includes more details about your Antimatter environment.",
-    "description": "Intro paragraph of the Commercial Support modal; <supportLink> tags wrap the clickable phrase that opens the support ticket site."
-  },
-  "commercial_support_modal.download_contents": {
-    "defaultMessage": "Select your Support Packet contents to download",
-    "description": "Bold heading above the checkboxes where the admin selects which contents to include in the Support Packet download."
-  },
-  "commercial_support_modal.warning.banner": {
-    "defaultMessage": "Before downloading the Support Packet, set <strong>Output Logs to File</strong> to <strong>true</strong> and set <strong>File Log Level</strong> to <strong>DEBUG</strong> <debugLink>here</debugLink>.",
-    "description": "Dismissible info banner in the Commercial Support modal; <strong> tags mark setting names and <debugLink> wraps a link to the System Console logging page."
-  },
-  "commercial_support.download_support_packet": {
-    "defaultMessage": "Download Support Packet",
-    "description": "Button in the Commercial Support modal that downloads a diagnostic zip file; 'Support Packet' is a product term."
-  },
-  "commercial_support.title": {
-    "defaultMessage": "Commercial Support",
-    "description": "Title of the modal where system admins download a Support Packet and contact Mattermost support."
   },
   "confirm_modal.cancel": {
     "defaultMessage": "Cancel",
@@ -27748,11 +27716,11 @@
     "description": "Accessibility label for the allowed email domains setting in the team settings General tab."
   },
   "general_tab.AllowedDomainsExample": {
-    "defaultMessage": "corp.mattermost.com, mattermost.com",
+    "defaultMessage": "corp.example.com, example.com",
     "description": "Placeholder in the allowed email domains input showing example domain values; the domains can stay untranslated."
   },
   "general_tab.AllowedDomainsInfo": {
-    "defaultMessage": "When enabled, users can only join the team if their email matches a specific domain (e.g. \"mattermost.org\")",
+    "defaultMessage": "When enabled, users can only join the team if their email matches a specific domain (e.g. \"example.com\")",
     "description": "Description under the team setting that restricts joining to specific email domains."
   },
   "general_tab.AllowedDomainsTip": {
@@ -28876,12 +28844,8 @@
     "description": "Page header of the Slash Commands list in the team Integrations backstage."
   },
   "installed_commands.help": {
-    "defaultMessage": "Use slash commands to connect external tools to Antimatter. {buildYourOwn} or visit the {appDirectory} to find self-hosted, third-party apps and integrations.",
-    "description": "Help text at the top of the Slash Commands list; {buildYourOwn} is a 'build your own' documentation link and {appDirectory} is an App Directory link."
-  },
-  "installed_commands.help.appDirectory": {
-    "defaultMessage": "App Directory",
-    "description": "Link text pointing to the Mattermost App Directory, used in the help sentence on the installed slash commands page (integrations)."
+    "defaultMessage": "Use slash commands to connect external tools to Antimatter. {buildYourOwn}.",
+    "description": "Help text at the top of the Slash Commands list; {buildYourOwn} is a 'Build your own' link to the documentation and ends the sentence."
   },
   "installed_commands.help.buildYourOwn": {
     "defaultMessage": "Build Your Own",
@@ -28920,12 +28884,8 @@
     "description": "Page header of the Incoming Webhooks list in the team Integrations backstage."
   },
   "installed_incoming_webhooks.help": {
-    "defaultMessage": "Use incoming webhooks to connect external tools to Antimatter. {buildYourOwn} or visit the {appDirectory} to find self-hosted, third-party apps and integrations.",
-    "description": "Help text at the top of the Incoming Webhooks list; {buildYourOwn} is a 'build your own' documentation link and {appDirectory} is an App Directory link."
-  },
-  "installed_incoming_webhooks.help.appDirectory": {
-    "defaultMessage": "App Directory",
-    "description": "Link text pointing to the Mattermost App Directory in the incoming webhooks page help sentence."
+    "defaultMessage": "Use incoming webhooks to connect external tools to Antimatter. {buildYourOwn}.",
+    "description": "Help text at the top of the Incoming Webhooks list; {buildYourOwn} is a 'Build your own' link to the documentation and ends the sentence."
   },
   "installed_incoming_webhooks.help.buildYourOwn": {
     "defaultMessage": "Build Your Own",
@@ -29072,12 +29032,8 @@
     "description": "Page header/breadcrumb link for the OAuth 2.0 Applications section of the team Integrations backstage."
   },
   "installed_oauth_apps.help": {
-    "defaultMessage": "Create {oauthApplications} to securely integrate bots and third-party apps with Antimatter. Visit the {appDirectory} to find available self-hosted apps.",
-    "description": "Help text at the top of the OAuth 2.0 Applications list; {oauthApplications} is a documentation link and {appDirectory} is an App Directory link."
-  },
-  "installed_oauth_apps.help.appDirectory": {
-    "defaultMessage": "App Directory",
-    "description": "Link text pointing to the Mattermost App Directory in the OAuth 2.0 applications page help sentence."
+    "defaultMessage": "Create {oauthApplications} to securely integrate bots and third-party apps with Antimatter.",
+    "description": "Help text at the top of the OAuth 2.0 Applications list; {oauthApplications} is a documentation link."
   },
   "installed_oauth_apps.help.oauthApplications": {
     "defaultMessage": "OAuth 2.0 applications",
@@ -29208,12 +29164,8 @@
     "description": "Page header of the Outgoing Webhooks list in the team Integrations backstage."
   },
   "installed_outgoing_webhooks.help": {
-    "defaultMessage": "Use outgoing webhooks to connect external tools to Antimatter. {buildYourOwn} or visit the {appDirectory} to find self-hosted, third-party apps and integrations.",
-    "description": "Help text at the top of the Outgoing Webhooks list; {buildYourOwn} is a 'build your own' documentation link and {appDirectory} is an App Directory link."
-  },
-  "installed_outgoing_webhooks.help.appDirectory": {
-    "defaultMessage": "App Directory",
-    "description": "Link text pointing to the Mattermost App Directory in the outgoing webhooks page help sentence."
+    "defaultMessage": "Use outgoing webhooks to connect external tools to Antimatter. {buildYourOwn}.",
+    "description": "Help text at the top of the Outgoing Webhooks list; {buildYourOwn} is a 'Build your own' link to the documentation and ends the sentence."
   },
   "installed_outgoing_webhooks.help.buildYourOwn": {
     "defaultMessage": "Build your own",
@@ -30455,14 +30407,6 @@
     "defaultMessage": "App Marketplace",
     "description": "Title of the dialog where admins browse and install plugins and apps."
   },
-  "marketplace_modal.web_marketplace_link.desc": {
-    "defaultMessage": "Connect the tools you use most to Antimatter",
-    "description": "Description line in the App Marketplace banner linking to the public web marketplace; 'Antimatter' is the product name."
-  },
-  "marketplace_modal.web_marketplace_link.title": {
-    "defaultMessage": "Discover community integrations",
-    "description": "Title of the App Marketplace banner linking to the public web marketplace of community integrations."
-  },
   "media_gallery.count_label": {
     "defaultMessage": "{count, plural, one {# item} other {# items}}",
     "description": "Plural label showing how many attachments are in a post's media gallery; 'item' refers to an image or video file; compact space."
@@ -31352,8 +31296,8 @@
     "description": "Tooltip describing the Jira plugin on the onboarding wizard's plugins step."
   },
   "onboarding_wizard.plugins.marketplace": {
-    "defaultMessage": "More tools can be added once your workspace is set up. To see all available integrations, <a>visit the Marketplace.</a>",
-    "description": "Footnote on the plugin selection step of the setup wizard; the <a> tags wrap a link to the in-product integrations Marketplace."
+    "defaultMessage": "More apps can be added once your community is set up. <a>See the apps that come with Antimatter.</a>",
+    "description": "Footnote on the app selection step of the setup wizard; the <a> tags wrap a link to the documentation page listing the apps bundled with Antimatter."
   },
   "onboarding_wizard.plugins.servicenow": {
     "defaultMessage": "ServiceNow",
@@ -31424,16 +31368,16 @@
     "description": "Task item in the onboarding checklist prompting the user to download the desktop and mobile apps."
   },
   "onboardingTask.checklist.task_invite_team_members": {
-    "defaultMessage": "Invite team members to the workspace.",
-    "description": "Task item in the onboarding checklist prompting the user to invite teammates to the workspace."
+    "defaultMessage": "Invite people to your community.",
+    "description": "Task item in the onboarding checklist prompting the user to invite people to their community (what other apps call a team or workspace)."
   },
   "onboardingTask.checklist.task_learn_more_about_messaging": {
-    "defaultMessage": "Take a tour of Channels.",
-    "description": "Task item in the onboarding checklist that starts a guided tour of the Channels (messaging) interface."
+    "defaultMessage": "Take a tour of Antimatter.",
+    "description": "Task item in the onboarding checklist that starts a guided tour of the messaging interface (sidebar, channels, messages)."
   },
   "onboardingTask.checklist.task_visit_system_console": {
-    "defaultMessage": "Visit the System Console to configure your workspace.",
-    "description": "Task item in the onboarding checklist directing admins to the System Console (admin settings area)."
+    "defaultMessage": "Visit the System Console to configure your server.",
+    "description": "Task item in the onboarding checklist directing admins to the System Console (the server's admin settings)."
   },
   "onboardingTask.completeYourProfileTour.Description": {
     "defaultMessage": "Use this menu item to update your profile details and security settings.",
@@ -31444,8 +31388,8 @@
     "description": "Title of the tour tip shown during the 'complete your profile' onboarding task."
   },
   "onboardingTask.visitSystemConsole.Description": {
-    "defaultMessage": "More detailed configuration settings for your workspace can be accessed here.",
-    "description": "Body text of the tour tip pointing at the System Console entry during the 'visit System Console' onboarding task; audience is admins."
+    "defaultMessage": "More detailed configuration settings for your server can be accessed here.",
+    "description": "Body text of the tour tip pointing at the System Console entry during the 'visit System Console' onboarding task; audience is server admins."
   },
   "onboardingTask.visitSystemConsole.title": {
     "defaultMessage": "Visit the System Console",
@@ -36968,8 +36912,8 @@
     "description": "Help text under the language dropdown explaining what the setting does."
   },
   "user.settings.languages.promote2": {
-    "defaultMessage": "Would you like to help with translations? Join the <link>Mattermost Translation Server</link> to contribute.",
-    "description": "Note under the language setting inviting users to contribute translations; <link> wraps a link to the Mattermost translation server."
+    "defaultMessage": "Found a mistake in a translation? Tell us in the <link>Antimatter community</link>.",
+    "description": "Note under the language setting inviting users to report translation mistakes; <link> wraps a link to the Antimatter community on GitHub."
   },
   "user.settings.mfa.add": {
     "defaultMessage": "Add MFA to Account",

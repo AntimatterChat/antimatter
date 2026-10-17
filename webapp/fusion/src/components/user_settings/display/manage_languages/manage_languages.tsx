@@ -15,7 +15,7 @@ import ExternalLink from 'components/external_link';
 import SettingItemMax from 'components/setting_item_max';
 
 import type {Language} from 'i18n/i18n';
-import Constants from 'utils/constants';
+import Constants, {AntimatterLinks} from 'utils/constants';
 import {isKeyPressed} from 'utils/keyboard';
 
 type Actions = {
@@ -250,11 +250,11 @@ export class ManageLanguage extends React.PureComponent<Props, State> {
                     <p/>
                     <FormattedMessage
                         id='user.settings.languages.promote2'
-                        defaultMessage='Would you like to help with translations? Join the <link>Mattermost Translation Server</link> to contribute.'
+                        defaultMessage='Found a mistake in a translation? Tell us in the <link>Antimatter community</link>.'
                         values={{
                             link: (msg: React.ReactNode) => (
                                 <ExternalLink
-                                    href='http://translate.mattermost.com'
+                                    href={AntimatterLinks.COMMUNITY}
                                     location='manage_languages'
                                 >
                                     {msg}

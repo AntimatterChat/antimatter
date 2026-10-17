@@ -340,11 +340,11 @@ const HelpFormatting = (): JSX.Element => {
                         </thead>
                         <tbody>
                             <tr>
-                                <td><code>{'![Mattermost Logo](/static/images/logo_email_dark.png)'}</code></td>
+                                <td><code>{'![Antimatter logo](/static/images/logo_email_dark.png)'}</code></td>
                                 <td>
                                     <img
                                         src='/static/images/logo_email_dark.png'
-                                        alt='Mattermost Logo'
+                                        alt='Antimatter logo'
                                         className='Help__inline-image'
                                     />
                                 </td>
