@@ -27,7 +27,11 @@
 :is(.am-app, .am-layer) .am-fly > button .am-end .am-ic { transform: rotate(-90deg); }
 :is(.am-app, .am-layer) .am-fly.am-left > button .am-end .am-ic { transform: rotate(90deg); }
 :is(.am-app, .am-layer) .am-fly-menu button { display: flex; align-items: center; gap: 10px; width: 100%; padding: 7px 10px; border-radius: 7px; text-align: left; font-size: 13.5px; color: var(--am-text-2); }
-:is(.am-app, .am-layer) .am-fly-menu button:hover, :is(.am-app, .am-layer) .am-fly-menu button:focus-visible { background: var(--am-matter); color: #fff; }
+// The submenu's items light up as the menu's own do: a solid accent behind them left their grey second line and icons
+// unreadable.
+:is(.am-app, .am-layer) .am-fly-menu button:hover, :is(.am-app, .am-layer) .am-fly-menu button:focus-visible { background: var(--am-hover); color: var(--am-text); }
+:is(.am-app, .am-layer) .am-fly-menu button:is(:hover, :focus-visible) .am-ic { color: var(--am-text); }
+:is(.am-app, .am-layer) .am-fly-menu button:is(:hover, :focus-visible) .am-menu-sub { color: var(--am-text-2); }
 :is(.am-app, .am-layer) .am-fly-menu .am-pop-h { margin: 4px 8px 4px; }
 :is(.am-app, .am-layer) .am-menu-sub { display: block; font-size: 12px; font-weight: 400; color: var(--am-muted); }
 :is(.am-app, .am-layer) .am-user-menu { width: 240px; }
