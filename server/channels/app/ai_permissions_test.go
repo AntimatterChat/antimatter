@@ -30,7 +30,9 @@ func TestAntimatterAIConnectionPermissionsMigration(t *testing.T) {
 	systemUser := &model.Role{Name: model.SystemUserRoleId, Permissions: []string{model.PermissionCreateTeam.Id}}
 	teamUser := &model.Role{Name: model.TeamUserRoleId, Permissions: []string{model.PermissionViewTeam.Id}}
 	channelAdmin := &model.Role{Name: model.ChannelAdminRoleId, Permissions: []string{model.PermissionManageChannelRoles.Id}}
-	roles := []*model.Role{systemAdmin, teamAdmin, schemeTeamAdmin, systemUser, teamUser, channelAdmin}
+	administratorRole := &model.Role{Name: model.TeamRoleName(model.NewId()), Permissions: []string{model.PermissionManageTeam.Id}}
+	moderatorRole := &model.Role{Name: model.TeamRoleName(model.NewId()), Permissions: []string{model.PermissionDeleteOthersPosts.Id}}
+	roles := []*model.Role{systemAdmin, teamAdmin, schemeTeamAdmin, systemUser, teamUser, channelAdmin, administratorRole, moderatorRole}
 
 	mockStore := th.App.Srv().Store().(*mocks.Store)
 	roleStore := mocks.RoleStore{}
@@ -53,6 +55,39 @@ func TestAntimatterAIConnectionPermissionsMigration(t *testing.T) {
 	assert.ElementsMatch(t, []string{model.PermissionCreateTeam.Id}, systemUser.Permissions, "members get nothing")
 	assert.ElementsMatch(t, []string{model.PermissionViewTeam.Id}, teamUser.Permissions)
 	assert.ElementsMatch(t, []string{model.PermissionManageChannelRoles.Id}, channelAdmin.Permissions)
+	assert.ElementsMatch(t, []string{model.PermissionManageTeam.Id, model.PermissionManageTeamAIConnections.Id}, administratorRole.Permissions, "a community role with the Administrator switch")
+	assert.ElementsMatch(t, []string{model.PermissionDeleteOthersPosts.Id}, moderatorRole.Permissions, "a community role without it gets nothing")
+}
+
+// A community role with the Administrator switch gets the management of the community's model connections, as the
+// community's admins hold it; a role can also grant it on its own.
+func TestTeamRolesGrantAIConnectionManagement(t *testing.T) {
+	th := Setup(t).InitBasic(t)
+	assert.Contains(t, model.TeamRolePermissions(), model.PermissionManageTeamAIConnections.Id)
+	assert.NotContains(t, model.TeamRolePermissions(), model.PermissionManageAIConnections.Id, "never the server-wide one")
+
+	newRole := func() *model.Group {
+		group, appErr := th.App.CreateGroup(&model.Group{
+			Name: model.NewPointer("r" + model.NewId()), DisplayName: "Role", Source: model.GroupSourceCustom,
+			RemoteId: model.NewPointer(model.NewId()), TeamId: th.BasicTeam.Id,
+		})
+		require.Nil(t, appErr)
+		require.True(t, group.IsRole())
+		return group
+	}
+	admin := model.Session{UserId: th.SystemAdminUser.Id, Roles: model.SystemAdminRoleId + " " + model.SystemUserRoleId}
+
+	role, appErr := th.App.SetTeamRolePermissions(th.Context, admin, newRole(), []string{model.PermissionManageTeam.Id})
+	require.Nil(t, appErr)
+	assert.Contains(t, role.Permissions, model.PermissionManageTeamAIConnections.Id, "the Administrator switch")
+	assert.NotContains(t, role.Permissions, model.PermissionManageAIConnections.Id)
+
+	role, appErr = th.App.SetTeamRolePermissions(th.Context, admin, newRole(), []string{model.PermissionManageTeamAIConnections.Id})
+	require.Nil(t, appErr)
+	assert.Equal(t, []string{model.PermissionManageTeamAIConnections.Id}, role.Permissions, "on its own")
+
+	_, appErr = th.App.SetTeamRolePermissions(th.Context, admin, newRole(), []string{model.PermissionManageAIConnections.Id})
+	require.NotNil(t, appErr, "a community role can't grant the server-wide permission")
 }
 
 // The fresh install's defaults are the ones the migration brings existing servers to.

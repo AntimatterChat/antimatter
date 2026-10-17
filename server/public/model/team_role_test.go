@@ -53,9 +53,13 @@ func TestTeamRolePermissions(t *testing.T) {
 	})
 
 	t.Run("hands out nothing system-wide", func(t *testing.T) {
-		for _, p := range []*Permission{PermissionManageSystem, PermissionManageRoles, PermissionCreateTeam, PermissionManageSharedChannels, PermissionEditOtherUsers} {
+		for _, p := range []*Permission{PermissionManageSystem, PermissionManageRoles, PermissionCreateTeam, PermissionManageSharedChannels, PermissionEditOtherUsers, PermissionManageAIConnections} {
 			assert.NotContains(t, permissions, p.Id)
 		}
+	})
+
+	t.Run("holds the community's own model connections", func(t *testing.T) {
+		assert.Contains(t, permissions, PermissionManageTeamAIConnections.Id)
 	})
 }
 

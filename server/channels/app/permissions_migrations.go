@@ -1385,9 +1385,9 @@ func (a *App) getAntimatterChannelArchiveRightsMigration() (permissionsMap, erro
 }
 
 // getAntimatterAIConnectionPermissionsMigration gives system admins the management of the server-wide model
-// connections and of every community's, and the community's admins (team_admin, and the admin role of team schemes,
-// which have no such permission otherwise) their community's own. A fresh install gets the same from
-// model.MakeDefaultRoles; nobody else gets anything.
+// connections and of every community's, and the community's admins (team_admin, the admin role of team schemes, and
+// the community roles with the Administrator switch) their community's own. A fresh install gets the same from
+// model.MakeDefaultRoles and SetTeamRolePermissions; nobody else gets anything.
 func (a *App) getAntimatterAIConnectionPermissionsMigration() (permissionsMap, error) {
 	return permissionsMap{
 		permissionTransformation{
@@ -1396,6 +1396,14 @@ func (a *App) getAntimatterAIConnectionPermissionsMigration() (permissionsMap, e
 		},
 		permissionTransformation{
 			On:  isRole(model.TeamAdminRoleId),
+			Add: []string{model.PermissionManageTeamAIConnections.Id},
+		},
+		// The community roles with the Administrator switch (they may manage the community) hold what its admins do.
+		permissionTransformation{
+			On: permissionAnd(
+				func(role *model.Role, _ map[string]map[string]bool) bool { return model.IsTeamRoleName(role.Name) },
+				permissionExists(model.PermissionManageTeam.Id),
+			),
 			Add: []string{model.PermissionManageTeamAIConnections.Id},
 		},
 	}, nil

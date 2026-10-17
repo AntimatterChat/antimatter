@@ -45,6 +45,8 @@ func TeamRolePermissions() []string {
 		PermissionManageOthersIncomingWebhooks.Id,
 		PermissionManageOthersOutgoingWebhooks.Id,
 		PermissionManageOthersSlashCommands.Id,
+		// Antimatter: the community's own model connections, which its admins manage.
+		PermissionManageTeamAIConnections.Id,
 	}
 }
 
