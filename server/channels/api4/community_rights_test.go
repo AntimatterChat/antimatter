@@ -369,8 +369,19 @@ func TestModeratorPresetAndAdministratorRoles(t *testing.T) {
 			model.PermissionManageChannelRoles, model.PermissionDeleteOthersPosts,
 			model.PermissionDeletePublicChannel, model.PermissionDeletePrivateChannel,
 			model.PermissionConvertPublicChannelToPrivate, model.PermissionManageOthersIncomingWebhooks,
+			model.PermissionManagePublicChannelBanner, model.PermissionManagePrivateChannelBanner,
+			model.PermissionManageChannelJoinRequests, model.PermissionManagePrivateChannelDiscoverability,
+			model.PermissionManagePublicChannelAutoTranslation, model.PermissionManagePrivateChannelAutoTranslation,
 		} {
 			assert.Contains(t, permissions, p.Id)
+		}
+		for _, p := range []*model.Permission{model.PermissionBypassIncomingWebhookChannelLock, model.PermissionManageChannelAccessRules, model.PermissionManageTeamAccessRules} {
+			assert.NotContains(t, permissions, p.Id, "the community's admins keep it")
+		}
+		for _, p := range permissions {
+			perm := slices.IndexFunc(model.AllPermissions, func(x *model.Permission) bool { return x.Id == p })
+			require.NotEqual(t, -1, perm, p)
+			assert.NotEqual(t, model.PermissionScopeSystem, model.AllPermissions[perm].Scope, "%s is a system permission", p)
 		}
 		expected, appErr := h.th.App.TeamAdminRolePermissions(h.th.Context, h.team.Id)
 		require.Nil(t, appErr)

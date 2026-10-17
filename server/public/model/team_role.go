@@ -28,6 +28,15 @@ func TeamRolePermissions() []string {
 		PermissionManageChannelRoles.Id,
 		PermissionConvertPublicChannelToPrivate.Id,
 		PermissionConvertPrivateChannelToPublic.Id,
+		// Antimatter: the community-level permissions of the channels' admins, so that a role (Administrator
+		// first) holds what the community's admins do. The webhook channel-lock bypass and the attribute-based
+		// access rules stay with the admins' roles.
+		PermissionManagePublicChannelBanner.Id,
+		PermissionManagePrivateChannelBanner.Id,
+		PermissionManageChannelJoinRequests.Id,
+		PermissionManagePrivateChannelDiscoverability.Id,
+		PermissionManagePublicChannelAutoTranslation.Id,
+		PermissionManagePrivateChannelAutoTranslation.Id,
 		PermissionDeleteOthersPosts.Id,
 		PermissionEditOthersPosts.Id,
 		PermissionManageOwnIncomingWebhooks.Id,

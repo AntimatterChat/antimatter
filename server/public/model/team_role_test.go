@@ -40,6 +40,18 @@ func TestTeamRolePermissions(t *testing.T) {
 		}
 	})
 
+	t.Run("holds the channels' admins' community-level permissions, not the admins' own", func(t *testing.T) {
+		for _, p := range []*Permission{
+			PermissionManagePublicChannelBanner, PermissionManagePrivateChannelBanner, PermissionManageChannelJoinRequests,
+			PermissionManagePrivateChannelDiscoverability, PermissionManagePublicChannelAutoTranslation, PermissionManagePrivateChannelAutoTranslation,
+		} {
+			assert.Contains(t, permissions, p.Id)
+		}
+		for _, p := range []*Permission{PermissionBypassIncomingWebhookChannelLock, PermissionManageChannelAccessRules, PermissionManageTeamAccessRules} {
+			assert.NotContains(t, permissions, p.Id)
+		}
+	})
+
 	t.Run("hands out nothing system-wide", func(t *testing.T) {
 		for _, p := range []*Permission{PermissionManageSystem, PermissionManageRoles, PermissionCreateTeam, PermissionManageSharedChannels, PermissionEditOtherUsers} {
 			assert.NotContains(t, permissions, p.Id)
