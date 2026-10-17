@@ -10,6 +10,8 @@ Checks (all run by default):
                 Sentry DSNs or Rudder/Segment telemetry endpoints and keys.
   am-env        Antimatter's docs and compose examples write environment variables as AM_..., not MM_...
   translations  every string of the server and Fusion en.json is translated into the 37 supported languages.
+                Advisory: missing translations are reported but never fail the check, since translations follow
+                the English in later commits.
 
 A finding is accepted when it matches scripts/antimatter/policy-allowlist.txt (permanent, commented exceptions)
 or scripts/antimatter/policy-baseline.txt (violations that predate the check and still need fixing). Anything
@@ -31,6 +33,8 @@ ALLOWLIST = os.path.join(HERE, "policy-allowlist.txt")
 BASELINE = os.path.join(HERE, "policy-baseline.txt")
 
 CHECKS = ("branding", "outbound", "am-env", "translations")
+# Checks whose new findings are reported as warnings but don't fail: translations follow the English later.
+ADVISORY = {"translations"}
 
 CATALOGS = {
     "server/i18n/en.json": "server",
@@ -293,8 +297,9 @@ def main():
         fixed = len({b for b in baseline if b.startswith(check + "\t")} - prints)
         md.append(f"| {check} | {len(new)} | {known} | {fixed} |")
         if new:
-            failed = True
-            print(f"\n{check}: {len(new)} new violation(s)")
+            advisory = check in ADVISORY
+            failed = failed or not advisory
+            print(f"\n{check}: {len(new)} new {'finding(s), advisory' if advisory else 'violation(s)'}")
             details.append(f"### {check}: new violations\n")
             details.append(ADVICE[check] + "\n")
             for f in new[:200]:
@@ -303,7 +308,8 @@ def main():
                 if os.environ.get("GITHUB_ACTIONS"):
                     title = f"Antimatter policy: {check}"
                     loc = f"file={f.path},line={f.line}" if f.line else f"file={f.path}"
-                    print(f"::error {loc},title={title}::{f.detail}: {norm(f.text)[:180]}")
+                    level = "warning" if advisory else "error"
+                    print(f"::{level} {loc},title={title}::{f.detail}: {norm(f.text)[:180]}")
                 details.append(f"- `{where}` ({f.detail}): {amlib.md_escape(norm(f.text)[:200])}")
             if len(new) > 200:
                 print(f"  ... and {len(new) - 200} more")
