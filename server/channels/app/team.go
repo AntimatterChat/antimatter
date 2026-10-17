@@ -2142,6 +2142,11 @@ func (a *App) PermanentDeleteTeam(rctx request.CTX, team *model.Team) *model.App
 		return appErr
 	}
 
+	// Antimatter: and its rules, with who agreed to them.
+	if appErr := a.deleteCommunityRulesForTeam(rctx, team.Id); appErr != nil {
+		return appErr
+	}
+
 	if err := a.Srv().Store().Team().PermanentDelete(team.Id); err != nil {
 		return model.NewAppError("PermanentDeleteTeam", "app.team.permanent_delete.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
 	}

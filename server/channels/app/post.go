@@ -277,6 +277,15 @@ func (a *App) CreatePost(rctx request.CTX, post *model.Post, channel *model.Chan
 		post.AddProp(model.PostPropsFromBot, "true")
 	}
 
+	// Antimatter: in a community whose rules are on, someone posts as themselves only once they agreed to them.
+	// Incoming webhooks (and the integrations' command responses, checked in CreateCommandPost), system messages and
+	// relocated copies aren't someone speaking.
+	if !flags.FromIncomingWebhook && !flags.RelocatedPost && !post.IsSystemMessage() {
+		if err = a.checkCommunityRules(rctx, user, channel); err != nil {
+			return nil, false, err
+		}
+	}
+
 	if flags.FromIncomingWebhook {
 		post.AddProp(model.PostPropsFromWebhook, "true")
 	}
@@ -3363,6 +3372,7 @@ func (a *App) copyPostList(rctx request.CTX, wpl *model.WranglerPostList, target
 			FromIncomingWebhook: post.GetProp(model.PostPropsFromWebhook) == "true",
 			SilentNotification:  opts.silent,
 			MovedPost:           opts.silent,
+			RelocatedPost:       true,
 		}
 		if flags.FromIncomingWebhook {
 			flags.OverrideUsername, _ = post.GetProp(model.PostPropsOverrideUsername).(string)
@@ -3420,6 +3430,11 @@ func (a *App) MoveThread(rctx request.CTX, postID string, sourceChannelID, chann
 	err := a.ValidateMoveOrCopy(rctx, wpl, originalChannel, targetChannel, user)
 	if err != nil {
 		return model.NewAppError("validateMoveOrCopy", "app.post.move_thread_command.error", nil, "", http.StatusBadRequest).Wrap(err)
+	}
+
+	// Antimatter: the copies aren't held back by the target community's rules; the one moving them is.
+	if appErr = a.checkCommunityRules(rctx, user, targetChannel); appErr != nil {
+		return appErr
 	}
 
 	var targetTeam *model.Team

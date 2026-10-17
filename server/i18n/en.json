@@ -3687,6 +3687,11 @@
     "description": "Ephemeral system message to the poster when an @-mentioned user is not a team member; {{.Username}} is that user's username, rendered after a literal @."
   },
   {
+    "id": "api.post.community_rules_not_accepted",
+    "translation": "Agree to this community's rules before you post in it.",
+    "description": "Error when someone who hasn't agreed to a community's rules (or to their new version) tries to post, edit, schedule a message or run a command that posts in one of its channels. 'Community' is a group of channels (a team)."
+  },
+  {
     "id": "api.post.create_post.burn_on_read.abac_denied.app_error",
     "translation": "You do not have permission to send burn-on-read messages in this channel.",
     "description": "API error when a user does not have permission to send a burn-on-read message in a channel due to an attribute-based-access-control (ABAC) permission policy."
@@ -7679,6 +7684,46 @@
     "id": "app.community_attributes.values.invalid.app_error",
     "translation": "This value doesn't fit the attribute {{.Name}}.",
     "description": "API error returned when a community attribute value has the wrong shape: an unknown choice, an invalid email, URL, phone number or date, an unknown person, or a text too long."
+  },
+  {
+    "id": "app.community_rules.accept.app_error",
+    "translation": "Unable to save your agreement to the community's rules.",
+    "description": "Server error when saving that someone agreed to a community's rules."
+  },
+  {
+    "id": "app.community_rules.accept.changed.app_error",
+    "translation": "The community's rules changed since you read them. Read them again before you agree.",
+    "description": "Error when someone agrees to a version of a community's rules that an admin has replaced in the meantime."
+  },
+  {
+    "id": "app.community_rules.accept.not_member.app_error",
+    "translation": "Only the community's members can agree to its rules.",
+    "description": "Error when someone who isn't a member of a community tries to agree to its rules."
+  },
+  {
+    "id": "app.community_rules.accept.off.app_error",
+    "translation": "This community has no rules to agree to.",
+    "description": "Error when someone agrees to a community's rules while they are turned off."
+  },
+  {
+    "id": "app.community_rules.delete.app_error",
+    "translation": "Unable to delete the community's rules.",
+    "description": "Server error when deleting a community's rules and agreements, as the community or an account is deleted."
+  },
+  {
+    "id": "app.community_rules.get.app_error",
+    "translation": "Unable to get the community's rules.",
+    "description": "Server error when reading a community's rules, or who agreed to them."
+  },
+  {
+    "id": "app.community_rules.save.app_error",
+    "translation": "Unable to save the community's rules.",
+    "description": "Server error when an admin saves a community's rules."
+  },
+  {
+    "id": "app.community_rules.stats.app_error",
+    "translation": "Unable to count who agreed to the community's rules.",
+    "description": "Server error when counting, for a community's admins, the members who agreed to its rules."
   },
   {
     "id": "app.compile_csv_chunks.header_error",
@@ -15253,6 +15298,16 @@
     "id": "model.command_response.is_valid.response_type.app_error",
     "translation": "Invalid response type.",
     "description": "Error shown when a slash command integration's HTTP response has an unrecognized response type (in_channel or ephemeral); developer/integrator-facing."
+  },
+  {
+    "id": "model.community_rules.empty.app_error",
+    "translation": "Write the rules before turning them on.",
+    "description": "Error when an admin turns a community's rules on with no text."
+  },
+  {
+    "id": "model.community_rules.text.app_error",
+    "translation": "The rules can be at most {{.Max}} characters long.",
+    "description": "Error when a community's rules are too long. {{.Max}} is the number of characters allowed."
   },
   {
     "id": "model.compliance.is_valid.create_at.app_error",

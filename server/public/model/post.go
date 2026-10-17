@@ -455,6 +455,11 @@ type CreatePostFlags struct {
 	// silent whoever wrote it: moving a conversation must not notify its
 	// mentions again. Set only by the server.
 	MovedPost bool
+
+	// RelocatedPost marks the copy of someone's message that another person moves or copies to another channel
+	// (Antimatter): the copy isn't its author speaking anew, so their community's rules don't hold it back (the
+	// person moving it is checked instead). Set only by the server.
+	RelocatedPost bool
 }
 
 type GetPostsSinceOptions struct {

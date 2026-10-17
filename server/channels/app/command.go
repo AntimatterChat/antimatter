@@ -71,6 +71,12 @@ func (a *App) CreateCommandPost(rctx request.CTX, post *model.Post, teamID strin
 	}
 
 	if response.ResponseType == model.CommandResponseTypeInChannel {
+		// Antimatter: an answer posted in the channel is posted as the one who ran the command, an integration's
+		// (flagged from_webhook below) as much as a built-in one's, so their community's rules hold it back.
+		if appErr := a.CheckCommunityRulesForUserInChannel(rctx, post.UserId, post.ChannelId); appErr != nil {
+			return nil, appErr
+		}
+
 		// Bot-style (non-builtin) command responses are flagged via from_webhook by
 		// HandleCommandResponsePost, which also sets override_username/override_icon_url
 		// from the slash command and response configuration. A command response's
@@ -686,6 +692,10 @@ func (a *App) HandleCommandResponse(rctx request.CTX, command *model.Command, ar
 	}
 
 	if lastError != nil {
+		// Antimatter: someone who hasn't agreed to their community's rules is told so, not that the command failed.
+		if lastError.Id == "api.post.community_rules_not_accepted" {
+			return response, lastError
+		}
 		return response, model.NewAppError("command", "api.command.execute_command.create_post_failed.app_error", map[string]any{"Trigger": trigger}, "", http.StatusInternalServerError)
 	}
 

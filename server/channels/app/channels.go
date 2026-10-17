@@ -95,6 +95,9 @@ type Channels struct {
 	// Antimatter: each team's timeouts, cached.
 	memberTimeouts sync.Map
 
+	// Antimatter: each team's rules, cached for the check on every post (see community_rules.go).
+	communityRules sync.Map
+
 	AccountMigration einterfaces.AccountMigrationInterface
 	Compliance       einterfaces.ComplianceInterface
 	DataRetention    einterfaces.DataRetentionInterface

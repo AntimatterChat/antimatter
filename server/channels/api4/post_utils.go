@@ -26,6 +26,13 @@ func userCreatePostPermissionCheckWithContext(c *Context, channelId string) {
 		c.SetPermissionError(model.PermissionCreatePost)
 		return
 	}
+
+	// Antimatter: in a community whose rules are on, nobody posts, edits or schedules a message as themselves before
+	// agreeing to them. App.CreatePost checks again, for every other way of posting.
+	if appErr := c.App.CheckCommunityRulesForUserInChannel(c.AppContext, c.AppContext.Session().UserId, channelId); appErr != nil {
+		c.Err = appErr
+		return
+	}
 }
 
 func postHardenedModeCheckWithContext(where string, c *Context, props model.StringInterface) {

@@ -337,6 +337,21 @@ func (a *App) canPostScheduledPost(rctx request.CTX, scheduledPost *model.Schedu
 		return model.ScheduledPostErrorCodeNoChannelPermission, nil
 	}
 
+	// Antimatter: a message is sent as its author, who must have agreed to the channel's community's rules by then.
+	if appErr := a.checkCommunityRules(rctx, user, channel); appErr != nil {
+		if appErr.Id != "api.post.community_rules_not_accepted" {
+			return model.ScheduledPostErrorUnknownError, appErr
+		}
+		rctx.Logger().Debug(
+			"canPostScheduledPost user has not agreed to the community's rules",
+			mlog.String("scheduled_post_id", scheduledPost.Id),
+			mlog.String("user_id", scheduledPost.UserId),
+			mlog.String("channel_id", scheduledPost.ChannelId),
+			mlog.String("error_code", model.ScheduledPostErrorCommunityRulesNotAccepted),
+		)
+		return model.ScheduledPostErrorCommunityRulesNotAccepted, nil
+	}
+
 	if model.IsSystemMessagePostType(scheduledPost.Type) {
 		rctx.Logger().Debug(
 			"canPostScheduledPost post type is reserved for system messages",

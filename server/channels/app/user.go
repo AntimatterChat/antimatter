@@ -2135,6 +2135,11 @@ func (a *App) PermanentDeleteUser(rctx request.CTX, user *model.User) *model.App
 		return model.NewAppError("PermanentDeleteUser", "app.drafts.permanent_delete_by_user.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
 	}
 
+	// Antimatter: the communities' rules they agreed to.
+	if err := a.Srv().Store().CommunityRules().PermanentDeleteByUser(rctx, user.Id); err != nil {
+		return model.NewAppError("PermanentDeleteUser", "app.community_rules.delete.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
+	}
+
 	if err := a.Srv().Store().Bot().PermanentDelete(user.Id); err != nil {
 		var invErr *store.ErrInvalidInput
 		switch {

@@ -127,6 +127,10 @@ func (a *App) MoveThreadToChannel(rctx request.CTX, postID, targetChannelID stri
 	if canPost, _ := a.HasPermissionToChannel(rctx, user.Id, target.Id, model.PermissionCreatePost); !canPost {
 		return nil, moveThreadError("api.post.move_thread.cannot_post.app_error", nil, http.StatusForbidden)
 	}
+	// The copies aren't held back by the community's rules (their authors aren't speaking anew); the one moving is.
+	if appErr = a.checkCommunityRules(rctx, user, target); appErr != nil {
+		return nil, appErr
+	}
 
 	thread, appErr := a.GetPostThread(rctx, root.Id, model.GetPostsOptions{}, user.Id)
 	if appErr != nil {
