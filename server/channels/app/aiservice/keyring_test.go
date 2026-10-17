@@ -123,6 +123,28 @@ func TestLoadKeyring(t *testing.T) {
 		assert.True(t, os.IsNotExist(err), "no key file when the variable sets the key")
 	})
 
+	// The compose files pass AM_AI_ENCRYPTION_KEY: ${AM_AI_ENCRYPTION_KEY:-}, so the variable is set but empty
+	// when .env has no key: the server must then use its key file, not fail.
+	t.Run("an empty variable falls back to the key file", func(t *testing.T) {
+		dir := t.TempDir()
+		empty := func(name string) (string, bool) {
+			return " ", name == EncryptionKeyEnv || name == PreviousKeysEnv
+		}
+		kr, source, path, err := LoadKeyring(LoadKeyringOptions{Lookup: empty, DataDir: dir, MayCreateFile: true})
+		require.NoError(t, err)
+		assert.Equal(t, KeySourceFile, source)
+		assert.Equal(t, filepath.Join(dir, keyFileName), path)
+		sealed, err := kr.Seal("secret", "aad")
+		require.NoError(t, err)
+
+		again, source, _, err := LoadKeyring(LoadKeyringOptions{Lookup: empty, DataDir: dir, MayCreateFile: true})
+		require.NoError(t, err)
+		assert.Equal(t, KeySourceFile, source)
+		plain, err := again.Open(sealed, "aad")
+		require.NoError(t, err)
+		assert.Equal(t, "secret", plain, "the same key file on the next start")
+	})
+
 	t.Run("a bad variable is an error, not a fallback", func(t *testing.T) {
 		_, _, _, err := LoadKeyring(LoadKeyringOptions{
 			Lookup:        func(name string) (string, bool) { return "c2hvcnQ=", name == EncryptionKeyEnv },
