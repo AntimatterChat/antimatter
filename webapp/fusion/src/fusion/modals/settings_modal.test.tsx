@@ -5,6 +5,7 @@ import React from 'react';
 
 import {savePreferences} from 'mattermost-redux/actions/preferences';
 import {getSessions, revokeSession, updateMe, updateUserPassword} from 'mattermost-redux/actions/users';
+import {Permissions} from 'mattermost-redux/constants';
 
 import {renderWithContext, screen, userEvent, waitFor, within} from 'tests/react_testing_utils';
 import {TestHelper} from 'utils/test_helper';
@@ -215,5 +216,40 @@ describe('fusion/modals/SettingsModal', () => {
         expect(within(count).getByRole('button', {name: '10'})).toHaveAttribute('aria-pressed', 'true');
         await userEvent.click(within(count).getByRole('button', {name: '20'}));
         expect(savePreferences).toHaveBeenCalledWith('me', [{user_id: 'me', category: 'sidebar_settings', name: 'limit_visible_dms_gms', value: '20'}]);
+    });
+
+    // Antimatter: the System Console link is for every role that may read a part of it, as in the status menu (the
+    // product menu, which had it for them, only shows when an app has a page of its own).
+    describe('the System Console link', () => {
+        const renderAs = (roles: string, permissions: string[] = []) => renderWithContext(
+            <SettingsModal
+                tab='account'
+                onTab={jest.fn()}
+                onClose={jest.fn()}
+            />,
+            {
+                entities: {
+                    general: {config: {PasswordMinimumLength: '8'}},
+                    users: {currentUserId: me.id, profiles: {[me.id]: {...me, roles}}, mySessions: []},
+                    preferences: {myPreferences: {}},
+                    roles: {roles: {system_user: {permissions}, system_admin: {permissions: []}}},
+                },
+            } as never,
+        );
+
+        test('is not there for a member without any System Console permission', () => {
+            renderAs('system_user');
+            expect(screen.queryByRole('button', {name: 'Open the System Console'})).not.toBeInTheDocument();
+        });
+
+        test('is there for a system admin', () => {
+            renderAs('system_user system_admin');
+            expect(screen.getByRole('button', {name: 'Open the System Console'})).toBeInTheDocument();
+        });
+
+        test('is there for a role that may read a part of the System Console', () => {
+            renderAs('system_user', [Permissions.SYSCONSOLE_READ_USERMANAGEMENT_USERS]);
+            expect(screen.getByRole('button', {name: 'Open the System Console'})).toBeInTheDocument();
+        });
     });
 });

@@ -9,7 +9,6 @@ import {getMemberTimeout} from 'mattermost-redux/selectors/entities/roles';
 import {getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
 import {getCurrentUserId, getCurrentUser} from 'mattermost-redux/selectors/entities/users';
 import {getUserCurrentTimezone} from 'mattermost-redux/utils/timezone_utils';
-import {isSystemAdmin} from 'mattermost-redux/utils/user_utils';
 
 import {openDirectChannelToUserId} from 'actions/channel_actions';
 import {makeGetCustomStatus} from 'selectors/views/custom_status';
@@ -32,6 +31,7 @@ import {getHistory} from 'utils/browser_history';
 
 import type {GlobalState} from 'types/store';
 
+import {canVisitSystemConsole} from './admin_links';
 import ProfileFacts from './profile_facts';
 import RoleChips from './role_chips';
 import StatusPopover from './status_popover';
@@ -89,7 +89,9 @@ export default function UserPopover({userId, anchor, onClose, toggles}: Props) {
     const status = useUserStatus(userId);
     const me = useSelector(getCurrentUserId);
     const team = useSelector(getCurrentTeam);
-    const admin = useSelector((state: GlobalState) => isSystemAdmin(getCurrentUser(state)?.roles || ''));
+
+    // Every role that may read a part of the System Console (system admin, system manager, user manager...).
+    const systemConsole = useSelector(canVisitSystemConsole);
     const getCustomStatus = useMemo(() => makeGetCustomStatus(), []);
     const customStatus = useSelector((state: GlobalState) => getCustomStatus(state, userId));
     const localTime = useLocalTime(user ? getUserCurrentTimezone(user.timezone) : undefined);
@@ -259,7 +261,7 @@ export default function UserPopover({userId, anchor, onClose, toggles}: Props) {
                                 />
                                 {formatMessage({id: 'fusion.profile.setStatus', defaultMessage: 'Set a status'})}
                             </button>
-                            {admin && (
+                            {systemConsole && (
                                 <button
                                     className={am('btn')}
                                     onClick={() => getHistory().push('/admin_console')}

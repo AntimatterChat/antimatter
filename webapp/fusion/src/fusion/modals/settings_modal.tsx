@@ -19,7 +19,6 @@ import {haveISystemPermission} from 'mattermost-redux/selectors/entities/roles';
 import {getCurrentTeamId} from 'mattermost-redux/selectors/entities/teams';
 import {getCurrentTimezoneLabel} from 'mattermost-redux/selectors/entities/timezone';
 import {getCurrentUser} from 'mattermost-redux/selectors/entities/users';
-import {isSystemAdmin} from 'mattermost-redux/utils/user_utils';
 
 import {switchWebUI} from 'actions/web_ui';
 import {getPluginUserSettings} from 'selectors/plugins';
@@ -31,6 +30,7 @@ import Icon from 'fusion/components/icon';
 import {Dialog} from 'fusion/components/layer';
 import {useDisplayPrefs} from 'fusion/hooks/display';
 import {WALLTIME_PREFERENCE} from 'fusion/messages/walltime/walltime_text';
+import {canVisitSystemConsole} from 'fusion/popovers/admin_links';
 import {isUserBlockingEnabled} from 'fusion/privacy/blocking';
 import PrivacyPane from 'fusion/privacy/privacy_pane';
 import {useToast} from 'fusion/shell/toast_context';
@@ -723,10 +723,11 @@ type Props = {
     onClose: () => void;
 };
 
-// SettingsModal is the mockup's settings dialog: user settings, and a link to the System Console for admins.
+// SettingsModal is the mockup's settings dialog: user settings, and a link to the System Console for those who may
+// read a part of it (system admins, system managers, user managers...).
 export default function SettingsModal({tab, onTab, onClose}: Props) {
     const {formatMessage} = useIntl();
-    const admin = useSelector((state: GlobalState) => isSystemAdmin(getCurrentUser(state)?.roles || ''));
+    const systemConsole = useSelector(canVisitSystemConsole);
 
     // Privacy & safety only while the admin lets people ignore and block each other.
     const blocking = useSelector(isUserBlockingEnabled);
@@ -785,7 +786,7 @@ export default function SettingsModal({tab, onTab, onClose}: Props) {
                         ))}
                     </>
                 )}
-                {admin && (
+                {systemConsole && (
                     <>
                         <h5>{formatMessage({id: 'fusion.settings.console', defaultMessage: 'System Console'})}</h5>
                         <button
