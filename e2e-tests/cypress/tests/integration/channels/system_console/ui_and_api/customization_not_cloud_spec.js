@@ -131,13 +131,13 @@ describe('Customization', () => {
 
     it('MM-T1215 - Can change Mattermost Apps Download Page Link setting', () => {
         // * Verify Mattermost Apps Download Page Link's setting name is visible and matches the text
-        cy.findByTestId('NativeAppSettings.AppDownloadLinklabel').scrollIntoView().should('be.visible').and('have.text', 'Mattermost Apps Download Page Link:');
+        cy.findByTestId('NativeAppSettings.AppDownloadLinklabel').scrollIntoView().should('be.visible').and('have.text', 'Antimatter Apps Download Page Link:');
 
         // * Verify the Mattermost Apps Download Page Link input box has default value. The default value depends on the setup before running the test.
         cy.findByTestId('NativeAppSettings.AppDownloadLinkinput').should('have.value', origConfig.NativeAppSettings.AppDownloadLink);
 
         // * Verify the site name's help text is visible and matches the text
-        cy.findByTestId('NativeAppSettings.AppDownloadLinkhelp-text').find('span').should('be.visible').and('have.text', 'Add a link to a download page for the Mattermost apps. When a link is present, an option to "Download Mattermost Apps" will be added in the Product Menu so users can find the download page. Leave this field blank to hide the option from the Product Menu.');
+        cy.findByTestId('NativeAppSettings.AppDownloadLinkhelp-text').find('span').should('be.visible').and('have.text', 'Add a link to a download page for the Antimatter apps. When a link is present, an option to "Download Apps" will be added in the Product Menu so users can find the download page. Leave this field blank to hide the option from the Product Menu.');
 
         // # Enter new App download link
         const newAppDownloadLink = 'https://example.com/app-download-link/';

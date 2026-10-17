@@ -3,14 +3,18 @@
 
 import React, {useRef, type JSX} from 'react';
 import {FormattedMessage} from 'react-intl';
+import {useSelector} from 'react-redux';
 import {CSSTransition} from 'react-transition-group';
 import styled from 'styled-components';
 
 import {isDesktopApp} from '@mattermost/shared/utils/user_agent';
 
+import {getConfig} from 'mattermost-redux/selectors/entities/general';
+
 import ExternalLink from 'components/external_link';
 
 import completedImg from 'images/completed.svg';
+import {AntimatterLinks} from 'utils/constants';
 
 const CompletedWrapper = styled.div`
     display: flex;
@@ -97,6 +101,7 @@ const Completed = (props: Props): JSX.Element => {
     const {dismissAction} = props;
 
     const wrapperRef = useRef<HTMLDivElement>(null);
+    const appDownloadLink = useSelector(getConfig).AppDownloadLink || AntimatterLinks.APP_DOWNLOAD;
 
     return (
         <>
@@ -143,7 +148,7 @@ const Completed = (props: Props): JSX.Element => {
                                         link: (msg: React.ReactNode) => (
                                             <ExternalLink
                                                 location='onboarding_tasklist_completed'
-                                                href='https://mattermost.com/download#desktop'
+                                                href={appDownloadLink}
                                             >
                                                 {msg}
                                             </ExternalLink>

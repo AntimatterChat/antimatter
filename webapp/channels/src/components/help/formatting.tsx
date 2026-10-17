@@ -284,8 +284,8 @@ const HelpFormatting = (): JSX.Element => {
                         </thead>
                         <tbody>
                             <tr>
-                                <td><code>{'[Check out Mattermost!](https://mattermost.com/)'}</code></td>
-                                <td><a href='https://mattermost.com/'>{'Check out Mattermost!'}</a></td>
+                                <td><code>{'[Check out Antimatter!](https://github.com/AntimatterChat)'}</code></td>
+                                <td><a href='https://github.com/AntimatterChat'>{'Check out Antimatter!'}</a></td>
                             </tr>
                         </tbody>
                     </table>
@@ -340,11 +340,11 @@ const HelpFormatting = (): JSX.Element => {
                         </thead>
                         <tbody>
                             <tr>
-                                <td><code>{'![Mattermost Logo](/static/images/logo_email_dark.png)'}</code></td>
+                                <td><code>{'![Antimatter logo](/static/images/logo_email_dark.png)'}</code></td>
                                 <td>
                                     <img
                                         src='/static/images/logo_email_dark.png'
-                                        alt='Mattermost Logo'
+                                        alt='Antimatter logo'
                                         className='Help__inline-image'
                                     />
                                 </td>

@@ -15,7 +15,7 @@ import FormError from 'components/form_error';
 
 import imagePath from 'images/openid-convert/emoticon-outline.svg';
 import {getHistory} from 'utils/browser_history';
-import {Constants} from 'utils/constants';
+import {Constants, DocLinks} from 'utils/constants';
 
 import './openid_convert.scss';
 
@@ -95,7 +95,7 @@ const OpenIdConvert = ({
                     <ExternalLink
                         className='btn-secondary'
                         location='openid_convert'
-                        href='https://www.mattermost.com/default-openid-docs'
+                        href={DocLinks.SETUP_SAML}
                         data-testid='openIdLearnMore'
                     >
                         <FormattedMessage

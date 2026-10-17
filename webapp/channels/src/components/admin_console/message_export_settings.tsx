@@ -262,7 +262,7 @@ export class MessageExportSettings extends OLDAdminSettings<BaseProps & WrappedC
                 <TextSetting
                     id='globalRelayEmailAddress'
                     label={<FormattedMessage {...messages.globalRelayEmailAddress_title}/>}
-                    placeholder={defineMessage({id: 'admin.complianceExport.globalRelayEmailAddress.example', defaultMessage: 'E.g.: "globalrelay@mattermost.com"'})}
+                    placeholder={defineMessage({id: 'admin.complianceExport.globalRelayEmailAddress.example', defaultMessage: 'E.g.: "globalrelay@example.com"'})}
                     helpText={<FormattedMessage {...messages.globalRelayEmailAddress_description}/>}
                     value={this.state.globalRelayEmailAddress ? this.state.globalRelayEmailAddress : ''}
                     onChange={this.handleChange}
@@ -275,7 +275,7 @@ export class MessageExportSettings extends OLDAdminSettings<BaseProps & WrappedC
                 <TextSetting
                     id='globalRelaySenderAddress'
                     label={<FormattedMessage {...messages.globalRelaySenderAddress_title}/>}
-                    placeholder={defineMessage({id: 'admin.complianceExport.globalRelaySenderAddress.example', defaultMessage: 'E.g.: "compliance-export@mattermost.com"'})}
+                    placeholder={defineMessage({id: 'admin.complianceExport.globalRelaySenderAddress.example', defaultMessage: 'E.g.: "compliance-export@example.com"'})}
                     helpText={<FormattedMessage {...messages.globalRelaySenderAddress_description}/>}
                     value={this.state.globalRelaySenderAddress ? this.state.globalRelaySenderAddress : ''}
                     onChange={this.handleChange}

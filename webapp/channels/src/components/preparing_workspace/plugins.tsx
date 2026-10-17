@@ -13,6 +13,8 @@ import ServiceNowSVG from 'components/common/svg_images_components/servicenow_sv
 import ZoomSVG from 'components/common/svg_images_components/zoom_svg';
 import ExternalLink from 'components/external_link';
 
+import {AntimatterLinks} from 'utils/constants';
+
 import Description from './description';
 import PageBody from './page_body';
 import PageLine from './page_line';
@@ -159,12 +161,12 @@ const Plugins = (props: Props) => {
                         <div className='Plugins__marketplace'>
                             <FormattedMessage
                                 id='onboarding_wizard.plugins.marketplace'
-                                defaultMessage='More tools can be added once your workspace is set up. To see all available integrations, <a>visit the Marketplace.</a>'
+                                defaultMessage='More apps can be added once your community is set up. <a>See the apps that come with Antimatter.</a>'
                                 values={{
                                     a: (chunks: React.ReactNode | readonly React.ReactNode[]) => (
                                         <strong>
                                             <ExternalLink
-                                                href='https://mattermost.com/marketplace/'
+                                                href={AntimatterLinks.BUNDLED_APPS}
                                                 location='preparing_workspace_plugins'
                                                 onClick={props.handleVisitMarketPlaceClick}
                                             >

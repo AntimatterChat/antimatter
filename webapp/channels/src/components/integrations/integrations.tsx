@@ -8,7 +8,6 @@ import type {Team} from '@mattermost/types/teams';
 
 import {Permissions} from 'mattermost-redux/constants';
 
-import ExternalLink from 'components/external_link';
 import SystemPermissionGate from 'components/permissions_gates/system_permission_gate';
 import TeamPermissionGate from 'components/permissions_gates/team_permission_gate';
 
@@ -217,25 +216,6 @@ export default class Integrations extends React.PureComponent <Props> {
                             defaultMessage='Integrations'
                         />
                     </h1>
-                </div>
-                <div className='backstage-list__help'>
-                    <FormattedMessage
-                        id='integrations.help'
-                        defaultMessage='Visit the {appDirectory} to find self-hosted, third-party apps and integrations for Antimatter.'
-                        values={{
-                            appDirectory: (
-                                <ExternalLink
-                                    href='https://mattermost.com/marketplace'
-                                    location='integrations'
-                                >
-                                    <FormattedMessage
-                                        id='integrations.help.appDirectory'
-                                        defaultMessage='App Directory'
-                                    />
-                                </ExternalLink>
-                            ),
-                        }}
-                    />
                 </div>
                 <div className='integrations-list d-flex flex-wrap'>
                     {options}

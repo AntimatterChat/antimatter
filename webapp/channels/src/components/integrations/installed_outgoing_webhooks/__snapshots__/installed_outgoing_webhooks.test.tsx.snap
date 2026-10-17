@@ -57,16 +57,7 @@ exports[`components/integrations/InstalledOutgoingWebhooks should match snapshot
       >
         Build your own
       </a>
-       or visit the 
-      <a
-        href="https://mattermost.com/marketplace?utm_source=mattermost&utm_medium=in-product&utm_content=installed_outgoing_webhooks&uid=currentUserId&sid=&server_version="
-        location="installed_outgoing_webhooks"
-        rel="noopener noreferrer"
-        target="_blank"
-      >
-        App Directory
-      </a>
-       to find self-hosted, third-party apps and integrations.
+      .
     </span>
     <div
       class="backstage-list"

@@ -213,14 +213,14 @@ export default function AutoTranslation(props: SystemConsoleCustomSettingsCompon
                             >
                                 <option value='libretranslate'>{'LibreTranslate'}</option>
                                 <option value='openai'>{'OpenAI-compatible API'}</option>
-                                <option value='agents'>{'Mattermost Agents'}</option>
+                                <option value='agents'>{'Agents'}</option>
                             </select>
                             {showAgentsError && (
                                 <div className='auto-translation-provider-error-message'>
                                     <i className='icon icon-alert-outline'/>
                                     <FormattedMessage
                                         id={agentsBridgeUnavailableReason || 'admin.site.localization.autoTranslationAgentsError'}
-                                        defaultMessage={agentsBridgeUnavailableReason ? 'Mattermost AI plugin is unavailable.' : 'Mattermost Agents plugin is either disabled or not configured properly.'}
+                                        defaultMessage={agentsBridgeUnavailableReason ? 'The Agents plugin is unavailable.' : 'The Agents plugin is either disabled or not configured properly.'}
                                     />
                                 </div>
                             )}

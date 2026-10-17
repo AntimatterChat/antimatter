@@ -118,7 +118,7 @@ export default class InstalledCommands extends React.PureComponent<Props> {
                 helpText={
                     <FormattedMessage
                         id='installed_commands.help'
-                        defaultMessage='Use slash commands to connect external tools to Antimatter. {buildYourOwn} or visit the {appDirectory} to find self-hosted, third-party apps and integrations.'
+                        defaultMessage='Use slash commands to connect external tools to Antimatter. {buildYourOwn}.'
                         values={{
                             buildYourOwn: (
                                 <ExternalLink
@@ -128,17 +128,6 @@ export default class InstalledCommands extends React.PureComponent<Props> {
                                     <FormattedMessage
                                         id='installed_commands.help.buildYourOwn'
                                         defaultMessage='Build Your Own'
-                                    />
-                                </ExternalLink>
-                            ),
-                            appDirectory: (
-                                <ExternalLink
-                                    href='https://mattermost.com/marketplace'
-                                    location='installed_commands'
-                                >
-                                    <FormattedMessage
-                                        id='installed_commands.help.appDirectory'
-                                        defaultMessage='App Directory'
                                     />
                                 </ExternalLink>
                             ),

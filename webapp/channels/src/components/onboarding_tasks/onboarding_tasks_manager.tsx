@@ -10,6 +10,7 @@ import {isDesktopApp} from '@mattermost/shared/utils/user_agent';
 
 import {savePreferences} from 'mattermost-redux/actions/preferences';
 import {getCurrentUserId} from 'mattermost-redux/selectors/entities/common';
+import {getConfig} from 'mattermost-redux/selectors/entities/general';
 import {isCurrentUserGuestUser, isCurrentUserSystemAdmin, isFirstAdmin} from 'mattermost-redux/selectors/entities/users';
 
 import {
@@ -37,6 +38,8 @@ import {
 } from 'components/tours';
 import {ELEMENT_ID_FOR_USER_ACCOUNT_MENU_BUTTON} from 'components/user_account_menu/user_account_menu';
 
+import {AntimatterLinks} from 'utils/constants';
+
 import type {GlobalState} from 'types/store';
 
 import {OnboardingTaskCategory, OnboardingTaskList, OnboardingTasksName, TaskNameMapToSteps} from './constants';
@@ -49,7 +52,7 @@ const useGetTaskDetails = () => {
             svg: Channels,
             message: formatMessage({
                 id: 'onboardingTask.checklist.task_learn_more_about_messaging',
-                defaultMessage: 'Take a tour of Channels.',
+                defaultMessage: 'Take a tour of Antimatter.',
             }),
         },
         [OnboardingTasksName.INVITE_PEOPLE]: {
@@ -57,7 +60,7 @@ const useGetTaskDetails = () => {
             svg: Handshake,
             message: formatMessage({
                 id: 'onboardingTask.checklist.task_invite_team_members',
-                defaultMessage: 'Invite team members to the workspace.',
+                defaultMessage: 'Invite people to your community.',
             }),
         },
         [OnboardingTasksName.COMPLETE_YOUR_PROFILE]: {
@@ -83,7 +86,7 @@ const useGetTaskDetails = () => {
             svg: Gears,
             message: formatMessage({
                 id: 'onboardingTask.checklist.task_visit_system_console',
-                defaultMessage: 'Visit the System Console to configure your workspace.',
+                defaultMessage: 'Visit the System Console to configure your server.',
             }),
         },
     };
@@ -170,6 +173,7 @@ export const useHandleOnBoardingTaskTrigger = () => {
     const handleSaveData = useHandleOnBoardingTaskData();
     const currentUserId = useSelector(getCurrentUserId);
     const isGuestUser = useSelector((state: GlobalState) => isCurrentUserGuestUser(state));
+    const appDownloadLink = useSelector(getConfig).AppDownloadLink || AntimatterLinks.APP_DOWNLOAD;
     const inAdminConsole = matchPath(pathname, {path: '/admin_console'}) != null;
     const inChannels = matchPath(pathname, {path: '/:team/channels/:chanelId'}) != null;
 
@@ -235,7 +239,7 @@ export const useHandleOnBoardingTaskTrigger = () => {
                 value: 'true',
             }];
             dispatch(savePreferences(currentUserId, preferences));
-            window.open('https://mattermost.com/download#desktop', '_blank', 'noopener,noreferrer');
+            window.open(appDownloadLink, '_blank', 'noopener,noreferrer');
             break;
         }
         default:

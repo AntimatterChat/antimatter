@@ -375,8 +375,6 @@ export const ModalIdentifiers = {
     DND_CUSTOM_TIME_PICKER: 'dnd_custom_time_picker',
     POST_REMINDER_CUSTOM_TIME_PICKER: 'post_reminder_custom_time_picker',
     CUSTOM_STATUS: 'custom_status',
-    COMMERCIAL_SUPPORT: 'commercial_support',
-    NO_INTERNET_CONNECTION: 'no_internet_connection',
     JOIN_CHANNEL_PROMPT: 'join_channel_prompt',
     COLLAPSED_REPLY_THREADS_MODAL: 'collapsed_reply_threads_modal',
     NOTIFY_CONFIRM_MODAL: 'notify_confirm_modal',
@@ -955,9 +953,17 @@ export const DeveloperLinks = {
     SETUP_INCOMING_WEBHOOKS: 'https://antimatter.chat/docs/developers/webhooks.html#incoming',
     SETUP_OAUTH2: 'https://antimatter.chat/docs/developers/api.html#auth',
     SETUP_OUTGOING_WEBHOOKS: 'https://antimatter.chat/docs/developers/webhooks.html#outgoing',
+    API_AUTHENTICATION: 'https://antimatter.chat/docs/developers/api.html#auth',
 };
 
-export const MattermostLink = 'https://mattermost.com/';
+// Antimatter's own pages that the UI links to.
+export const AntimatterLinks = {
+
+    // The desktop app's releases: the default download page when the server sets none (NativeAppSettings.AppDownloadLink).
+    APP_DOWNLOAD: 'https://github.com/AntimatterChat/desktop-app/releases',
+    BUNDLED_APPS: 'https://antimatter.chat/docs/admins/apps.html#list',
+    COMMUNITY: 'https://github.com/AntimatterChat/community',
+};
 
 export const RecurringIntervals = {
     YEAR: 'year',

@@ -148,7 +148,7 @@ export default class InstalledOAuthApps extends React.PureComponent<Props, State
                 helpText={
                     <FormattedMessage
                         id='installed_oauth_apps.help'
-                        defaultMessage='Create {oauthApplications} to securely integrate bots and third-party apps with Antimatter. Visit the {appDirectory} to find available self-hosted apps.'
+                        defaultMessage='Create {oauthApplications} to securely integrate bots and third-party apps with Antimatter.'
                         values={{
                             oauthApplications: (
                                 <ExternalLink
@@ -158,17 +158,6 @@ export default class InstalledOAuthApps extends React.PureComponent<Props, State
                                     <FormattedMessage
                                         id='installed_oauth_apps.help.oauthApplications'
                                         defaultMessage='OAuth 2.0 applications'
-                                    />
-                                </ExternalLink>
-                            ),
-                            appDirectory: (
-                                <ExternalLink
-                                    href='https://mattermost.com/marketplace/'
-                                    location='installed_oauth_apps'
-                                >
-                                    <FormattedMessage
-                                        id='installed_oauth_apps.help.appDirectory'
-                                        defaultMessage='App Directory'
                                     />
                                 </ExternalLink>
                             ),

@@ -359,7 +359,7 @@ test(
           - text: Select which language Mattermost displays in the user interface.
           - paragraph
           - text: /.+/
-          - link "Mattermost Translation Server"
+          - link "Antimatter community"
           - text: /.+/
           - separator
           - alert

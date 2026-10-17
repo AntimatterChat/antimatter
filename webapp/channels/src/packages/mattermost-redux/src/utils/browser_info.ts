@@ -7,9 +7,9 @@ export function getBrowserInfo() {
     let browser = 'Unknown';
     let browserVersion = 'Unknown';
 
-    // Check if it's Mattermost Desktop App first
+    // The desktop app first (its user agent ends with Antimatter/<version> Mattermost/<version>)
     if (userAgent.includes('mattermost')) {
-        browser = 'Mattermost Desktop App';
+        browser = 'Antimatter Desktop App';
         const match = userAgent.match(/mattermost\/(\d+(\.\d+)*)/i);
 
         if (match && match[1]) {

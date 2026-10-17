@@ -27,7 +27,6 @@ import {ModalIdentifiers} from 'utils/constants';
 import type {GlobalState} from 'types/store';
 
 import MarketplaceList, {ITEMS_PER_PAGE} from './marketplace_list/marketplace_list';
-import WebMarketplaceBanner from './web_marketplace_banner';
 
 import './marketplace_modal.scss';
 
@@ -149,7 +148,6 @@ const MarketplaceModal = () => {
             footerDivider={true}
             onExited={handleOnClose}
             footerContent={getFooterContent()}
-            appendedContent={<WebMarketplaceBanner/>}
         >
             {loading ? (
                 <LoadingScreen className='loading'/>

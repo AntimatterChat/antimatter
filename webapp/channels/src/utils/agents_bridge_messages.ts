@@ -6,11 +6,11 @@ import {defineMessages} from 'react-intl';
 export const agentsBridgeMessages = defineMessages({
     pluginNotActive: {
         id: 'app.agents.bridge.not_available.plugin_not_active',
-        defaultMessage: 'Mattermost Agents plugin is not active.',
+        defaultMessage: 'The Agents plugin is not active.',
     },
     pluginVersionTooOld: {
         id: 'app.agents.bridge.not_available.plugin_version_too_old',
-        defaultMessage: 'Mattermost Agents plugin version is too old. Please update to the latest version.',
+        defaultMessage: 'The Agents plugin version is too old. Please update to the latest version.',
     },
     pluginEnvNotInit: {
         id: 'app.agents.bridge.not_available.plugin_env_not_initialized',
@@ -18,7 +18,7 @@ export const agentsBridgeMessages = defineMessages({
     },
     pluginNotRegistered: {
         id: 'app.agents.bridge.not_available.plugin_not_registered',
-        defaultMessage: 'Mattermost Agents plugin is not registered.',
+        defaultMessage: 'The Agents plugin is not registered.',
     },
     pluginVersionParseFailed: {
         id: 'app.agents.bridge.not_available.plugin_version_parse_failed',
@@ -30,7 +30,7 @@ export const agentsBridgeMessages = defineMessages({
     },
     agentsBridgeUnavailableReason: {
         id: 'app.agents.bridge.unavailable_reason',
-        defaultMessage: 'Mattermost Agents plugin is unavailable.',
+        defaultMessage: 'The Agents plugin is unavailable.',
     },
 });
 

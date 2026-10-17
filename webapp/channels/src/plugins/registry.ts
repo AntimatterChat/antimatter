@@ -826,8 +826,8 @@ export default class PluginRegistry {
         if (!this.warnedAboutRegisterPostDropdownMenuComponent) {
             // eslint-disable-next-line no-console
             console.warn(
-                `${this.id}: This plugin is using registerPostDropdownMenuComponent which is deprecated in Mattermost ` +
-                'v11.0. That API will be removed in a future release, and plugins that use it may not work correctly. ' +
+                `${this.id}: This plugin is using registerPostDropdownMenuComponent which is deprecated. ` +
+                'That API will be removed in a future release, and plugins that use it may not work correctly. ' +
                 'Please update the plugin to use registerPostDropdownMenuAction instead. See ' +
                 'https://antimatter.chat/docs/developers/apps.html#overview for ' +
                 'more information.',

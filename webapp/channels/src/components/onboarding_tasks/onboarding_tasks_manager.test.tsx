@@ -5,14 +5,21 @@ import React, {type JSX} from 'react';
 
 import * as UserAgent from '@mattermost/shared/utils/user_agent';
 
-import {renderWithContext, screen} from 'tests/react_testing_utils';
+import {renderWithContext, screen, userEvent} from 'tests/react_testing_utils';
 
-import {useTasksList} from './onboarding_tasks_manager';
+import {OnboardingTasksName} from './constants';
+import {useHandleOnBoardingTaskTrigger, useTasksList} from './onboarding_tasks_manager';
 
 const isDesktopAppMock = jest.mocked(UserAgent.isDesktopApp);
 
 jest.mock('@mattermost/shared/utils/user_agent', () => ({
     isDesktopApp: jest.fn(() => false),
+}));
+
+// The tasks save their progress as preferences; the tests don't need the server.
+jest.mock('mattermost-redux/actions/preferences', () => ({
+    ...jest.requireActual('mattermost-redux/actions/preferences'),
+    savePreferences: jest.fn(() => ({type: 'MOCK_SAVE_PREFERENCES'})),
 }));
 
 const WrapperComponent = (): JSX.Element => {
@@ -95,5 +102,33 @@ describe('onboarding tasks manager', () => {
         expect(screen.getAllByRole('listitem')).toHaveLength(4);
         expect(screen.queryByText('download_app')).not.toBeInTheDocument();
         isDesktopAppMock.mockReturnValue(false);
+    });
+
+    describe('the download_app task', () => {
+        const DownloadButton = (): JSX.Element => {
+            const trigger = useHandleOnBoardingTaskTrigger();
+            return (
+                <button onClick={() => trigger(OnboardingTasksName.DOWNLOAD_APP)}>
+                    {'download'}
+                </button>
+            );
+        };
+
+        const openSpy = jest.spyOn(window, 'open').mockImplementation(() => null);
+        afterEach(() => openSpy.mockClear());
+        afterAll(() => openSpy.mockRestore());
+
+        it('opens the Antimatter desktop app releases by default', async () => {
+            renderWithContext(<DownloadButton/>, initialState);
+            await userEvent.click(screen.getByRole('button', {name: 'download'}));
+            expect(openSpy).toHaveBeenCalledWith('https://github.com/AntimatterChat/desktop-app/releases', '_blank', 'noopener,noreferrer');
+        });
+
+        it('opens the download page the server sets', async () => {
+            const state = {...initialState, entities: {...initialState.entities, general: {config: {AppDownloadLink: 'https://downloads.example.com/chat'}}}};
+            renderWithContext(<DownloadButton/>, state);
+            await userEvent.click(screen.getByRole('button', {name: 'download'}));
+            expect(openSpy).toHaveBeenCalledWith('https://downloads.example.com/chat', '_blank', 'noopener,noreferrer');
+        });
     });
 });

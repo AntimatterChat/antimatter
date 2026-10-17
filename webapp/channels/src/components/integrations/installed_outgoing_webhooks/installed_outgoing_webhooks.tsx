@@ -198,7 +198,7 @@ export default class InstalledOutgoingWebhooks extends React.PureComponent<Props
                 helpText={
                     <FormattedMessage
                         id='installed_outgoing_webhooks.help'
-                        defaultMessage='Use outgoing webhooks to connect external tools to Antimatter. {buildYourOwn} or visit the {appDirectory} to find self-hosted, third-party apps and integrations.'
+                        defaultMessage='Use outgoing webhooks to connect external tools to Antimatter. {buildYourOwn}.'
                         values={{
                             buildYourOwn: (
                                 <ExternalLink
@@ -208,17 +208,6 @@ export default class InstalledOutgoingWebhooks extends React.PureComponent<Props
                                     <FormattedMessage
                                         id='installed_outgoing_webhooks.help.buildYourOwn'
                                         defaultMessage='Build your own'
-                                    />
-                                </ExternalLink>
-                            ),
-                            appDirectory: (
-                                <ExternalLink
-                                    href='https://mattermost.com/marketplace'
-                                    location='installed_outgoing_webhooks'
-                                >
-                                    <FormattedMessage
-                                        id='installed_outgoing_webhooks.help.appDirectory'
-                                        defaultMessage='App Directory'
                                     />
                                 </ExternalLink>
                             ),
