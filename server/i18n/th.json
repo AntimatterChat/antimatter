@@ -1253,7 +1253,7 @@
   },
   {
     "id": "api.command_invite.channel.error",
-    "translation": "ไม่พบช่อง {{.Channel}} ให้อ้างอิงช่องดวยแฮนเดิล (ชื่อท่ีอยูดวย ~ เมื่อกำเนิดช่อง)"
+    "translation": "ไม่พบช่อง {{.Channel}} ให้อ้างอิงช่องดวยแฮนเดิล (ชื่อท่ีอยูดวย # เมื่อกำเนิดช่อง)"
   },
   {
     "id": "api.command_invite.channel_constrained_user_denied",
@@ -1293,7 +1293,7 @@
   },
   {
     "id": "api.command_invite.private_channel.app_error",
-    "translation": "ไม่พบช่อง {{.Channel}} ให้อ้างอิงช่องดวยแฮนเดิล (ชื่อท่ีอยูดวย ~ เมื่อกำเนิดช่อง)"
+    "translation": "ไม่พบช่อง {{.Channel}} ให้อ้างอิงช่องดวยแฮนเดิล (ชื่อท่ีอยูดวย # เมื่อกำเนิดช่อง)"
   },
   {
     "id": "api.command_invite.success",
@@ -1473,7 +1473,7 @@
   },
   {
     "id": "api.command_mute.error",
-    "translation": "ไม่พบช่อง {{.Channel}} ให้อ้างอิงช่องดวยแฮนเดิล (ชื่อท่ีอยูดวย ~ เมื่อกำเนิดช่อง)"
+    "translation": "ไม่พบช่อง {{.Channel}} ให้อ้างอิงช่องดวยแฮนเดิล (ชื่อท่ีอยูดวย # เมื่อกำเนิดช่อง)"
   },
   {
     "id": "api.command_mute.hint",
@@ -1485,7 +1485,7 @@
   },
   {
     "id": "api.command_mute.no_channel.error",
-    "translation": "ไม่พบช่องท่ีกำเนิด ให้อ้างอิงช่องดวยแฮนเดิล (ชื่อท่ีอยูดวย ~ เมื่อกำเนิดช่อง)"
+    "translation": "ไม่พบช่องท่ีกำเนิด ให้อ้างอิงช่องดวยแฮนเดิล (ชื่อท่ีอยูดวย # เมื่อกำเนิดช่อง)"
   },
   {
     "id": "api.command_mute.success_mute",
@@ -1930,6 +1930,30 @@
   {
     "id": "api.command_shrug.name",
     "translation": "shrug"
+  },
+  {
+    "id": "api.command_tableflip.desc",
+    "translation": "เพิ่ม (╯°□°)╯︵ ┻━┻ ลงในข้้อความของคุณ"
+  },
+  {
+    "id": "api.command_tableflip.hint",
+    "translation": "[message]"
+  },
+  {
+    "id": "api.command_tableflip.name",
+    "translation": "tableflip"
+  },
+  {
+    "id": "api.command_unflip.desc",
+    "translation": "เพิ่ม ┬─┬ノ( º _ ºノ) ลงในข้้อความของคุณ"
+  },
+  {
+    "id": "api.command_unflip.hint",
+    "translation": "[message]"
+  },
+  {
+    "id": "api.command_unflip.name",
+    "translation": "unflip"
   },
   {
     "id": "api.config.get_config.restricted_merge.app_error",
@@ -3028,12 +3052,40 @@
     "translation": "ไม่พบช่อง"
   },
   {
+    "id": "api.post.move_thread.archived.app_error",
+    "translation": "ไม่สามารยย้ายเธรดจากหรือไปยังช่องท่ีเก็บถาวรแล้ว"
+  },
+  {
+    "id": "api.post.move_thread.cannot_post.app_error",
+    "translation": "คุณไม่สามารยโพสต์ในช่องท่ีคุณกำลังย้ายเธรดไป"
+  },
+  {
     "id": "api.post.move_thread.disabled.app_error",
     "translation": "การย้ายเธรดถูกปิดใช้งาน"
   },
   {
     "id": "api.post.move_thread.no_permission",
     "translation": "คุณไม่มีสิทธิ์ในการย้ายเธรดนี้"
+  },
+  {
+    "id": "api.post.move_thread.private_needs_moderator.app_error",
+    "translation": "เพีียงผู้ดูลแลระบบเท่านั้้นท่ีสามารถย้ายข้้อตอบของคนอ่ืนจากหรือไปยังช่องส่วตัวได้ คุณสามารยย้ายเธรดระหว่างช่องสาธารณะได้ หรือย้ายเธรดท่ีมีเพีียงข้้อความของคุณเท่านั้้น"
+  },
+  {
+    "id": "api.post.move_thread.same_channel.app_error",
+    "translation": "เธรดนี้อยู่ในช่องน้ีแล้ว"
+  },
+  {
+    "id": "api.post.move_thread.same_community.app_error",
+    "translation": "เธรดสามารถย้ายไปยังช่องอ่ืนในชุมชนเดีียวกัันเท่านั้้น"
+  },
+  {
+    "id": "api.post.move_thread.too_long.app_error",
+    "translation": "เธรดน้ีมี {{.Count}} ข้้อความ; สามารถย้ายเธรดท่ีมีข้้อความเพีียง {{.Max}} ข้้อความเท่านั้้น"
+  },
+  {
+    "id": "api.post.move_thread.unsupported.app_error",
+    "translation": "ข้้อความระบบและข้้อความท่ีเผาละหลังอ่านไม่สามารยย้ายได้"
   },
   {
     "id": "api.post.patch_post.can_not_update_burn_on_read_post.error",

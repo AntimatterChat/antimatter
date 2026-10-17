@@ -1295,7 +1295,7 @@
   },
   {
     "id": "api.command_invite.channel.error",
-    "translation": "チャンネル {{.Channel}} が見つかりませんでした。チャンネルを特定するには、チャンネルハンドル（チャンネルをメンションする際に ~ の後ろに表示される名前）を使用してください。"
+    "translation": "チャンネル {{.Channel}} が見つかりませんでした。チャンネルを特定するには、チャンネルハンドル（チャンネルをメンションする際に # の後ろに表示される名前）を使用してください。"
   },
   {
     "id": "api.command_invite.channel_constrained_user_denied",
@@ -1335,7 +1335,7 @@
   },
   {
     "id": "api.command_invite.private_channel.app_error",
-    "translation": "チャンネル {{.Channel}} が見つかりませんでした。チャンネルを特定するには、チャンネルハンドル（チャンネルをメンションする際に ~ の後ろに表示される名前）を使用してください。"
+    "translation": "チャンネル {{.Channel}} が見つかりませんでした。チャンネルを特定するには、チャンネルハンドル（チャンネルをメンションする際に # の後ろに表示される名前）を使用してください。"
   },
   {
     "id": "api.command_invite.success",
@@ -1521,7 +1521,7 @@
   },
   {
     "id": "api.command_mute.error",
-    "translation": "チャンネル {{.Channel}} が見つかりませんでした。チャンネルを特定するには、チャンネルハンドル（チャンネルをメンションする際に ~ の後ろに表示される名前）を使用してください。"
+    "translation": "チャンネル {{.Channel}} が見つかりませんでした。チャンネルを特定するには、チャンネルハンドル（チャンネルをメンションする際に # の後ろに表示される名前）を使用してください。"
   },
   {
     "id": "api.command_mute.hint",
@@ -1533,7 +1533,7 @@
   },
   {
     "id": "api.command_mute.no_channel.error",
-    "translation": "指定されたチャンネルが見つかりませんでした。チャンネルを特定するには、チャンネルハンドル（チャンネルをメンションする際に ~ の後ろに表示される名前）を使用してください。"
+    "translation": "指定されたチャンネルが見つかりませんでした。チャンネルを特定するには、チャンネルハンドル（チャンネルをメンションする際に # の後ろに表示される名前）を使用してください。"
   },
   {
     "id": "api.command_mute.success_mute",
@@ -1978,6 +1978,30 @@
   {
     "id": "api.command_shrug.name",
     "translation": "shrug"
+  },
+  {
+    "id": "api.command_tableflip.desc",
+    "translation": "メッセージに (╯°□°)╯︵ ┻━┻ を追加します"
+  },
+  {
+    "id": "api.command_tableflip.hint",
+    "translation": "[message]"
+  },
+  {
+    "id": "api.command_tableflip.name",
+    "translation": "tableflip"
+  },
+  {
+    "id": "api.command_unflip.desc",
+    "translation": "メッセージに ┬─┬ノ( º _ ºノ) を追加します"
+  },
+  {
+    "id": "api.command_unflip.hint",
+    "translation": "[message]"
+  },
+  {
+    "id": "api.command_unflip.name",
+    "translation": "unflip"
   },
   {
     "id": "api.config.get_config.restricted_merge.app_error",
@@ -3206,12 +3230,40 @@
     "translation": "チャンネルが見つかりません"
   },
   {
+    "id": "api.post.move_thread.archived.app_error",
+    "translation": "スレッドはアーカイブされたチャンネルから移動したり、そこに移動したりできません。"
+  },
+  {
+    "id": "api.post.move_thread.cannot_post.app_error",
+    "translation": "スレッドを移動先のチャンネルに投稿できません。"
+  },
+  {
     "id": "api.post.move_thread.disabled.app_error",
     "translation": "スレッド移動は無効化されています"
   },
   {
     "id": "api.post.move_thread.no_permission",
     "translation": "このスレッドを移動する権限がありません。"
+  },
+  {
+    "id": "api.post.move_thread.private_needs_moderator.app_error",
+    "translation": "非公開チャンネルへの他の人の返信の移動は、モデレーターのみ可能です。公開チャンネル間でのスレッドの移動、または自分のメッセージのみで構成されるスレッドの移動は可能です。"
+  },
+  {
+    "id": "api.post.move_thread.same_channel.app_error",
+    "translation": "スレッドはすでにこのチャンネルにあります。"
+  },
+  {
+    "id": "api.post.move_thread.same_community.app_error",
+    "translation": "スレッドは、同じコミュニティ内の別のチャンネルにのみ移動できます。"
+  },
+  {
+    "id": "api.post.move_thread.too_long.app_error",
+    "translation": "このスレッドには {{.Count}} 件のメッセージがあります。{{.Max}} 件までのメッセージを持つスレッドのみ移動できます。"
+  },
+  {
+    "id": "api.post.move_thread.unsupported.app_error",
+    "translation": "システムメッセージと、読み取り後に消去されるメッセージは移動できません。"
   },
   {
     "id": "api.post.patch_post.can_not_update_burn_on_read_post.error",

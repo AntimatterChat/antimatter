@@ -1296,7 +1296,7 @@
   },
   {
     "id": "api.command_invite.channel.error",
-    "translation": "Nem található a(z) {{.Channel}} csatorna. A csatorna azonosításához használja a csatorna nevet (a ~ utáni nevet, amikor egy csatornát említ)."
+    "translation": "Nem található a(z) {{.Channel}} csatorna. A csatorna azonosításához használja a csatorna nevet (a # utáni nevet, amikor egy csatornát említ)."
   },
   {
     "id": "api.command_invite.channel_constrained_user_denied",
@@ -1336,7 +1336,7 @@
   },
   {
     "id": "api.command_invite.private_channel.app_error",
-    "translation": "Nem található a(z) {{.Channel}} csatorna. A csatorna azonosításához használja a csatorna nevet (a ~ utáni nevet, amikor egy csatornát említ)."
+    "translation": "Nem található a(z) {{.Channel}} csatorna. A csatorna azonosításához használja a csatorna nevet (a # utáni nevet, amikor egy csatornát említ)."
   },
   {
     "id": "api.command_invite.success",
@@ -1523,7 +1523,7 @@
   },
   {
     "id": "api.command_mute.error",
-    "translation": "Nem található a(z) {{.Channel}} csatorna. A csatorna azonosításához használja a csatorna nevet (a ~ utáni nevet, amikor egy csatornát említ)."
+    "translation": "Nem található a(z) {{.Channel}} csatorna. A csatorna azonosításához használja a csatorna nevet (a # utáni nevet, amikor egy csatornát említ)."
   },
   {
     "id": "api.command_mute.hint",
@@ -1535,7 +1535,7 @@
   },
   {
     "id": "api.command_mute.no_channel.error",
-    "translation": "Nem található a megadott csatorna. A csatorna azonosításához használja a csatorna nevet (a ~ utáni nevet, amikor egy csatornát említ)."
+    "translation": "Nem található a megadott csatorna. A csatorna azonosításához használja a csatorna nevet (a # utáni nevet, amikor egy csatornát említ)."
   },
   {
     "id": "api.command_mute.success_mute",
@@ -1980,6 +1980,30 @@
   {
     "id": "api.command_shrug.name",
     "translation": "vállvonás"
+  },
+  {
+    "id": "api.command_tableflip.desc",
+    "translation": "Hozzáadja a (╯°□°)╯︵ ┻━┻ szimbólumot az üzenetedhez"
+  },
+  {
+    "id": "api.command_tableflip.hint",
+    "translation": "[üzenet]"
+  },
+  {
+    "id": "api.command_tableflip.name",
+    "translation": "tableflip"
+  },
+  {
+    "id": "api.command_unflip.desc",
+    "translation": "Hozzáadja a ┬─┬ノ( º _ ºノ) szimbólumot az üzenetedhez"
+  },
+  {
+    "id": "api.command_unflip.hint",
+    "translation": "[üzenet]"
+  },
+  {
+    "id": "api.command_unflip.name",
+    "translation": "unflip"
   },
   {
     "id": "api.config.get_config.restricted_merge.app_error",
@@ -3227,12 +3251,40 @@
     "translation": "A csatorna nem található"
   },
   {
+    "id": "api.post.move_thread.archived.app_error",
+    "translation": "Az üzenetszálak nem mozgathatók archivált csatornából, illetve archivált csatornába."
+  },
+  {
+    "id": "api.post.move_thread.cannot_post.app_error",
+    "translation": "Nem posztolhatsz a csatornába, ahová az üzenetszálát áthelyezni szeretnéd."
+  },
+  {
     "id": "api.post.move_thread.disabled.app_error",
     "translation": "Az üzenetszálak áthelyezése le van tiltva"
   },
   {
     "id": "api.post.move_thread.no_permission",
     "translation": "Nincs jogosultsága az üzenetszál áthelyezéséhez."
+  },
+  {
+    "id": "api.post.move_thread.private_needs_moderator.app_error",
+    "translation": "Csak egy moderátor mozgat mások válaszait privát csatornából, illetve privát csatornába. Az üzenetszálát nyílt csatornák között, vagy ha csak a saját üzeneteidből áll, áthelyezheted."
+  },
+  {
+    "id": "api.post.move_thread.same_channel.app_error",
+    "translation": "Az üzenetszál már ebben a csatornában van."
+  },
+  {
+    "id": "api.post.move_thread.same_community.app_error",
+    "translation": "Az üzenetszál csak a saját közösségének másik csatornájába mozgatható."
+  },
+  {
+    "id": "api.post.move_thread.too_long.app_error",
+    "translation": "Ez az üzenetszál {{.Count}} üzenetet tartalmaz; legfeljebb {{.Max}} üzenetes szálak mozgatásai."
+  },
+  {
+    "id": "api.post.move_thread.unsupported.app_error",
+    "translation": "A rendszerüzenetek és az olvasáskor törlődő üzenetek nem mozgatásai."
   },
   {
     "id": "api.post.patch_post.can_not_update_burn_on_read_post.error",

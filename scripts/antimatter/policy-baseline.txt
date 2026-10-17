@@ -390,7 +390,6 @@ translations	webapp/fusion/src/i18n/ko.json	fusion.attributes.none
 translations	webapp/fusion/src/i18n/ko.json	fusion.settings.fieldNone
 translations	webapp/fusion/src/i18n/ko.json	team_settings.sync_status.days_ago
 translations	webapp/fusion/src/i18n/ko.json	team_settings.sync_status.hours_ago
-translations	webapp/fusion/src/i18n/ko.json	user.settings.tokens.expiryTooFar
 translations	webapp/fusion/src/i18n/ms.json	admin.cacheSettings.redisDBPlaceholder
 translations	webapp/fusion/src/i18n/ms.json	admin.image.extractContentTimeoutExample
 translations	webapp/fusion/src/i18n/ms.json	admin.image.maxFileSizeExample
@@ -403,7 +402,6 @@ translations	webapp/fusion/src/i18n/ms.json	adminConsole.list.table.rowsCount.50
 translations	webapp/fusion/src/i18n/ms.json	fusion.attributes.none
 translations	webapp/fusion/src/i18n/ms.json	fusion.settings.fieldNone
 translations	webapp/fusion/src/i18n/ms.json	system_policy_indicator.description_with_membership_policy
-translations	webapp/fusion/src/i18n/ms.json	system_policy_indicator.description_with_policy
 translations	webapp/fusion/src/i18n/nb-NO.json	admin.cacheSettings.redisDBPlaceholder
 translations	webapp/fusion/src/i18n/nb-NO.json	admin.image.extractContentTimeoutExample
 translations	webapp/fusion/src/i18n/nb-NO.json	admin.image.maxFileSizeExample

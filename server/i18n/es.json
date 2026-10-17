@@ -1296,7 +1296,7 @@
   },
   {
     "id": "api.command_invite.channel.error",
-    "translation": "No se pudo encontrar el canal {{.Channel}}. Usa el identificador del canal (el nombre después de ~ cuando mencionas un canal) para identificarlo."
+    "translation": "No se pudo encontrar el canal {{.Channel}}. Usa el identificador del canal (el nombre después de # cuando mencionas un canal) para identificarlo."
   },
   {
     "id": "api.command_invite.channel_constrained_user_denied",
@@ -1336,7 +1336,7 @@
   },
   {
     "id": "api.command_invite.private_channel.app_error",
-    "translation": "No se pudo encontrar el canal {{.Channel}}. Usa el identificador del canal (el nombre después de ~ cuando mencionas un canal) para identificarlo."
+    "translation": "No se pudo encontrar el canal {{.Channel}}. Usa el identificador del canal (el nombre después de # cuando mencionas un canal) para identificarlo."
   },
   {
     "id": "api.command_invite.success",
@@ -1523,7 +1523,7 @@
   },
   {
     "id": "api.command_mute.error",
-    "translation": "No se pudo encontrar el canal {{.Channel}}. Usa el identificador del canal (el nombre después de ~ cuando mencionas un canal) para identificarlo."
+    "translation": "No se pudo encontrar el canal {{.Channel}}. Usa el identificador del canal (el nombre después de # cuando mencionas un canal) para identificarlo."
   },
   {
     "id": "api.command_mute.hint",
@@ -1535,7 +1535,7 @@
   },
   {
     "id": "api.command_mute.no_channel.error",
-    "translation": "No se pudo encontrar el canal especificado. Usa el identificador del canal (el nombre después de ~ cuando mencionas un canal) para identificarlo."
+    "translation": "No se pudo encontrar el canal especificado. Usa el identificador del canal (el nombre después de # cuando mencionas un canal) para identificarlo."
   },
   {
     "id": "api.command_mute.success_mute",
@@ -1980,6 +1980,30 @@
   {
     "id": "api.command_shrug.name",
     "translation": "npi"
+  },
+  {
+    "id": "api.command_tableflip.desc",
+    "translation": "Añade (╯°□°)╯︵ ┻━┻ a tu mensaje"
+  },
+  {
+    "id": "api.command_tableflip.hint",
+    "translation": "[mensaje]"
+  },
+  {
+    "id": "api.command_tableflip.name",
+    "translation": "tableflip"
+  },
+  {
+    "id": "api.command_unflip.desc",
+    "translation": "Añade ┬─┬ノ( º _ ºノ) a tu mensaje"
+  },
+  {
+    "id": "api.command_unflip.hint",
+    "translation": "[mensaje]"
+  },
+  {
+    "id": "api.command_unflip.name",
+    "translation": "unflip"
   },
   {
     "id": "api.config.get_config.restricted_merge.app_error",
@@ -3227,12 +3251,40 @@
     "translation": "Canal no encontrado"
   },
   {
+    "id": "api.post.move_thread.archived.app_error",
+    "translation": "No se pueden mover hilos desde o hacia un canal archivado."
+  },
+  {
+    "id": "api.post.move_thread.cannot_post.app_error",
+    "translation": "No puedes publicar en el canal al que estás moviendo el hilo."
+  },
+  {
     "id": "api.post.move_thread.disabled.app_error",
     "translation": "El movimiento de hilos de conversación está deshabilitado"
   },
   {
     "id": "api.post.move_thread.no_permission",
     "translation": "No tienes permiso para mover este hilo de conversación."
+  },
+  {
+    "id": "api.post.move_thread.private_needs_moderator.app_error",
+    "translation": "Solo un moderador puede mover respuestas de otras personas desde o hacia un canal privado. Puedes mover este hilo entre canales públicos, o un hilo que contenga solo tus propios mensajes."
+  },
+  {
+    "id": "api.post.move_thread.same_channel.app_error",
+    "translation": "El hilo ya está en este canal."
+  },
+  {
+    "id": "api.post.move_thread.same_community.app_error",
+    "translation": "Un hilo solo se puede mover a otro canal de su comunidad."
+  },
+  {
+    "id": "api.post.move_thread.too_long.app_error",
+    "translation": "Este hilo tiene {{.Count}} mensajes; solo se pueden mover hilos de hasta {{.Max}} mensajes."
+  },
+  {
+    "id": "api.post.move_thread.unsupported.app_error",
+    "translation": "No se pueden mover mensajes de sistema ni mensajes que se queman al leerse."
   },
   {
     "id": "api.post.patch_post.can_not_update_burn_on_read_post.error",

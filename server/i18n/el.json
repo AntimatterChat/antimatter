@@ -1253,7 +1253,7 @@
   },
   {
     "id": "api.command_invite.channel.error",
-    "translation": "Δεν ήταν δυνατή η εύρεση του καναλιού {{.Channel}}. Χρησιμοποιήστε τον κωδικό του καναλιού (το όνομα μετά το ~ όταν αναφέρετε ένα κανάλι) για να το ταυτοποιήσετε."
+    "translation": "Δεν ήταν δυνατή η εύρεση του καναλιού {{.Channel}}. Χρησιμοποιήστε τον κωδικό του καναλιού (το όνομα μετά το # όταν αναφέρετε ένα κανάλι) για να το ταυτοποιήσετε."
   },
   {
     "id": "api.command_invite.channel_constrained_user_denied",
@@ -1293,7 +1293,7 @@
   },
   {
     "id": "api.command_invite.private_channel.app_error",
-    "translation": "Δεν ήταν δυνατή η εύρεση του καναλιού {{.Channel}}. Χρησιμοποιήστε τον κωδικό του καναλιού (το όνομα μετά το ~ όταν αναφέρετε ένα κανάλι) για να το ταυτοποιήσετε."
+    "translation": "Δεν ήταν δυνατή η εύρεση του καναλιού {{.Channel}}. Χρησιμοποιήστε τον κωδικό του καναλιού (το όνομα μετά το # όταν αναφέρετε ένα κανάλι) για να το ταυτοποιήσετε."
   },
   {
     "id": "api.command_invite.success",
@@ -1473,7 +1473,7 @@
   },
   {
     "id": "api.command_mute.error",
-    "translation": "Δεν ήταν δυνατή η εύρεση του καναλιού {{.Channel}}. Χρησιμοποιήστε τον κωδικό του καναλιού (το όνομα μετά το ~ όταν αναφέρετε ένα κανάλι) για να το ταυτοποιήσετε."
+    "translation": "Δεν ήταν δυνατή η εύρεση του καναλιού {{.Channel}}. Χρησιμοποιήστε τον κωδικό του καναλιού (το όνομα μετά το # όταν αναφέρετε ένα κανάλι) για να το ταυτοποιήσετε."
   },
   {
     "id": "api.command_mute.hint",
@@ -1485,7 +1485,7 @@
   },
   {
     "id": "api.command_mute.no_channel.error",
-    "translation": "Δεν ήταν δυνατή η εύρεση του καθορισμένου καναλιού. Χρησιμοποιήστε τον κωδικό του καναλιού (το όνομα μετά το ~ όταν αναφέρετε ένα κανάλι) για να το ταυτοποιήσετε."
+    "translation": "Δεν ήταν δυνατή η εύρεση του καθορισμένου καναλιού. Χρησιμοποιήστε τον κωδικό του καναλιού (το όνομα μετά το # όταν αναφέρετε ένα κανάλι) για να το ταυτοποιήσετε."
   },
   {
     "id": "api.command_mute.success_mute",
@@ -1930,6 +1930,30 @@
   {
     "id": "api.command_shrug.name",
     "translation": "shrug"
+  },
+  {
+    "id": "api.command_tableflip.desc",
+    "translation": "Προσθέτει (╯°□°)╯︵ ┻━┻ στο μήνυμά σας"
+  },
+  {
+    "id": "api.command_tableflip.hint",
+    "translation": "[message]"
+  },
+  {
+    "id": "api.command_tableflip.name",
+    "translation": "tableflip"
+  },
+  {
+    "id": "api.command_unflip.desc",
+    "translation": "Προσθέτει ┬─┬ノ( º _ ºノ) στο μήνυμά σας"
+  },
+  {
+    "id": "api.command_unflip.hint",
+    "translation": "[message]"
+  },
+  {
+    "id": "api.command_unflip.name",
+    "translation": "unflip"
   },
   {
     "id": "api.config.get_config.restricted_merge.app_error",
@@ -3028,12 +3052,40 @@
     "translation": "Το κανάλι δεν βρέθηκε"
   },
   {
+    "id": "api.post.move_thread.archived.app_error",
+    "translation": "Τα νήματα δεν μπορούν να μετακινηθούν από ή προς ένα αρχειοθετημένο κανάλι."
+  },
+  {
+    "id": "api.post.move_thread.cannot_post.app_error",
+    "translation": "Δεν μπορείτε να δημοσιεύσετε στο κανάλι στο οποίο μετακινείτε το νήμα."
+  },
+  {
     "id": "api.post.move_thread.disabled.app_error",
     "translation": "Η μετακίνηση νήματος είναι απενεργοποιημένη"
   },
   {
     "id": "api.post.move_thread.no_permission",
     "translation": "Δεν έχετε άδεια για τη μετακίνηση αυτού του νήματος."
+  },
+  {
+    "id": "api.post.move_thread.private_needs_moderator.app_error",
+    "translation": "Μόνο ένας διαχειριστής μπορεί να μετακινήσει απαντήσεις άλλων χρηστών από ή προς ένα ιδιωτικό κανάλι. Μπορείτε να μετακινήσετε αυτό το νήμα μεταξύ δημόσιων καναλιών, ή ένα νήμα που περιέχει μόνο τα δικά σας μηνύματα."
+  },
+  {
+    "id": "api.post.move_thread.same_channel.app_error",
+    "translation": "Το νήμα βρίσκεται ήδη σε αυτό το κανάλι."
+  },
+  {
+    "id": "api.post.move_thread.same_community.app_error",
+    "translation": "Ένα νήμα μπορεί να μετακινηθεί μόνο σε άλλο κανάλι της ίδιας κοινότητας."
+  },
+  {
+    "id": "api.post.move_thread.too_long.app_error",
+    "translation": "Αυτό το νήμα έχει {{.Count}} μηνύματα· μπορούν να μετακινηθούν νήματα με έως {{.Max}} μηνύματα."
+  },
+  {
+    "id": "api.post.move_thread.unsupported.app_error",
+    "translation": "Τα μηνύματα συστήματος και τα μηνύματα που καίγονται κατά την ανάγνωση δεν μπορούν να μετακινηθούν."
   },
   {
     "id": "api.post.patch_post.can_not_update_burn_on_read_post.error",

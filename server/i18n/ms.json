@@ -1253,7 +1253,7 @@
   },
   {
     "id": "api.command_invite.channel.error",
-    "translation": "Tidak dapat menemui saluran {{.Channel}}. Guna handle saluran (nama selepas ~ apabila anda menyebut saluran) untuk mengenal pasti saluran tersebut."
+    "translation": "Tidak dapat menemui saluran {{.Channel}}. Guna handle saluran (nama selepas # apabila anda menyebut saluran) untuk mengenal pasti saluran tersebut."
   },
   {
     "id": "api.command_invite.channel_constrained_user_denied",
@@ -1293,7 +1293,7 @@
   },
   {
     "id": "api.command_invite.private_channel.app_error",
-    "translation": "Tidak dapat menemui saluran {{.Channel}}. Guna handle saluran (nama selepas ~ apabila anda menyebut saluran) untuk mengenal pasti saluran tersebut."
+    "translation": "Tidak dapat menemui saluran {{.Channel}}. Guna handle saluran (nama selepas # apabila anda menyebut saluran) untuk mengenal pasti saluran tersebut."
   },
   {
     "id": "api.command_invite.success",
@@ -1473,7 +1473,7 @@
   },
   {
     "id": "api.command_mute.error",
-    "translation": "Tidak dapat menemui saluran {{.Channel}}. Guna handle saluran (nama selepas ~ apabila anda menyebut saluran) untuk mengenal pasti saluran tersebut."
+    "translation": "Tidak dapat menemui saluran {{.Channel}}. Guna handle saluran (nama selepas # apabila anda menyebut saluran) untuk mengenal pasti saluran tersebut."
   },
   {
     "id": "api.command_mute.hint",
@@ -1485,7 +1485,7 @@
   },
   {
     "id": "api.command_mute.no_channel.error",
-    "translation": "Tidak dapat menemui saluran yang dinyatakan. Guna handle saluran (nama selepas ~ apabila anda menyebut saluran) untuk mengenal pasti saluran tersebut."
+    "translation": "Tidak dapat menemui saluran yang dinyatakan. Guna handle saluran (nama selepas # apabila anda menyebut saluran) untuk mengenal pasti saluran tersebut."
   },
   {
     "id": "api.command_mute.success_mute",
@@ -1930,6 +1930,30 @@
   {
     "id": "api.command_shrug.name",
     "translation": "shrug"
+  },
+  {
+    "id": "api.command_tableflip.desc",
+    "translation": "Menambah (╯°□°)╯︵ ┻━┻ ke mesej anda"
+  },
+  {
+    "id": "api.command_tableflip.hint",
+    "translation": "[mesej]"
+  },
+  {
+    "id": "api.command_tableflip.name",
+    "translation": "tableflip"
+  },
+  {
+    "id": "api.command_unflip.desc",
+    "translation": "Menambah ┬─┬ノ( º _ ºノ) ke mesej anda"
+  },
+  {
+    "id": "api.command_unflip.hint",
+    "translation": "[mesej]"
+  },
+  {
+    "id": "api.command_unflip.name",
+    "translation": "unflip"
   },
   {
     "id": "api.config.get_config.restricted_merge.app_error",
@@ -3028,12 +3052,40 @@
     "translation": "Saluran tidak ditemui"
   },
   {
+    "id": "api.post.move_thread.archived.app_error",
+    "translation": "Bebenang tidak boleh dipindahkan dari atau ke saluran yang diarkibkan."
+  },
+  {
+    "id": "api.post.move_thread.cannot_post.app_error",
+    "translation": "Anda tidak boleh memuat naik dalam saluran yang anda pindahkan bebenang ke sana."
+  },
+  {
     "id": "api.post.move_thread.disabled.app_error",
     "translation": "Pemindahan bebenang dilumpuhkan"
   },
   {
     "id": "api.post.move_thread.no_permission",
     "translation": "Anda tidak mempunyai kebenaran untuk memindahkan bebenang ini."
+  },
+  {
+    "id": "api.post.move_thread.private_needs_moderator.app_error",
+    "translation": "Hanya moderator yang boleh memindahkan balasan orang lain ke atau dari saluran peribadi. Anda boleh memindahkan bebenang ini antara saluran awam, atau bebenang yang hanya mengandungi mesej anda sendiri."
+  },
+  {
+    "id": "api.post.move_thread.same_channel.app_error",
+    "translation": "Bebenang ini sudah berada dalam saluran ini."
+  },
+  {
+    "id": "api.post.move_thread.same_community.app_error",
+    "translation": "Bebenang hanya boleh dipindahkan ke saluran lain dalam komunitinya."
+  },
+  {
+    "id": "api.post.move_thread.too_long.app_error",
+    "translation": "Bebenang ini mempunyai {{.Count}} mesej; bebenang sehingga {{.Max}} mesej boleh dipindahkan."
+  },
+  {
+    "id": "api.post.move_thread.unsupported.app_error",
+    "translation": "Mesej sistem dan mesej yang terbakar selepas dibaca tidak boleh dipindahkan."
   },
   {
     "id": "api.post.patch_post.can_not_update_burn_on_read_post.error",

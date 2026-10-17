@@ -1295,7 +1295,7 @@
   },
   {
     "id": "api.command_invite.channel.error",
-    "translation": "Không tìm thấy kênh {{.Channel}}. Hãy sử dụng tên định danh của kênh (tên sau dấu ~ khi nhắc đến kênh) để xác định nó."
+    "translation": "Không tìm thấy kênh {{.Channel}}. Hãy sử dụng tên định danh của kênh (tên sau dấu # khi nhắc đến kênh) để xác định nó."
   },
   {
     "id": "api.command_invite.channel_constrained_user_denied",
@@ -1335,7 +1335,7 @@
   },
   {
     "id": "api.command_invite.private_channel.app_error",
-    "translation": "Không tìm thấy kênh {{.Channel}}. Hãy sử dụng tên định danh của kênh (tên sau dấu ~ khi nhắc đến kênh) để xác định nó."
+    "translation": "Không tìm thấy kênh {{.Channel}}. Hãy sử dụng tên định danh của kênh (tên sau dấu # khi nhắc đến kênh) để xác định nó."
   },
   {
     "id": "api.command_invite.success",
@@ -1521,7 +1521,7 @@
   },
   {
     "id": "api.command_mute.error",
-    "translation": "Không tìm thấy kênh {{.Channel}}. Hãy sử dụng tên định danh của kênh (tên sau dấu ~ khi nhắc đến kênh) để xác định nó."
+    "translation": "Không tìm thấy kênh {{.Channel}}. Hãy sử dụng tên định danh của kênh (tên sau dấu # khi nhắc đến kênh) để xác định nó."
   },
   {
     "id": "api.command_mute.hint",
@@ -1533,7 +1533,7 @@
   },
   {
     "id": "api.command_mute.no_channel.error",
-    "translation": "Không tìm thấy kênh được chỉ định. Hãy sử dụng tên định danh của kênh (tên sau dấu ~ khi nhắc đến kênh) để xác định nó."
+    "translation": "Không tìm thấy kênh được chỉ định. Hãy sử dụng tên định danh của kênh (tên sau dấu # khi nhắc đến kênh) để xác định nó."
   },
   {
     "id": "api.command_mute.success_mute",
@@ -1978,6 +1978,30 @@
   {
     "id": "api.command_shrug.name",
     "translation": "shrug"
+  },
+  {
+    "id": "api.command_tableflip.desc",
+    "translation": "Thêm (╯°□°)╯︵ ┻━┻ vào tin nhắn của bạn"
+  },
+  {
+    "id": "api.command_tableflip.hint",
+    "translation": "[tin nhắn]"
+  },
+  {
+    "id": "api.command_tableflip.name",
+    "translation": "tableflip"
+  },
+  {
+    "id": "api.command_unflip.desc",
+    "translation": "Thêm ┬─┬ノ( º _ ºノ) vào tin nhắn của bạn"
+  },
+  {
+    "id": "api.command_unflip.hint",
+    "translation": "[tin nhắn]"
+  },
+  {
+    "id": "api.command_unflip.name",
+    "translation": "unflip"
   },
   {
     "id": "api.config.get_config.restricted_merge.app_error",
@@ -3222,12 +3246,40 @@
     "translation": "Không tìm thấy kênh"
   },
   {
+    "id": "api.post.move_thread.archived.app_error",
+    "translation": "Không thể di chuyển chủ đề từ hoặc đến kênh đã lưu trữ."
+  },
+  {
+    "id": "api.post.move_thread.cannot_post.app_error",
+    "translation": "Bạn không thể đăng bài trong kênh mà bạn đang di chuyển chủ đề đến."
+  },
+  {
     "id": "api.post.move_thread.disabled.app_error",
     "translation": "Di chuyển chủ đề đã bị tắt"
   },
   {
     "id": "api.post.move_thread.no_permission",
     "translation": "Bạn không có quyền di chuyển chủ đề này."
+  },
+  {
+    "id": "api.post.move_thread.private_needs_moderator.app_error",
+    "translation": "Chỉ quản trị viên mới có thể di chuyển các phản hồi của người khác đến hoặc từ kênh riêng tư. Bạn có thể di chuyển chủ đề này giữa các kênh công khai, hoặc một chủ đề chỉ chứa tin nhắn của chính bạn."
+  },
+  {
+    "id": "api.post.move_thread.same_channel.app_error",
+    "translation": "Chủ đề này đã nằm trong kênh này."
+  },
+  {
+    "id": "api.post.move_thread.same_community.app_error",
+    "translation": "Một chủ đề chỉ có thể được di chuyển đến một kênh khác trong cộng đồng của nó."
+  },
+  {
+    "id": "api.post.move_thread.too_long.app_error",
+    "translation": "Chủ đề này có {{.Count}} tin nhắn; chỉ có thể di chuyển các chủ đề có tối đa {{.Max}} tin nhắn."
+  },
+  {
+    "id": "api.post.move_thread.unsupported.app_error",
+    "translation": "Không thể di chuyển tin nhắn hệ thống và tin nhắn tự xóa sau khi đọc."
   },
   {
     "id": "api.post.patch_post.can_not_update_burn_on_read_post.error",

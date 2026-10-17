@@ -1253,7 +1253,7 @@
   },
   {
     "id": "api.command_invite.channel.error",
-    "translation": "No s'ha pogut trobar el canal {{.Channel}}. Utilitza el manenyal del canal (el nom després de ~ quan menciones un canal) per identificar-lo."
+    "translation": "No s'ha pogut trobar el canal {{.Channel}}. Utilitza el manenyal del canal (el nom després de # quan menciones un canal) per identificar-lo."
   },
   {
     "id": "api.command_invite.channel_constrained_user_denied",
@@ -1293,7 +1293,7 @@
   },
   {
     "id": "api.command_invite.private_channel.app_error",
-    "translation": "No s'ha pogut trobar el canal {{.Channel}}. Utilitza el manenyal del canal (el nom després de ~ quan menciones un canal) per identificar-lo."
+    "translation": "No s'ha pogut trobar el canal {{.Channel}}. Utilitza el manenyal del canal (el nom després de # quan menciones un canal) per identificar-lo."
   },
   {
     "id": "api.command_invite.success",
@@ -1473,7 +1473,7 @@
   },
   {
     "id": "api.command_mute.error",
-    "translation": "No s'ha pogut trobar el canal {{.Channel}}. Utilitza el manenyal del canal (el nom després de ~ quan menciones un canal) per identificar-lo."
+    "translation": "No s'ha pogut trobar el canal {{.Channel}}. Utilitza el manenyal del canal (el nom després de # quan menciones un canal) per identificar-lo."
   },
   {
     "id": "api.command_mute.hint",
@@ -1485,7 +1485,7 @@
   },
   {
     "id": "api.command_mute.no_channel.error",
-    "translation": "No s'ha pogut trobar el canal especificat. Utilitza el manenyal del canal (el nom després de ~ quan menciones un canal) per identificar-lo."
+    "translation": "No s'ha pogut trobar el canal especificat. Utilitza el manenyal del canal (el nom després de # quan menciones un canal) per identificar-lo."
   },
   {
     "id": "api.command_mute.success_mute",
@@ -1930,6 +1930,30 @@
   {
     "id": "api.command_shrug.name",
     "translation": "shrug"
+  },
+  {
+    "id": "api.command_tableflip.desc",
+    "translation": "Afegeix (╯°□°)╯︵ ┻━┻ al teu missatge"
+  },
+  {
+    "id": "api.command_tableflip.hint",
+    "translation": "[missatge]"
+  },
+  {
+    "id": "api.command_tableflip.name",
+    "translation": "tableflip"
+  },
+  {
+    "id": "api.command_unflip.desc",
+    "translation": "Afegeix ┬─┬ノ( º _ ºノ) al teu missatge"
+  },
+  {
+    "id": "api.command_unflip.hint",
+    "translation": "[missatge]"
+  },
+  {
+    "id": "api.command_unflip.name",
+    "translation": "unflip"
   },
   {
     "id": "api.config.get_config.restricted_merge.app_error",
@@ -3028,12 +3052,40 @@
     "translation": "No s'ha trobat el canal"
   },
   {
+    "id": "api.post.move_thread.archived.app_error",
+    "translation": "No es poden moure fils des d'un canal arxivat ni cap a un canal arxivat."
+  },
+  {
+    "id": "api.post.move_thread.cannot_post.app_error",
+    "translation": "No pots publicar al canal al qual estàs movent el fil."
+  },
+  {
     "id": "api.post.move_thread.disabled.app_error",
     "translation": "El trasllat de fils està desactivat"
   },
   {
     "id": "api.post.move_thread.no_permission",
     "translation": "No tens permís per traslladar aquest fil."
+  },
+  {
+    "id": "api.post.move_thread.private_needs_moderator.app_error",
+    "translation": "Només un moderador pot moure les respostes d'altres persones des d'un canal privat o cap a un canal privat. Pots moure aquest fil entre canals públics, o un fil que conté només els teus missatges."
+  },
+  {
+    "id": "api.post.move_thread.same_channel.app_error",
+    "translation": "El fil ja és en aquest canal."
+  },
+  {
+    "id": "api.post.move_thread.same_community.app_error",
+    "translation": "Un fil només es pot moure a un altre canal de la seva comunitat."
+  },
+  {
+    "id": "api.post.move_thread.too_long.app_error",
+    "translation": "Aquest fil té {{.Count}} missatges; es poden moure fils d'una màxima de {{.Max}} missatges."
+  },
+  {
+    "id": "api.post.move_thread.unsupported.app_error",
+    "translation": "Els missatges del sistema i els missatges que es destrueixen en llegir-los no es poden moure."
   },
   {
     "id": "api.post.patch_post.can_not_update_burn_on_read_post.error",

@@ -1253,7 +1253,7 @@
   },
   {
     "id": "api.command_invite.channel.error",
-    "translation": "چینل {{.Channel}} نہیں ملا۔ اس کی شناخت کے لیے چینل ہینڈل (چینل کے تذکرے کے بعد ~ کے بعد والا نام) استعمال کریں۔"
+    "translation": "چینل {{.Channel}} نہیں ملا۔ اس کی شناخت کے لیے چینل ہینڈل (چینل کے تذکرے کے بعد # کے بعد والا نام) استعمال کریں۔"
   },
   {
     "id": "api.command_invite.channel_constrained_user_denied",
@@ -1293,7 +1293,7 @@
   },
   {
     "id": "api.command_invite.private_channel.app_error",
-    "translation": "چینل {{.Channel}} نہیں ملا۔ اس کی شناخت کے لیے چینل ہینڈل (چینل کے تذکرے کے بعد ~ کے بعد والا نام) استعمال کریں۔"
+    "translation": "چینل {{.Channel}} نہیں ملا۔ اس کی شناخت کے لیے چینل ہینڈل (چینل کے تذکرے کے بعد # کے بعد والا نام) استعمال کریں۔"
   },
   {
     "id": "api.command_invite.success",
@@ -1473,7 +1473,7 @@
   },
   {
     "id": "api.command_mute.error",
-    "translation": "چینل {{.Channel}} نہیں ملا۔ اس کی شناخت کے لیے چینل ہینڈل (چینل کے تذکرے کے بعد ~ کے بعد والا نام) استعمال کریں۔"
+    "translation": "چینل {{.Channel}} نہیں ملا۔ اس کی شناخت کے لیے چینل ہینڈل (چینل کے تذکرے کے بعد # کے بعد والا نام) استعمال کریں۔"
   },
   {
     "id": "api.command_mute.hint",
@@ -1485,7 +1485,7 @@
   },
   {
     "id": "api.command_mute.no_channel.error",
-    "translation": "مذکورہ چینل نہیں ملا۔ اس کی شناخت کے لیے چینل ہینڈل (چینل کے تذکرے کے بعد ~ کے بعد والا نام) استعمال کریں۔"
+    "translation": "مذکورہ چینل نہیں ملا۔ اس کی شناخت کے لیے چینل ہینڈل (چینل کے تذکرے کے بعد # کے بعد والا نام) استعمال کریں۔"
   },
   {
     "id": "api.command_mute.success_mute",
@@ -1930,6 +1930,30 @@
   {
     "id": "api.command_shrug.name",
     "translation": "shrug"
+  },
+  {
+    "id": "api.command_tableflip.desc",
+    "translation": "آپ کے پیغام میں (╯°□°)╯︵ ┻━┻ شامل کرتا ہے"
+  },
+  {
+    "id": "api.command_tableflip.hint",
+    "translation": "[پیغام]"
+  },
+  {
+    "id": "api.command_tableflip.name",
+    "translation": "tableflip"
+  },
+  {
+    "id": "api.command_unflip.desc",
+    "translation": "آپ کے پیغام میں ┬─┬ノ( º _ ºノ) شامل کرتا ہے"
+  },
+  {
+    "id": "api.command_unflip.hint",
+    "translation": "[پیغام]"
+  },
+  {
+    "id": "api.command_unflip.name",
+    "translation": "unflip"
   },
   {
     "id": "api.config.get_config.restricted_merge.app_error",
@@ -3028,12 +3052,40 @@
     "translation": "چینل نہیں ملا"
   },
   {
+    "id": "api.post.move_thread.archived.app_error",
+    "translation": "سلسلے کو آرکائیو شدہ چینل سے یا اس میں منتقل نہیں کیا جا سکتا۔"
+  },
+  {
+    "id": "api.post.move_thread.cannot_post.app_error",
+    "translation": "آپ اس چینل میں پوسٹ نہیں کر سکتے جس میں آپ سلسلہ منتقل کر رہے ہیں۔"
+  },
+  {
     "id": "api.post.move_thread.disabled.app_error",
     "translation": "سلسلے کو منتقل کرنا غیر فعال ہے"
   },
   {
     "id": "api.post.move_thread.no_permission",
     "translation": "آپ کے پاس اس سلسلے کو منتقل کرنے کی اجازت نہیں ہے۔"
+  },
+  {
+    "id": "api.post.move_thread.private_needs_moderator.app_error",
+    "translation": "صرف ماڈریٹر دوسروں کے جوابات کو ذاتی چینل میں یا اس سے منتقل کر سکتا ہے۔ آپ اس سلسلے کو عوامی چینلز کے درمیان منتقل کر سکتے ہیں، یا صرف اپنے پیغامات پر مشتمل سلسلہ۔"
+  },
+  {
+    "id": "api.post.move_thread.same_channel.app_error",
+    "translation": "یہ سلسلہ پہلے ہی اس چینل میں موجود ہے۔"
+  },
+  {
+    "id": "api.post.move_thread.same_community.app_error",
+    "translation": "سلسلے کو صرف اپنے کمیونٹی کے دوسرے چینل میں منتقل کیا جا سکتا ہے۔"
+  },
+  {
+    "id": "api.post.move_thread.too_long.app_error",
+    "translation": "اس سلسلے میں {{.Count}} پیغامات ہیں؛ زیادہ سے زیادہ {{.Max}} پیغامات والے سلسلے منتقل کیے جا سکتے ہیں۔"
+  },
+  {
+    "id": "api.post.move_thread.unsupported.app_error",
+    "translation": "سسٹم پیغامات اور burn-on-read پیغامات منتقل نہیں کیے جا سکتے۔"
   },
   {
     "id": "api.post.patch_post.can_not_update_burn_on_read_post.error",

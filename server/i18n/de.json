@@ -1296,7 +1296,7 @@
   },
   {
     "id": "api.command_invite.channel.error",
-    "translation": "Der Kanal {{.Channel}} konnte nicht gefunden werden. Verwenden Sie den Kanal-Handle (der Name nach ~, wenn Sie einen Kanal erwähnen), um ihn zu identifizieren."
+    "translation": "Der Kanal {{.Channel}} konnte nicht gefunden werden. Verwenden Sie den Kanal-Handle (der Name nach #, wenn Sie einen Kanal erwähnen), um ihn zu identifizieren."
   },
   {
     "id": "api.command_invite.channel_constrained_user_denied",
@@ -1336,7 +1336,7 @@
   },
   {
     "id": "api.command_invite.private_channel.app_error",
-    "translation": "Der Kanal {{.Channel}} konnte nicht gefunden werden. Verwenden Sie den Kanal-Handle (der Name nach ~, wenn Sie einen Kanal erwähnen), um ihn zu identifizieren."
+    "translation": "Der Kanal {{.Channel}} konnte nicht gefunden werden. Verwenden Sie den Kanal-Handle (der Name nach #, wenn Sie einen Kanal erwähnen), um ihn zu identifizieren."
   },
   {
     "id": "api.command_invite.success",
@@ -1523,7 +1523,7 @@
   },
   {
     "id": "api.command_mute.error",
-    "translation": "Der Kanal {{.Channel}} konnte nicht gefunden werden. Verwenden Sie den Kanal-Handle (der Name nach ~, wenn Sie einen Kanal erwähnen), um ihn zu identifizieren."
+    "translation": "Der Kanal {{.Channel}} konnte nicht gefunden werden. Verwenden Sie den Kanal-Handle (der Name nach #, wenn Sie einen Kanal erwähnen), um ihn zu identifizieren."
   },
   {
     "id": "api.command_mute.hint",
@@ -1535,7 +1535,7 @@
   },
   {
     "id": "api.command_mute.no_channel.error",
-    "translation": "Der angegebene Kanal konnte nicht gefunden werden. Verwenden Sie den Kanal-Handle (der Name nach ~, wenn Sie einen Kanal erwähnen), um ihn zu identifizieren."
+    "translation": "Der angegebene Kanal konnte nicht gefunden werden. Verwenden Sie den Kanal-Handle (der Name nach #, wenn Sie einen Kanal erwähnen), um ihn zu identifizieren."
   },
   {
     "id": "api.command_mute.success_mute",
@@ -1980,6 +1980,30 @@
   {
     "id": "api.command_shrug.name",
     "translation": "achselzucken"
+  },
+  {
+    "id": "api.command_tableflip.desc",
+    "translation": "Fügt (╯°□°)╯︵ ┻━┻ zu Ihrer Nachricht hinzu"
+  },
+  {
+    "id": "api.command_tableflip.hint",
+    "translation": "[nachricht]"
+  },
+  {
+    "id": "api.command_tableflip.name",
+    "translation": "tableflip"
+  },
+  {
+    "id": "api.command_unflip.desc",
+    "translation": "Fügt ┬─┬ノ( º _ ºノ) zu Ihrer Nachricht hinzu"
+  },
+  {
+    "id": "api.command_unflip.hint",
+    "translation": "[nachricht]"
+  },
+  {
+    "id": "api.command_unflip.name",
+    "translation": "unflip"
   },
   {
     "id": "api.config.get_config.restricted_merge.app_error",
@@ -3227,12 +3251,40 @@
     "translation": "Kanal nicht gefunden"
   },
   {
+    "id": "api.post.move_thread.archived.app_error",
+    "translation": "Threads können nicht aus oder in einen archivierten Kanal verschoben werden."
+  },
+  {
+    "id": "api.post.move_thread.cannot_post.app_error",
+    "translation": "Sie können nicht in den Kanal posten, in den Sie den Thread verschieben möchten."
+  },
+  {
     "id": "api.post.move_thread.disabled.app_error",
     "translation": "Das Verschieben von Unterhaltungen ist deaktiviert"
   },
   {
     "id": "api.post.move_thread.no_permission",
     "translation": "Du hast keine Berechtigung, diese Unterhaltung zu verschieben."
+  },
+  {
+    "id": "api.post.move_thread.private_needs_moderator.app_error",
+    "translation": "Nur ein Moderator kann Antworten anderer Personen in oder aus einem privaten Kanal verschieben. Sie können diesen Thread zwischen öffentlichen Kanälen oder einen Thread mit nur Ihren eigenen Nachrichten verschieben."
+  },
+  {
+    "id": "api.post.move_thread.same_channel.app_error",
+    "translation": "Der Thread befindet sich bereits in diesem Kanal."
+  },
+  {
+    "id": "api.post.move_thread.same_community.app_error",
+    "translation": "Ein Thread kann nur in einen anderen Kanal seiner Community verschoben werden."
+  },
+  {
+    "id": "api.post.move_thread.too_long.app_error",
+    "translation": "Dieser Thread hat {{.Count}} Nachrichten; Threads mit bis zu {{.Max}} Nachrichten können verschoben werden."
+  },
+  {
+    "id": "api.post.move_thread.unsupported.app_error",
+    "translation": "Systemnachrichten und Nachrichten, die nach dem Lesen gelöscht werden, können nicht verschoben werden."
   },
   {
     "id": "api.post.patch_post.can_not_update_burn_on_read_post.error",

@@ -1295,7 +1295,7 @@
   },
   {
     "id": "api.command_invite.channel.error",
-    "translation": "채널 {{.Channel}}을(를) 찾을 수 없습니다. 채널을 식별하려면 채널 핸들(채널을 멘션할 때 ~ 뒤에 오는 이름)을 사용하세요."
+    "translation": "채널 {{.Channel}}을(를) 찾을 수 없습니다. 채널을 식별하려면 채널 핸들(채널을 멘션할 때 # 뒤에 오는 이름)을 사용하세요."
   },
   {
     "id": "api.command_invite.channel_constrained_user_denied",
@@ -1335,7 +1335,7 @@
   },
   {
     "id": "api.command_invite.private_channel.app_error",
-    "translation": "{{.Channel}} 채널을 찾을 수 없습니다. 채널 핸들(채널을 멘션할 때 ~ 뒤에 오는 이름)을 사용하여 채널을 식별하세요."
+    "translation": "{{.Channel}} 채널을 찾을 수 없습니다. 채널 핸들(채널을 멘션할 때 # 뒤에 오는 이름)을 사용하여 채널을 식별하세요."
   },
   {
     "id": "api.command_invite.success",
@@ -1521,7 +1521,7 @@
   },
   {
     "id": "api.command_mute.error",
-    "translation": "채널 {{.Channel}}을(를) 찾을 수 없습니다. 채널 핸들(채널 멘션 시 ~ 뒤에 오는 이름)을 사용하여 채널을 식별하세요."
+    "translation": "채널 {{.Channel}}을(를) 찾을 수 없습니다. 채널 핸들(채널 멘션 시 # 뒤에 오는 이름)을 사용하여 채널을 식별하세요."
   },
   {
     "id": "api.command_mute.hint",
@@ -1533,7 +1533,7 @@
   },
   {
     "id": "api.command_mute.no_channel.error",
-    "translation": "지정한 채널을 찾을 수 없습니다. 채널 핸들(채널을 멘션할 때 ~ 뒤에 오는 이름)을 사용하여 채널을 지정하세요."
+    "translation": "지정한 채널을 찾을 수 없습니다. 채널 핸들(채널을 멘션할 때 # 뒤에 오는 이름)을 사용하여 채널을 지정하세요."
   },
   {
     "id": "api.command_mute.success_mute",
@@ -1978,6 +1978,30 @@
   {
     "id": "api.command_shrug.name",
     "translation": "shrug"
+  },
+  {
+    "id": "api.command_tableflip.desc",
+    "translation": "메시지에 (╯°□°)╯︵ ┻━┻를 추가합니다"
+  },
+  {
+    "id": "api.command_tableflip.hint",
+    "translation": "[message]"
+  },
+  {
+    "id": "api.command_tableflip.name",
+    "translation": "tableflip"
+  },
+  {
+    "id": "api.command_unflip.desc",
+    "translation": "메시지에 ┬─┬ノ( º _ ºノ)를 추가합니다"
+  },
+  {
+    "id": "api.command_unflip.hint",
+    "translation": "[message]"
+  },
+  {
+    "id": "api.command_unflip.name",
+    "translation": "unflip"
   },
   {
     "id": "api.config.get_config.restricted_merge.app_error",
@@ -3206,12 +3230,40 @@
     "translation": "채널을 찾을 수 없습니다"
   },
   {
+    "id": "api.post.move_thread.archived.app_error",
+    "translation": "아카이브된 채널에서 글타래를 이동하거나 아카이브된 채널로 이동할 수 없습니다."
+  },
+  {
+    "id": "api.post.move_thread.cannot_post.app_error",
+    "translation": "글타래를 이동하려는 채널에 게시할 수 없습니다."
+  },
+  {
     "id": "api.post.move_thread.disabled.app_error",
     "translation": "스레드 이동이 비활성화됩니다."
   },
   {
     "id": "api.post.move_thread.no_permission",
     "translation": "이 스레드를 이동할 수 있는 권한이 없습니다."
+  },
+  {
+    "id": "api.post.move_thread.private_needs_moderator.app_error",
+    "translation": "다른 사람의 답글을 비공개 채널로 이동하거나 비공개 채널에서 가져오는 것은 관리자만 가능합니다. 이 글타래는 공개 채널 간에 이동하거나, 내 메시지만 포함된 글타래로 이동할 수 있습니다."
+  },
+  {
+    "id": "api.post.move_thread.same_channel.app_error",
+    "translation": "이 글타래는 이미 해당 채널에 있습니다."
+  },
+  {
+    "id": "api.post.move_thread.same_community.app_error",
+    "translation": "글타래는 해당 커뮤니티의 다른 채널로만 이동할 수 있습니다."
+  },
+  {
+    "id": "api.post.move_thread.too_long.app_error",
+    "translation": "이 글타래에는 {{.Count}}개의 메시지가 있습니다. 최대 {{.Max}}개 메시지의 글타래만 이동할 수 있습니다."
+  },
+  {
+    "id": "api.post.move_thread.unsupported.app_error",
+    "translation": "시스템 메시지와 읽은 후 소멸하는 메시지는 이동할 수 없습니다."
   },
   {
     "id": "api.post.patch_post.can_not_update_burn_on_read_post.error",

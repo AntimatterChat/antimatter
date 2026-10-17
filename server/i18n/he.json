@@ -1253,7 +1253,7 @@
   },
   {
     "id": "api.command_invite.channel.error",
-    "translation": "לא ניתן למצוא את הערוץ {{.Channel}}. השתמשו בידית הערוץ (השם שמופיע אחרי ~ כשאתם מזכירים ערוץ) כדי לזהות אותו."
+    "translation": "לא ניתן למצוא את הערוץ {{.Channel}}. השתמשו בידית הערוץ (השם שמופיע אחרי # כשאתם מזכירים ערוץ) כדי לזהות אותו."
   },
   {
     "id": "api.command_invite.channel_constrained_user_denied",
@@ -1293,7 +1293,7 @@
   },
   {
     "id": "api.command_invite.private_channel.app_error",
-    "translation": "לא ניתן למצוא את הערוץ {{.Channel}}. השתמשו בידית הערוץ (השם שמופיע אחרי ~ כשאתם מזכירים ערוץ) כדי לזהות אותו."
+    "translation": "לא ניתן למצוא את הערוץ {{.Channel}}. השתמשו בידית הערוץ (השם שמופיע אחרי # כשאתם מזכירים ערוץ) כדי לזהות אותו."
   },
   {
     "id": "api.command_invite.success",
@@ -1473,7 +1473,7 @@
   },
   {
     "id": "api.command_mute.error",
-    "translation": "לא ניתן למצוא את הערוץ {{.Channel}}. השתמשו בידית הערוץ (השם שמופיע אחרי ~ כשאתם מזכירים ערוץ) כדי לזהות אותו."
+    "translation": "לא ניתן למצוא את הערוץ {{.Channel}}. השתמשו בידית הערוץ (השם שמופיע אחרי # כשאתם מזכירים ערוץ) כדי לזהות אותו."
   },
   {
     "id": "api.command_mute.hint",
@@ -1485,7 +1485,7 @@
   },
   {
     "id": "api.command_mute.no_channel.error",
-    "translation": "לא ניתן למצוא את הערוץ שצוין. השתמשו בידית הערוץ (השם שמופיע אחרי ~ כשאתם מזכירים ערוץ) כדי לזהות אותו."
+    "translation": "לא ניתן למצוא את הערוץ שצוין. השתמשו בידית הערוץ (השם שמופיע אחרי # כשאתם מזכירים ערוץ) כדי לזהות אותו."
   },
   {
     "id": "api.command_mute.success_mute",
@@ -1930,6 +1930,30 @@
   {
     "id": "api.command_shrug.name",
     "translation": "shrug"
+  },
+  {
+    "id": "api.command_tableflip.desc",
+    "translation": "מוסיף (╯°□°)╯︵ ┻━┻ להודעה שלך"
+  },
+  {
+    "id": "api.command_tableflip.hint",
+    "translation": "[הודעה]"
+  },
+  {
+    "id": "api.command_tableflip.name",
+    "translation": "tableflip"
+  },
+  {
+    "id": "api.command_unflip.desc",
+    "translation": "מוסיף ┬─┬ノ( º _ ºノ) להודעה שלך"
+  },
+  {
+    "id": "api.command_unflip.hint",
+    "translation": "[הודעה]"
+  },
+  {
+    "id": "api.command_unflip.name",
+    "translation": "unflip"
   },
   {
     "id": "api.config.get_config.restricted_merge.app_error",
@@ -3028,12 +3052,40 @@
     "translation": "הערוץ לא נמצא"
   },
   {
+    "id": "api.post.move_thread.archived.app_error",
+    "translation": "לא ניתן להעביר שרשורים מערוץ שהועבר לארכיון או אליו."
+  },
+  {
+    "id": "api.post.move_thread.cannot_post.app_error",
+    "translation": "לא ניתן לפרסם בערוץ שאליו אתה מעביר את השרשור."
+  },
+  {
     "id": "api.post.move_thread.disabled.app_error",
     "translation": "העברת שרשורים מנוטרלת"
   },
   {
     "id": "api.post.move_thread.no_permission",
     "translation": "אין לך הרשאה להעביר שרשור זה."
+  },
+  {
+    "id": "api.post.move_thread.private_needs_moderator.app_error",
+    "translation": "רק מנהל יכול להעביר תשובות של אחרים מערוץ פרטי או אליו. ניתן להעביר שרשור זה בין ערוצים ציבוריים, או שרשור המכיל רק את ההודעות שלך."
+  },
+  {
+    "id": "api.post.move_thread.same_channel.app_error",
+    "translation": "השרשור כבר נמצא בערוץ זה."
+  },
+  {
+    "id": "api.post.move_thread.same_community.app_error",
+    "translation": "שרשור יכול להיות מועבר רק לערוץ אחר באותה קהילה."
+  },
+  {
+    "id": "api.post.move_thread.too_long.app_error",
+    "translation": "לשרשור זה יש {{.Count}} הודעות; ניתן להעביר שרשורים של עד {{.Max}} הודעות."
+  },
+  {
+    "id": "api.post.move_thread.unsupported.app_error",
+    "translation": "לא ניתן להעביר הודעות מערכת והודעות שנשרפות בקריאה."
   },
   {
     "id": "api.post.patch_post.can_not_update_burn_on_read_post.error",

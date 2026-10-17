@@ -1574,7 +1574,7 @@
   },
   {
     "id": "api.command_invite.channel.error",
-    "translation": "Could not find the channel {{.Channel}}. Use the channel handle (the name after ~ when you mention a channel) to identify it.",
+    "translation": "Could not find the channel {{.Channel}}. Use the channel handle (the name after # when you mention a channel) to identify it.",
     "description": "Ephemeral error for the /invite slash command; {{.Channel}} is the channel name the user typed; '~' is the character that starts a channel mention."
   },
   {
@@ -1624,7 +1624,7 @@
   },
   {
     "id": "api.command_invite.private_channel.app_error",
-    "translation": "Could not find the channel {{.Channel}}. Use the channel handle (the name after ~ when you mention a channel) to identify it.",
+    "translation": "Could not find the channel {{.Channel}}. Use the channel handle (the name after # when you mention a channel) to identify it.",
     "description": "Ephemeral error for the /invite slash command when the named private channel is not found; {{.Channel}} is the channel name typed; '~' is the character that starts a channel mention."
   },
   {
@@ -1857,7 +1857,7 @@
   },
   {
     "id": "api.command_mute.error",
-    "translation": "Could not find the channel {{.Channel}}. Use the channel handle (the name after ~ when you mention a channel) to identify it.",
+    "translation": "Could not find the channel {{.Channel}}. Use the channel handle (the name after # when you mention a channel) to identify it.",
     "description": "Ephemeral error for the /mute slash command; {{.Channel}} is the channel name the user typed; '~' is the character that starts a channel mention."
   },
   {
@@ -1872,7 +1872,7 @@
   },
   {
     "id": "api.command_mute.no_channel.error",
-    "translation": "Could not find the specified channel. Use the channel handle (the name after ~ when you mention a channel) to identify it.",
+    "translation": "Could not find the specified channel. Use the channel handle (the name after # when you mention a channel) to identify it.",
     "description": "Ephemeral error for the /mute slash command when the given channel cannot be found; '~' is the character that starts a channel mention."
   },
   {

@@ -1296,7 +1296,7 @@
   },
   {
     "id": "api.command_invite.channel.error",
-    "translation": "Kanavaa {{.Channel}} ei löytynyt. Käytä kanavan tunnusta (nimi ~-merkin jälkeen, kun mainitset kanavan) tunnistamaan se."
+    "translation": "Kanavaa {{.Channel}} ei löytynyt. Käytä kanavan tunnusta (nimi #-merkin jälkeen, kun mainitset kanavan) tunnistamaan se."
   },
   {
     "id": "api.command_invite.channel_constrained_user_denied",
@@ -1336,7 +1336,7 @@
   },
   {
     "id": "api.command_invite.private_channel.app_error",
-    "translation": "Kanavaa {{.Channel}} ei löytynyt. Käytä kanavan tunnusta (nimi ~-merkin jälkeen, kun mainitset kanavan) tunnistamaan se."
+    "translation": "Kanavaa {{.Channel}} ei löytynyt. Käytä kanavan tunnusta (nimi #-merkin jälkeen, kun mainitset kanavan) tunnistamaan se."
   },
   {
     "id": "api.command_invite.success",
@@ -1523,7 +1523,7 @@
   },
   {
     "id": "api.command_mute.error",
-    "translation": "Kanavaa {{.Channel}} ei löytynyt. Käytä kanavan tunnusta (nimi ~-merkin jälkeen, kun mainitset kanavan) tunnistamaan se."
+    "translation": "Kanavaa {{.Channel}} ei löytynyt. Käytä kanavan tunnusta (nimi #-merkin jälkeen, kun mainitset kanavan) tunnistamaan se."
   },
   {
     "id": "api.command_mute.hint",
@@ -1535,7 +1535,7 @@
   },
   {
     "id": "api.command_mute.no_channel.error",
-    "translation": "Määritettyä kanavaa ei löytynyt. Käytä kanavan tunnusta (nimi ~-merkin jälkeen, kun mainitset kanavan) tunnistamaan se."
+    "translation": "Määritettyä kanavaa ei löytynyt. Käytä kanavan tunnusta (nimi #-merkin jälkeen, kun mainitset kanavan) tunnistamaan se."
   },
   {
     "id": "api.command_mute.success_mute",
@@ -1980,6 +1980,30 @@
   {
     "id": "api.command_shrug.name",
     "translation": "olankohtautus"
+  },
+  {
+    "id": "api.command_tableflip.desc",
+    "translation": "Lisää (╯°□°)╯︵ ┻━┻ viestiisi"
+  },
+  {
+    "id": "api.command_tableflip.hint",
+    "translation": "[viesti]"
+  },
+  {
+    "id": "api.command_tableflip.name",
+    "translation": "tableflip"
+  },
+  {
+    "id": "api.command_unflip.desc",
+    "translation": "Lisää ┬─┬ノ( º _ ºノ) viestisi"
+  },
+  {
+    "id": "api.command_unflip.hint",
+    "translation": "[viesti]"
+  },
+  {
+    "id": "api.command_unflip.name",
+    "translation": "unflip"
   },
   {
     "id": "api.config.get_config.restricted_merge.app_error",
@@ -3227,12 +3251,40 @@
     "translation": "Kanavaa ei löytynyt"
   },
   {
+    "id": "api.post.move_thread.archived.app_error",
+    "translation": "Ketjuja ei voi siirtää arkistoitusta kanavasta tai arkistoitulle kanavalle."
+  },
+  {
+    "id": "api.post.move_thread.cannot_post.app_error",
+    "translation": "Et voi lähettää viestejä kanavaan, johon siirrät ketjua."
+  },
+  {
     "id": "api.post.move_thread.disabled.app_error",
     "translation": "Ketjujen siirtäminen on poistettu käytöstä"
   },
   {
     "id": "api.post.move_thread.no_permission",
     "translation": "Sinulla ei ole oikeutta siirtää tätä ketjua."
+  },
+  {
+    "id": "api.post.move_thread.private_needs_moderator.app_error",
+    "translation": "Vain moderaattori voi siirtää muiden ihmisten vastauksia yksityisen kanavan sisälle tai ulos. Voit siirtää tämän ketjun julkisten kanavien välillä tai ketjun, jossa on vain omia viestejäsi."
+  },
+  {
+    "id": "api.post.move_thread.same_channel.app_error",
+    "translation": "Ketju on jo tässä kanavassa."
+  },
+  {
+    "id": "api.post.move_thread.same_community.app_error",
+    "translation": "Ketju voidaan siirtää vain toiseen kanavaan samassa yhteisössä."
+  },
+  {
+    "id": "api.post.move_thread.too_long.app_error",
+    "translation": "Tässä ketjussa on {{.Count}} viestiä; vain ketjut, joissa on enintään {{.Max}} viestiä, voidaan siirtää."
+  },
+  {
+    "id": "api.post.move_thread.unsupported.app_error",
+    "translation": "Järjestelmäviestejä ja luetun jälkeen poistettavia viestejä ei voi siirtää."
   },
   {
     "id": "api.post.patch_post.can_not_update_burn_on_read_post.error",

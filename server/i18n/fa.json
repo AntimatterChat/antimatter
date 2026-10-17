@@ -1296,7 +1296,7 @@
   },
   {
     "id": "api.command_invite.channel.error",
-    "translation": "کانال {{.Channel}} یافت نشد. برای شناسایی آن از نام کانال (نامی که بعد از ~ هنگام اشاره به کانال می‌آید) استفاده کنید."
+    "translation": "کانال {{.Channel}} یافت نشد. برای شناسایی آن از نام کانال (نامی که بعد از # هنگام اشاره به کانال می‌آید) استفاده کنید."
   },
   {
     "id": "api.command_invite.channel_constrained_user_denied",
@@ -1336,7 +1336,7 @@
   },
   {
     "id": "api.command_invite.private_channel.app_error",
-    "translation": "کانال {{.Channel}} یافت نشد. برای شناسایی آن از نام کانال (نامی که بعد از ~ هنگام اشاره به کانال می‌آید) استفاده کنید."
+    "translation": "کانال {{.Channel}} یافت نشد. برای شناسایی آن از نام کانال (نامی که بعد از # هنگام اشاره به کانال می‌آید) استفاده کنید."
   },
   {
     "id": "api.command_invite.success",
@@ -1523,7 +1523,7 @@
   },
   {
     "id": "api.command_mute.error",
-    "translation": "کانال {{.Channel}} یافت نشد. برای شناسایی آن از نام کانال (نامی که بعد از ~ هنگام اشاره به کانال می‌آید) استفاده کنید."
+    "translation": "کانال {{.Channel}} یافت نشد. برای شناسایی آن از نام کانال (نامی که بعد از # هنگام اشاره به کانال می‌آید) استفاده کنید."
   },
   {
     "id": "api.command_mute.hint",
@@ -1535,7 +1535,7 @@
   },
   {
     "id": "api.command_mute.no_channel.error",
-    "translation": "کانال مشخص‌شده یافت نشد. برای شناسایی آن از نام کانال (نامی که بعد از ~ هنگام اشاره به کانال می‌آید) استفاده کنید."
+    "translation": "کانال مشخص‌شده یافت نشد. برای شناسایی آن از نام کانال (نامی که بعد از # هنگام اشاره به کانال می‌آید) استفاده کنید."
   },
   {
     "id": "api.command_mute.success_mute",
@@ -1980,6 +1980,30 @@
   {
     "id": "api.command_shrug.name",
     "translation": "شانه بالا"
+  },
+  {
+    "id": "api.command_tableflip.desc",
+    "translation": "(╯°□°)╯︵ ┻━┻ را به پیام شما اضافه می‌کند"
+  },
+  {
+    "id": "api.command_tableflip.hint",
+    "translation": "[message]"
+  },
+  {
+    "id": "api.command_tableflip.name",
+    "translation": "tableflip"
+  },
+  {
+    "id": "api.command_unflip.desc",
+    "translation": "┬─┬ノ( º _ ºノ) را به پیام شما اضافه می‌کند"
+  },
+  {
+    "id": "api.command_unflip.hint",
+    "translation": "[message]"
+  },
+  {
+    "id": "api.command_unflip.name",
+    "translation": "برگرداندن"
   },
   {
     "id": "api.config.get_config.restricted_merge.app_error",
@@ -3227,12 +3251,40 @@
     "translation": "کانال یافت نشد"
   },
   {
+    "id": "api.post.move_thread.archived.app_error",
+    "translation": "رشته‌ها را نمی‌توان از کانال بایگانی‌شده به آن یا به کانال بایگانی‌شده منتقل کرد."
+  },
+  {
+    "id": "api.post.move_thread.cannot_post.app_error",
+    "translation": "شما نمی‌توانید در کانالی که رشته را به آن منتقل می‌کنید، پیام ارسال کنید."
+  },
+  {
     "id": "api.post.move_thread.disabled.app_error",
     "translation": "جابه‌جایی موضوع غیرفعال است"
   },
   {
     "id": "api.post.move_thread.no_permission",
     "translation": "شما مجوز جابه‌جایی این موضوع را ندارید."
+  },
+  {
+    "id": "api.post.move_thread.private_needs_moderator.app_error",
+    "translation": "فقط یک مدیر می‌تواند پاسخ‌های دیگران را به داخل یا خارج از یک کانال خصوصی جابه‌جا کند. شما می‌توانید این رشته را بین کانال‌های عمومی جابه‌جا کنید، یا رشته‌ای که فقط شامل پیام‌های خودتان باشد."
+  },
+  {
+    "id": "api.post.move_thread.same_channel.app_error",
+    "translation": "رشته از قبل در این کانال قرار دارد."
+  },
+  {
+    "id": "api.post.move_thread.same_community.app_error",
+    "translation": "یک رشته فقط می‌تواند به کانال دیگری در همان فضای کاری منتقل شود."
+  },
+  {
+    "id": "api.post.move_thread.too_long.app_error",
+    "translation": "این رشته {{.Count}} پیام دارد؛ فقط رشته‌هایی با حداکثر {{.Max}} پیام قابل جابه‌جایی هستند."
+  },
+  {
+    "id": "api.post.move_thread.unsupported.app_error",
+    "translation": "پیام‌های سیستمی و پیام‌های یک‌بار مصرف قابل جابه‌جایی نیستند."
   },
   {
     "id": "api.post.patch_post.can_not_update_burn_on_read_post.error",

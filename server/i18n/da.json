@@ -1296,7 +1296,7 @@
   },
   {
     "id": "api.command_invite.channel.error",
-    "translation": "Kunne ikke finde kanalen {{.Channel}}. Brug kanalens handle (navnet efter ~ når du omtaler en kanal) til at identificere den."
+    "translation": "Kunne ikke finde kanalen {{.Channel}}. Brug kanalens handle (navnet efter # når du omtaler en kanal) til at identificere den."
   },
   {
     "id": "api.command_invite.channel_constrained_user_denied",
@@ -1336,7 +1336,7 @@
   },
   {
     "id": "api.command_invite.private_channel.app_error",
-    "translation": "Kunne ikke finde kanalen {{.Channel}}. Brug kanalens handle (navnet efter ~ når du omtaler en kanal) til at identificere den."
+    "translation": "Kunne ikke finde kanalen {{.Channel}}. Brug kanalens handle (navnet efter # når du omtaler en kanal) til at identificere den."
   },
   {
     "id": "api.command_invite.success",
@@ -1523,7 +1523,7 @@
   },
   {
     "id": "api.command_mute.error",
-    "translation": "Kunne ikke finde kanalen {{.Channel}}. Brug kanalens handle (navnet efter ~ når du omtaler en kanal) til at identificere den."
+    "translation": "Kunne ikke finde kanalen {{.Channel}}. Brug kanalens handle (navnet efter # når du omtaler en kanal) til at identificere den."
   },
   {
     "id": "api.command_mute.hint",
@@ -1535,7 +1535,7 @@
   },
   {
     "id": "api.command_mute.no_channel.error",
-    "translation": "Kunne ikke finde den angivne kanal. Brug kanalens handle (navnet efter ~ når du omtaler en kanal) til at identificere den."
+    "translation": "Kunne ikke finde den angivne kanal. Brug kanalens handle (navnet efter # når du omtaler en kanal) til at identificere den."
   },
   {
     "id": "api.command_mute.success_mute",
@@ -1980,6 +1980,30 @@
   {
     "id": "api.command_shrug.name",
     "translation": "shrug"
+  },
+  {
+    "id": "api.command_tableflip.desc",
+    "translation": "Tilføjer (╯°□°)╯︵ ┻━┻ til din besked"
+  },
+  {
+    "id": "api.command_tableflip.hint",
+    "translation": "[besked]"
+  },
+  {
+    "id": "api.command_tableflip.name",
+    "translation": "tableflip"
+  },
+  {
+    "id": "api.command_unflip.desc",
+    "translation": "Tilføjer ┬─┬ノ( º _ ºノ) til din besked"
+  },
+  {
+    "id": "api.command_unflip.hint",
+    "translation": "[besked]"
+  },
+  {
+    "id": "api.command_unflip.name",
+    "translation": "unflip"
   },
   {
     "id": "api.config.get_config.restricted_merge.app_error",
@@ -3227,12 +3251,40 @@
     "translation": "Kanal ikke fundet"
   },
   {
+    "id": "api.post.move_thread.archived.app_error",
+    "translation": "Tråde kan ikke flyttes fra eller til en arkiveret kanal."
+  },
+  {
+    "id": "api.post.move_thread.cannot_post.app_error",
+    "translation": "Du kan ikke skrive i den kanal, du flytter tråden til."
+  },
+  {
     "id": "api.post.move_thread.disabled.app_error",
     "translation": "Flytning af tråd er deaktiveret"
   },
   {
     "id": "api.post.move_thread.no_permission",
     "translation": "Du har ikke tilladelse til at flytte denne tråd."
+  },
+  {
+    "id": "api.post.move_thread.private_needs_moderator.app_error",
+    "translation": "Kun en moderator kan flytte andres svar til eller fra en privat kanal. Du kan flytte denne tråd mellem offentlige kanaler, eller en tråd, der kun indeholder dine egne beskeder."
+  },
+  {
+    "id": "api.post.move_thread.same_channel.app_error",
+    "translation": "Tråden er allerede i denne kanal."
+  },
+  {
+    "id": "api.post.move_thread.same_community.app_error",
+    "translation": "En tråd kan kun flyttes til en anden kanal i dens community."
+  },
+  {
+    "id": "api.post.move_thread.too_long.app_error",
+    "translation": "Denne tråd har {{.Count}} beskeder; tråde med op til {{.Max}} beskeder kan flyttes."
+  },
+  {
+    "id": "api.post.move_thread.unsupported.app_error",
+    "translation": "Systembeskeder og beskeder, der brænder ved læsning, kan ikke flyttes."
   },
   {
     "id": "api.post.patch_post.can_not_update_burn_on_read_post.error",

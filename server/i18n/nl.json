@@ -1296,7 +1296,7 @@
   },
   {
     "id": "api.command_invite.channel.error",
-    "translation": "Het kanaal {{.Channel}} kon niet worden gevonden. Gebruik de kanaalhandler (de naam na ~ wanneer u een kanaal vermeldt) om het te identificeren."
+    "translation": "Het kanaal {{.Channel}} kon niet worden gevonden. Gebruik de kanaalhandler (de naam na # wanneer u een kanaal vermeldt) om het te identificeren."
   },
   {
     "id": "api.command_invite.channel_constrained_user_denied",
@@ -1336,7 +1336,7 @@
   },
   {
     "id": "api.command_invite.private_channel.app_error",
-    "translation": "Het kanaal {{.Channel}} kon niet worden gevonden. Gebruik de kanaalhandler (de naam na ~ wanneer u een kanaal vermeldt) om het te identificeren."
+    "translation": "Het kanaal {{.Channel}} kon niet worden gevonden. Gebruik de kanaalhandler (de naam na # wanneer u een kanaal vermeldt) om het te identificeren."
   },
   {
     "id": "api.command_invite.success",
@@ -1523,7 +1523,7 @@
   },
   {
     "id": "api.command_mute.error",
-    "translation": "Het kanaal {{.Channel}} kon niet worden gevonden. Gebruik de kanaalhandler (de naam na ~ wanneer u een kanaal vermeldt) om het te identificeren."
+    "translation": "Het kanaal {{.Channel}} kon niet worden gevonden. Gebruik de kanaalhandler (de naam na # wanneer u een kanaal vermeldt) om het te identificeren."
   },
   {
     "id": "api.command_mute.hint",
@@ -1535,7 +1535,7 @@
   },
   {
     "id": "api.command_mute.no_channel.error",
-    "translation": "Het opgegeven kanaal kon niet worden gevonden. Gebruik de kanaalhandler (de naam na ~ wanneer u een kanaal vermeldt) om het te identificeren."
+    "translation": "Het opgegeven kanaal kon niet worden gevonden. Gebruik de kanaalhandler (de naam na # wanneer u een kanaal vermeldt) om het te identificeren."
   },
   {
     "id": "api.command_mute.success_mute",
@@ -1980,6 +1980,30 @@
   {
     "id": "api.command_shrug.name",
     "translation": "ophalen"
+  },
+  {
+    "id": "api.command_tableflip.desc",
+    "translation": "Voegt (╯°□°)╯︵ ┻━┻ toe aan je bericht"
+  },
+  {
+    "id": "api.command_tableflip.hint",
+    "translation": "[bericht]"
+  },
+  {
+    "id": "api.command_tableflip.name",
+    "translation": "tableflip"
+  },
+  {
+    "id": "api.command_unflip.desc",
+    "translation": "Voegt ┬─┬ノ( º _ ºノ) toe aan je bericht"
+  },
+  {
+    "id": "api.command_unflip.hint",
+    "translation": "[bericht]"
+  },
+  {
+    "id": "api.command_unflip.name",
+    "translation": "unflip"
   },
   {
     "id": "api.config.get_config.restricted_merge.app_error",
@@ -3227,12 +3251,40 @@
     "translation": "Kanaal niet gevonden"
   },
   {
+    "id": "api.post.move_thread.archived.app_error",
+    "translation": "Draadjes kunnen niet worden verplaatst van of naar een gearchiveerd kanaal."
+  },
+  {
+    "id": "api.post.move_thread.cannot_post.app_error",
+    "translation": "Je kunt niet posten in het kanaal waarnaar je het draadje verplaatst."
+  },
+  {
     "id": "api.post.move_thread.disabled.app_error",
     "translation": "Draadjes verplaatsen is uitgeschakeld"
   },
   {
     "id": "api.post.move_thread.no_permission",
     "translation": "Je hebt geen rechten om dit draadje te verplaatsen."
+  },
+  {
+    "id": "api.post.move_thread.private_needs_moderator.app_error",
+    "translation": "Alleen een moderator kan antwoorden van anderen verplaatsen van of naar een privé-kanaal. Je kunt dit draadje verplaatsen tussen publieke kanalen, of een draadje dat alleen uit je eigen berichten bestaat."
+  },
+  {
+    "id": "api.post.move_thread.same_channel.app_error",
+    "translation": "Het draadje bevindt zich al in dit kanaal."
+  },
+  {
+    "id": "api.post.move_thread.same_community.app_error",
+    "translation": "Een draadje kan alleen worden verplaatst naar een ander kanaal binnen dezelfde community."
+  },
+  {
+    "id": "api.post.move_thread.too_long.app_error",
+    "translation": "Dit draadje heeft {{.Count}} berichten; draadjes met maximaal {{.Max}} berichten kunnen worden verplaatst."
+  },
+  {
+    "id": "api.post.move_thread.unsupported.app_error",
+    "translation": "Systeemberichten en berichten die na het lezen worden gewist, kunnen niet worden verplaatst."
   },
   {
     "id": "api.post.patch_post.can_not_update_burn_on_read_post.error",

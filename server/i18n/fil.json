@@ -1253,7 +1253,7 @@
   },
   {
     "id": "api.command_invite.channel.error",
-    "translation": "Hindi nakita ang channel {{.Channel}}. Gamitin ang channel handle (ang pangalan pagkatapos ng ~ kapag binabanggit ang channel) upang matukoy ito."
+    "translation": "Hindi nakita ang channel {{.Channel}}. Gamitin ang channel handle (ang pangalan pagkatapos ng # kapag binabanggit ang channel) upang matukoy ito."
   },
   {
     "id": "api.command_invite.channel_constrained_user_denied",
@@ -1293,7 +1293,7 @@
   },
   {
     "id": "api.command_invite.private_channel.app_error",
-    "translation": "Hindi nakita ang channel {{.Channel}}. Gamitin ang channel handle (ang pangalan pagkatapos ng ~ kapag binabanggit ang channel) upang matukoy ito."
+    "translation": "Hindi nakita ang channel {{.Channel}}. Gamitin ang channel handle (ang pangalan pagkatapos ng # kapag binabanggit ang channel) upang matukoy ito."
   },
   {
     "id": "api.command_invite.success",
@@ -1473,7 +1473,7 @@
   },
   {
     "id": "api.command_mute.error",
-    "translation": "Hindi nakita ang channel {{.Channel}}. Gamitin ang channel handle (ang pangalan pagkatapos ng ~ kapag binabanggit ang channel) upang matukoy ito."
+    "translation": "Hindi nakita ang channel {{.Channel}}. Gamitin ang channel handle (ang pangalan pagkatapos ng # kapag binabanggit ang channel) upang matukoy ito."
   },
   {
     "id": "api.command_mute.hint",
@@ -1485,7 +1485,7 @@
   },
   {
     "id": "api.command_mute.no_channel.error",
-    "translation": "Hindi nakita ang tinukoy na channel. Gamitin ang channel handle (ang pangalan pagkatapos ng ~ kapag binabanggit ang channel) upang matukoy ito."
+    "translation": "Hindi nakita ang tinukoy na channel. Gamitin ang channel handle (ang pangalan pagkatapos ng # kapag binabanggit ang channel) upang matukoy ito."
   },
   {
     "id": "api.command_mute.success_mute",
@@ -1930,6 +1930,30 @@
   {
     "id": "api.command_shrug.name",
     "translation": "shrug"
+  },
+  {
+    "id": "api.command_tableflip.desc",
+    "translation": "Naidodagdag ang (╯°□°)╯︵ ┻━┻ sa iyong mensahe"
+  },
+  {
+    "id": "api.command_tableflip.hint",
+    "translation": "[mensahe]"
+  },
+  {
+    "id": "api.command_tableflip.name",
+    "translation": "tableflip"
+  },
+  {
+    "id": "api.command_unflip.desc",
+    "translation": "Naidodagdag ang ┬─┬ノ( º _ ºノ) sa iyong mensahe"
+  },
+  {
+    "id": "api.command_unflip.hint",
+    "translation": "[mensahe]"
+  },
+  {
+    "id": "api.command_unflip.name",
+    "translation": "unflip"
   },
   {
     "id": "api.config.get_config.restricted_merge.app_error",
@@ -3028,12 +3052,40 @@
     "translation": "Hindi nahanap ang channel"
   },
   {
+    "id": "api.post.move_thread.archived.app_error",
+    "translation": "Hindi maipapalitan ang mga Thread mula sa o papunta sa isang archived channel."
+  },
+  {
+    "id": "api.post.move_thread.cannot_post.app_error",
+    "translation": "Hindi ka makapag-post sa channel na pupuntahan ng thread."
+  },
+  {
     "id": "api.post.move_thread.disabled.app_error",
     "translation": "Hindi aktibo ang paglipat ng thread"
   },
   {
     "id": "api.post.move_thread.no_permission",
     "translation": "Hindi ka may permiso na ilipat ang thread na ito."
+  },
+  {
+    "id": "api.post.move_thread.private_needs_moderator.app_error",
+    "translation": "Ang moderator lamang ang makakapag-move ng mga sagot ng iba mula sa o papunta sa isang pribadong channel. Maaari mong i-move ang thread na ito sa pagitan ng mga pampublikong channel, o ang thread na may mga mensahe mo lamang."
+  },
+  {
+    "id": "api.post.move_thread.same_channel.app_error",
+    "translation": "Nasa channel na ito ang thread."
+  },
+  {
+    "id": "api.post.move_thread.same_community.app_error",
+    "translation": "Maaari lamang i-move ang thread sa ibang channel ng kanyang community."
+  },
+  {
+    "id": "api.post.move_thread.too_long.app_error",
+    "translation": "May {{.Count}} mensahe ang thread na ito; maaari lamang i-move ang mga thread na may {{.Max}} mensahe o mas kaunti."
+  },
+  {
+    "id": "api.post.move_thread.unsupported.app_error",
+    "translation": "Hindi maipapalitan ang mga system message at burn-on-read message."
   },
   {
     "id": "api.post.patch_post.can_not_update_burn_on_read_post.error",

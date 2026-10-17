@@ -1296,7 +1296,7 @@
   },
   {
     "id": "api.command_invite.channel.error",
-    "translation": "Impossible de trouver le canal {{.Channel}}. Utilisez l'identifiant du canal (le nom après ~ lors de la mention d'un canal) pour l'identifier."
+    "translation": "Impossible de trouver le canal {{.Channel}}. Utilisez l'identifiant du canal (le nom après # lors de la mention d'un canal) pour l'identifier."
   },
   {
     "id": "api.command_invite.channel_constrained_user_denied",
@@ -1336,7 +1336,7 @@
   },
   {
     "id": "api.command_invite.private_channel.app_error",
-    "translation": "Impossible de trouver le canal {{.Channel}}. Utilisez l'identifiant du canal (le nom après ~ lors de la mention d'un canal) pour l'identifier."
+    "translation": "Impossible de trouver le canal {{.Channel}}. Utilisez l'identifiant du canal (le nom après # lors de la mention d'un canal) pour l'identifier."
   },
   {
     "id": "api.command_invite.success",
@@ -1523,7 +1523,7 @@
   },
   {
     "id": "api.command_mute.error",
-    "translation": "Impossible de trouver le canal {{.Channel}}. Utilisez l'identifiant du canal (le nom après ~ lors de la mention d'un canal) pour l'identifier."
+    "translation": "Impossible de trouver le canal {{.Channel}}. Utilisez l'identifiant du canal (le nom après # lors de la mention d'un canal) pour l'identifier."
   },
   {
     "id": "api.command_mute.hint",
@@ -1535,7 +1535,7 @@
   },
   {
     "id": "api.command_mute.no_channel.error",
-    "translation": "Impossible de trouver le canal spécifié. Utilisez l'identifiant du canal (le nom après ~ lors de la mention d'un canal) pour l'identifier."
+    "translation": "Impossible de trouver le canal spécifié. Utilisez l'identifiant du canal (le nom après # lors de la mention d'un canal) pour l'identifier."
   },
   {
     "id": "api.command_mute.success_mute",
@@ -1980,6 +1980,30 @@
   {
     "id": "api.command_shrug.name",
     "translation": "haussement"
+  },
+  {
+    "id": "api.command_tableflip.desc",
+    "translation": "Ajoute (╯°□°)╯︵ ┻━┻ à votre message"
+  },
+  {
+    "id": "api.command_tableflip.hint",
+    "translation": "[message]"
+  },
+  {
+    "id": "api.command_tableflip.name",
+    "translation": "tableflip"
+  },
+  {
+    "id": "api.command_unflip.desc",
+    "translation": "Ajoute ┬─┬ノ( º _ ºノ) à votre message"
+  },
+  {
+    "id": "api.command_unflip.hint",
+    "translation": "[message]"
+  },
+  {
+    "id": "api.command_unflip.name",
+    "translation": "unflip"
   },
   {
     "id": "api.config.get_config.restricted_merge.app_error",
@@ -3227,12 +3251,40 @@
     "translation": "Canal introuvable"
   },
   {
+    "id": "api.post.move_thread.archived.app_error",
+    "translation": "Impossible de déplacer des fils de discussion depuis ou vers un canal archivé."
+  },
+  {
+    "id": "api.post.move_thread.cannot_post.app_error",
+    "translation": "Vous ne pouvez pas publier dans le canal vers lequel vous déplacez le fil de discussion."
+  },
+  {
     "id": "api.post.move_thread.disabled.app_error",
     "translation": "Le déplacement de fil de discussion est désactivé"
   },
   {
     "id": "api.post.move_thread.no_permission",
     "translation": "Vous n'avez pas la permission de déplacer ce fil de discussion."
+  },
+  {
+    "id": "api.post.move_thread.private_needs_moderator.app_error",
+    "translation": "Seul un modérateur peut déplacer les réponses d'autres personnes vers ou depuis un canal privé. Vous pouvez déplacer ce fil de discussion entre des canaux publics, ou un fil de discussion ne contenant que vos propres messages."
+  },
+  {
+    "id": "api.post.move_thread.same_channel.app_error",
+    "translation": "Le fil de discussion est déjà dans ce canal."
+  },
+  {
+    "id": "api.post.move_thread.same_community.app_error",
+    "translation": "Un fil de discussion ne peut être déplacé que vers un autre canal de sa communauté."
+  },
+  {
+    "id": "api.post.move_thread.too_long.app_error",
+    "translation": "Ce fil de discussion contient {{.Count}} messages ; seuls les fils de discussion d'au plus {{.Max}} messages peuvent être déplacés."
+  },
+  {
+    "id": "api.post.move_thread.unsupported.app_error",
+    "translation": "Les messages système et les messages effacés après lecture ne peuvent pas être déplacés."
   },
   {
     "id": "api.post.patch_post.can_not_update_burn_on_read_post.error",

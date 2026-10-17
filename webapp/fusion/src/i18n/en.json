@@ -34933,7 +34933,7 @@
   },
   "suggestion.mention.channels": {
     "defaultMessage": "My Channels",
-    "description": "Group header in the ~channel autocomplete listing channels the current user is a member of."
+    "description": "Group header in the #channel autocomplete listing channels the current user is a member of."
   },
   "suggestion.mention.here": {
     "defaultMessage": "Notifies everyone online in this channel",
@@ -34945,7 +34945,7 @@
   },
   "suggestion.mention.morechannels": {
     "defaultMessage": "Other Channels",
-    "description": "Group header in autocomplete lists for channels the user is not a member of; shown in ~channel mention and channel switcher suggestions."
+    "description": "Group header in autocomplete lists for channels the user is not a member of; shown in #channel mention and channel switcher suggestions."
   },
   "suggestion.mention.moremembers": {
     "defaultMessage": "Other Members",

@@ -1295,7 +1295,7 @@
   },
   {
     "id": "api.command_invite.channel.error",
-    "translation": "找不到頻道 {{.Channel}}。請使用頻道識別碼（提及頻道時 ~ 後方的名稱）來指定它。"
+    "translation": "找不到頻道 {{.Channel}}。請使用頻道識別碼（提及頻道時 # 後方的名稱）來指定它。"
   },
   {
     "id": "api.command_invite.channel_constrained_user_denied",
@@ -1335,7 +1335,7 @@
   },
   {
     "id": "api.command_invite.private_channel.app_error",
-    "translation": "找不到頻道 {{.Channel}}。請使用頻道識別碼（提及頻道時 ~ 後方的名稱）來指定它。"
+    "translation": "找不到頻道 {{.Channel}}。請使用頻道識別碼（提及頻道時 # 後方的名稱）來指定它。"
   },
   {
     "id": "api.command_invite.success",
@@ -1521,7 +1521,7 @@
   },
   {
     "id": "api.command_mute.error",
-    "translation": "找不到頻道 {{.Channel}}。請使用頻道識別碼（提及頻道時 ~ 後方的名稱）來指定它。"
+    "translation": "找不到頻道 {{.Channel}}。請使用頻道識別碼（提及頻道時 # 後方的名稱）來指定它。"
   },
   {
     "id": "api.command_mute.hint",
@@ -1533,7 +1533,7 @@
   },
   {
     "id": "api.command_mute.no_channel.error",
-    "translation": "找不到指定的頻道。請使用頻道識別碼（提及頻道時 ~ 後方的名稱）來指定它。"
+    "translation": "找不到指定的頻道。請使用頻道識別碼（提及頻道時 # 後方的名稱）來指定它。"
   },
   {
     "id": "api.command_mute.success_mute",
@@ -1978,6 +1978,30 @@
   {
     "id": "api.command_shrug.name",
     "translation": "shrug"
+  },
+  {
+    "id": "api.command_tableflip.desc",
+    "translation": "將 (╯°□°)╯︵ ┻━┻ 加入您的訊息"
+  },
+  {
+    "id": "api.command_tableflip.hint",
+    "translation": "[訊息]"
+  },
+  {
+    "id": "api.command_tableflip.name",
+    "translation": "tableflip"
+  },
+  {
+    "id": "api.command_unflip.desc",
+    "translation": "將 ┬─┬ノ( º _ ºノ) 加入您的訊息"
+  },
+  {
+    "id": "api.command_unflip.hint",
+    "translation": "[訊息]"
+  },
+  {
+    "id": "api.command_unflip.name",
+    "translation": "unflip"
   },
   {
     "id": "api.config.get_config.restricted_merge.app_error",
@@ -3222,12 +3246,40 @@
     "translation": "找不到頻道"
   },
   {
+    "id": "api.post.move_thread.archived.app_error",
+    "translation": "無法從已封存的頻道移動討論串，或將討論串移動至已封存的頻道。"
+  },
+  {
+    "id": "api.post.move_thread.cannot_post.app_error",
+    "translation": "您無法在要移動討論串的頻道中發布訊息。"
+  },
+  {
     "id": "api.post.move_thread.disabled.app_error",
     "translation": "已停用移動討論串"
   },
   {
     "id": "api.post.move_thread.no_permission",
     "translation": "您沒有移動此討論串的權限。"
+  },
+  {
+    "id": "api.post.move_thread.private_needs_moderator.app_error",
+    "translation": "只有管理員才能將他人的回覆移動至私人頻道或從私人頻道移出。您可以將此討論串在公開頻道之間移動，或移動僅包含您自己訊息的討論串。"
+  },
+  {
+    "id": "api.post.move_thread.same_channel.app_error",
+    "translation": "此討論串已在此頻道中。"
+  },
+  {
+    "id": "api.post.move_thread.same_community.app_error",
+    "translation": "討論串只能移動至同一社群中的其他頻道。"
+  },
+  {
+    "id": "api.post.move_thread.too_long.app_error",
+    "translation": "此討論串有 {{.Count}} 則訊息；最多可移動 {{.Max}} 則訊息的討論串。"
+  },
+  {
+    "id": "api.post.move_thread.unsupported.app_error",
+    "translation": "系統訊息與讀後即焚訊息無法移動。"
   },
   {
     "id": "api.post.patch_post.can_not_update_burn_on_read_post.error",

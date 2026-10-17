@@ -1253,7 +1253,7 @@
   },
   {
     "id": "api.command_invite.channel.error",
-    "translation": "சேனல்களைக் கண்டறிய முடியவில்லை: {{.Channel}}. சேனல்களைக் குறிப்பிட, சேனல் ஹேண்டிலை (சேனலை குறிக்கும்போது ~-க்குப் பின் உள்ள பெயர்) பயன்படுத்தவும்."
+    "translation": "சேனல்களைக் கண்டறிய முடியவில்லை: {{.Channel}}. சேனல்களைக் குறிப்பிட, சேனல் ஹேண்டிலை (சேனலை குறிக்கும்போது #-க்குப் பின் உள்ள பெயர்) பயன்படுத்தவும்."
   },
   {
     "id": "api.command_invite.channel_constrained_user_denied",
@@ -1293,7 +1293,7 @@
   },
   {
     "id": "api.command_invite.private_channel.app_error",
-    "translation": "சேனல்களைக் கண்டறிய முடியவில்லை: {{.Channel}}. சேனல்களைக் குறிப்பிட, சேனல் ஹேண்டிலை (சேனலை குறிக்கும்போது ~-க்குப் பின் உள்ள பெயர்) பயன்படுத்தவும்."
+    "translation": "சேனல்களைக் கண்டறிய முடியவில்லை: {{.Channel}}. சேனல்களைக் குறிப்பிட, சேனல் ஹேண்டிலை (சேனலை குறிக்கும்போது #-க்குப் பின் உள்ள பெயர்) பயன்படுத்தவும்."
   },
   {
     "id": "api.command_invite.success",
@@ -1473,7 +1473,7 @@
   },
   {
     "id": "api.command_mute.error",
-    "translation": "சேனல்களைக் கண்டறிய முடியவில்லை: {{.Channel}}. சேனல்களைக் குறிப்பிட, சேனல் ஹேண்டிலை (சேனலை குறிக்கும்போது ~-க்குப் பின் உள்ள பெயர்) பயன்படுத்தவும்."
+    "translation": "சேனல்களைக் கண்டறிய முடியவில்லை: {{.Channel}}. சேனல்களைக் குறிப்பிட, சேனல் ஹேண்டிலை (சேனலை குறிக்கும்போது #-க்குப் பின் உள்ள பெயர்) பயன்படுத்தவும்."
   },
   {
     "id": "api.command_mute.hint",
@@ -1485,7 +1485,7 @@
   },
   {
     "id": "api.command_mute.no_channel.error",
-    "translation": "குறிப்பிட்ட சேனலைக் கண்டறிய முடியவில்லை. சேனல்களைக் குறிப்பிட, சேனல் ஹேண்டிலை (சேனலை குறிக்கும்போது ~-க்குப் பின் உள்ள பெயர்) பயன்படுத்தவும்."
+    "translation": "குறிப்பிட்ட சேனலைக் கண்டறிய முடியவில்லை. சேனல்களைக் குறிப்பிட, சேனல் ஹேண்டிலை (சேனலை குறிக்கும்போது #-க்குப் பின் உள்ள பெயர்) பயன்படுத்தவும்."
   },
   {
     "id": "api.command_mute.success_mute",
@@ -1930,6 +1930,30 @@
   {
     "id": "api.command_shrug.name",
     "translation": "shrug"
+  },
+  {
+    "id": "api.command_tableflip.desc",
+    "translation": "உங்கள் செய்தியில் (╯°□°)╯︵ ┻━┻ ஐ சேர்க்கிறது"
+  },
+  {
+    "id": "api.command_tableflip.hint",
+    "translation": "[செய்தி]"
+  },
+  {
+    "id": "api.command_tableflip.name",
+    "translation": "tableflip"
+  },
+  {
+    "id": "api.command_unflip.desc",
+    "translation": "உங்கள் செய்தியில் ┬─┬ノ( º _ ºノ) ஐ சேர்க்கிறது"
+  },
+  {
+    "id": "api.command_unflip.hint",
+    "translation": "[செய்தி]"
+  },
+  {
+    "id": "api.command_unflip.name",
+    "translation": "unflip"
   },
   {
     "id": "api.config.get_config.restricted_merge.app_error",
@@ -3028,12 +3052,40 @@
     "translation": "சேனல் கிடைக்கவில்லை"
   },
   {
+    "id": "api.post.move_thread.archived.app_error",
+    "translation": "காப்பகப்படுத்தப்பட்ட சேனலிலிருந்து அல்லது அதற்கு த்ரெட்களை நகர்த்த முடியாது."
+  },
+  {
+    "id": "api.post.move_thread.cannot_post.app_error",
+    "translation": "நீங்கள் த்ரெட்டை நகர்த்தும் சேனலில் பதிவிட முடியாது."
+  },
+  {
     "id": "api.post.move_thread.disabled.app_error",
     "translation": "த்ரெட் நகர்த்தல் முடக்கப்பட்டுள்ளது"
   },
   {
     "id": "api.post.move_thread.no_permission",
     "translation": "இந்தத் த்ரெட்டை நகர்த்த உங்களுக்கு அனுமதி இல்லை."
+  },
+  {
+    "id": "api.post.move_thread.private_needs_moderator.app_error",
+    "translation": "தனியார் சேனலுக்கு அல்லது அதிலிருந்து மற்றவர்களின் பதில்களை நகர்த்த நிரவாகி மட்டுமே முடியும். பொது சேனல்களுக்கு இடையே இந்த த்ரெட்டை, அல்லது உங்கள் சொந்த செய்திகளில் மட்டுமே உள்ள த்ரெட்டை நகர்த்தலாம்."
+  },
+  {
+    "id": "api.post.move_thread.same_channel.app_error",
+    "translation": "இந்த த்ரெட் ஏற்கனவே இந்த சேனலில் உள்ளது."
+  },
+  {
+    "id": "api.post.move_thread.same_community.app_error",
+    "translation": "ஒரு த்ரெட்டை அதன் குழுவின் மற்றொரு சேனலுக்கு மட்டுமே நகர்த்த முடியும்."
+  },
+  {
+    "id": "api.post.move_thread.too_long.app_error",
+    "translation": "இந்த த்ரெட்டில் {{.Count}} செய்திகள் உள்ளன; அதிகபட்சம் {{.Max}} செய்திகள் கொண்ட த்ரெட்களை மட்டுமே நகர்த்த முடியும்."
+  },
+  {
+    "id": "api.post.move_thread.unsupported.app_error",
+    "translation": "அமைப்பு செய்திகள் மற்றும் படித்தவுடன் அழிக்கப்படும் செய்திகளை நகர்த்த முடியாது."
   },
   {
     "id": "api.post.patch_post.can_not_update_burn_on_read_post.error",

@@ -1295,7 +1295,7 @@
   },
   {
     "id": "api.command_invite.channel.error",
-    "translation": "未找到频道 {{.Channel}}。请使用频道句柄（提及频道时 ~ 后面的名称）来指定它。"
+    "translation": "未找到频道 {{.Channel}}。请使用频道句柄（提及频道时 # 后面的名称）来指定它。"
   },
   {
     "id": "api.command_invite.channel_constrained_user_denied",
@@ -1335,7 +1335,7 @@
   },
   {
     "id": "api.command_invite.private_channel.app_error",
-    "translation": "未找到频道 {{.Channel}}。请使用频道句柄（提及频道时 ~ 后面的名称）来指定它。"
+    "translation": "未找到频道 {{.Channel}}。请使用频道句柄（提及频道时 # 后面的名称）来指定它。"
   },
   {
     "id": "api.command_invite.success",
@@ -1521,7 +1521,7 @@
   },
   {
     "id": "api.command_mute.error",
-    "translation": "未找到频道 {{.Channel}}。请使用频道句柄（提及频道时 ~ 后面的名称）来指定它。"
+    "translation": "未找到频道 {{.Channel}}。请使用频道句柄（提及频道时 # 后面的名称）来指定它。"
   },
   {
     "id": "api.command_mute.hint",
@@ -1533,7 +1533,7 @@
   },
   {
     "id": "api.command_mute.no_channel.error",
-    "translation": "未找到指定的频道。请使用频道句柄（提及频道时 ~ 后面的名称）来指定它。"
+    "translation": "未找到指定的频道。请使用频道句柄（提及频道时 # 后面的名称）来指定它。"
   },
   {
     "id": "api.command_mute.success_mute",
@@ -1978,6 +1978,30 @@
   {
     "id": "api.command_shrug.name",
     "translation": "shrug"
+  },
+  {
+    "id": "api.command_tableflip.desc",
+    "translation": "在你的消息中添加 (╯°□°)╯︵ ┻━┻"
+  },
+  {
+    "id": "api.command_tableflip.hint",
+    "translation": "[message]"
+  },
+  {
+    "id": "api.command_tableflip.name",
+    "translation": "tableflip"
+  },
+  {
+    "id": "api.command_unflip.desc",
+    "translation": "在你的消息中添加 ┬─┬ノ( º _ ºノ)"
+  },
+  {
+    "id": "api.command_unflip.hint",
+    "translation": "[message]"
+  },
+  {
+    "id": "api.command_unflip.name",
+    "translation": "unflip"
   },
   {
     "id": "api.config.get_config.restricted_merge.app_error",
@@ -3222,12 +3246,40 @@
     "translation": "未找到频道"
   },
   {
+    "id": "api.post.move_thread.archived.app_error",
+    "translation": "无法将话题从已归档频道移出或移入。"
+  },
+  {
+    "id": "api.post.move_thread.cannot_post.app_error",
+    "translation": "你无法在目标频道中发布消息。"
+  },
+  {
     "id": "api.post.move_thread.disabled.app_error",
     "translation": "话题移动已禁用"
   },
   {
     "id": "api.post.move_thread.no_permission",
     "translation": "您没有移动此话题的权限。"
+  },
+  {
+    "id": "api.post.move_thread.private_needs_moderator.app_error",
+    "translation": "只有管理员才能将他人的回复移入或移出私有频道。你可以将此话题在公共频道之间移动，或移动仅包含你自己消息的话题。"
+  },
+  {
+    "id": "api.post.move_thread.same_channel.app_error",
+    "translation": "该话题已在此频道中。"
+  },
+  {
+    "id": "api.post.move_thread.same_community.app_error",
+    "translation": "话题只能移动到同一社区内的其他频道。"
+  },
+  {
+    "id": "api.post.move_thread.too_long.app_error",
+    "translation": "此话题包含 {{.Count}} 条消息；最多可移动 {{.Max}} 条消息的话题。"
+  },
+  {
+    "id": "api.post.move_thread.unsupported.app_error",
+    "translation": "系统消息和阅后即焚消息无法移动。"
   },
   {
     "id": "api.post.patch_post.can_not_update_burn_on_read_post.error",
