@@ -194,9 +194,9 @@
 :is(.am-app, .am-layer) .am-dm-find input { flex: 1; min-width: 0; border: 0; outline: none; background: transparent; font-size: 13.5px; }
 :is(.am-app, .am-layer) .am-dm-find input::placeholder { color: var(--am-muted); }
 :is(.am-app, .am-layer) .am-home-links { display: grid; gap: 1px; padding: 4px 8px; }
-// The conversations dock is set apart from the channels above it: --am-line barely shows on the sidebar in dark themes,
-// so a muted-based rule and a shadow, the channels scrolling under it.
-:is(.am-app, .am-layer) .am-dock { flex: none; max-height: 30%; display: flex; flex-direction: column; border-top: 2px solid color-mix(in srgb, var(--am-muted) 38%, transparent); box-shadow: 0 -10px 14px -12px rgba(0, 0, 0, .45); background: color-mix(in srgb, var(--am-side) 90%, var(--am-raise)); position: relative; }
+// The conversations dock is set apart from the channels above it by a thin rule and a slightly raised background, no
+// shadow: --am-line barely shows on the sidebar in dark themes, so the rule is muted-based.
+:is(.am-app, .am-layer) .am-dock { flex: none; max-height: 30%; display: flex; flex-direction: column; border-top: 1px solid color-mix(in srgb, var(--am-muted) 30%, transparent); background: color-mix(in srgb, var(--am-side) 92%, var(--am-raise)); position: relative; }
 :is(.am-app, .am-layer) .am-dock-head {
   display: flex;
   align-items: center;
@@ -219,7 +219,7 @@
 // The unread count ends where the channels' do; the close button takes its place on hover.
 :is(.am-app, .am-layer) .am-dock-row .am-dm { min-height: 32px; padding-top: 3px; padding-bottom: 3px; }
 :is(.am-app, .am-layer) .am-dock-row:hover .am-dm, :is(.am-app, .am-layer) .am-dock-row:focus-within .am-dm { padding-right: 30px; }
-:is(.am-app, .am-layer) .am-dock-row:hover .am-dm .am-badge, :is(.am-app, .am-layer) .am-dock-row:focus-within .am-dm .am-badge { display: none; }
+:is(.am-app, .am-layer) .am-dock-row:hover .am-dm .am-dm-count, :is(.am-app, .am-layer) .am-dock-row:focus-within .am-dm .am-dm-count { display: none; }
 :is(.am-app, .am-layer) .am-dock-x { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); width: 22px; height: 22px; border-radius: 5px; display: none; place-items: center; color: var(--am-muted); }
 :is(.am-app, .am-layer) .am-dock-row:hover .am-dock-x, :is(.am-app, .am-layer) .am-dock-x:focus-visible { display: grid; }
 :is(.am-app, .am-layer) .am-dock-x:hover { color: var(--am-text); background: var(--am-hover); }
@@ -238,6 +238,13 @@
 :is(.am-app, .am-layer) .am-dm.am-active { background: var(--am-select); color: var(--am-text); }
 :is(.am-app, .am-layer) .am-dm.am-unread { color: var(--am-text); font-weight: 700; }
 :is(.am-app, .am-layer) .am-dm .am-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+// Unread conversations: a red ring around the picture, and the count of new messages, grey and small, where the red
+// badge was. The ring is an outline, so the gap shows whatever the row's background is.
+:is(.am-app, .am-layer) .am-av.am-unread-ring { outline: 2px solid var(--am-danger); outline-offset: 1.5px; }
+:is(.am-app, .am-layer) .am-dm .am-dm-count { flex: none; min-width: 14px; color: var(--am-muted); font: 600 11.5px var(--am-font-ui); font-variant-numeric: tabular-nums; text-align: right; }
+// A draft waiting: a pencil, beside a conversation's name, or for a channel's glyph.
+:is(.am-app, .am-layer) .am-draft-ic { display: inline-grid; place-items: center; flex: none; color: var(--am-text-2); }
+:is(.am-app, .am-layer) .am-dm .am-draft-ic { color: var(--am-muted); }
 :is(.am-app, .am-layer) .am-dm .am-meta { display: block; font-size: 12px; font-weight: 400; color: var(--am-faint); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 /* Avatars */

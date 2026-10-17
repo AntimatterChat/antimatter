@@ -24,6 +24,7 @@ import type {GlobalState} from 'types/store';
 
 import ChannelIcon from './channel_icon';
 import ChannelThreads from './channel_threads';
+import {hasChannelDraft} from './drafts';
 import {isHidingMutedChannels} from './team_actions';
 
 type Props = {
@@ -42,6 +43,10 @@ export default function ChannelRow({channelId, collapsed}: Props) {
     const unread = useSelector((state: GlobalState) => getUnreadCount(state, channelId));
     const muted = useSelector((state: GlobalState) => isChannelMuted(getMyChannelMembership(state, channelId)));
     const hideMuted = useSelector((state: GlobalState) => Boolean(team && isHidingMutedChannels(state, team.id)));
+
+    // A message left half-written: a pencil for the channel's glyph, once you're elsewhere (in the channel, it's in
+    // the composer).
+    const draft = useSelector((state: GlobalState) => !active && hasChannelDraft(state, channelId));
     const menuButton = useRef<HTMLButtonElement>(null);
     const [menu, setMenu] = useState<{x: number; y: number} | 'button' | null>(null);
 
@@ -82,7 +87,10 @@ export default function ChannelRow({channelId, collapsed}: Props) {
                     aria-current={active ? 'page' : undefined}
                     onClick={() => layout.setNavOpen(false)}
                 >
-                    <ChannelIcon channel={channel}/>
+                    <ChannelIcon
+                        channel={channel}
+                        draft={draft}
+                    />
                     <span className={am('name')}>{channel.display_name}</span>
                     <CallLiveMarker channelId={channel.id}/>
                     <Pluggable
@@ -92,7 +100,9 @@ export default function ChannelRow({channelId, collapsed}: Props) {
                     {muted && (
                         <span
                             className={am('mute-ic')}
-                            title={formatMessage({id: 'fusion.sidebar.mutedTitle', defaultMessage: 'Muted until you turn it back on'})}
+                            role='img'
+                            aria-label={formatMessage({id: 'fusion.sidebar.mutedTitle', defaultMessage: 'Muted until you turn it back on'})}
+                            data-am-tip={formatMessage({id: 'fusion.sidebar.mutedTitle', defaultMessage: 'Muted until you turn it back on'})}
                         >
                             <Icon
                                 name='bell-off'
@@ -106,7 +116,7 @@ export default function ChannelRow({channelId, collapsed}: Props) {
                     <button
                         ref={menuButton}
                         className={am('ch-act')}
-                        title={formatMessage({id: 'fusion.sidebar.channelOptions', defaultMessage: 'Channel options'})}
+                        data-am-tip={formatMessage({id: 'fusion.sidebar.channelOptions', defaultMessage: 'Channel options'})}
                         aria-label={formatMessage({id: 'fusion.sidebar.channelOptionsFor', defaultMessage: 'Channel options for {name}'}, {name: channel.display_name})}
                         aria-haspopup='menu'
                         aria-expanded={menu !== null}

@@ -69,7 +69,7 @@ function Dock() {
                 <span className={am('grow')}>{formatMessage({id: 'fusion.dock.title', defaultMessage: 'Open conversations'})}</span>
                 <button
                     className={am('dock-all')}
-                    title={allLabel}
+                    data-am-tip={allLabel}
                     aria-label={unread ? formatMessage({id: 'fusion.dock.allUnread', defaultMessage: '{label}, {count, plural, one {# unread message} other {# unread messages}}'}, {label: allLabel, count: unread}) : allLabel}
                     onClick={() => {
                         // Ready to find a conversation, as the team rail's home icon used to be.

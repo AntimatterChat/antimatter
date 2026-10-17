@@ -28,6 +28,7 @@ import {getHistory} from 'utils/browser_history';
 
 import type {GlobalState} from 'types/store';
 
+import {hasChannelDraft} from './drafts';
 import {GroupMenu, useConversationName} from './group_dm';
 
 type Props = {
@@ -47,7 +48,9 @@ export function useTeammateId(channel: Channel): string | undefined {
     return channel.teammate_id || getUserIdFromChannelName(me, channel.name);
 }
 
-export function DirectFace({channel, size = ''}: {channel: Channel; size?: '' | 'sm'}) {
+// DirectFace is the picture of a conversation: the other person's, or the number of people in a group. A red ring
+// around it tells the conversation has messages you haven't read.
+export function DirectFace({channel, size = '', unread = false}: {channel: Channel; size?: '' | 'sm'; unread?: boolean}) {
     const teammateId = useTeammateId(channel);
     if (teammateId) {
         return (
@@ -55,10 +58,11 @@ export function DirectFace({channel, size = ''}: {channel: Channel; size?: '' | 
                 userId={teammateId}
                 size={size}
                 status={true}
+                className={unread ? am('unread-ring') : undefined}
             />
         );
     }
-    return <span className={am('av', 'group', size)}>{channel.display_name.split(',').length}</span>;
+    return <span className={am('av', 'group', size, {'unread-ring': unread})}>{channel.display_name.split(',').length}</span>;
 }
 
 // DirectRow is a direct or group message in the dock or the home list.
@@ -76,6 +80,7 @@ export default function DirectRow({channel, dock, meta}: Props) {
     const name = useConversationName(channel);
     const [groupMenu, setGroupMenu] = useState<{x: number; y: number} | null>(null);
     const remote = useSelector((state: GlobalState) => Boolean(teammateId && getUser(state, teammateId)?.remote_id));
+    const draft = useSelector((state: GlobalState) => !active && hasChannelDraft(state, channel.id));
 
     if (!team) {
         return null;
@@ -108,6 +113,7 @@ export default function DirectRow({channel, dock, meta}: Props) {
             <DirectFace
                 channel={channel}
                 size={dock ? 'sm' : ''}
+                unread={badge > 0}
             />
             <span className={am('name')}>
                 {name}
@@ -115,7 +121,9 @@ export default function DirectRow({channel, dock, meta}: Props) {
                 {remote && (
                     <span
                         className={am('fed-ic')}
-                        title={formatMessage({id: 'fusion.dm.remote', defaultMessage: 'On another server'})}
+                        role='img'
+                        aria-label={formatMessage({id: 'fusion.dm.remote', defaultMessage: 'On another server'})}
+                        data-am-tip={formatMessage({id: 'fusion.dm.remote', defaultMessage: 'On another server'})}
                     >
                         <Icon
                             name='globe'
@@ -125,15 +133,23 @@ export default function DirectRow({channel, dock, meta}: Props) {
                 )}
                 {meta && <span className={am('meta')}>{meta}</span>}
             </span>
-            <DirectCallMarker channel={channel}/>
-            {badge > 0 && (
+            {draft && (
                 <span
-                    className={am('badge')}
-                    style={{boxShadow: 'none'}}
+                    className={am('draft-ic')}
+                    role='img'
+                    aria-label={formatMessage({id: 'fusion.channel.draft', defaultMessage: 'Draft waiting'})}
+                    data-am-tip={formatMessage({id: 'fusion.channel.draft', defaultMessage: 'Draft waiting'})}
                 >
-                    {badge}
+                    <Icon
+                        name='pen'
+                        size='xs'
+                    />
                 </span>
             )}
+            <DirectCallMarker channel={channel}/>
+
+            {/* The ring around the picture says unread; the count stays, quiet, where it was. */}
+            {badge > 0 && <span className={am('dm-count')}>{badge > 99 ? '99+' : badge}</span>}
         </Link>
     );
 
@@ -165,7 +181,7 @@ export default function DirectRow({channel, dock, meta}: Props) {
             {withMenu}
             <button
                 className={am('dock-x')}
-                title={formatMessage({id: 'fusion.dock.close', defaultMessage: 'Close'})}
+                data-am-tip={formatMessage({id: 'fusion.dock.close', defaultMessage: 'Close'})}
                 aria-label={formatMessage({id: 'fusion.dock.closeLabel', defaultMessage: 'Close conversation with {name}'}, {name})}
                 onClick={close}
             >

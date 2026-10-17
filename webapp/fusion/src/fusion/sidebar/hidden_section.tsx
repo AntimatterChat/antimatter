@@ -26,7 +26,7 @@ export default function HiddenSection<T>({items, render}: Props<T>) {
                 type='button'
                 className={am('cat', 'hidden-cat', {collapsed: !open})}
                 aria-expanded={open}
-                title={formatMessage({id: 'fusion.sidebar.hiddenTitle', defaultMessage: 'Conversations hidden until they get new messages'})}
+                data-am-tip={formatMessage({id: 'fusion.sidebar.hiddenTitle', defaultMessage: 'Conversations hidden until they get new messages'})}
                 onClick={() => setOpen(!open)}
             >
                 <Icon

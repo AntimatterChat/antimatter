@@ -177,7 +177,7 @@ export default function HomeSidebar() {
                 <h2>{formatMessage({id: 'fusion.home.title', defaultMessage: 'Direct messages'})}</h2>
                 <button
                     className={am('icon-btn')}
-                    title={formatMessage({id: 'fusion.home.new', defaultMessage: 'New message'})}
+                    data-am-tip={formatMessage({id: 'fusion.home.new', defaultMessage: 'New message'})}
                     aria-label={formatMessage({id: 'fusion.home.newLabel', defaultMessage: 'New direct message'})}
                     onClick={() => dispatch(openNewDirectMessage())}
                 >
@@ -238,7 +238,7 @@ export default function HomeSidebar() {
                         type='button'
                         className={am('add-ch')}
                         style={{opacity: 1}}
-                        title={formatMessage({id: 'fusion.home.newGroup', defaultMessage: 'New conversation with one or more people'})}
+                        data-am-tip={formatMessage({id: 'fusion.home.newGroup', defaultMessage: 'New conversation with one or more people'})}
                         aria-label={formatMessage({id: 'fusion.home.newGroup', defaultMessage: 'New conversation with one or more people'})}
                         onClick={() => dispatch(openNewDirectMessage())}
                     >

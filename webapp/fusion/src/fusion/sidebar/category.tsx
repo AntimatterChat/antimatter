@@ -169,6 +169,8 @@ export default function Category({category}: {category: ChannelCategory}) {
             setMark(null);
         }
     };
+    // What the admins' mark means, in the Fusion tooltip: the lock of a locked category, else the server.
+    const serverMark = locked ? formatMessage({id: 'fusion.sidebar.serverLocked', defaultMessage: 'Set up for everyone by the community\'s admins. Its channels stay here.'}) : formatMessage({id: 'fusion.sidebar.serverOpen', defaultMessage: 'Set up for everyone by the community\'s admins. You can move its channels to your own categories.'});
     const markClass = (target: string) => (mark?.target === target ? am(mark.after ? 'drop-after' : 'drop-before') : '');
 
     return (
@@ -207,7 +209,9 @@ export default function Category({category}: {category: ChannelCategory}) {
                 {server && (
                     <span
                         className={am('server-mark')}
-                        title={locked ? formatMessage({id: 'fusion.sidebar.serverLocked', defaultMessage: 'Set up for everyone by the community\'s admins. Its channels stay here.'}) : formatMessage({id: 'fusion.sidebar.serverOpen', defaultMessage: 'Set up for everyone by the community\'s admins. You can move its channels to your own categories.'})}
+                        role='img'
+                        aria-label={serverMark}
+                        data-am-tip={serverMark}
                     >
                         <Icon
                             name={locked ? 'lock' : 'server'}
@@ -224,7 +228,7 @@ export default function Category({category}: {category: ChannelCategory}) {
                 <button
                     ref={menuButton}
                     className={am('ch-act', 'cat-act', {open: menu !== null})}
-                    title={formatMessage({id: 'fusion.sidebar.categoryOptions', defaultMessage: 'Category options'})}
+                    data-am-tip={formatMessage({id: 'fusion.sidebar.categoryOptions', defaultMessage: 'Category options'})}
                     aria-label={formatMessage({id: 'fusion.sidebar.categoryOptionsFor', defaultMessage: 'Category options for {name}'}, {name: category.display_name})}
                     aria-haspopup='menu'
                     aria-expanded={menu !== null}
