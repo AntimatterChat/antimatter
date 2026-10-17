@@ -391,6 +391,7 @@ describe('components/team_settings_modal', () => {
             expect(await screen.findByRole('button', {name: 'Add a connection'})).toBeInTheDocument();
         });
     });
+
     // Antimatter: the community menu's Manage members, Teams… and the user menu's Integrations are in the settings.
     describe('members, teams and integrations', () => {
         const admin = [Permissions.MANAGE_TEAM, Permissions.MANAGE_TEAM_ROLES, Permissions.INVITE_USER, Permissions.ADD_USER_TO_TEAM];

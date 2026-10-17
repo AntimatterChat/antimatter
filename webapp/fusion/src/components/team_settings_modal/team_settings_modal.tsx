@@ -160,6 +160,7 @@ const TeamSettingsModal = ({isOpen, onExited, focusOriginElement, initialTab}: P
             display: access.accessPolicies,
         },
         {
+
             // Antimatter: the members (the menu's former Manage members), for everyone who opens the settings.
             name: 'members',
             uiName: formatMessage({id: 'fusion.teamSettings.members', defaultMessage: 'Members'}),
@@ -168,6 +169,7 @@ const TeamSettingsModal = ({isOpen, onExited, focusOriginElement, initialTab}: P
             display: true,
         },
         {
+
             // And its teams (the menu's former Teams…), when the server has them.
             name: 'teams',
             uiName: formatMessage({id: 'fusion.teamSettings.teams', defaultMessage: 'Teams'}),

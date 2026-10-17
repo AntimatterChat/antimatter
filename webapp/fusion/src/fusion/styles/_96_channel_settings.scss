@@ -98,7 +98,7 @@
 :is(.am-app, .am-layer) .am-modal.am-team-settings nav button.am-ts-link .am-ic { color: var(--am-muted); }
 
 // The Members page: the classic member list (search, people, their role menu), drawn as the Fusion dialogs draw it.
-:is(.am-app, .am-layer) .am-modal.am-team-settings {
+:is(.am-app, .am-layer) .am-team-settings > .am-pane {
   .am-team-members-head { display: flex; justify-content: flex-end; margin-bottom: 12px; }
   .am-team-members-head .am-btn { width: auto; gap: 6px; }
   .am-team-members {
