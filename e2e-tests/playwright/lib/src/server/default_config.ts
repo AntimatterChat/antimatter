@@ -817,7 +817,6 @@ const defaultServerConfig: AdminConfig = {
         AutoTranslation: true,
         ClassificationMarkings: true,
         BurnOnRead: true,
-        EnableAIPluginBridge: false,
         EnableAIRecaps: false,
         IntegratedBoards: false,
         EnableDocs: false,
