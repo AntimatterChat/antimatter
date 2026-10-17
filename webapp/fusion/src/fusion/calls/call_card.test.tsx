@@ -15,10 +15,10 @@ const mockActions = {startOrJoinCall: jest.fn(), leaveCall: jest.fn(), endForEve
 const mockConfirm = jest.fn();
 let mockLocal: {channelId: string} | null = null;
 let mockCanEnd = false;
-const startAt = Date.now() - 60000;
+const mockStartAt = Date.now() - 60000;
 jest.mock('./actions', () => ({useCallActions: () => mockActions, useChannelLabel: () => '#town-square'}));
 jest.mock('./hooks', () => ({
-    useCall: () => ({id: 'call', channelId: 'ch', threadId: 'post', startAt, ownerId: 'starter', hostId: 'someone', recording: false}),
+    useCall: () => ({id: 'call', channelId: 'ch', threadId: 'post', startAt: mockStartAt, ownerId: 'starter', hostId: 'someone', recording: false}),
     useCallsAvailable: () => true,
     useCanEndCall: () => mockCanEnd,
     useLocalCall: () => mockLocal,
@@ -27,7 +27,7 @@ jest.mock('./hooks', () => ({
 jest.mock('fusion/shell/dialogs_context', () => ({useDialogs: () => ({confirm: mockConfirm})}));
 
 describe('fusion/calls/call_card: ending a call for everyone', () => {
-    const post = TestHelper.getPostMock({id: 'post', channel_id: 'ch', user_id: 'starter', type: 'custom_calls' as Post['type'], props: {start_at: startAt}});
+    const post = TestHelper.getPostMock({id: 'post', channel_id: 'ch', user_id: 'starter', type: 'custom_calls' as Post['type'], props: {start_at: mockStartAt}});
 
     beforeEach(() => {
         mockLocal = null;
