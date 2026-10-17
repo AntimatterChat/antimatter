@@ -19,6 +19,7 @@ import (
 
 type RetryLayer struct {
 	store.Store
+	AIConnectionStore               store.AIConnectionStore
 	AccessControlPolicyStore        store.AccessControlPolicyStore
 	AttributesStore                 store.AttributesStore
 	AuditStore                      store.AuditStore
@@ -85,6 +86,10 @@ type RetryLayer struct {
 	UserTermsOfServiceStore         store.UserTermsOfServiceStore
 	ViewStore                       store.ViewStore
 	WebhookStore                    store.WebhookStore
+}
+
+func (s *RetryLayer) AIConnection() store.AIConnectionStore {
+	return s.AIConnectionStore
 }
 
 func (s *RetryLayer) AccessControlPolicy() store.AccessControlPolicyStore {
@@ -349,6 +354,11 @@ func (s *RetryLayer) View() store.ViewStore {
 
 func (s *RetryLayer) Webhook() store.WebhookStore {
 	return s.WebhookStore
+}
+
+type RetryLayerAIConnectionStore struct {
+	store.AIConnectionStore
+	Root *RetryLayer
 }
 
 type RetryLayerAccessControlPolicyStore struct {
@@ -690,6 +700,237 @@ func isRepeatableError(err error) bool {
 		}
 	}
 	return false
+}
+
+func (s *RetryLayerAIConnectionStore) AddUsage(rctx request.CTX, usage *model.AIUsage) error {
+
+	tries := 0
+	for {
+		err := s.AIConnectionStore.AddUsage(rctx, usage)
+		if err == nil {
+			return nil
+		}
+		if !isRepeatableError(err) {
+			return err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerAIConnectionStore) Delete(rctx request.CTX, id string, deleteAt int64) error {
+
+	tries := 0
+	for {
+		err := s.AIConnectionStore.Delete(rctx, id, deleteAt)
+		if err == nil {
+			return nil
+		}
+		if !isRepeatableError(err) {
+			return err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerAIConnectionStore) Get(rctx request.CTX, id string) (*model.AIConnection, error) {
+
+	tries := 0
+	for {
+		result, err := s.AIConnectionStore.Get(rctx, id)
+		if err == nil {
+			return result, nil
+		}
+		if !isRepeatableError(err) {
+			return result, err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerAIConnectionStore) GetAgentsPluginConfig(rctx request.CTX) (string, error) {
+
+	tries := 0
+	for {
+		result, err := s.AIConnectionStore.GetAgentsPluginConfig(rctx)
+		if err == nil {
+			return result, nil
+		}
+		if !isRepeatableError(err) {
+			return result, err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerAIConnectionStore) GetAll(rctx request.CTX) ([]*model.AIConnection, error) {
+
+	tries := 0
+	for {
+		result, err := s.AIConnectionStore.GetAll(rctx)
+		if err == nil {
+			return result, nil
+		}
+		if !isRepeatableError(err) {
+			return result, err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerAIConnectionStore) GetForScopes(rctx request.CTX, scopes []string) ([]*model.AIConnection, error) {
+
+	tries := 0
+	for {
+		result, err := s.AIConnectionStore.GetForScopes(rctx, scopes)
+		if err == nil {
+			return result, nil
+		}
+		if !isRepeatableError(err) {
+			return result, err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerAIConnectionStore) GetUsage(rctx request.CTX, connectionID string, sinceDay int) ([]*model.AIUsage, error) {
+
+	tries := 0
+	for {
+		result, err := s.AIConnectionStore.GetUsage(rctx, connectionID, sinceDay)
+		if err == nil {
+			return result, nil
+		}
+		if !isRepeatableError(err) {
+			return result, err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerAIConnectionStore) GetUsageTotals(rctx request.CTX, connectionID string, sinceDay int) (model.AIUsageTotals, error) {
+
+	tries := 0
+	for {
+		result, err := s.AIConnectionStore.GetUsageTotals(rctx, connectionID, sinceDay)
+		if err == nil {
+			return result, nil
+		}
+		if !isRepeatableError(err) {
+			return result, err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerAIConnectionStore) GetUserUsageTotals(rctx request.CTX, connectionID string, userID string, sinceDay int) (model.AIUsageTotals, error) {
+
+	tries := 0
+	for {
+		result, err := s.AIConnectionStore.GetUserUsageTotals(rctx, connectionID, userID, sinceDay)
+		if err == nil {
+			return result, nil
+		}
+		if !isRepeatableError(err) {
+			return result, err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerAIConnectionStore) Save(rctx request.CTX, connection *model.AIConnection) (*model.AIConnection, error) {
+
+	tries := 0
+	for {
+		result, err := s.AIConnectionStore.Save(rctx, connection)
+		if err == nil {
+			return result, nil
+		}
+		if !isRepeatableError(err) {
+			return result, err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerAIConnectionStore) Update(rctx request.CTX, connection *model.AIConnection) (*model.AIConnection, error) {
+
+	tries := 0
+	for {
+		result, err := s.AIConnectionStore.Update(rctx, connection)
+		if err == nil {
+			return result, nil
+		}
+		if !isRepeatableError(err) {
+			return result, err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
 }
 
 func (s *RetryLayerAccessControlPolicyStore) ClearEtagCache() {
@@ -20880,6 +21121,7 @@ func New(childStore store.Store) *RetryLayer {
 		Store: childStore,
 	}
 
+	newStore.AIConnectionStore = &RetryLayerAIConnectionStore{AIConnectionStore: childStore.AIConnection(), Root: &newStore}
 	newStore.AccessControlPolicyStore = &RetryLayerAccessControlPolicyStore{AccessControlPolicyStore: childStore.AccessControlPolicy(), Root: &newStore}
 	newStore.AttributesStore = &RetryLayerAttributesStore{AttributesStore: childStore.Attributes(), Root: &newStore}
 	newStore.AuditStore = &RetryLayerAuditStore{AuditStore: childStore.Audit(), Root: &newStore}

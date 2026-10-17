@@ -20,6 +20,26 @@ type Store struct {
 	mock.Mock
 }
 
+// AIConnection provides a mock function with no fields
+func (_m *Store) AIConnection() store.AIConnectionStore {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for AIConnection")
+	}
+
+	var r0 store.AIConnectionStore
+	if rf, ok := ret.Get(0).(func() store.AIConnectionStore); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(store.AIConnectionStore)
+		}
+	}
+
+	return r0
+}
+
 // AccessControlPolicy provides a mock function with no fields
 func (_m *Store) AccessControlPolicy() store.AccessControlPolicyStore {
 	ret := _m.Called()

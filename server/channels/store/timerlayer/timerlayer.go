@@ -18,6 +18,7 @@ import (
 type TimerLayer struct {
 	store.Store
 	Metrics                         einterfaces.MetricsInterface
+	AIConnectionStore               store.AIConnectionStore
 	AccessControlPolicyStore        store.AccessControlPolicyStore
 	AttributesStore                 store.AttributesStore
 	AuditStore                      store.AuditStore
@@ -84,6 +85,10 @@ type TimerLayer struct {
 	UserTermsOfServiceStore         store.UserTermsOfServiceStore
 	ViewStore                       store.ViewStore
 	WebhookStore                    store.WebhookStore
+}
+
+func (s *TimerLayer) AIConnection() store.AIConnectionStore {
+	return s.AIConnectionStore
 }
 
 func (s *TimerLayer) AccessControlPolicy() store.AccessControlPolicyStore {
@@ -348,6 +353,11 @@ func (s *TimerLayer) View() store.ViewStore {
 
 func (s *TimerLayer) Webhook() store.WebhookStore {
 	return s.WebhookStore
+}
+
+type TimerLayerAIConnectionStore struct {
+	store.AIConnectionStore
+	Root *TimerLayer
 }
 
 type TimerLayerAccessControlPolicyStore struct {
@@ -678,6 +688,182 @@ type TimerLayerViewStore struct {
 type TimerLayerWebhookStore struct {
 	store.WebhookStore
 	Root *TimerLayer
+}
+
+func (s *TimerLayerAIConnectionStore) AddUsage(rctx request.CTX, usage *model.AIUsage) error {
+	start := time.Now()
+
+	err := s.AIConnectionStore.AddUsage(rctx, usage)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("AIConnectionStore.AddUsage", success, elapsed)
+	}
+	return err
+}
+
+func (s *TimerLayerAIConnectionStore) Delete(rctx request.CTX, id string, deleteAt int64) error {
+	start := time.Now()
+
+	err := s.AIConnectionStore.Delete(rctx, id, deleteAt)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("AIConnectionStore.Delete", success, elapsed)
+	}
+	return err
+}
+
+func (s *TimerLayerAIConnectionStore) Get(rctx request.CTX, id string) (*model.AIConnection, error) {
+	start := time.Now()
+
+	result, err := s.AIConnectionStore.Get(rctx, id)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("AIConnectionStore.Get", success, elapsed)
+	}
+	return result, err
+}
+
+func (s *TimerLayerAIConnectionStore) GetAgentsPluginConfig(rctx request.CTX) (string, error) {
+	start := time.Now()
+
+	result, err := s.AIConnectionStore.GetAgentsPluginConfig(rctx)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("AIConnectionStore.GetAgentsPluginConfig", success, elapsed)
+	}
+	return result, err
+}
+
+func (s *TimerLayerAIConnectionStore) GetAll(rctx request.CTX) ([]*model.AIConnection, error) {
+	start := time.Now()
+
+	result, err := s.AIConnectionStore.GetAll(rctx)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("AIConnectionStore.GetAll", success, elapsed)
+	}
+	return result, err
+}
+
+func (s *TimerLayerAIConnectionStore) GetForScopes(rctx request.CTX, scopes []string) ([]*model.AIConnection, error) {
+	start := time.Now()
+
+	result, err := s.AIConnectionStore.GetForScopes(rctx, scopes)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("AIConnectionStore.GetForScopes", success, elapsed)
+	}
+	return result, err
+}
+
+func (s *TimerLayerAIConnectionStore) GetUsage(rctx request.CTX, connectionID string, sinceDay int) ([]*model.AIUsage, error) {
+	start := time.Now()
+
+	result, err := s.AIConnectionStore.GetUsage(rctx, connectionID, sinceDay)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("AIConnectionStore.GetUsage", success, elapsed)
+	}
+	return result, err
+}
+
+func (s *TimerLayerAIConnectionStore) GetUsageTotals(rctx request.CTX, connectionID string, sinceDay int) (model.AIUsageTotals, error) {
+	start := time.Now()
+
+	result, err := s.AIConnectionStore.GetUsageTotals(rctx, connectionID, sinceDay)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("AIConnectionStore.GetUsageTotals", success, elapsed)
+	}
+	return result, err
+}
+
+func (s *TimerLayerAIConnectionStore) GetUserUsageTotals(rctx request.CTX, connectionID string, userID string, sinceDay int) (model.AIUsageTotals, error) {
+	start := time.Now()
+
+	result, err := s.AIConnectionStore.GetUserUsageTotals(rctx, connectionID, userID, sinceDay)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("AIConnectionStore.GetUserUsageTotals", success, elapsed)
+	}
+	return result, err
+}
+
+func (s *TimerLayerAIConnectionStore) Save(rctx request.CTX, connection *model.AIConnection) (*model.AIConnection, error) {
+	start := time.Now()
+
+	result, err := s.AIConnectionStore.Save(rctx, connection)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("AIConnectionStore.Save", success, elapsed)
+	}
+	return result, err
+}
+
+func (s *TimerLayerAIConnectionStore) Update(rctx request.CTX, connection *model.AIConnection) (*model.AIConnection, error) {
+	start := time.Now()
+
+	result, err := s.AIConnectionStore.Update(rctx, connection)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("AIConnectionStore.Update", success, elapsed)
+	}
+	return result, err
 }
 
 func (s *TimerLayerAccessControlPolicyStore) ClearEtagCache() {
@@ -16537,6 +16723,7 @@ func New(childStore store.Store, metrics einterfaces.MetricsInterface) *TimerLay
 		Metrics: metrics,
 	}
 
+	newStore.AIConnectionStore = &TimerLayerAIConnectionStore{AIConnectionStore: childStore.AIConnection(), Root: &newStore}
 	newStore.AccessControlPolicyStore = &TimerLayerAccessControlPolicyStore{AccessControlPolicyStore: childStore.AccessControlPolicy(), Root: &newStore}
 	newStore.AttributesStore = &TimerLayerAttributesStore{AttributesStore: childStore.Attributes(), Root: &newStore}
 	newStore.AuditStore = &TimerLayerAuditStore{AuditStore: childStore.Audit(), Root: &newStore}
