@@ -23,8 +23,13 @@ import {TestHelper} from 'utils/test_helper';
 
 import ChannelMenu from './channel_menu';
 
-// The tests mock every i18n/*.json import: read the real French catalog.
-const frMessages: Record<string, string> = JSON.parse(fs.readFileSync(path.join(__dirname, '..', '..', 'i18n', 'fr.json'), 'utf8'));
+// The tests mock every i18n/*.json import: read the real French catalog. Strings not translated yet (translations
+// come after the English ones) fall back to English, as the app does.
+const enCatalog: Record<string, {defaultMessage: string}> = JSON.parse(fs.readFileSync(path.join(__dirname, '..', '..', 'i18n', 'en.json'), 'utf8'));
+const frMessages: Record<string, string> = {
+    ...Object.fromEntries(Object.entries(enCatalog).map(([id, {defaultMessage}]) => [id, defaultMessage])),
+    ...JSON.parse(fs.readFileSync(path.join(__dirname, '..', '..', 'i18n', 'fr.json'), 'utf8')),
+};
 
 // The tests' useIntl is English (tests/react-intl_mock.ts): speak French for these.
 const intlModule: {useIntl: () => IntlShape} = jest.requireMock('react-intl');

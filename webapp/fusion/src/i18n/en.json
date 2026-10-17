@@ -25355,6 +25355,26 @@
     "defaultMessage": "Unknown message",
     "description": ""
   },
+  "fusion.mute.1d": {
+    "defaultMessage": "For 24 hours",
+    "description": "One of the durations under \"Mute channel\" (or \"Mute conversation\") in a channel's menu: how long the channel stays muted."
+  },
+  "fusion.mute.1h": {
+    "defaultMessage": "For 1 hour",
+    "description": "One of the durations under \"Mute channel\" (or \"Mute conversation\") in a channel's menu: how long the channel stays muted."
+  },
+  "fusion.mute.1w": {
+    "defaultMessage": "For a week",
+    "description": "One of the durations under \"Mute channel\" (or \"Mute conversation\") in a channel's menu: how long the channel stays muted."
+  },
+  "fusion.mute.8h": {
+    "defaultMessage": "For 8 hours",
+    "description": "One of the durations under \"Mute channel\" (or \"Mute conversation\") in a channel's menu: how long the channel stays muted."
+  },
+  "fusion.mute.forever": {
+    "defaultMessage": "Until I unmute it",
+    "description": "The last duration under \"Mute channel\" in a channel's menu: the channel stays muted until the person unmutes it."
+  },
   "fusion.notes.name": {
     "defaultMessage": "Notes to self",
     "description": ""
