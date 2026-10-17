@@ -182,7 +182,7 @@ describe('components/marketplace/', () => {
         expect(baseElement).toMatchSnapshot();
     });
 
-    test('hides search and shows web marketplace banner', async () => {
+    test('hides search and links to no web marketplace', async () => {
         mockState.views.marketplace.plugins = [
             samplePlugin,
             sampleInstalledPlugin,
@@ -196,7 +196,8 @@ describe('components/marketplace/', () => {
         await waitForListingToLoad();
 
         expect(baseElement.querySelector('#searchMarketplaceTextbox')).not.toBeInTheDocument();
-        expect(document.querySelector('.WebMarketplaceBanner')).toBeInTheDocument();
+        expect(document.querySelector('.WebMarketplaceBanner')).not.toBeInTheDocument();
+        expect(baseElement.innerHTML).not.toMatch(/mattermost\.com/);
 
         expect(baseElement).toMatchSnapshot();
     });
