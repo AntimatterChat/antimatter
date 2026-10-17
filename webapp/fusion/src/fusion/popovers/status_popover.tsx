@@ -12,12 +12,13 @@ import {removeRecentCustomStatus, setCustomStatus, setStatus, unsetCustomStatus,
 import {getConfig} from 'mattermost-redux/selectors/entities/general';
 import {getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
 import {getCurrentUser, getDndEndTimeForUserId} from 'mattermost-redux/selectors/entities/users';
-import {isSystemAdmin} from 'mattermost-redux/utils/user_utils';
 
 import {emitUserLoggedOutEvent} from 'actions/global_actions';
+import {openModal} from 'actions/views/modals';
 import {getRecentCustomStatuses, makeGetCustomStatus} from 'selectors/views/custom_status';
 
 import RenderEmoji from 'components/emoji/render_emoji';
+import MarketplaceModal from 'components/plugin_marketplace/marketplace_modal';
 
 import Avatar from 'fusion/components/avatar';
 import Icon from 'fusion/components/icon';
@@ -31,6 +32,9 @@ import {useSettings} from 'fusion/shell/settings_context';
 import {useToast} from 'fusion/shell/toast_context';
 import {am} from 'fusion/utils/class_names';
 import {getHistory} from 'utils/browser_history';
+import {ModalIdentifiers} from 'utils/constants';
+
+import {canOpenMarketplace, canVisitSystemConsole} from './admin_links';
 
 import type {GlobalState} from 'types/store';
 
@@ -126,12 +130,13 @@ export default function StatusPopover({anchor, onClose}: Props) {
     const [offerReplies, setOfferReplies] = useState(false);
     const recents = useSelector(getRecentCustomStatuses);
     const autoReplies = useSelector((state: GlobalState) => getConfig(state).ExperimentalEnableAutomaticReplies === 'true');
+    const systemConsole = useSelector(canVisitSystemConsole);
+    const marketplace = useSelector(canOpenMarketplace);
     const durationLabel = duration === CustomStatusDuration.DATE_AND_TIME && clearAt ? intl.formatDate(clearAt, {weekday: 'short', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit'}) : formatMessage(CLEAR_AFTER.find(([d]) => d === duration)?.[1] || CLEAR_AFTER[3][1]);
 
     if (!me) {
         return null;
     }
-    const admin = isSystemAdmin(me.roles);
     const label = (s: string) => formatMessage([...STATUSES, OUT_OF_OFFICE].find((x) => x.status === s)?.label || STATUSES[3].label);
 
     const saveCustom = (e?: React.FormEvent, withEmoji = emoji) => {
@@ -528,13 +533,27 @@ export default function StatusPopover({anchor, onClose}: Props) {
                         {formatMessage({id: 'fusion.status.integrations', defaultMessage: 'Integrations'})}
                     </button>
                 )}
-                {admin && (
+                {systemConsole && (
                     <button onClick={() => getHistory().push('/admin_console')}>
                         <Icon
                             name='shield'
                             size='sm'
                         />
                         {formatMessage({id: 'fusion.status.console', defaultMessage: 'System Console'})}
+                    </button>
+                )}
+                {marketplace && (
+                    <button
+                        onClick={() => {
+                            dispatch(openModal({modalId: ModalIdentifiers.PLUGIN_MARKETPLACE, dialogType: MarketplaceModal}));
+                            onClose();
+                        }}
+                    >
+                        <Icon
+                            name='store'
+                            size='sm'
+                        />
+                        {formatMessage({id: 'fusion.status.marketplace', defaultMessage: 'App Marketplace', description: 'Status menu (your avatar): opens the App Marketplace, to install apps; shown to those who may install apps.'})}
                     </button>
                 )}
                 <button

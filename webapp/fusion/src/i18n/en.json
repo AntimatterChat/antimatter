@@ -20935,6 +20935,10 @@
     "defaultMessage": "Build date",
     "description": ""
   },
+  "fusion.about.download": {
+    "defaultMessage": "Download the apps",
+    "description": "About menu of the app rail: opens the page with the desktop and mobile apps to download (the server's app download link)."
+  },
   "fusion.about.formatting": {
     "defaultMessage": "Formatting help",
     "description": ""
@@ -27718,6 +27722,10 @@
   "fusion.status.logout": {
     "defaultMessage": "Log out",
     "description": ""
+  },
+  "fusion.status.marketplace": {
+    "defaultMessage": "App Marketplace",
+    "description": "Status menu (your avatar): opens the App Marketplace, to install apps; shown to those who may install apps."
   },
   "fusion.status.offerNo": {
     "defaultMessage": "No",

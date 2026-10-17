@@ -7,6 +7,8 @@ import * as UserAgent from '@mattermost/shared/utils/user_agent';
 
 import {renderWithContext, screen, userEvent} from 'tests/react_testing_utils';
 
+import {getHistory} from 'utils/browser_history';
+
 import {OnboardingTasksName} from './constants';
 import {useHandleOnBoardingTaskTrigger, useTasksList} from './onboarding_tasks_manager';
 
@@ -129,6 +131,45 @@ describe('onboarding tasks manager', () => {
             renderWithContext(<DownloadButton/>, state);
             await userEvent.click(screen.getByRole('button', {name: 'download'}));
             expect(openSpy).toHaveBeenCalledWith('https://downloads.example.com/chat', '_blank', 'noopener,noreferrer');
+        });
+    });
+    // Antimatter: the product menu, where the tour pointed at the System Console, only shows when an app has a page of
+    // its own; without it, the task opens the System Console.
+    describe('the visit_system_console task', () => {
+        const ConsoleButton = (): JSX.Element => {
+            const trigger = useHandleOnBoardingTaskTrigger();
+            return (
+                <button onClick={() => trigger(OnboardingTasksName.VISIT_SYSTEM_CONSOLE)}>
+                    {'console'}
+                </button>
+            );
+        };
+
+        it('opens the System Console when there is no product menu', async () => {
+            const push = jest.spyOn(getHistory(), 'push').mockImplementation(() => {});
+            renderWithContext(<ConsoleButton/>, initialState);
+
+            await userEvent.click(screen.getByRole('button', {name: 'console'}));
+
+            expect(push).toHaveBeenCalledWith('/admin_console');
+            push.mockRestore();
+        });
+
+        it('opens the product menu when it shows', async () => {
+            const push = jest.spyOn(getHistory(), 'push').mockImplementation(() => {});
+            const menuButton = document.createElement('button');
+            menuButton.id = 'switchProductMenuButton';
+            const click = jest.fn();
+            menuButton.addEventListener('click', click);
+            document.body.appendChild(menuButton);
+            renderWithContext(<ConsoleButton/>, initialState);
+
+            await userEvent.click(screen.getByRole('button', {name: 'console'}));
+
+            expect(click).toHaveBeenCalled();
+            expect(push).not.toHaveBeenCalledWith('/admin_console');
+            menuButton.remove();
+            push.mockRestore();
         });
     });
 });

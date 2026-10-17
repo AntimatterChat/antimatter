@@ -27,6 +27,8 @@ import {getHistory} from 'utils/browser_history';
 import type {GlobalState} from 'types/store';
 import type {ProductComponent} from 'types/store/plugins';
 
+import {appDownloadLink} from './admin_links';
+
 const NO_PRODUCTS: ProductComponent[] = [];
 
 // Where Antimatter's source code is (AGPL §13). The server has no setting for it.
@@ -77,6 +79,7 @@ export default function AboutPopover({anchor, onClose}: {anchor: HTMLElement | n
     const reportLink = useSelector(getReportAProblemLink);
     const helpItems = useSelector(getUserGuideDropdownPluginMenuItems);
     const products = useSelector((state: GlobalState) => state.plugins.components.Product) || NO_PRODUCTS;
+    const downloadLink = useSelector(appDownloadLink);
     const [termsOpen, setTermsOpen] = useState(false);
     const run = (action: () => void) => () => {
         action();
@@ -169,6 +172,13 @@ export default function AboutPopover({anchor, onClose}: {anchor: HTMLElement | n
                         icon='flag'
                         label={formatMessage({id: 'fusion.about.report', defaultMessage: 'Report a problem'})}
                         onClick={run(() => window.open(reportLink, '_blank', 'noopener'))}
+                    />
+                )}
+                {downloadLink && (
+                    <MenuItem
+                        icon='phone'
+                        label={formatMessage({id: 'fusion.about.download', defaultMessage: 'Download the apps', description: 'About menu of the app rail: opens the page with the desktop and mobile apps to download (the server\'s app download link).'})}
+                        onClick={run(() => window.open(downloadLink, '_blank', 'noopener,noreferrer'))}
                     />
                 )}
                 {config.EnableCustomTermsOfService === 'true' && (

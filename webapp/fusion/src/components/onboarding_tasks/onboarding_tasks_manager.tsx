@@ -38,6 +38,7 @@ import {
 } from 'components/tours';
 import {ELEMENT_ID_FOR_USER_ACCOUNT_MENU_BUTTON} from 'components/user_account_menu/user_account_menu';
 
+import {getHistory} from 'utils/browser_history';
 import {AntimatterLinks} from 'utils/constants';
 
 import type {GlobalState} from 'types/store';
@@ -214,6 +215,13 @@ export const useHandleOnBoardingTaskTrigger = () => {
             break;
         }
         case OnboardingTasksName.VISIT_SYSTEM_CONSOLE: {
+            // Antimatter: the product menu (and its System Console entry, which the tour points at) only shows when an
+            // app has a page of its own; Fusion's frame has none. Without it, the task opens the System Console.
+            if (!document.getElementById(ELEMENT_ID_FOR_SWITCH_PRODUCT_MENU_BUTTON)) {
+                handleSaveData(taskName, TaskNameMapToSteps[taskName].FINISHED);
+                getHistory().push('/admin_console');
+                break;
+            }
             openMenu(ELEMENT_ID_FOR_SWITCH_PRODUCT_MENU_BUTTON);
             dispatch(setShowOnboardingVisitConsoleTour(true));
             handleSaveData(taskName, TaskNameMapToSteps[taskName].STARTED);
