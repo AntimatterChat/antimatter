@@ -428,6 +428,7 @@ func testBotStoreSave(t *testing.T, rctx request.CTX, ss store.Store) {
 		bot.CreateAt = returnedNewBot.CreateAt
 		bot.UpdateAt = returnedNewBot.UpdateAt
 		bot.DeleteAt = 0
+		bot.Kind = model.BotKindBot // Antimatter: saved as a plain bot
 		require.Equal(t, bot, returnedNewBot)
 
 		// Verify the actual bot in the database matches the saved bot.
