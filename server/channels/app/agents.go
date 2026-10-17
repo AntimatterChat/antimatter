@@ -4,6 +4,8 @@
 package app
 
 import (
+	"net/http"
+
 	"github.com/mattermost/mattermost/server/public/model"
 	"github.com/mattermost/mattermost/server/public/shared/request"
 )
@@ -21,7 +23,8 @@ func (a *App) GetAgentsStatus(rctx request.CTX, userID string) (bool, string) {
 	}
 	agents, _, appErr := a.GetAIAgentsForUser(rctx, userID)
 	if appErr != nil || len(agents) == 0 {
-		return false, "app.agents.status.no_agents"
+		// The reason is a translation ID, which the clients show.
+		return false, model.NewAppError("GetAgentsStatus", "app.agents.status.no_agents", nil, "", http.StatusOK).Id
 	}
 	return true, ""
 }

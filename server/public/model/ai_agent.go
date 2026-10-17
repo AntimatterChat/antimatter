@@ -242,10 +242,6 @@ func IsValidAIAgentToolName(name string) bool {
 	return !strings.HasPrefix(name, ".") && !strings.Contains(name, "..")
 }
 
-func aiAgentError(field string) *AppError {
-	return NewAppError("AIAgent.IsValid", "model.ai_agent."+field+".app_error", nil, "", http.StatusBadRequest)
-}
-
 func validAIAgentIDs(ids []string) bool {
 	if len(ids) > AIAgentMaxListItems {
 		return false
@@ -261,64 +257,64 @@ func validAIAgentIDs(ids []string) bool {
 // IsValid checks an agent's settings before they're saved.
 func (a *AIAgent) IsValid() *AppError {
 	if !IsValidId(a.UserId) {
-		return aiAgentError("user_id")
+		return NewAppError("AIAgent.IsValid", "model.ai_agent.user_id.app_error", nil, "", http.StatusBadRequest)
 	}
 	if a.Scope != AIAgentScopeServer && !IsValidId(a.Scope) {
-		return aiAgentError("scope")
+		return NewAppError("AIAgent.IsValid", "model.ai_agent.scope.app_error", nil, "", http.StatusBadRequest)
 	}
 	if a.External {
 		if a.ConnectionId != "" || a.Model != "" || a.SystemPrompt != "" {
-			return aiAgentError("external")
+			return NewAppError("AIAgent.IsValid", "model.ai_agent.external.app_error", nil, "", http.StatusBadRequest)
 		}
 	} else if !IsValidId(a.ConnectionId) && (a.ConnectionId != "" || a.NeedsAttention == "") {
 		// Only an agent that needs an admin's attention (one migrated without a connection) may have none.
-		return aiAgentError("connection_id")
+		return NewAppError("AIAgent.IsValid", "model.ai_agent.connection_id.app_error", nil, "", http.StatusBadRequest)
 	}
 	if len(a.Model) > AIModelNameMaxLength || strings.ContainsAny(a.Model, "\r\n") {
-		return aiAgentError("model")
+		return NewAppError("AIAgent.IsValid", "model.ai_agent.model.app_error", nil, "", http.StatusBadRequest)
 	}
 	if utf8.RuneCountInString(a.SystemPrompt) > AIAgentSystemPromptMaxRunes {
-		return aiAgentError("system_prompt")
+		return NewAppError("AIAgent.IsValid", "model.ai_agent.system_prompt.app_error", nil, "", http.StatusBadRequest)
 	}
 	if len(a.Tools.Allowed) > AIAgentMaxListItems || len(a.Tools.AutoRun) > AIAgentMaxListItems {
-		return aiAgentError("tools")
+		return NewAppError("AIAgent.IsValid", "model.ai_agent.tools.app_error", nil, "", http.StatusBadRequest)
 	}
 	for _, name := range append(slices.Clone(a.Tools.Allowed), a.Tools.AutoRun...) {
 		if !IsValidAIAgentToolName(name) {
-			return aiAgentError("tools")
+			return NewAppError("AIAgent.IsValid", "model.ai_agent.tools.app_error", nil, "", http.StatusBadRequest)
 		}
 	}
 	switch a.Reasoning.Effort {
 	case "", AIAgentReasoningEffortMinimal, AIAgentReasoningEffortLow, AIAgentReasoningEffortMedium, AIAgentReasoningEffortHigh:
 	default:
-		return aiAgentError("reasoning")
+		return NewAppError("AIAgent.IsValid", "model.ai_agent.reasoning.app_error", nil, "", http.StatusBadRequest)
 	}
 	if a.Reasoning.BudgetTokens < 0 || a.Reasoning.BudgetTokens > AIAgentReasoningMaxBudget {
-		return aiAgentError("reasoning")
+		return NewAppError("AIAgent.IsValid", "model.ai_agent.reasoning.app_error", nil, "", http.StatusBadRequest)
 	}
 	if a.MaxToolTurns < 0 || a.MaxToolTurns > AIAgentMaxToolTurns {
-		return aiAgentError("max_tool_turns")
+		return NewAppError("AIAgent.IsValid", "model.ai_agent.max_tool_turns.app_error", nil, "", http.StatusBadRequest)
 	}
 	if !validAIAgentIDs(a.Access.TeamIDs) || !validAIAgentIDs(a.Access.ChannelIDs) || !validAIAgentIDs(a.Access.UserIDs) {
-		return aiAgentError("access")
+		return NewAppError("AIAgent.IsValid", "model.ai_agent.access.app_error", nil, "", http.StatusBadRequest)
 	}
 	if len(a.Access.Roles) > AIAgentMaxListItems {
-		return aiAgentError("access")
+		return NewAppError("AIAgent.IsValid", "model.ai_agent.access.app_error", nil, "", http.StatusBadRequest)
 	}
 	for _, role := range a.Access.Roles {
 		if !IsValidRoleName(role) {
-			return aiAgentError("access")
+			return NewAppError("AIAgent.IsValid", "model.ai_agent.access.app_error", nil, "", http.StatusBadRequest)
 		}
 	}
 	if !a.IsServerScoped() && slices.ContainsFunc(a.Access.TeamIDs, func(id string) bool { return id != a.Scope }) {
 		// A community's agent can't be opened to other communities.
-		return aiAgentError("access_community")
+		return NewAppError("AIAgent.IsValid", "model.ai_agent.access_community.app_error", nil, "", http.StatusBadRequest)
 	}
 	if utf8.RuneCountInString(a.NeedsAttention) > AINeedsAttentionMaxRunes {
-		return aiAgentError("needs_attention")
+		return NewAppError("AIAgent.IsValid", "model.ai_agent.needs_attention.app_error", nil, "", http.StatusBadRequest)
 	}
 	if a.CreateAt == 0 || a.UpdateAt == 0 {
-		return aiAgentError("times")
+		return NewAppError("AIAgent.IsValid", "model.ai_agent.times.app_error", nil, "", http.StatusBadRequest)
 	}
 	return nil
 }

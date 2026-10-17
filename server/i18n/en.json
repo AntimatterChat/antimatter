@@ -10982,11 +10982,6 @@
     "description": "API error when the given ID is not an edit-history entry at all; shown when restoring a previous post version."
   },
   {
-    "id": "app.post.rewrite.agent_call_failed",
-    "translation": "Failed to call AI agent.",
-    "description": "Error shown when the AI-assisted message rewrite feature fails to reach the AI agent."
-  },
-  {
     "id": "app.post.rewrite.empty_response",
     "translation": "Empty response from AI.",
     "description": "Error shown when the AI-assisted message rewrite feature receives an empty response from the AI."

@@ -174,22 +174,18 @@ func AIAgentPermissionFor(session model.Session, agent *model.AIAgent) *model.Pe
 	return model.PermissionManageOthersAgent
 }
 
-func aiAgentError(where, id string, status int) *model.AppError {
-	return model.NewAppError(where, "app.ai.agent."+id+".app_error", nil, "", status)
-}
-
 // GetAIAgent gives an agent that isn't deleted.
 func (a *App) GetAIAgent(rctx request.CTX, userID string) (*model.AIAgent, *model.AppError) {
 	agent, err := a.Srv().Store().AIAgent().Get(rctx, userID)
 	if err != nil {
 		var nfErr *store.ErrNotFound
 		if errors.As(err, &nfErr) {
-			return nil, aiAgentError("GetAIAgent", "not_found", http.StatusNotFound).Wrap(err)
+			return nil, model.NewAppError("GetAIAgent", "app.ai.agent.not_found.app_error", nil, "", http.StatusNotFound).Wrap(err)
 		}
-		return nil, aiAgentError("GetAIAgent", "get", http.StatusInternalServerError).Wrap(err)
+		return nil, model.NewAppError("GetAIAgent", "app.ai.agent.get.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
 	}
 	if agent.DeleteAt != 0 {
-		return nil, aiAgentError("GetAIAgent", "not_found", http.StatusNotFound)
+		return nil, model.NewAppError("GetAIAgent", "app.ai.agent.not_found.app_error", nil, "", http.StatusNotFound)
 	}
 	return agent, nil
 }
@@ -229,7 +225,7 @@ func (a *App) GetAIAgentsForManager(rctx request.CTX, session model.Session, sco
 	var err error
 	if scope != "" {
 		if !a.SessionCanManageAIAgentScope(session, scope) {
-			return nil, aiAgentError("GetAIAgentsForManager", "manage_permission", http.StatusForbidden)
+			return nil, model.NewAppError("GetAIAgentsForManager", "app.ai.agent.manage_permission.app_error", nil, "", http.StatusForbidden)
 		}
 		scopes = []string{scope}
 	} else if a.SessionHasPermissionTo(session, model.PermissionManageSystem) {
@@ -253,7 +249,7 @@ func (a *App) GetAIAgentsForManager(rctx request.CTX, session model.Session, sco
 		agents, err = a.Srv().Store().AIAgent().GetForScopes(rctx, scopes)
 	}
 	if err != nil {
-		return nil, aiAgentError("GetAIAgentsForManager", "get", http.StatusInternalServerError).Wrap(err)
+		return nil, model.NewAppError("GetAIAgentsForManager", "app.ai.agent.get.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
 	}
 	out := make([]*model.AIAgentDetails, 0, len(agents))
 	for _, agent := range agents {
@@ -314,7 +310,7 @@ func (a *App) GetAIAgentConnectionForScope(rctx request.CTX, scope, connectionID
 		return nil, appErr
 	}
 	if !aiAgentMayUseConnection(scope, c) {
-		return nil, aiAgentError("GetAIAgentConnectionForScope", "connection", http.StatusBadRequest)
+		return nil, model.NewAppError("GetAIAgentConnectionForScope", "app.ai.agent.connection.app_error", nil, "", http.StatusBadRequest)
 	}
 	return c, nil
 }
@@ -405,7 +401,7 @@ func (a *App) CreateAIAgent(rctx request.CTX, req *model.AIAgentRequest, creator
 		if errors.As(err, &vErr) {
 			return nil, vErr
 		}
-		return nil, aiAgentError("CreateAIAgent", "save", http.StatusInternalServerError).Wrap(err)
+		return nil, model.NewAppError("CreateAIAgent", "app.ai.agent.save.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
 	}
 	if !saved.IsServerScoped() {
 		// A community's agent belongs to its community, where people find and mention it.
@@ -471,9 +467,9 @@ func (a *App) PatchAIAgent(rctx request.CTX, agent *model.AIAgent, patch *model.
 		}
 		var nfErr *store.ErrNotFound
 		if errors.As(err, &nfErr) {
-			return nil, aiAgentError("PatchAIAgent", "not_found", http.StatusNotFound).Wrap(err)
+			return nil, model.NewAppError("PatchAIAgent", "app.ai.agent.not_found.app_error", nil, "", http.StatusNotFound).Wrap(err)
 		}
-		return nil, aiAgentError("PatchAIAgent", "save", http.StatusInternalServerError).Wrap(err)
+		return nil, model.NewAppError("PatchAIAgent", "app.ai.agent.save.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
 	}
 	a.invalidateAIAgents()
 	return a.aiAgentDetails(rctx, saved)
@@ -502,9 +498,9 @@ func (a *App) DeleteAIAgent(rctx request.CTX, agent *model.AIAgent) *model.AppEr
 	if err := a.Srv().Store().AIAgent().Delete(rctx, agent.UserId, model.GetMillis()); err != nil {
 		var nfErr *store.ErrNotFound
 		if errors.As(err, &nfErr) {
-			return aiAgentError("DeleteAIAgent", "not_found", http.StatusNotFound).Wrap(err)
+			return model.NewAppError("DeleteAIAgent", "app.ai.agent.not_found.app_error", nil, "", http.StatusNotFound).Wrap(err)
 		}
-		return aiAgentError("DeleteAIAgent", "save", http.StatusInternalServerError).Wrap(err)
+		return model.NewAppError("DeleteAIAgent", "app.ai.agent.save.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
 	}
 	if err := a.Srv().Store().AgentActivity().Delete(rctx, agent.UserId); err != nil {
 		rctx.Logger().Warn("Couldn't forget a deleted agent's activity", mlog.String("user_id", agent.UserId), mlog.Err(err))
