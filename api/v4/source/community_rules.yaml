@@ -1,0 +1,187 @@
+  "/api/v4/teams/{team_id}/rules":
+    get:
+      tags:
+        - community rules
+      summary: Get a community's rules
+      description: >
+        Gets a community's rules, with the latest version the one asking agreed to (`accepted_version`) and whether
+        they must agree before they may post in its channels (`must_accept`). A community that never had rules gives
+        them off, at version 0. `updated_by` is only given to the community's admins.
+
+
+        While the rules are on, a member who hasn't agreed to the current version can't post, reply, send files,
+        schedule a message, edit or restore one of their messages, or run a command that posts, in the community's
+        channels: the server refuses with the error `api.post.community_rules_not_accepted` (403), and a scheduled
+        message due then fails with the error code `community_rules_not_accepted`. Reading, reactions and direct and
+        group messages aren't held back; neither are bots, incoming webhooks, system messages, and the community's
+        admins (`manage_team`, which system admins have too).
+
+
+        Clients hear of changes through two websocket events: `community_rules_updated` (to the community, with
+        `team_id`, `enabled` and `version`) when an admin saves the rules, and `community_rules_accepted` (to the one
+        who agreed, with `team_id` and `version`) so their other sessions follow.
+
+
+        ##### Permissions
+
+        `view_team` in the community; or, for an open community (`allow_open_invite`), `list_public_teams`, so the
+        rules can be read before joining.
+
+
+        __Minimum server version__: 11.11 (Antimatter)
+      operationId: GetCommunityRules
+      parameters:
+        - name: team_id
+          in: path
+          description: Team GUID
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: The rules
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CommunityRules"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    put:
+      tags:
+        - community rules
+      summary: Change a community's rules
+      description: >
+        Turns a community's rules on or off and changes their text. The first save is version 1: everyone must agree
+        before they post. Later saves keep the version, so those who agreed stay agreed (to fix a typo), unless
+        `ask_again` is set, which goes to the next version and asks everyone to agree again. Turning the rules off
+        keeps their text and version. The community's members get the `community_rules_updated` websocket event.
+
+
+        ##### Permissions
+
+        `manage_team` in the community (its admins, and system admins).
+
+
+        __Minimum server version__: 11.11 (Antimatter)
+      operationId: UpdateCommunityRules
+      parameters:
+        - name: team_id
+          in: path
+          description: Team GUID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CommunityRulesRequest"
+      responses:
+        "200":
+          description: The rules as saved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CommunityRules"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  "/api/v4/teams/{team_id}/rules/accept":
+    post:
+      tags:
+        - community rules
+      summary: Agree to a community's rules
+      description: >
+        Agrees, for the one asking, to the version of a community's rules they read. When an admin has asked everyone
+        to agree again since, the agreement is refused with 409, so nobody agrees to rules they haven't seen; a
+        `version` of 0 agrees to the current one. Each agreement is kept, with its time. The one who agreed gets the
+        `community_rules_accepted` websocket event, on all their sessions.
+
+
+        ##### Permissions
+
+        Must be a member of the community. The rules must be on.
+
+
+        __Minimum server version__: 11.11 (Antimatter)
+      operationId: AcceptCommunityRules
+      parameters:
+        - name: team_id
+          in: path
+          description: Team GUID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                version:
+                  type: integer
+                  format: int64
+                  description: The version read; 0 for the current one.
+      responses:
+        "200":
+          description: The rules, with `accepted_version` and `must_accept` for the one who agreed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CommunityRules"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "409":
+          $ref: "#/components/responses/Conflict"
+  "/api/v4/teams/{team_id}/rules/stats":
+    get:
+      tags:
+        - community rules
+      summary: Count who agreed to a community's rules
+      description: >
+        Counts the community's active members (bots and deactivated accounts left out) and those of them who agreed
+        to the current version of its rules. Who agreed isn't listed.
+
+
+        ##### Permissions
+
+        `manage_team` in the community.
+
+
+        __Minimum server version__: 11.11 (Antimatter)
+      operationId: GetCommunityRulesStats
+      parameters:
+        - name: team_id
+          in: path
+          description: Team GUID
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: The counts
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CommunityRulesStats"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"

@@ -481,6 +481,8 @@ tags:
     description: Endpoints for interacting with AI agents and LLM services.
   - name: ai connections
     description: Endpoints for managing model connections (AI providers' addresses and keys), server-wide or a community's own.
+  - name: community rules
+    description: Endpoints for a community's rules, which its members agree to before they post in its channels.
   - name: Delivery Tracking
     description: Endpoints for configuring post delivery audit logging.
   - name: health
