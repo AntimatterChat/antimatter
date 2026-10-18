@@ -25847,6 +25847,10 @@
     "defaultMessage": "Jump",
     "description": ""
   },
+  "fusion.messages.jumpToPresent": {
+    "defaultMessage": "Jump to present",
+    "description": "Button at the bottom of a conversation's message list, shown while the list shows older messages (opened from a link to a message): goes to the newest messages. 'Present' means now, the latest messages, not a gift."
+  },
   "fusion.messages.loading": {
     "defaultMessage": "Loading messages…",
     "description": ""
@@ -25858,6 +25862,10 @@
   "fusion.messages.older": {
     "defaultMessage": "Loading older messages…",
     "description": ""
+  },
+  "fusion.messages.olderMessages": {
+    "defaultMessage": "You're viewing older messages",
+    "description": "Bar at the bottom of a conversation's message list, next to the 'Jump to present' button: the list shows older messages (opened from a link to a message), not the newest ones."
   },
   "fusion.messages.unread": {
     "defaultMessage": "Unread",

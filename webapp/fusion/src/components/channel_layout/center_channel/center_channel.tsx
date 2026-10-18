@@ -34,7 +34,6 @@ const Recaps = makeAsyncComponent('Recaps', lazy(() => import('components/recaps
         </div>
     ),
 );
-const PermalinkView = makeAsyncComponent('PermalinkView', lazy(() => import('components/permalink_view')));
 const PlaybookRunner = makeAsyncComponent('PlaybookRunner', lazy(() => import('components/channel_layout/playbook_runner')));
 
 type Props = PropsFromRedux & OwnProps;
@@ -76,18 +75,14 @@ export default class CenterChannel extends React.PureComponent<Props, State> {
         return (
             <div className='am-center'>
                 <Switch>
+                    {/* A permalink and a conversation are one route, so that the conversation view stays mounted
+                        while a permalink resolves to its conversation: no empty page between the two. */}
                     <Route
-                        path={`${url}/pl/:postid(${ID_PATH_PATTERN})`}
-                        render={(props) => (
-                            <PermalinkView
-                                {...props}
-                                returnTo={this.state.returnTo}
-                            />
-                        )}
-                    />
-                    <Route
-                        path={`/:team(${TEAM_NAME_PATH_PATTERN})/:path(channels|messages)/:identifier(${IDENTIFIER_PATH_PATTERN})/:postid(${ID_PATH_PATTERN})?`}
-                        component={ChannelIdentifierRouter}
+                        path={[
+                            `${url}/pl/:postid(${ID_PATH_PATTERN})`,
+                            `/:team(${TEAM_NAME_PATH_PATTERN})/:path(channels|messages)/:identifier(${IDENTIFIER_PATH_PATTERN})/:postid(${ID_PATH_PATTERN})?`,
+                        ]}
+                        render={() => <ChannelIdentifierRouter returnTo={this.state.returnTo}/>}
                     />
                     <Route
                         path={`/:team(${TEAM_NAME_PATH_PATTERN})/_playbooks/:playbookId(${ID_PATH_PATTERN})/run`}

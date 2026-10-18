@@ -65,8 +65,11 @@ function MovedChannelLink({moved}: {moved: Moved}) {
             href={path || moved.link || '#'}
             data-channel-mention={known?.name || moved.name}
             onClick={(e) => {
-                if (path) {
+                // In the app, like the other links to messages: no reload, the conversation view stays while the
+                // thread's conversation opens. A click with a modifier opens it in a new tab or window.
+                if (path && !e.ctrlKey && !e.metaKey && !e.shiftKey && !e.altKey && e.button === 0) {
                     e.preventDefault();
+                    e.stopPropagation();
                     getHistory().push(path);
                 }
             }}
