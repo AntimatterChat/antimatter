@@ -12,14 +12,16 @@ const read = (name: string) => fs.readFileSync(path.join(__dirname, '..', 'style
 const picker = read('_12_picker.scss');
 const phone = read('_99_phone.scss');
 
-// The declarations of the one-line rule for a selector (as these files write them), from the last such rule.
+// The declarations of the one-line rule for a selector (as these files write them): the top-level one, else the one in
+// a media query (the phone styles are all in one).
 function rule(css: string, selector: string): string {
     const prefix = ':is(.am-app, .am-layer) ';
-    const lines = css.split('\n').filter((l) => l.trim().startsWith(prefix + selector + ' {'));
-    if (!lines.length) {
+    const lines = css.split('\n');
+    const line = lines.find((l) => l.startsWith(prefix + selector + ' {')) || lines.find((l) => l.trim().startsWith(prefix + selector + ' {'));
+    if (!line) {
         throw new Error(`no rule for ${selector}`);
     }
-    return lines[lines.length - 1].slice(lines[lines.length - 1].indexOf('{') + 1, lines[lines.length - 1].lastIndexOf('}'));
+    return line.slice(line.indexOf('{') + 1, line.lastIndexOf('}'));
 }
 
 // A length in pixels of a declaration ('height', 'padding-top' from a padding shorthand, 'line-height' from a font
