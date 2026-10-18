@@ -14,14 +14,12 @@ const mockViewMounted = jest.fn();
 const mockViewRendered = jest.fn();
 jest.mock('fusion/channel/channel_view', () => {
     const {useEffect} = jest.requireActual('react');
-    return {
-        __esModule: true,
-        default: (props: {resolvingPermalink?: boolean}) => {
-            mockViewRendered(props);
-            useEffect(() => mockViewMounted(), []);
-            return null;
-        },
-    };
+    function MockChannelView(props: {resolvingPermalink?: boolean}) {
+        mockViewRendered(props);
+        useEffect(() => mockViewMounted(), []);
+        return null;
+    }
+    return {__esModule: true, default: MockChannelView};
 });
 
 const mockReplace = jest.fn();

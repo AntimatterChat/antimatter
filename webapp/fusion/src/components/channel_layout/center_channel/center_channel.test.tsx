@@ -16,15 +16,13 @@ const mockRouterRendered = jest.fn();
 jest.mock('components/channel_layout/channel_identifier_router', () => {
     const {useEffect} = jest.requireActual('react');
     const {useRouteMatch} = jest.requireActual('react-router-dom');
-    return {
-        __esModule: true,
-        default: (props: {returnTo?: string}) => {
-            const match = useRouteMatch();
-            mockRouterRendered({returnTo: props.returnTo, params: match.params});
-            useEffect(() => mockRouterMounted(), []);
-            return null;
-        },
-    };
+    function MockChannelIdentifierRouter(props: {returnTo?: string}) {
+        const match = useRouteMatch();
+        mockRouterRendered({returnTo: props.returnTo, params: match.params});
+        useEffect(() => mockRouterMounted(), []);
+        return null;
+    }
+    return {__esModule: true, default: MockChannelIdentifierRouter};
 });
 
 describe('components/channel_layout/CenterChannel', () => {

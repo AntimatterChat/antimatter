@@ -240,6 +240,7 @@ describe('fusion/messages/MessageList: You\'re viewing older messages · Jump to
             />,
             withPresent,
         );
+
         // (The ended highlight has read the channel once already.)
         await waitFor(() => expect(markChannelAsRead).toHaveBeenCalled());
         (markChannelAsRead as jest.Mock).mockClear();
