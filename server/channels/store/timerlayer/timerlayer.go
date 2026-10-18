@@ -35,6 +35,7 @@ type TimerLayer struct {
 	ClusterDiscoveryStore           store.ClusterDiscoveryStore
 	CommandStore                    store.CommandStore
 	CommandWebhookStore             store.CommandWebhookStore
+	CommunityRulesStore             store.CommunityRulesStore
 	ComplianceStore                 store.ComplianceStore
 	ContentFlaggingStore            store.ContentFlaggingStore
 	DeliveryTrackingStore           store.DeliveryTrackingStore
@@ -155,6 +156,10 @@ func (s *TimerLayer) Command() store.CommandStore {
 
 func (s *TimerLayer) CommandWebhook() store.CommandWebhookStore {
 	return s.CommandWebhookStore
+}
+
+func (s *TimerLayer) CommunityRules() store.CommunityRulesStore {
+	return s.CommunityRulesStore
 }
 
 func (s *TimerLayer) Compliance() store.ComplianceStore {
@@ -447,6 +452,11 @@ type TimerLayerCommandStore struct {
 
 type TimerLayerCommandWebhookStore struct {
 	store.CommandWebhookStore
+	Root *TimerLayer
+}
+
+type TimerLayerCommunityRulesStore struct {
+	store.CommunityRulesStore
 	Root *TimerLayer
 }
 
@@ -4768,6 +4778,134 @@ func (s *TimerLayerCommandWebhookStore) TryUse(id string, limit int) error {
 		s.Root.Metrics.ObserveStoreMethodDuration("CommandWebhookStore.TryUse", success, elapsed)
 	}
 	return err
+}
+
+func (s *TimerLayerCommunityRulesStore) Accept(rctx request.CTX, acceptance *model.CommunityRulesAcceptance) error {
+	start := time.Now()
+
+	err := s.CommunityRulesStore.Accept(rctx, acceptance)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("CommunityRulesStore.Accept", success, elapsed)
+	}
+	return err
+}
+
+func (s *TimerLayerCommunityRulesStore) CountAcceptances(rctx request.CTX, teamID string, version int64) (*model.CommunityRulesStats, error) {
+	start := time.Now()
+
+	result, err := s.CommunityRulesStore.CountAcceptances(rctx, teamID, version)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("CommunityRulesStore.CountAcceptances", success, elapsed)
+	}
+	return result, err
+}
+
+func (s *TimerLayerCommunityRulesStore) DeleteForTeam(rctx request.CTX, teamID string) error {
+	start := time.Now()
+
+	err := s.CommunityRulesStore.DeleteForTeam(rctx, teamID)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("CommunityRulesStore.DeleteForTeam", success, elapsed)
+	}
+	return err
+}
+
+func (s *TimerLayerCommunityRulesStore) Get(rctx request.CTX, teamID string) (*model.CommunityRules, error) {
+	start := time.Now()
+
+	result, err := s.CommunityRulesStore.Get(rctx, teamID)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("CommunityRulesStore.Get", success, elapsed)
+	}
+	return result, err
+}
+
+func (s *TimerLayerCommunityRulesStore) GetAcceptancesForUser(rctx request.CTX, userID string) ([]*model.CommunityRulesAcceptance, error) {
+	start := time.Now()
+
+	result, err := s.CommunityRulesStore.GetAcceptancesForUser(rctx, userID)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("CommunityRulesStore.GetAcceptancesForUser", success, elapsed)
+	}
+	return result, err
+}
+
+func (s *TimerLayerCommunityRulesStore) GetAcceptedVersion(rctx request.CTX, teamID string, userID string) (int64, error) {
+	start := time.Now()
+
+	result, err := s.CommunityRulesStore.GetAcceptedVersion(rctx, teamID, userID)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("CommunityRulesStore.GetAcceptedVersion", success, elapsed)
+	}
+	return result, err
+}
+
+func (s *TimerLayerCommunityRulesStore) PermanentDeleteByUser(rctx request.CTX, userID string) error {
+	start := time.Now()
+
+	err := s.CommunityRulesStore.PermanentDeleteByUser(rctx, userID)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("CommunityRulesStore.PermanentDeleteByUser", success, elapsed)
+	}
+	return err
+}
+
+func (s *TimerLayerCommunityRulesStore) Save(rctx request.CTX, rules *model.CommunityRules, askAgain bool) (*model.CommunityRules, error) {
+	start := time.Now()
+
+	result, err := s.CommunityRulesStore.Save(rctx, rules, askAgain)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("CommunityRulesStore.Save", success, elapsed)
+	}
+	return result, err
 }
 
 func (s *TimerLayerComplianceStore) ChannelExportCount(rctx request.CTX, filter model.ChannelExportFilter, limit int) (int, error) {
@@ -16984,6 +17122,7 @@ func New(childStore store.Store, metrics einterfaces.MetricsInterface) *TimerLay
 	newStore.ClusterDiscoveryStore = &TimerLayerClusterDiscoveryStore{ClusterDiscoveryStore: childStore.ClusterDiscovery(), Root: &newStore}
 	newStore.CommandStore = &TimerLayerCommandStore{CommandStore: childStore.Command(), Root: &newStore}
 	newStore.CommandWebhookStore = &TimerLayerCommandWebhookStore{CommandWebhookStore: childStore.CommandWebhook(), Root: &newStore}
+	newStore.CommunityRulesStore = &TimerLayerCommunityRulesStore{CommunityRulesStore: childStore.CommunityRules(), Root: &newStore}
 	newStore.ComplianceStore = &TimerLayerComplianceStore{ComplianceStore: childStore.Compliance(), Root: &newStore}
 	newStore.ContentFlaggingStore = &TimerLayerContentFlaggingStore{ContentFlaggingStore: childStore.ContentFlagging(), Root: &newStore}
 	newStore.DeliveryTrackingStore = &TimerLayerDeliveryTrackingStore{DeliveryTrackingStore: childStore.DeliveryTracking(), Root: &newStore}

@@ -3657,6 +3657,49 @@ func (c *Client4) GetOnTopPosts(ctx context.Context, channelId string) ([]*OnTop
 	return DecodeJSONFromResponse[[]*OnTopPost](r)
 }
 
+// GetCommunityRules gives a team's rules (Antimatter), with the latest version the current user agreed to and whether
+// they must agree before they may post.
+func (c *Client4) GetCommunityRules(ctx context.Context, teamId string) (*CommunityRules, *Response, error) {
+	r, err := c.doAPIGet(ctx, c.teamRoute(teamId).Join("rules"), "")
+	if err != nil {
+		return nil, BuildResponse(r), err
+	}
+	defer closeBody(r)
+	return DecodeJSONFromResponse[*CommunityRules](r)
+}
+
+// UpdateCommunityRules turns a team's rules on or off and changes them (Antimatter); AskAgain needs everyone to agree
+// again.
+func (c *Client4) UpdateCommunityRules(ctx context.Context, teamId string, request *CommunityRulesRequest) (*CommunityRules, *Response, error) {
+	r, err := c.doAPIPutJSON(ctx, c.teamRoute(teamId).Join("rules"), request)
+	if err != nil {
+		return nil, BuildResponse(r), err
+	}
+	defer closeBody(r)
+	return DecodeJSONFromResponse[*CommunityRules](r)
+}
+
+// AcceptCommunityRules agrees, for the current user, to a version of a team's rules (Antimatter): the one they read,
+// or the current one (0).
+func (c *Client4) AcceptCommunityRules(ctx context.Context, teamId string, version int64) (*CommunityRules, *Response, error) {
+	r, err := c.doAPIPostJSON(ctx, c.teamRoute(teamId).Join("rules", "accept"), &CommunityRulesAcceptRequest{Version: version})
+	if err != nil {
+		return nil, BuildResponse(r), err
+	}
+	defer closeBody(r)
+	return DecodeJSONFromResponse[*CommunityRules](r)
+}
+
+// GetCommunityRulesStats counts the members of a team who agreed to its current rules (Antimatter), for its admins.
+func (c *Client4) GetCommunityRulesStats(ctx context.Context, teamId string) (*CommunityRulesStats, *Response, error) {
+	r, err := c.doAPIGet(ctx, c.teamRoute(teamId).Join("rules", "stats"), "")
+	if err != nil {
+		return nil, BuildResponse(r), err
+	}
+	defer closeBody(r)
+	return DecodeJSONFromResponse[*CommunityRulesStats](r)
+}
+
 // UpdateMessageRequest acts on a direct message of the current user that waits as a message request (Antimatter):
 // MessageRequestActionAccept, MessageRequestActionDismiss or MessageRequestActionRequest. It returns their channel
 // member.

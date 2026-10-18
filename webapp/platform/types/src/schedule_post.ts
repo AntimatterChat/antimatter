@@ -4,7 +4,8 @@
 import type {Draft} from './drafts';
 import type {Post} from './posts';
 
-export type ScheduledPostErrorCode = 'unknown' | 'channel_archived' | 'channel_not_found' | 'user_missing' | 'user_deleted' | 'no_channel_permission' | 'no_channel_member' | 'thread_deleted' | 'unable_to_send' | 'invalid_post';
+// Antimatter: community_rules_not_accepted, its author hadn't agreed to the rules of the channel's community.
+export type ScheduledPostErrorCode = 'unknown' | 'channel_archived' | 'channel_not_found' | 'user_missing' | 'user_deleted' | 'no_channel_permission' | 'no_channel_member' | 'thread_deleted' | 'unable_to_send' | 'invalid_post' | 'community_rules_not_accepted';
 
 export type ScheduledPostRepeatType = '' | 'weekly';
 

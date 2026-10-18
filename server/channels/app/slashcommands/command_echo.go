@@ -69,6 +69,12 @@ func (*EchoProvider) DoCommand(a *app.App, rctx request.CTX, args *model.Command
 		return &model.CommandResponse{Text: args.T("api.command_echo.delay.app_error"), ResponseType: model.CommandResponseTypeEphemeral}
 	}
 
+	// Antimatter: the echo is posted later, as the one who asked for it; someone who hasn't agreed to their
+	// community's rules is told now (the delayed post would be refused anyway).
+	if appErr := a.CheckCommunityRulesForUserInChannel(rctx, args.UserId, args.ChannelId); appErr != nil {
+		return &model.CommandResponse{Text: args.T(appErr.Id), ResponseType: model.CommandResponseTypeEphemeral}
+	}
+
 	if echoSem == nil {
 		// We want one additional thread allowed so we never reach channel lockup
 		echoSem = make(chan bool, maxThreads+1)

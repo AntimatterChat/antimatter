@@ -47,6 +47,10 @@ const errorCodeToErrorMessage = defineMessages<ScheduledPostErrorCode>({
         id: 'scheduled_post.error_code.invalid_post',
         defaultMessage: 'Invalid Post',
     },
+    community_rules_not_accepted: {
+        id: 'scheduled_post.error_code.community_rules_not_accepted',
+        defaultMessage: 'Rules Not Agreed',
+    },
 });
 
 export function getErrorStringFromCode(intl: IntlShape, errorCode: ScheduledPostErrorCode = 'unknown') {

@@ -16,6 +16,7 @@ import Icon from 'fusion/components/icon';
 import {Dialog} from 'fusion/components/layer';
 import AutolinksSettings from 'fusion/teams/autolinks_settings';
 import ChannelsSettings from 'fusion/teams/channels_settings';
+import CommunityRulesSettings from 'fusion/teams/community_rules_settings';
 import {getCommunitySettingsAccess} from 'fusion/teams/community_settings_access';
 import MembersSettings from 'fusion/teams/members_settings';
 import OnboardingSettings from 'fusion/teams/onboarding_editor';
@@ -34,8 +35,8 @@ import './team_settings_modal.scss';
 const SHOW_PANEL_ERROR_STATE_TAB_SWITCH_TIMEOUT = 3000;
 
 // The tabs the Fusion UI draws itself; the others are the classic web app's.
-export type FusionTeamSettingsTab = 'members' | 'teams' | 'channels' | 'roles' | 'onboarding' | 'layout' | 'attributes' | 'autolinks' | 'ai_connections' | 'agents';
-const FUSION_TABS = new Set<string>(['members', 'teams', 'channels', 'roles', 'onboarding', 'layout', 'attributes', 'autolinks', 'ai_connections', 'agents']);
+export type FusionTeamSettingsTab = 'members' | 'teams' | 'channels' | 'roles' | 'onboarding' | 'rules' | 'layout' | 'attributes' | 'autolinks' | 'ai_connections' | 'agents';
+const FUSION_TABS = new Set<string>(['members', 'teams', 'channels', 'roles', 'onboarding', 'rules', 'layout', 'attributes', 'autolinks', 'ai_connections', 'agents']);
 
 type Props = {
     isOpen: boolean;
@@ -200,6 +201,13 @@ const TeamSettingsModal = ({isOpen, onExited, focusOriginElement, initialTab}: P
             display: access.manage && access.teams,
         },
         {
+            name: 'rules',
+            uiName: formatMessage({id: 'fusion.communityRules.tab', defaultMessage: 'Rules'}),
+            icon: 'icon icon-format-list-numbered',
+            iconTitle: formatMessage({id: 'fusion.communityRules.tab', defaultMessage: 'Rules'}),
+            display: access.manage,
+        },
+        {
             name: 'attributes',
             uiName: formatMessage({id: 'fusion.communityAttributes.title', defaultMessage: 'Member attributes'}),
             icon: 'icon icon-tag-outline',
@@ -324,6 +332,7 @@ const TeamSettingsModal = ({isOpen, onExited, focusOriginElement, initialTab}: P
                 {shownTab === 'channels' && <ChannelsSettings/>}
                 {shownTab === 'roles' && <RolesSettings onClose={handleHide}/>}
                 {shownTab === 'onboarding' && <OnboardingSettings setUnsaved={setAreThereUnsavedChanges}/>}
+                {shownTab === 'rules' && <CommunityRulesSettings setUnsaved={setAreThereUnsavedChanges}/>}
                 {shownTab === 'attributes' && (
                     <CommunityAttributesSettings
                         teamId={teamId}

@@ -82,6 +82,10 @@ func createPostChecks(where string, c *Context, post *model.Post) {
 
 	userCreatePostPermissionCheckWithContext(c, post.ChannelId)
 	if c.Err != nil {
+		// Antimatter: says, in the channel, how to read and agree to the community's rules.
+		if c.Err.Id == "api.post.community_rules_not_accepted" {
+			c.App.SendCommunityRulesReminder(c.AppContext, c.AppContext.Session().UserId, post.ChannelId, post.RootId)
+		}
 		return
 	}
 

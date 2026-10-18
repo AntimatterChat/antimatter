@@ -67,6 +67,7 @@ type Store struct {
 	ServerCategoryStore             mocks.ServerCategoryStore
 	ModerationStore                 mocks.ModerationStore
 	OnTopPostStore                  mocks.OnTopPostStore
+	CommunityRulesStore             mocks.CommunityRulesStore
 	AIConnectionStore               mocks.AIConnectionStore
 	AIAgentStore                    mocks.AIAgentStore
 	AgentActivityStore              mocks.AgentActivityStore
@@ -135,6 +136,7 @@ func (s *Store) ChannelGuard() store.ChannelGuardStore       { return &s.Channel
 func (s *Store) ServerCategory() store.ServerCategoryStore   { return &s.ServerCategoryStore }
 func (s *Store) Moderation() store.ModerationStore           { return &s.ModerationStore }
 func (s *Store) OnTopPost() store.OnTopPostStore             { return &s.OnTopPostStore }
+func (s *Store) CommunityRules() store.CommunityRulesStore   { return &s.CommunityRulesStore }
 func (s *Store) AIConnection() store.AIConnectionStore       { return &s.AIConnectionStore }
 func (s *Store) AIAgent() store.AIAgentStore                 { return &s.AIAgentStore }
 func (s *Store) AgentActivity() store.AgentActivityStore     { return &s.AgentActivityStore }
@@ -272,6 +274,7 @@ func (s *Store) AssertExpectations(t mock.TestingT) bool {
 		&s.ServerCategoryStore,
 		&s.ModerationStore,
 		&s.OnTopPostStore,
+		&s.CommunityRulesStore,
 		&s.AIConnectionStore,
 		&s.AIAgentStore,
 		&s.AgentActivityStore,

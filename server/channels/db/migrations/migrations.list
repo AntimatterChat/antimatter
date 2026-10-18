@@ -501,3 +501,7 @@ channels/db/migrations/postgres/1000018_antimatter_create_aiagents.down.sql
 channels/db/migrations/postgres/1000018_antimatter_create_aiagents.up.sql
 channels/db/migrations/postgres/1000019_antimatter_create_agentactivity.down.sql
 channels/db/migrations/postgres/1000019_antimatter_create_agentactivity.up.sql
+channels/db/migrations/postgres/1000020_antimatter_create_communityrules.down.sql
+channels/db/migrations/postgres/1000020_antimatter_create_communityrules.up.sql
+channels/db/migrations/postgres/1000021_antimatter_create_communityrulesacceptances.down.sql
+channels/db/migrations/postgres/1000021_antimatter_create_communityrulesacceptances.up.sql

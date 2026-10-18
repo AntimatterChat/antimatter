@@ -49,6 +49,7 @@ import type {
     Installation,
     PreviewModalContentData,
 } from '@mattermost/types/cloud';
+import type {CommunityRules, CommunityRulesRequest, CommunityRulesStats} from '@mattermost/types/community_rules';
 import type {Compliance} from '@mattermost/types/compliance';
 import type {
     ClientConfig,
@@ -4809,6 +4810,39 @@ export default class Client4 {
         return this.doFetch<MemberTimeout | StatusOK>(
             `${this.getTeamMemberRoute(teamId, userId)}/timeout`,
             {method: 'put', body: JSON.stringify({until, reason})},
+        );
+    };
+
+    // Antimatter: a team's rules, with the latest version the current user agreed to and whether they must agree before
+    // they post.
+    getCommunityRules = (teamId: string) => {
+        return this.doFetch<CommunityRules>(
+            `${this.getTeamRoute(teamId)}/rules`,
+            {method: 'get'},
+        );
+    };
+
+    // Antimatter: turns a team's rules on or off and changes them; ask_again asks everyone to agree again.
+    updateCommunityRules = (teamId: string, rules: CommunityRulesRequest) => {
+        return this.doFetch<CommunityRules>(
+            `${this.getTeamRoute(teamId)}/rules`,
+            {method: 'put', body: JSON.stringify(rules)},
+        );
+    };
+
+    // Antimatter: agrees, for the current user, to the version of a team's rules they read (0: the current one).
+    acceptCommunityRules = (teamId: string, version: number) => {
+        return this.doFetch<CommunityRules>(
+            `${this.getTeamRoute(teamId)}/rules/accept`,
+            {method: 'post', body: JSON.stringify({version})},
+        );
+    };
+
+    // Antimatter: how many of a team's members agreed to its current rules, for its admins.
+    getCommunityRulesStats = (teamId: string) => {
+        return this.doFetch<CommunityRulesStats>(
+            `${this.getTeamRoute(teamId)}/rules/stats`,
+            {method: 'get'},
         );
     };
 

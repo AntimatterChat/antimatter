@@ -21,6 +21,10 @@ const (
 	ScheduledPostErrorThreadDeleted           = "thread_deleted"
 	ScheduledPostErrorUnableToSend            = "unable_to_send"
 	ScheduledPostErrorInvalidPost             = "invalid_post"
+
+	// ScheduledPostErrorCommunityRulesNotAccepted: its author hasn't agreed to the current rules of the channel's
+	// community (Antimatter); once they agree, it can be sent again.
+	ScheduledPostErrorCommunityRulesNotAccepted = "community_rules_not_accepted"
 )
 
 // allow scheduled posts to be created up to

@@ -1,6 +1,7 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
+import type {CommunityRules} from './community_rules';
 import type {ServerError} from './errors';
 import type {MemberTimeout} from './moderation';
 import type {UserProfile} from './users';
@@ -116,6 +117,9 @@ export type TeamsState = {
 
     // Antimatter: who's timed out in each team whose timeouts were loaded.
     timeouts?: RelationOneToOne<Team, MemberTimeout[]>;
+
+    // Antimatter: the rules of each team whose rules were loaded, as the current user sees them.
+    communityRules?: RelationOneToOne<Team, CommunityRules>;
 };
 
 export type TeamUnread = {

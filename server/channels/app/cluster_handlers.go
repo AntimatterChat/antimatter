@@ -65,6 +65,7 @@ func (s *Server) registerClusterHandlers() {
 	s.platform.RegisterClusterMessageHandler(clusterEventInvalidateChannelGuardCache, s.Channels().clusterInvalidateGuardCacheHandler)
 	s.platform.RegisterClusterMessageHandler(clusterEventInvalidateChannelOverrides, s.Channels().clusterInvalidateChannelOverridesHandler)
 	s.platform.RegisterClusterMessageHandler(clusterEventInvalidateAIAgents, s.clusterInvalidateAIAgentsHandler)
+	s.platform.RegisterClusterMessageHandler(clusterEventInvalidateCommunityRules, s.Channels().clusterInvalidateCommunityRulesHandler)
 
 	s.platform.RegisterClusterHandlers()
 }

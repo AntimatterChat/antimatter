@@ -24031,6 +24031,130 @@
     "defaultMessage": "Move up",
     "description": ""
   },
+  "fusion.communityRules.agree": {
+    "defaultMessage": "I agree",
+    "description": "Button of the community rules dialog: agrees to the community's rules, after which one can post in its channels."
+  },
+  "fusion.communityRules.agreed": {
+    "defaultMessage": "Thanks! You can post in {community} now",
+    "description": "Toast after agreeing to a community's rules. {community} is the community's name."
+  },
+  "fusion.communityRules.agreeFailed": {
+    "defaultMessage": "Your agreement couldn't be saved. Try again.",
+    "description": "Error in the community rules dialog when agreeing to the rules failed."
+  },
+  "fusion.communityRules.askAgain": {
+    "defaultMessage": "Ask everyone to agree again",
+    "description": "Checkbox in the Rules tab of the community settings: saving then asks every member, including those who agreed, to agree to the rules again before they post."
+  },
+  "fusion.communityRules.askAgainDesc": {
+    "defaultMessage": "For a change that matters: members who agreed must agree to the new rules before they post again. Leave it off to fix a typo.",
+    "description": "Explains the 'Ask everyone to agree again' checkbox in the Rules tab of the community settings."
+  },
+  "fusion.communityRules.changed": {
+    "defaultMessage": "These rules just changed: read them again, then agree.",
+    "description": "Error in the community rules dialog when an admin changed the rules (asking everyone to agree again) while the person was reading them; the new rules are shown."
+  },
+  "fusion.communityRules.dialogLead": {
+    "defaultMessage": "Read and agree to the rules of this community to post in its channels. You can read everything meanwhile.",
+    "description": "Text under the title of the community rules dialog, above the rules."
+  },
+  "fusion.communityRules.dialogTitle": {
+    "defaultMessage": "Rules of {community}",
+    "description": "Title of the dialog showing a community's rules to agree to. {community} is the community's name."
+  },
+  "fusion.communityRules.empty": {
+    "defaultMessage": "Write the rules before turning them on.",
+    "description": "Error in the Rules tab of the community settings when the rules are turned on with no text."
+  },
+  "fusion.communityRules.enable": {
+    "defaultMessage": "Members must agree to the rules",
+    "description": "Switch in the Rules tab of the community settings: turns the community's rules on."
+  },
+  "fusion.communityRules.enableDesc": {
+    "defaultMessage": "Until they agree, they can read but not post.",
+    "description": "Description of the switch turning a community's rules on."
+  },
+  "fusion.communityRules.firstTime": {
+    "defaultMessage": "Once the rules are on, every member agrees to them before they post.",
+    "description": "Hint in the Rules tab of the community settings when the community never had rules."
+  },
+  "fusion.communityRules.loading": {
+    "defaultMessage": "Loading the rules…",
+    "description": "Shown while a community's rules load."
+  },
+  "fusion.communityRules.noticeText": {
+    "defaultMessage": "{community} asks everyone to agree to its rules before they post. You can read everything meanwhile.",
+    "description": "Text of the notice in place of the message box, in a community's channel, until one agrees to its rules. {community} is the community's name."
+  },
+  "fusion.communityRules.noticeTitle": {
+    "defaultMessage": "Agree to the rules to post here",
+    "description": "Title of the notice in place of the message box, in a community's channel, until one agrees to its rules."
+  },
+  "fusion.communityRules.notNow": {
+    "defaultMessage": "Not now",
+    "description": "Button of the community rules dialog: closes it without agreeing; the notice in place of the message box offers the rules again."
+  },
+  "fusion.communityRules.placeholder": {
+    "defaultMessage": "1. Be kind and respectful.\n2. No spam or self-promotion.\n3. Keep each channel on its topic.",
+    "description": "Example rules, as the placeholder of the rules editor in the community settings. Keep the numbered lines."
+  },
+  "fusion.communityRules.preview": {
+    "defaultMessage": "Preview",
+    "description": "Tab of the rules editor in the community settings: shows the rules as members will see them."
+  },
+  "fusion.communityRules.previewEmpty": {
+    "defaultMessage": "Nothing to preview yet.",
+    "description": "Shown in the rules editor's preview when no rules are written yet."
+  },
+  "fusion.communityRules.read": {
+    "defaultMessage": "Read and agree",
+    "description": "Button of the notice in place of the message box: opens the community's rules to agree to."
+  },
+  "fusion.communityRules.reset": {
+    "defaultMessage": "Undo changes",
+    "description": "Button of the Rules tab of the community settings: takes back the changes not saved."
+  },
+  "fusion.communityRules.save": {
+    "defaultMessage": "Save",
+    "description": "Button of the Rules tab of the community settings: saves the rules."
+  },
+  "fusion.communityRules.saved": {
+    "defaultMessage": "Rules saved",
+    "description": "Toast after saving a community's rules without asking anyone to agree again."
+  },
+  "fusion.communityRules.savedAsk": {
+    "defaultMessage": "Rules saved: members agree to them before they post",
+    "description": "Toast after saving a community's rules turned on for the first time, or asking everyone to agree again."
+  },
+  "fusion.communityRules.savedOff": {
+    "defaultMessage": "Rules saved: they're off, everyone can post",
+    "description": "Toast after saving a community's rules turned off."
+  },
+  "fusion.communityRules.saveFailed": {
+    "defaultMessage": "The rules couldn't be saved.",
+    "description": "Error in the Rules tab of the community settings when saving failed."
+  },
+  "fusion.communityRules.settingsLead": {
+    "defaultMessage": "Rules members read and agree to before they post in this community's channels. They're shown when someone joins, and in place of the message box until they agree. Admins and bots don't have to agree; direct messages aren't affected.",
+    "description": "Introduction of the Rules tab of the community settings."
+  },
+  "fusion.communityRules.stats": {
+    "defaultMessage": "{accepted, number} of {members, plural, one {# member} other {# members}} agreed to the current rules.",
+    "description": "Count shown to a community's admins in the Rules tab of its settings. {accepted} members of {members} (its active people, bots left out) agreed to the current version of the rules."
+  },
+  "fusion.communityRules.tab": {
+    "defaultMessage": "Rules",
+    "description": "Name of the tab of the community settings where admins write the community's rules."
+  },
+  "fusion.communityRules.text": {
+    "defaultMessage": "Rules (Markdown)",
+    "description": "Label of the rules editor in the community settings; the rules are written in Markdown."
+  },
+  "fusion.communityRules.write": {
+    "defaultMessage": "Write",
+    "description": "Tab of the rules editor in the community settings: the text to edit (the other tab previews it)."
+  },
   "fusion.composer.ackRequested": {
     "defaultMessage": "Acknowledgement requested",
     "description": ""
@@ -34694,6 +34818,10 @@
   "scheduled_post.error_code.channel_removed": {
     "defaultMessage": "Channel Removed",
     "description": "Compact error badge on a scheduled post row when its destination channel no longer exists."
+  },
+  "scheduled_post.error_code.community_rules_not_accepted": {
+    "defaultMessage": "Rules Not Agreed",
+    "description": "Compact error badge on a scheduled post row when it couldn't be sent because its author hadn't agreed to the rules of the channel's community."
   },
   "scheduled_post.error_code.invalid_post": {
     "defaultMessage": "Invalid Post",

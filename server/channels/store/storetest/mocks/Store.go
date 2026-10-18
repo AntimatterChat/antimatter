@@ -389,6 +389,26 @@ func (_m *Store) CommandWebhook() store.CommandWebhookStore {
 	return r0
 }
 
+// CommunityRules provides a mock function with no fields
+func (_m *Store) CommunityRules() store.CommunityRulesStore {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for CommunityRules")
+	}
+
+	var r0 store.CommunityRulesStore
+	if rf, ok := ret.Get(0).(func() store.CommunityRulesStore); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(store.CommunityRulesStore)
+		}
+	}
+
+	return r0
+}
+
 // Compliance provides a mock function with no fields
 func (_m *Store) Compliance() store.ComplianceStore {
 	ret := _m.Called()

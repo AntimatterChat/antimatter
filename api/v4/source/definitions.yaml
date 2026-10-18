@@ -4482,6 +4482,68 @@ components:
             type: string
         allow_guests:
           type: boolean
+    CommunityRules:
+      type: object
+      description: >
+        A community's rules (Antimatter), which its members agree to before they post in its channels. The fields
+        `accepted_version` and `must_accept` are about the one asking.
+      properties:
+        team_id:
+          type: string
+        enabled:
+          type: boolean
+          description: Whether members must agree before they post.
+        text:
+          type: string
+          description: The rules, as Markdown (at most 16000 characters).
+        version:
+          type: integer
+          format: int64
+          description: >
+            Goes up each time an admin saves the rules asking everyone to agree again; 0 when the community never
+            had rules.
+        updated_by:
+          type: string
+          description: Who saved them last; only given to the community's admins.
+        update_at:
+          type: integer
+          format: int64
+        accepted_version:
+          type: integer
+          format: int64
+          description: The latest version the one asking agreed to; 0 for none.
+        must_accept:
+          type: boolean
+          description: >
+            Whether the one asking must agree before they may post in the community's channels: the rules are on,
+            they haven't agreed to this version, and they aren't exempt (bots and the community's admins are).
+    CommunityRulesRequest:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+        text:
+          type: string
+          description: The rules, as Markdown; required to turn them on.
+        ask_again:
+          type: boolean
+          description: Ask everyone to agree again (a new version). The first save is always version 1.
+    CommunityRulesStats:
+      type: object
+      properties:
+        team_id:
+          type: string
+        version:
+          type: integer
+          format: int64
+        accepted_count:
+          type: integer
+          format: int64
+          description: The members who agreed to this version.
+        member_count:
+          type: integer
+          format: int64
+          description: The community's active members (bots and deactivated accounts left out).
     AIConnection:
       type: object
       properties:

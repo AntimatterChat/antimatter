@@ -14,6 +14,8 @@ import {isTeamAdmin} from 'fusion/sidebar/server_categories';
 
 import type {GlobalState} from 'types/store';
 
+import {getCommunityRules} from './community_rules';
+import {CommunityRulesDialog} from './community_rules_dialog';
 import {CATEGORY_ONBOARDED, parseOnboarding} from './onboarding';
 import OnboardingDialog from './onboarding_dialog';
 import TeamLayoutDialog from './team_layout_dialog';
@@ -24,7 +26,9 @@ import {isTeamSetUp} from './templates';
 const CATEGORY_LAYOUT_OFFERED = 'fusion_layout_offered';
 
 // TeamSetupHost greets people in a team: its admins with a layout to start from, once, when the team has neither
-// categories for everyone nor roles; everyone with the team's onboarding, the first time they open it.
+// categories for everyone nor roles; everyone with the team's rules to agree to, when it has some they haven't agreed
+// to (on joining it, and each time its admins ask everyone to agree again), then with its onboarding, the first time
+// they open it.
 export default function TeamSetupHost() {
     const dispatch = useDispatch();
     const store = useStore<GlobalState>();
@@ -34,6 +38,11 @@ export default function TeamSetupHost() {
     const onboarded = useSelector((state: GlobalState) => Boolean(team && getPreference(state, CATEGORY_ONBOARDED, team.id, '')));
     const [offering, setOffering] = useState(false);
     const [skipped, setSkipped] = useState<string | null>(null);
+
+    // The rules are offered once per version in a session: put off ("Not now"), the message box's notice offers them.
+    const rules = useSelector((state: GlobalState) => (team ? getCommunityRules(state, team.id) : undefined));
+    const rulesKey = rules ? `${rules.team_id}:${rules.version}` : '';
+    const [rulesSeen, setRulesSeen] = useState<string[]>([]);
     const customGroups = useSelector(isCustomGroupsEnabled);
 
     // Whether the team is set up is told once its roles and categories are loaded, not before.
@@ -63,6 +72,14 @@ export default function TeamSetupHost() {
             <TeamLayoutDialog
                 first={true}
                 onClose={() => setOffering(false)}
+            />
+        );
+    }
+    if (team && rules?.must_accept && !rulesSeen.includes(rulesKey)) {
+        return (
+            <CommunityRulesDialog
+                teamId={team.id}
+                onClose={() => setRulesSeen([...rulesSeen, rulesKey])}
             />
         );
     }
