@@ -135,7 +135,7 @@ describe('components/team_settings_modal', () => {
             />,
             stateWithoutPermission,
         );
-        expect(screen.getAllByRole('tab').map((tab) => tab.textContent)).toEqual(['Overview', 'Members', 'Channels', 'Autolinks', 'Agents']);
+        expect(screen.getAllByRole('tab').map((tab) => tab.textContent)).toEqual(['Overview', 'Members', 'Channels', 'Rules', 'Autolinks', 'Agents']);
     });
 
     test('should warn on first close attempt with unsaved changes and stay open', async () => {
@@ -283,7 +283,8 @@ describe('components/team_settings_modal', () => {
     });
 
     test('hides the Rules tab from the others', () => {
-        renderWithContext(<TeamSettingsModal {...baseProps}/>, baseState);
+        // Members who don't manage the community (the base state's user does).
+        renderWithContext(<TeamSettingsModal {...baseProps}/>, withPermissions([Permissions.INVITE_USER]));
         expect(screen.queryByRole('tab', {name: 'Rules'})).not.toBeInTheDocument();
     });
 
@@ -420,7 +421,7 @@ describe('components/team_settings_modal', () => {
         test('the admins\' tabs, in order', () => {
             renderWithContext(<TeamSettingsModal {...baseProps}/>, withPermissions(admin));
             expect(screen.getAllByRole('tab').map((tab) => tab.textContent)).toEqual([
-                'Overview', 'Access', 'Members', 'Teams', 'Channels', 'Roles', 'Onboarding', 'Member attributes', 'Community layout', 'Autolinks', 'Agents',
+                'Overview', 'Access', 'Members', 'Teams', 'Channels', 'Roles', 'Onboarding', 'Rules', 'Member attributes', 'Community layout', 'Autolinks', 'Agents',
             ]);
         });
 
