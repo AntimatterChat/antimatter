@@ -7,7 +7,7 @@ import path from 'path';
 import React, {useRef} from 'react';
 import {FormattedMessage, IntlProvider} from 'react-intl';
 
-import {act, fireEvent, renderWithContext, screen, userEvent} from 'tests/react_testing_utils';
+import {act, fireEvent, renderWithContext, screen, userEvent, waitFor} from 'tests/react_testing_utils';
 
 import AppPanelHeader, {isTextOnly} from './app_panel_header';
 import {PanelResizeHandle, usePanelWidth} from './panel_width';
@@ -101,7 +101,7 @@ describe('fusion/rhs/AppPanelHeader', () => {
 
         expect(nameOf('with.rail.icon', 'Registered title')).toBe('Registered title');
         expect(nameOf('with.rail.icon')).toBe('Rail label');
-        expect(nameOf('with.rail.icon', <b>{'Not text'}</b>)).toBe('Rail label');
+        expect(nameOf('with.rail.icon', <span><img alt=''/></span>)).toBe('Rail label');
         expect(nameOf('com.example.anything')).toBe('Manifest com.example.anything');
         expect(nameOf('unknown.app', undefined, stateFor('other'))).toBe('unknown.app');
     });
@@ -142,12 +142,14 @@ describe('fusion/rhs/AppPanelHeader', () => {
         expect(screen.getByRole('heading')).toHaveTextContent('Bloc-notes');
     });
 
+    // Titles that aren't names, as the old app headers drew them.
+    const h = React.createElement;
     test.each([
-        ['a control', <span key='c'><button type='button'>{'All boards'}</button></span>],
-        ['a link', <a key='l' href='/x'>{'Kanban'}</a>],
-        ['a picture and text', <span key='p'><img alt=''/>{'Agents'}</span>],
-        ['an empty box (a slot)', <div key='s' className='app-head-slot'/>],
-        ['a focusable text', <span key='f' tabIndex={0}>{'Notes'}</span>],
+        ['a control', h('span', null, h('button', {type: 'button'}, 'All boards'))],
+        ['a link', h('a', {href: '/x'}, 'Kanban')],
+        ['a picture and text', h('span', null, h('img', {alt: ''}), 'Agents')],
+        ['an empty box (a slot)', h('div', {className: 'app-head-slot'})],
+        ['a focusable text', h('span', {tabIndex: 0}, 'Notes')],
     ])('names the app from its rail or manifest instead of a title that draws %s', (_, title) => {
         renderWithContext(
             <AppPanelHeader
@@ -163,7 +165,7 @@ describe('fusion/rhs/AppPanelHeader', () => {
         expect(heading.querySelector('.app-head-slot, [tabindex]')).toBeNull();
     });
 
-    test('drops a title element as soon as it draws something else than text', () => {
+    test('drops a title element as soon as it draws something else than text', async () => {
         let showButton: (show: boolean) => void = () => undefined;
         const Sneaky = () => {
             const [button, setButton] = React.useState(false);
@@ -180,7 +182,7 @@ describe('fusion/rhs/AppPanelHeader', () => {
         expect(screen.getByRole('heading')).toHaveTextContent('Sneaky');
 
         act(() => showButton(true));
-        expect(screen.queryByRole('button', {name: 'Click'})).toBeNull();
+        await waitFor(() => expect(screen.queryByRole('button', {name: 'Click'})).toBeNull());
         expect(screen.getByRole('heading')).toHaveTextContent('Manifest com.example.anything');
     });
 
@@ -299,7 +301,7 @@ describe('fusion/rhs/AppPanelHeader', () => {
         const width = () => screen.getByTestId('panel').dataset.width;
 
         test('sets the width back to the default and hides', async () => {
-            renderWithContext(<Panel/>, {...stateFor('bare'), views: {rhs: {isSidebarExpanded: false}}} as never);
+            renderWithContext(<Panel/>, {...(stateFor('bare') as object), views: {rhs: {isSidebarExpanded: false}}} as never);
             expect(restore()).toBeNull();
 
             screen.getByRole('separator').focus();
@@ -313,7 +315,7 @@ describe('fusion/rhs/AppPanelHeader', () => {
         });
 
         test('hides once the panel is dragged back to its default width', () => {
-            renderWithContext(<Panel/>, {...stateFor('bare'), views: {rhs: {isSidebarExpanded: false}}} as never);
+            renderWithContext(<Panel/>, {...(stateFor('bare') as object), views: {rhs: {isSidebarExpanded: false}}} as never);
             const handle = screen.getByRole('separator');
 
             fireEvent.pointerDown(handle, {button: 0, clientX: 1000, pointerId: 1});
