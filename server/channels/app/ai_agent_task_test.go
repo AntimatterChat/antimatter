@@ -89,7 +89,6 @@ func TestStartAIAgentTaskRefusals(t *testing.T) {
 	external := createTestAgent(t, th, model.AIAgentScopeServer, "", func(req *model.AIAgentRequest) { req.External = true })
 
 	secretChannel := th.CreatePrivateChannel(t, th.BasicTeam, func(ch *model.Channel) { ch.CreatorId = th.BasicUser2.Id })
-	th.RemoveUserFromChannel(t, th.BasicUser, secretChannel)
 	secret := th.CreatePost(t, secretChannel, func(p *model.Post) {
 		p.UserId = th.BasicUser2.Id
 		p.Message = "The merger code name is BLUEBIRD."
@@ -138,7 +137,6 @@ func TestForgedAgentTaskReadsNothingMore(t *testing.T) {
 	th, f, c := setupAgentTest(t, "I can't read that.")
 	agent := createTestAgent(t, th, model.AIAgentScopeServer, c.Id, nil)
 	secretChannel := th.CreatePrivateChannel(t, th.BasicTeam, func(ch *model.Channel) { ch.CreatorId = th.BasicUser2.Id })
-	th.RemoveUserFromChannel(t, th.BasicUser, secretChannel)
 	secret := th.CreatePost(t, secretChannel, func(p *model.Post) {
 		p.UserId = th.BasicUser2.Id
 		p.Message = "The merger code name is BLUEBIRD."
@@ -267,7 +265,9 @@ func TestGetAIAgentConversations(t *testing.T) {
 	asked := th.CreateMessagePost(t, dm, "Plan the release notes\nwith screenshots")
 	waitForAgentReply(t, th, agent.UserId, asked.Id)
 
-	inChannel := th.CreateMessagePost(t, th.BasicChannel, "@"+agent.Username+" what's left for the launch?")
+	// A private channel: once out of it, its threads aren't the person's to read (an open one stays readable).
+	private := th.CreatePrivateChannel(t, th.BasicTeam)
+	inChannel := th.CreateMessagePost(t, private, "@"+agent.Username+" what's left for the launch?")
 	waitForAgentReply(t, th, agent.UserId, inChannel.Id)
 
 	var conversations []*model.AIAgentConversation
@@ -295,7 +295,7 @@ func TestGetAIAgentConversations(t *testing.T) {
 	assert.Equal(t, http.StatusForbidden, appErr.StatusCode)
 
 	// Out of the channel, its thread isn't theirs to see any more.
-	require.Nil(t, th.RemoveUserFromChannel(t, th.BasicUser, th.BasicChannel))
+	require.Nil(t, th.RemoveUserFromChannel(t, th.BasicUser, private))
 	conversations, appErr = th.App.GetAIAgentConversations(th.Context, th.BasicUser.Id, "", 0, 0)
 	require.Nil(t, appErr)
 	require.Len(t, conversations, 1)
