@@ -1,7 +1,7 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import React, {useRef} from 'react';
+import React, {useLayoutEffect, useRef, useState} from 'react';
 
 import {PostTypes} from 'mattermost-redux/action_types';
 import {markChannelAsRead} from 'mattermost-redux/actions/channels';
@@ -60,15 +60,20 @@ const state = {
 
 type Props = {focusedPostId?: string; highlight?: boolean; onJumpToPresent?: () => void};
 
+// The conversation's scrolling view is there before its list, as in ChannelView when a channel opens.
 function List(props: Props) {
     const ref = useRef<HTMLDivElement>(null);
+    const [ready, setReady] = useState(false);
+    useLayoutEffect(() => setReady(true), []);
     return (
         <div ref={ref}>
-            <MessageList
-                channelId='oncall'
-                scrollRef={ref}
-                {...props}
-            />
+            {ready && (
+                <MessageList
+                    channelId='oncall'
+                    scrollRef={ref}
+                    {...props}
+                />
+            )}
         </div>
     );
 }
