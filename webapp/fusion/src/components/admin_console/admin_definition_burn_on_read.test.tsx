@@ -69,6 +69,24 @@ describe('AdminDefinition - Burn-on-Read Settings', () => {
         }
     });
 
+    test('BurnOnReadMaximumDurationSeconds caps what senders choose: a day by default, up to a week', () => {
+        const allSettings = getAllSettings();
+        const maximum = allSettings.find((s: AdminDefinitionSetting) => s.key === 'ServiceSettings.BurnOnReadMaximumDurationSeconds');
+
+        expect(maximum?.type).toBe('dropdown');
+        if ('onConfigLoad' in maximum! && maximum.onConfigLoad) {
+            expect(maximum.onConfigLoad(undefined, {})).toBe('86400');
+            expect(maximum.onConfigLoad(3600, {})).toBe('3600');
+        }
+        if ('onConfigSave' in maximum! && maximum.onConfigSave) {
+            expect(maximum.onConfigSave('14400', {})).toBe(14400);
+            expect(maximum.onConfigSave('', {})).toBe(86400);
+        }
+        if ('options' in maximum!) {
+            expect(maximum.options?.map((opt: any) => opt.value)).toEqual(['3600', '14400', '28800', '86400', '259200', '604800']);
+        }
+    });
+
     test('all Burn-on-Read settings should have proper permission checks', () => {
         const allSettings = getAllSettings();
         const burnOnReadSettings = allSettings.filter((s: AdminDefinitionSetting) =>

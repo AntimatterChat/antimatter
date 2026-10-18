@@ -11043,9 +11043,9 @@
     "defaultMessage": "8 hours",
     "description": "Dropdown option for the Burn-on-Read Duration setting in the admin console; a time duration in a compact list."
   },
-  "admin.posts.burnOnRead.duration.desc": {
-    "defaultMessage": "Sets the countdown duration for Burn-on-Read messages once they are revealed. After a recipient clicks to reveal a BoR message, the message will delete itself for that user after the specified duration. This setting applies to all Burn-on-Read messages.",
-    "description": "Admin console help text under the Burn-on-Read Duration dropdown on the Site Configuration > Posts page; BoR abbreviates Burn-on-Read, the self-deleting message feature."
+  "admin.posts.burnOnRead.duration.descDefault": {
+    "defaultMessage": "Sets the countdown duration for Burn-on-Read messages once they are revealed, when their sender didn't choose one. After a recipient clicks to reveal a BoR message, the message will delete itself for that user after this duration.",
+    "description": "Help text of the System Console setting for the default time a burn-on-read (self-deleting) message stays readable after a recipient reveals it; senders can now choose their own duration, so this is the default. 'BoR' abbreviates Burn-on-Read."
   },
   "admin.posts.burnOnRead.duration.title": {
     "defaultMessage": "Burn-on-Read Duration",
@@ -11058,6 +11058,18 @@
   "admin.posts.burnOnRead.enable.title": {
     "defaultMessage": "Enable Burn-on-Read Messages",
     "description": "Setting label (toggle) on the Site Configuration > Posts admin page enabling the self-deleting message feature."
+  },
+  "admin.posts.burnOnRead.maximumDuration.4hours": {
+    "defaultMessage": "4 hours",
+    "description": "Option of the System Console setting for the longest duration a sender can let a burn-on-read (self-deleting) message last once revealed."
+  },
+  "admin.posts.burnOnRead.maximumDuration.desc": {
+    "defaultMessage": "Senders can choose how long each Burn-on-Read message lasts once it is revealed, up to this duration. A longer choice is shortened to it.",
+    "description": "Help text of the System Console setting for the longest duration a sender can choose for a burn-on-read (self-deleting) message, counted from when a recipient reveals it."
+  },
+  "admin.posts.burnOnRead.maximumDuration.title": {
+    "defaultMessage": "Longest duration senders can choose",
+    "description": "Label of the System Console setting for the longest time a sender can let a burn-on-read (self-deleting) message last once a recipient reveals it."
   },
   "admin.posts.burnOnRead.maximumTTL.14days": {
     "defaultMessage": "14 days",
@@ -22499,6 +22511,26 @@
     "defaultMessage": "Click to read — this message burns {duration} after you open it",
     "description": ""
   },
+  "fusion.burn.custom": {
+    "defaultMessage": "Custom",
+    "description": "Last step of the burn-on-read duration slider in the composer's message options: picking it shows a field for any duration."
+  },
+  "fusion.burn.customLabel": {
+    "defaultMessage": "Custom duration",
+    "description": "Label of the field for a duration of one's own on the burn-on-read duration slider (a number, then a unit)."
+  },
+  "fusion.burn.customUnit": {
+    "defaultMessage": "Unit",
+    "description": "Accessible name of the list of units (minutes, hours, days) of the custom burn-on-read duration."
+  },
+  "fusion.burn.days": {
+    "defaultMessage": "{count, plural, one {# day} other {# days}}",
+    "description": "How long a burn-on-read (self-deleting) message lives once read, in days; used alone (\"1 day\") and inside other sentences."
+  },
+  "fusion.burn.durationLabel": {
+    "defaultMessage": "Deleted after reading",
+    "description": "Accessible name of the slider picking how long a burn-on-read (self-deleting) message lives after each recipient opens it."
+  },
   "fusion.burn.failed": {
     "defaultMessage": "The message could not be opened. Try again.",
     "description": ""
@@ -22515,9 +22547,17 @@
     "defaultMessage": "{count, plural, one {# hour} other {# hours}}",
     "description": ""
   },
+  "fusion.burn.hoursShort": {
+    "defaultMessage": "{count} h",
+    "description": "Short form of a duration in hours (\"4 h\") on the burn-on-read duration slider and chips, where room is scarce; use the usual abbreviation for hours."
+  },
   "fusion.burn.minutes": {
     "defaultMessage": "{count, plural, one {# minute} other {# minutes}}",
     "description": ""
+  },
+  "fusion.burn.minutesShort": {
+    "defaultMessage": "{count} min",
+    "description": "Short form of a duration in minutes (\"15 min\") on the burn-on-read duration slider and chips, where room is scarce; use the usual abbreviation for minutes."
   },
   "fusion.burn.readBy": {
     "defaultMessage": "Read by {count} of {total}",
@@ -22531,13 +22571,29 @@
     "defaultMessage": "Click to delete the message for everyone",
     "description": ""
   },
-  "fusion.burn.tag": {
-    "defaultMessage": "Burn on read",
-    "description": ""
-  },
   "fusion.burn.tagTitle": {
     "defaultMessage": "This message is deleted after it is read",
     "description": ""
+  },
+  "fusion.burn.tagWithDuration": {
+    "defaultMessage": "Burn on read · {duration}",
+    "description": "Tag in the header of a burn-on-read (self-deleting) message not opened yet; {duration} is how long it lives once opened, short (\"15 min\", \"4 h\", \"1 day\")."
+  },
+  "fusion.burn.unitDays": {
+    "defaultMessage": "days",
+    "description": "Unit in the list after the number of a custom burn-on-read duration (\"3 days\")."
+  },
+  "fusion.burn.unitHours": {
+    "defaultMessage": "hours",
+    "description": "Unit in the list after the number of a custom burn-on-read duration (\"2 hours\")."
+  },
+  "fusion.burn.unitMinutes": {
+    "defaultMessage": "minutes",
+    "description": "Unit in the list after the number of a custom burn-on-read duration (\"5 minutes\")."
+  },
+  "fusion.burn.upTo": {
+    "defaultMessage": "Up to {max}",
+    "description": "Under the custom burn-on-read duration: the longest the administrator allows; {max} is a duration such as \"1 day\"."
   },
   "fusion.calls.askUnmute.label": {
     "defaultMessage": "{name} asks you to unmute",
@@ -24159,6 +24215,10 @@
     "defaultMessage": "Acknowledgement requested",
     "description": ""
   },
+  "fusion.composer.ackShort": {
+    "defaultMessage": "acknowledgement",
+    "description": "Part of the composer chip of a message's priority, after \"Urgent\" or \"Important\" and a dot, when an acknowledgement is requested."
+  },
   "fusion.composer.burn": {
     "defaultMessage": "Burn on read",
     "description": ""
@@ -24167,9 +24227,9 @@
     "defaultMessage": "Deleted {duration} after each person opens it",
     "description": ""
   },
-  "fusion.composer.burns": {
-    "defaultMessage": "Burns on read",
-    "description": ""
+  "fusion.composer.burnsAfter": {
+    "defaultMessage": "Burns {duration} after reading",
+    "description": "Composer chip of a message to be sent as burn-on-read (self-deleting); {duration} is short (\"15 min\", \"4 h\", \"1 day\")."
   },
   "fusion.composer.cancelReply": {
     "defaultMessage": "Cancel reply",
@@ -24187,9 +24247,9 @@
     "defaultMessage": "Emoji",
     "description": ""
   },
-  "fusion.composer.formatting": {
-    "defaultMessage": "Formatting and message options",
-    "description": ""
+  "fusion.composer.formattingBar": {
+    "defaultMessage": "Formatting",
+    "description": "Accessible name of the composer's formatting toolbar (bold, italic, lists…)."
   },
   "fusion.composer.help": {
     "defaultMessage": "Help with formatting, mentions, files and commands",
@@ -24207,6 +24267,14 @@
     "defaultMessage": "Messages can be up to {max} characters",
     "description": ""
   },
+  "fusion.composer.modeCancel": {
+    "defaultMessage": "Cancel: back to a plain message",
+    "description": "Accessible name of the Cancel button in the bar of a composer mode (an app's way of writing a message, e.g. a poll): leaves the mode, keeping the text. Starts with the button's visible text, \"Cancel\"."
+  },
+  "fusion.composer.modeCancelShort": {
+    "defaultMessage": "Cancel",
+    "description": "Visible text of the button leaving a composer mode (e.g. writing a poll) for a plain message."
+  },
   "fusion.composer.moreFormatting": {
     "defaultMessage": "More formatting",
     "description": ""
@@ -24219,13 +24287,17 @@
     "defaultMessage": "Don't send as a spoiler",
     "description": ""
   },
-  "fusion.composer.persistent": {
-    "defaultMessage": " · persistent",
-    "description": ""
+  "fusion.composer.options": {
+    "defaultMessage": "Message options",
+    "description": "Composer button (and its popover) setting a message's priority, burn-on-read and spoiler options; also the tooltip of the chips showing the options set."
   },
   "fusion.composer.persistentEvery": {
     "defaultMessage": "Repeats every {minutes, plural, one {minute} other {# minutes}} until acknowledged · urgent only",
     "description": ""
+  },
+  "fusion.composer.persistentShort": {
+    "defaultMessage": "persistent",
+    "description": "Part of the composer chip of an urgent message's priority, after a dot, when persistent notifications are on."
   },
   "fusion.composer.persistentTitle": {
     "defaultMessage": "Persistent notifications",
@@ -24291,6 +24363,10 @@
     "defaultMessage": "Send as a spoiler",
     "description": ""
   },
+  "fusion.composer.spoilerDesc": {
+    "defaultMessage": "Hidden until each reader chooses to see it",
+    "description": "Description of the spoiler switch in the composer's message options."
+  },
   "fusion.composer.spoilerOn": {
     "defaultMessage": "Spoiler",
     "description": ""
@@ -24321,10 +24397,6 @@
   },
   "fusion.composer.urgent": {
     "defaultMessage": "Urgent",
-    "description": ""
-  },
-  "fusion.composer.withAck": {
-    "defaultMessage": " · acknowledgement",
     "description": ""
   },
   "fusion.confirm.cancel": {

@@ -109,6 +109,7 @@
         "EnableBurnOnRead": null,
         "BurnOnReadDurationSeconds": null,
         "BurnOnReadMaximumTimeToLiveSeconds": null,
+        "BurnOnReadMaximumDurationSeconds": null,
         "BurnOnReadSchedulerFrequencySeconds": null,
         "EnableAPIChannelDeletion": null,
         "EnableLocalMode": null,

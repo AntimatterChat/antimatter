@@ -516,6 +516,7 @@ type ServiceSettings struct {
 	EnableBurnOnRead                                  *bool   `access:"site_posts"`
 	BurnOnReadDurationSeconds                         *int    `access:"site_posts"`
 	BurnOnReadMaximumTimeToLiveSeconds                *int    `access:"site_posts"`
+	BurnOnReadMaximumDurationSeconds                  *int    `access:"site_posts"`
 	BurnOnReadSchedulerFrequencySeconds               *int    `access:"site_posts,cloud_restrictable"`
 	EnableAPIChannelDeletion                          *bool
 	EnableLocalMode                                   *bool   `access:"cloud_restrictable"`
@@ -1105,6 +1106,12 @@ func (s *ServiceSettings) SetDefaults(isUpdate bool) {
 
 	if s.BurnOnReadMaximumTimeToLiveSeconds == nil {
 		s.BurnOnReadMaximumTimeToLiveSeconds = new(604800) // 7 days in seconds
+	}
+
+	// The longest a sender may let a burn-on-read message live once read (its read_duration): longer durations are
+	// clamped to it. BurnOnReadDurationSeconds is the duration of the messages whose sender picked none.
+	if s.BurnOnReadMaximumDurationSeconds == nil {
+		s.BurnOnReadMaximumDurationSeconds = new(BurnOnReadDefaultMaximumDurationSeconds)
 	}
 
 	if s.BurnOnReadSchedulerFrequencySeconds == nil {
@@ -5386,6 +5393,10 @@ func (s *ServiceSettings) isValid() *AppError {
 
 	if *s.BurnOnReadMaximumTimeToLiveSeconds <= 0 {
 		return NewAppError("Config.IsValid", "model.config.is_valid.service_settings.burn_on_read_maximum_time_to_live_seconds.app_error", nil, "", http.StatusBadRequest)
+	}
+
+	if *s.BurnOnReadMaximumDurationSeconds <= 0 {
+		return NewAppError("Config.IsValid", "model.config.is_valid.service_settings.burn_on_read_maximum_duration_seconds.app_error", nil, "", http.StatusBadRequest)
 	}
 
 	if *s.BurnOnReadSchedulerFrequencySeconds <= 0 {

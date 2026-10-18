@@ -246,6 +246,7 @@ export type ClientConfig = {
     EnableBurnOnRead: string;
     BurnOnReadDurationSeconds: string;
     BurnOnReadMaximumTimeToLiveSeconds: string;
+    BurnOnReadMaximumDurationSeconds: string;
 
     // Access Control Settings
     EnableAttributeBasedAccessControl: string;
@@ -449,6 +450,7 @@ export type ServiceSettings = {
     EnableBurnOnRead: boolean;
     BurnOnReadDurationSeconds: number;
     BurnOnReadMaximumTimeToLiveSeconds: number;
+    BurnOnReadMaximumDurationSeconds: number;
     BurnOnReadSchedulerFrequencySeconds: number;
     UniqueEmojiReactionLimitPerPost: number;
     RefreshPostStatsRunTime: string;

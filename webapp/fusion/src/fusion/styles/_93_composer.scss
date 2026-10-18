@@ -1,4 +1,4 @@
-// What the Fusion composer needs beyond the mockup's styles: scheduling a message.
+// What the Fusion composer needs beyond the mockup's styles: scheduling a message, and its options.
 
 :is(.am-app, .am-layer) .am-sched-pop { width: 280px; }
 :is(.am-app, .am-layer) .am-sched-custom { display: grid; gap: 8px; padding: 4px 8px 6px; }
@@ -33,3 +33,46 @@
 @keyframes am-ai-pulse { 50% { opacity: .55; } }
 :is(.am-app, .am-layer) .am-ai-hint { margin: 2px 10px 6px; color: var(--am-muted); font-size: 12.5px; }
 :is(.am-app, .am-layer) .am-fmt-bar .am-ai-btn.am-on { background: var(--am-matter-soft); }
+
+// The message's options (composer/message_options.tsx): one button opens them all; those set are chips in the top row,
+// tinted by their colour, whose label opens the options and whose cross removes them.
+:is(.am-app, .am-layer) .am-compose-row .am-opts-btn.am-on { color: var(--am-matter); }
+:is(.am-app, .am-layer) .am-opt-chip.am-opt-toggle { gap: 0; padding: 0 2px 0 0; background: color-mix(in srgb, currentColor 13%, var(--am-raise-2)); }
+:is(.am-app, .am-layer) .am-opt-chip .am-opt-chip-main { width: auto; height: 24px; display: inline-flex; align-items: center; gap: 5px; padding: 0 4px 0 8px; border-radius: 6px 0 0 6px; color: inherit; font: inherit; white-space: nowrap; }
+:is(.am-app, .am-layer) .am-opt-chip .am-opt-chip-main:hover { background: color-mix(in srgb, currentColor 12%, transparent); color: inherit; }
+:is(.am-app, .am-layer) .am-opt-chip .am-opt-chip-x { color: inherit; opacity: .7; }
+:is(.am-app, .am-layer) .am-opt-chip .am-opt-chip-x:hover { opacity: 1; background: color-mix(in srgb, currentColor 14%, transparent); color: inherit; }
+:is(.am-app, .am-layer) .am-opt-chip :is(.am-opt-chip-main, .am-opt-chip-x):focus-visible { outline: 2px solid var(--am-matter); outline-offset: -2px; }
+
+:is(.am-app, .am-layer) .am-msg-opts-pop { width: 320px; }
+:is(.am-app, .am-layer) .am-msg-opts-pop .am-pp-row.am-opt-priority { flex-direction: column; align-items: stretch; gap: 6px; }
+:is(.am-app, .am-layer) .am-msg-opts-pop .am-seg { display: flex; }
+:is(.am-app, .am-layer) .am-msg-opts-pop .am-seg button { flex: 1; width: auto; height: 28px; justify-content: center; padding: 0 8px; font-size: 13px; font-weight: 600; color: var(--am-muted); }
+:is(.am-app, .am-layer) .am-msg-opts-pop .am-seg button.am-on { background: var(--am-raise-2); color: var(--am-text); }
+:is(.am-app, .am-layer) .am-msg-opts-pop .am-seg button.am-on.am-prio-important { color: var(--am-spark); }
+:is(.am-app, .am-layer) .am-msg-opts-pop .am-seg button.am-on.am-prio-urgent { color: var(--am-danger); }
+:is(.am-app, .am-layer) .am-msg-opts-pop .am-switch:disabled { cursor: not-allowed; }
+
+// How long a burn-on-read message lives once read: a slider of steps, their labels under it, and a custom duration.
+:is(.am-app, .am-layer) .am-burn-slider { padding: 0 10px 8px; }
+:is(.am-app, .am-layer) .am-burn-slider input[type="range"] { width: 100%; margin: 2px 0 0; accent-color: #F97316; cursor: pointer; }
+:is(.am-app, .am-layer) .am-burn-steps { display: flex; justify-content: space-between; gap: 2px; }
+:is(.am-app, .am-layer) .am-plus-pop .am-burn-steps button { width: auto; padding: 2px 0; border-radius: 4px; font-size: 11px; font-weight: 600; color: var(--am-muted); white-space: nowrap; }
+:is(.am-app, .am-layer) .am-plus-pop .am-burn-steps button:hover { background: none; color: var(--am-text); }
+:is(.am-app, .am-layer) .am-plus-pop .am-burn-steps button.am-on { color: #F97316; }
+:is(.am-app, .am-layer) .am-burn-custom { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 8px; font-size: 12.5px; color: var(--am-text-2); }
+:is(.am-app, .am-layer) .am-burn-custom label { flex-basis: 100%; font-weight: 600; }
+:is(.am-app, .am-layer) .am-burn-custom :is(input, select) { height: 30px; padding: 0 8px; border-radius: 7px; border: 1px solid var(--am-line); background: var(--am-raise); color: var(--am-text); color-scheme: light dark; font: inherit; }
+:is(.am-app, .am-layer) .am-burn-custom input { width: 72px; }
+:is(.am-app, .am-layer) .am-burn-custom input[aria-invalid="true"] { border-color: var(--am-danger); }
+:is(.am-app, .am-layer) .am-burn-custom small { color: var(--am-muted); }
+:is(.am-app, .am-layer) .am-burn-custom small.am-over { color: var(--am-danger); }
+
+// An app's composer mode, e.g. a poll (composer/composer_modes.tsx): a bar naming it with Cancel at the top of the
+// compose box, the text box (the poll's question), then the mode's fields.
+:is(.am-app, .am-layer) .am-cmode-bar { display: flex; align-items: center; gap: 6px; margin: 0 0 4px; padding: 0 2px 6px 6px; border-bottom: 1px solid var(--am-line); font: 600 13px var(--am-font-ui); color: var(--am-matter); }
+:is(.am-app, .am-layer) .am-cmode-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+:is(.am-app, .am-layer) .am-cmode-cancel { flex: none; height: 26px; padding: 0 10px; border-radius: 7px; font: 600 12.5px var(--am-font-ui); color: var(--am-muted); }
+:is(.am-app, .am-layer) .am-cmode-cancel:hover { background: var(--am-hover); color: var(--am-text); }
+:is(.am-app, .am-layer) .am-cmode-cancel:focus-visible { outline: 2px solid var(--am-matter); outline-offset: 1px; }
+:is(.am-app, .am-layer) .am-cmode-body { padding: 6px 2px 2px; }

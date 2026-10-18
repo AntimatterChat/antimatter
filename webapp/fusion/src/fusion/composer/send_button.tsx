@@ -10,6 +10,9 @@ import {am} from 'fusion/utils/class_names';
 type Props = {
     disabled: boolean;
 
+    // What it says, when it doesn't send a plain message (a composer mode's, e.g. "Post poll").
+    label?: string;
+
     // With scheduled messages on, a chevron next to the button opens the schedule picker ("Send later").
     laterRef?: React.Ref<HTMLButtonElement>;
     laterOpen?: boolean;
@@ -17,13 +20,14 @@ type Props = {
 };
 
 // SendButton submits the composer's form; its chevron schedules the message instead.
-export default function SendButton({disabled, laterRef, laterOpen = false, onLater}: Props) {
+export default function SendButton({disabled, label, laterRef, laterOpen = false, onLater}: Props) {
     const {formatMessage} = useIntl();
     return (
         <>
             <button
                 className={am('icon-btn', 'send-btn', {split: Boolean(onLater)})}
-                aria-label={formatMessage({id: 'fusion.composer.send', defaultMessage: 'Send'})}
+                aria-label={label || formatMessage({id: 'fusion.composer.send', defaultMessage: 'Send'})}
+                title={label}
                 disabled={disabled}
             >
                 <Icon

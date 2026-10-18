@@ -58,4 +58,47 @@ describe('fusion/composer/PlusMenu', () => {
         await userEvent.click(screen.getByRole('menuitem', {name: 'Add a GIF'}));
         expect(props.onUpload).toHaveBeenCalledWith(files);
     });
+
+    test('offers the apps\' composer modes, which the composer switches to', async () => {
+        const onMode = jest.fn();
+        const onClose = jest.fn();
+        const poll = {id: 'polls.poll', pluginId: 'polls', label: 'Create a poll', fusionIcon: 'poll', component: () => null, shouldRender: () => true};
+        renderWithContext(
+            <PlusMenu
+                anchor={null}
+                channelId='c1'
+                rootId=''
+                onPickFile={jest.fn()}
+                onUpload={jest.fn()}
+                onClose={onClose}
+                modes={[poll]}
+                onMode={onMode}
+            />,
+            {plugins: {components: {}}} as never,
+        );
+        const menu = screen.getByRole('menu', {name: 'Add to message'});
+        expect(within(menu).getAllByRole('menuitem').map((i) => i.textContent)).toEqual(['Upload a file', 'Create a poll']);
+
+        await userEvent.click(screen.getByRole('menuitem', {name: 'Create a poll'}));
+        expect(onClose).toHaveBeenCalled();
+        expect(onMode).toHaveBeenCalledWith('polls.poll');
+    });
+
+    test('in a narrow composer, it also opens the message options', async () => {
+        const onOptions = jest.fn();
+        renderWithContext(
+            <PlusMenu
+                anchor={null}
+                channelId='c1'
+                rootId=''
+                onPickFile={jest.fn()}
+                onUpload={jest.fn()}
+                onClose={jest.fn()}
+                onOptions={onOptions}
+            />,
+            {plugins: {components: {}}} as never,
+        );
+        await userEvent.click(screen.getByRole('menuitem', {name: 'Message options'}));
+        expect(onOptions).toHaveBeenCalled();
+    });
 });

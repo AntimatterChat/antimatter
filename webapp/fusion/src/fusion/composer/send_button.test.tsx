@@ -43,4 +43,15 @@ describe('fusion/composer/SendButton', () => {
         expect(screen.getByRole('button', {name: 'Send'})).toBeDisabled();
         expect(screen.getByRole('button', {name: 'Send later'})).toBeDisabled();
     });
+
+    test('says what a composer mode sends', () => {
+        renderWithContext(
+            <SendButton
+                disabled={false}
+                label='Post poll'
+            />,
+        );
+        expect(screen.getByRole('button', {name: 'Post poll'})).toBeInTheDocument();
+        expect(screen.queryByRole('button', {name: 'Send'})).not.toBeInTheDocument();
+    });
 });

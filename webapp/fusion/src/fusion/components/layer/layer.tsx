@@ -32,6 +32,10 @@ export type Placement =
     // Above the anchor, centred on it (below it when there's no room): a call's reactions, over their button.
     'above-center' |
 
+    // Above the anchor, right-aligned with it (below it when there's no room): the send button's "Send later" menu,
+    // which ends where the button does instead of running on past it.
+    'above-end' |
+
     // Under the anchor, left-aligned (above when there's no room): the channel info under its name.
     'below-start' |
 
@@ -126,7 +130,7 @@ function place(pop: HTMLElement, placement: Placement, anchor?: HTMLElement | nu
             if (top < MARGIN) {
                 top = r.bottom + 8;
             }
-        } else if (placement === 'picker') {
+        } else if (placement === 'picker' || placement === 'above-end') {
             left = r.right - w;
             top = r.top - h - 8;
             if (top < MARGIN) {

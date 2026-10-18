@@ -232,6 +232,7 @@ const initialComponents: PluginsState['components'] = {
     PostHeader: [],
     ComposerPlaceholder: [],
     ComposerMenuItem: [],
+    ComposerMode: [],
     EmojiPickerTab: [],
     IntegrationsOption: [],
     ProductSwitcherMenuItem: [],

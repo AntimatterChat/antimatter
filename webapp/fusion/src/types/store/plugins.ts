@@ -83,6 +83,7 @@ export type PluginsState = {
         PostHeader: PostHeaderComponent[];
         ComposerPlaceholder: ComposerPlaceholderRegistration[];
         ComposerMenuItem: ComposerMenuItemRegistration[];
+        ComposerMode: ComposerModeRegistration[];
         EmojiPickerTab: EmojiPickerTabRegistration[];
         IntegrationsOption: IntegrationsOptionRegistration[];
         ProductSwitcherMenuItem: ProductSwitcherMenuItemRegistration[];
@@ -534,6 +535,41 @@ export type ComposerMenuItemRegistration = PluginComponent & {
     /** An icon of the Fusion UI's icon set (e.g. 'poll', 'sticker', 'calendar'), used instead of `icon` there. */
     fusionIcon?: string;
     action: (ctx: ComposerMenuItemContext) => void;
+    shouldRender: (state: GlobalState, ctx: ComposerMenuItemContext) => boolean;
+};
+
+/** What a composer mode's component gets (see registerComposerMode). */
+export type ComposerModeProps = {
+    channelId: string;
+    rootId?: string;
+
+    /** The composer's text, which is part of what the mode sends (e.g. a poll's question). */
+    message: string;
+
+    /**
+     * Sets what Send does in the mode (null for nothing): called with the composer's text, it resolves to nothing (or
+     * an empty string) once sent, and the composer goes back to a plain, empty message; or to an error message, which
+     * the composer shows, staying in the mode.
+     */
+    setSubmit: (submit: ((message: string) => Promise<string | void>) | null) => void;
+
+    /** Back to a plain message, keeping its text. */
+    onCancel: () => void;
+};
+
+/** A way of writing a message in the Fusion composer other than plain text, e.g. a poll (see registerComposerMode). */
+export type ComposerModeRegistration = PluginComponent & {
+    label: PluggableText;
+
+    /** An icon of the Fusion UI's icon set (e.g. 'poll'). */
+    fusionIcon?: string;
+
+    /** What the composer's text box asks for in the mode (e.g. "Ask a question"), and its send button says. */
+    placeholder?: string | ((intl: IntlShape) => string);
+    sendLabel?: string | ((intl: IntlShape) => string);
+
+    /** The mode's fields, shown under the composer's text box. */
+    component: React.ComponentType<ComposerModeProps>;
     shouldRender: (state: GlobalState, ctx: ComposerMenuItemContext) => boolean;
 };
 

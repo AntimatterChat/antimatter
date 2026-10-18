@@ -150,10 +150,6 @@
 :is(.am-app, .am-layer) .am-fmt-bar .am-grow { flex: 1; }
 :is(.am-app, .am-layer) .am-fmt-bar .am-ai-btn { width: auto; display: flex; gap: 5px; padding: 0 8px; color: var(--am-matter); font: 700 12.5px var(--am-font-ui); }
 :is(.am-app, .am-layer) .am-fmt-bar .am-ai-btn:hover { background: var(--am-matter-soft); color: var(--am-matter); }
-:is(.am-app, .am-layer) .am-fmt-bar button.am-on.am-prio-important { color: var(--am-spark); background: rgba(240, 178, 50, 0.14); }
-:is(.am-app, .am-layer) .am-fmt-bar button.am-on.am-prio-urgent { color: var(--am-danger); background: rgba(242, 63, 67, 0.14); }
-:is(.am-app, .am-layer) .am-fmt-bar button.am-on.am-burn { color: #F97316; background: rgba(249, 115, 22, 0.14); }
-:is(.am-app, .am-layer) .am-fmt-bar button.am-on.am-spoiler { color: var(--am-matter); background: var(--am-matter-soft); }
 :is(.am-app, .am-layer) .am-opt-chips { display: flex; gap: 6px; flex-wrap: wrap; padding: 6px 2px 0 38px; }
 :is(.am-app, .am-layer) .am-opt-chip { display: inline-flex; align-items: center; gap: 5px; height: 24px; padding: 0 2px 0 8px; border-radius: 6px; background: var(--am-raise-2); font-size: 12px; font-weight: 600; color: var(--am-text-2); }
 :is(.am-app, .am-layer) .am-opt-chip .am-ic { width: 13px; height: 13px; }

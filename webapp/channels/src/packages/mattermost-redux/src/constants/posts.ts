@@ -93,5 +93,14 @@ export default {
         MAX_TTL_14_DAYS: 1209600,
         MAX_TTL_30_DAYS: 2592000,
         MAX_TTL_DEFAULT: 604800,
+
+        // The longest a sender can let a message live once read (ServiceSettings.BurnOnReadMaximumDurationSeconds).
+        MAX_DURATION_1_HOUR: 3600,
+        MAX_DURATION_4_HOURS: 14400,
+        MAX_DURATION_8_HOURS: 28800,
+        MAX_DURATION_1_DAY: 86400,
+        MAX_DURATION_3_DAYS: 259200,
+        MAX_DURATION_7_DAYS: 604800,
+        MAX_DURATION_DEFAULT: 86400,
     },
 };

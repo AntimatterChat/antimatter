@@ -123,6 +123,40 @@ describe('fusion/components/layer', () => {
             expect(document.querySelector('.am-sheet-scrim')).not.toBeInTheDocument();
         });
 
+        test.each([
+            ['above-end', '750px'],
+            ['above', '960px'],
+        ] as const)('%s places it above its anchor, its left side at %s', (placement, left) => {
+            const width = jest.spyOn(HTMLElement.prototype, 'offsetWidth', 'get').mockReturnValue(240);
+            const height = jest.spyOn(HTMLElement.prototype, 'offsetHeight', 'get').mockReturnValue(200);
+            Object.defineProperty(window, 'innerWidth', {configurable: true, value: 1280});
+            Object.defineProperty(window, 'innerHeight', {configurable: true, value: 800});
+            const anchor = document.createElement('button');
+            document.body.appendChild(anchor);
+            anchor.getBoundingClientRect = () => ({left: 960, right: 990, top: 700, bottom: 730, width: 30, height: 30, x: 960, y: 700, toJSON: () => ({})});
+            anchor.getClientRects = () => [anchor.getBoundingClientRect()] as unknown as DOMRectList;
+
+            render(wrap(
+                <Popover
+                    anchor={anchor}
+                    placement={placement}
+                    className='test-pop'
+                    label='Placed popover'
+                    onClose={jest.fn()}
+                >
+                    <button>{'inside'}</button>
+                </Popover>,
+            ));
+            const pop = screen.getByRole('dialog', {name: 'Placed popover'});
+
+            // above-end ends where the anchor ends (990 - 240), as the "Send later" menu ends with the send button;
+            // above starts where it starts.
+            expect(pop.style.left).toBe(left);
+            expect(pop.style.top).toBe('492px');
+            width.mockRestore();
+            height.mockRestore();
+        });
+
         test('is not a sheet on a desktop', () => {
             setup();
             expect(screen.getByRole('dialog', {name: 'Test popover'})).not.toHaveClass('am-sheet');
