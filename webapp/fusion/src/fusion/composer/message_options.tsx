@@ -5,7 +5,7 @@ import React, {useEffect, useRef} from 'react';
 import {useIntl} from 'react-intl';
 import {useSelector} from 'react-redux';
 
-import type {PostPriority} from '@mattermost/types/posts';
+import {PostPriority} from '@mattermost/types/posts';
 
 import {Posts} from 'mattermost-redux/constants';
 import {getConfig} from 'mattermost-redux/selectors/entities/general';
@@ -283,8 +283,8 @@ export function MessageOptionsPopover({options, anchor, section, onClose}: Popov
 
     const levels: Array<[PostPriority | '', string]> = [
         ['', formatMessage({id: 'fusion.composer.standard', defaultMessage: 'Standard'})],
-        ['important', formatMessage({id: 'fusion.composer.important', defaultMessage: 'Important'})],
-        ['urgent', formatMessage({id: 'fusion.composer.urgent', defaultMessage: 'Urgent'})],
+        [PostPriority.IMPORTANT, formatMessage({id: 'fusion.composer.important', defaultMessage: 'Important'})],
+        [PostPriority.URGENT, formatMessage({id: 'fusion.composer.urgent', defaultMessage: 'Urgent'})],
     ];
 
     return (
