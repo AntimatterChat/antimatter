@@ -547,9 +547,9 @@ export type ComposerModeProps = {
     message: string;
 
     /**
-     * Sets what Send does in the mode (null for nothing): called with the composer's text, it resolves to nothing
-     * once sent, and the composer goes back to a plain, empty message; or to an error message, which the composer
-     * shows, staying in the mode.
+     * Sets what Send does in the mode (null for nothing): called with the composer's text, it resolves to nothing (or
+     * an empty string) once sent, and the composer goes back to a plain, empty message; or to an error message, which
+     * the composer shows, staying in the mode.
      */
     setSubmit: (submit: ((message: string) => Promise<string | void>) | null) => void;
 

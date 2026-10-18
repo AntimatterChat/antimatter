@@ -1680,8 +1680,9 @@ export default class PluginRegistry {
      * - component - The mode's fields, a React component receiving:
      *   - channelId, rootId - The composer's channel, and its thread for a reply box
      *   - message - The composer's text
-     *   - setSubmit - Sets what Send does: a function called with the composer's text that resolves to nothing once
-     *     sent (the composer then empties and goes back to a plain message), or to an error message it shows
+     *   - setSubmit - Sets what Send does: a function called with the composer's text that resolves to nothing (or an
+     *     empty string) once sent (the composer then empties and goes back to a plain message), or to an error
+     *     message it shows
      *   - onCancel - Back to a plain message, keeping the text
      * - shouldRender - Optional function receiving the full Redux state and {channelId, rootId}, returning whether to
      *   offer the mode in that composer. A throwing shouldRender hides it.
