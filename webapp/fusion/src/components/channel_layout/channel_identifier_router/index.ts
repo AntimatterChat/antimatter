@@ -3,6 +3,7 @@
 
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router-dom';
+import type {RouteComponentProps} from 'react-router-dom';
 import {bindActionCreators} from 'redux';
 import type {Dispatch} from 'redux';
 
@@ -14,6 +15,7 @@ import type {GlobalState} from 'types/store';
 
 import {onChannelByIdentifierEnter} from './actions';
 import ChannelIdentifierRouter from './channel_identifier_router';
+import type {Match} from './channel_identifier_router';
 
 function mapStateToProps(state: GlobalState) {
     return {
@@ -30,4 +32,9 @@ function mapDispatchToProps(dispatch: Dispatch) {
     };
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ChannelIdentifierRouter));
+// CenterChannel gives it where a permalink came from.
+type OwnProps = RouteComponentProps<Match['params']> & {returnTo?: string};
+
+const ConnectedChannelIdentifierRouter = connect(mapStateToProps, mapDispatchToProps)(ChannelIdentifierRouter);
+
+export default withRouter<OwnProps, typeof ConnectedChannelIdentifierRouter>(ConnectedChannelIdentifierRouter);
