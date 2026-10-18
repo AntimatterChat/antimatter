@@ -48,9 +48,8 @@ export function CommunityRulesDialog({teamId, onClose}: {teamId: string; onClose
         const result = await dispatch(acceptCommunityRules(teamId, rules.version));
         setBusy(false);
         if ('error' in result && result.error) {
-            setError(result.error instanceof RulesChangedError ?
-                formatMessage({id: 'fusion.communityRules.changed', defaultMessage: 'These rules just changed: read them again, then agree.'}) :
-                formatMessage({id: 'fusion.communityRules.agreeFailed', defaultMessage: 'Your agreement couldn\'t be saved. Try again.'}));
+            const changed = result.error instanceof RulesChangedError;
+            setError(changed ? formatMessage({id: 'fusion.communityRules.changed', defaultMessage: 'These rules just changed: read them again, then agree.'}) : formatMessage({id: 'fusion.communityRules.agreeFailed', defaultMessage: 'Your agreement couldn\'t be saved. Try again.'}));
             return;
         }
         toast(formatMessage({id: 'fusion.communityRules.agreed', defaultMessage: 'Thanks! You can post in {community} now'}, {community: name}));
