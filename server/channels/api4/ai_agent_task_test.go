@@ -6,6 +6,7 @@ package api4
 import (
 	"context"
 	"encoding/json"
+	"net/http"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -139,8 +140,13 @@ func TestAIAgentConversationsAPI(t *testing.T) {
 		"/ai/agents/conversations?per_page=0",
 		"/ai/agents/conversations?per_page=101",
 	} {
-		body := rawBody(t, clients.member, "GET", path)
-		assert.Contains(t, body, `"status_code":400`, path)
+		req, err := http.NewRequestWithContext(ctx, http.MethodGet, clients.member.APIURL+path, nil)
+		require.NoError(t, err)
+		req.Header.Set(model.HeaderAuth, clients.member.AuthType+" "+clients.member.AuthToken)
+		resp, err := clients.member.HTTPClient.Do(req)
+		require.NoError(t, err)
+		resp.Body.Close()
+		assert.Equal(t, http.StatusBadRequest, resp.StatusCode, path)
 	}
 }
 
