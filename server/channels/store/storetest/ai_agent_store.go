@@ -265,7 +265,19 @@ func TestAIAgentAgentsPluginUserAgents(t *testing.T, rctx request.CTX, ss store.
 // only people replied in. The most recent first, with a cursor.
 func testAIAgentConversations(t *testing.T, rctx request.CTX, ss store.Store) {
 	me, agent, someone := model.NewId(), model.NewId(), model.NewId()
-	dm, channel := model.NewId(), model.NewId()
+	// Two channels (replies need their thread's channel); the first stands for the direct message with the agent.
+	newChannel := func() string {
+		t.Helper()
+		c, err := ss.Channel().Save(rctx, &model.Channel{
+			TeamId:      model.NewId(),
+			DisplayName: model.NewId(),
+			Name:        "c" + model.NewId(),
+			Type:        model.ChannelTypeOpen,
+		}, -1)
+		require.NoError(t, err)
+		return c.Id
+	}
+	dm, channel := newChannel(), newChannel()
 	now := model.GetMillis()
 	save := func(p *model.Post) *model.Post {
 		t.Helper()
