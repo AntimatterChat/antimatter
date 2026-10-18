@@ -6,33 +6,13 @@ import React from 'react';
 import type {DeepPartial} from '@mattermost/types/utilities';
 
 import {act, fireEvent, renderWithContext, screen} from 'tests/react_testing_utils';
-import {popoutRhsPlugin} from 'utils/popouts/popout_windows';
+import {isPopoutWindow, popoutRhsPlugin} from 'utils/popouts/popout_windows';
 
 import type {GlobalState} from 'types/store';
 
 import RhsPlugin from './rhs_plugin';
 
 import ConnectedRhsPlugin from '.';
-
-jest.mock('components/search_results_header', () => ({
-    __esModule: true,
-    default: ({children, newWindowHandler}: {children: React.ReactNode; newWindowHandler?: () => void}) => (
-        <div
-            data-testid='search-results-header'
-            data-has-window-handler={newWindowHandler === undefined ? 'false' : 'true'}
-        >
-            {newWindowHandler && (
-                <button
-                    type='button'
-                    onClick={newWindowHandler}
-                >
-                    {'Open in new window'}
-                </button>
-            )}
-            {children}
-        </div>
-    ),
-}));
 
 // The app's panel: the props the host gives it, kept for the tests to call setPanelState as the app would
 const mockPanelProps: {current?: {pluggableId?: string; setPanelState?: (state: string | null) => void; initialPanelState?: string}} = {};
@@ -46,6 +26,8 @@ jest.mock('plugins/pluggable', () => ({
 
 jest.mock('utils/popouts/popout_windows', () => ({
     popoutRhsPlugin: jest.fn(),
+    isPopoutWindow: jest.fn(() => false),
+    isChannelPopoutWindow: jest.fn(() => false),
 }));
 
 const baseState: DeepPartial<GlobalState> = {
@@ -74,7 +56,9 @@ const baseState: DeepPartial<GlobalState> = {
 
 describe('RhsPlugin', () => {
     describe('component', () => {
-        it('passes newWindowHandler to SearchResultsHeader when showPopout is true', () => {
+        const newWindow = () => screen.queryByRole('button', {name: 'Open in a new window'});
+
+        it('draws the generic app header, with its new window button when showPopout is true', () => {
             renderWithContext(
                 <RhsPlugin
                     showPluggable={true}
@@ -86,10 +70,12 @@ describe('RhsPlugin', () => {
                 baseState,
             );
 
-            expect(screen.getByTestId('search-results-header')).toHaveAttribute('data-has-window-handler', 'true');
+            expect(screen.getByTestId('app-panel-header')).toHaveTextContent('Test Title');
+            expect(newWindow()).toBeInTheDocument();
+            expect(screen.getByRole('button', {name: 'Close'})).toBeInTheDocument();
         });
 
-        it('passes undefined for newWindowHandler to SearchResultsHeader when showPopout is false', () => {
+        it('has no new window button when showPopout is false', () => {
             renderWithContext(
                 <RhsPlugin
                     showPluggable={true}
@@ -101,7 +87,7 @@ describe('RhsPlugin', () => {
                 baseState,
             );
 
-            expect(screen.getByTestId('search-results-header')).toHaveAttribute('data-has-window-handler', 'false');
+            expect(newWindow()).not.toBeInTheDocument();
         });
 
         it('defaults showPopout to true when the prop is omitted', () => {
@@ -115,7 +101,69 @@ describe('RhsPlugin', () => {
                 baseState,
             );
 
-            expect(screen.getByTestId('search-results-header')).toHaveAttribute('data-has-window-handler', 'true');
+            expect(newWindow()).toBeInTheDocument();
+        });
+
+        it('closes the panel from the header', () => {
+            const {store} = renderWithContext(
+                <RhsPlugin
+                    showPluggable={true}
+                    pluggableId='pluggable-id'
+                    title='Test Title'
+                    pluginId='plugin-id'
+                />,
+                {...baseState, views: {rhs: {pluggableId: 'pluggable-id', isSidebarOpen: true, rhsState: 'plugin'}}} as DeepPartial<GlobalState>,
+            );
+
+            fireEvent.click(screen.getByRole('button', {name: 'Close'}));
+            expect(store.getState().views.rhs.isSidebarOpen).toBe(false);
+        });
+
+        it('has no close button in a popout window of the panel', () => {
+            (isPopoutWindow as jest.Mock).mockReturnValue(true);
+            renderWithContext(
+                <RhsPlugin
+                    showPluggable={true}
+                    pluggableId='pluggable-id'
+                    title='Test Title'
+                    pluginId='plugin-id'
+                />,
+                baseState,
+            );
+
+            expect(screen.queryByRole('button', {name: 'Close'})).not.toBeInTheDocument();
+            (isPopoutWindow as jest.Mock).mockReturnValue(false);
+        });
+
+        it("shows the restore size button once resized, which restores the panel's size", () => {
+            const onRestoreSize = jest.fn();
+            const props = {showPluggable: true, pluggableId: 'pluggable-id', title: 'Test Title', pluginId: 'plugin-id', onRestoreSize};
+            const {rerender} = renderWithContext(<RhsPlugin {...props}/>, baseState);
+            expect(screen.queryByRole('button', {name: "Restore the panel's size"})).not.toBeInTheDocument();
+
+            rerender(
+                <RhsPlugin
+                    {...props}
+                    sized={true}
+                />,
+            );
+            fireEvent.click(screen.getByRole('button', {name: "Restore the panel's size"}));
+            expect(onRestoreSize).toHaveBeenCalledTimes(1);
+        });
+
+        it("puts nothing of the app's title in the header but its text", () => {
+            renderWithContext(
+                <RhsPlugin
+                    showPluggable={true}
+                    pluggableId='pluggable-id'
+                    title={<button type='button'>{'App control'}</button>}
+                    pluginId='plugin-id'
+                />,
+                baseState,
+            );
+
+            expect(screen.queryByRole('button', {name: 'App control'})).not.toBeInTheDocument();
+            expect(screen.getByTestId('app-panel-header')).toHaveTextContent('Test Plugin');
         });
     });
 
@@ -148,13 +196,13 @@ describe('RhsPlugin', () => {
         it('defaults showPopout to true when component showPopout field is undefined', () => {
             renderWithContext(<ConnectedRhsPlugin/>, stateWithRegisteredComponent(undefined));
 
-            expect(screen.getByTestId('search-results-header')).toHaveAttribute('data-has-window-handler', 'true');
+            expect(screen.getByRole('button', {name: 'Open in a new window'})).toBeInTheDocument();
         });
 
         it('passes showPopout: false through to hide the popout button', () => {
             renderWithContext(<ConnectedRhsPlugin/>, stateWithRegisteredComponent(false));
 
-            expect(screen.getByTestId('search-results-header')).toHaveAttribute('data-has-window-handler', 'false');
+            expect(screen.queryByRole('button', {name: 'Open in a new window'})).not.toBeInTheDocument();
         });
     });
     describe('panel state', () => {
@@ -180,7 +228,7 @@ describe('RhsPlugin', () => {
             renderWithContext(<RhsPlugin {...props}/>, baseState);
 
             act(() => mockPanelProps.current?.setPanelState?.('note/n1'));
-            fireEvent.click(screen.getByRole('button', {name: 'Open in new window'}));
+            fireEvent.click(screen.getByRole('button', {name: 'Open in a new window'}));
 
             expect(popoutRhsPlugin).toHaveBeenCalledWith(expect.any(String), 'plugin-id', 'test-team', 'test-channel', 'note/n1');
         });
@@ -188,12 +236,12 @@ describe('RhsPlugin', () => {
         it('opens the popout on the home of an app that never set a state, or went back to its home', () => {
             renderWithContext(<RhsPlugin {...props}/>, baseState);
 
-            fireEvent.click(screen.getByRole('button', {name: 'Open in new window'}));
+            fireEvent.click(screen.getByRole('button', {name: 'Open in a new window'}));
             expect(popoutRhsPlugin).toHaveBeenLastCalledWith(expect.any(String), 'plugin-id', 'test-team', 'test-channel', undefined);
 
             act(() => mockPanelProps.current?.setPanelState?.('note/n1'));
             act(() => mockPanelProps.current?.setPanelState?.(null));
-            fireEvent.click(screen.getByRole('button', {name: 'Open in new window'}));
+            fireEvent.click(screen.getByRole('button', {name: 'Open in a new window'}));
             expect(popoutRhsPlugin).toHaveBeenLastCalledWith(expect.any(String), 'plugin-id', 'test-team', 'test-channel', undefined);
         });
 
@@ -201,7 +249,7 @@ describe('RhsPlugin', () => {
             renderWithContext(<RhsPlugin {...props}/>, baseState);
 
             act(() => mockPanelProps.current?.setPanelState?.('note/n1\nsecond line'));
-            fireEvent.click(screen.getByRole('button', {name: 'Open in new window'}));
+            fireEvent.click(screen.getByRole('button', {name: 'Open in a new window'}));
 
             expect(popoutRhsPlugin).toHaveBeenLastCalledWith(expect.any(String), 'plugin-id', 'test-team', 'test-channel', undefined);
         });
@@ -217,7 +265,7 @@ describe('RhsPlugin', () => {
                     pluginId='other-plugin-id'
                 />,
             );
-            fireEvent.click(screen.getByRole('button', {name: 'Open in new window'}));
+            fireEvent.click(screen.getByRole('button', {name: 'Open in a new window'}));
 
             expect(popoutRhsPlugin).toHaveBeenLastCalledWith(expect.any(String), 'other-plugin-id', 'test-team', 'test-channel', undefined);
         });

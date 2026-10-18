@@ -26839,17 +26839,17 @@
     "defaultMessage": "Close",
     "description": ""
   },
-  "fusion.rhs.fullPage": {
-    "defaultMessage": "Open as a full page",
-    "description": ""
+  "fusion.rhs.newWindow": {
+    "defaultMessage": "Open in a new window",
+    "description": "Button in the header of an app's side panel (Notes, Kanban, Playbooks…) that opens the panel in a window of its own."
   },
   "fusion.rhs.resize": {
     "defaultMessage": "Resize the panel",
     "description": "Label of the draggable left edge of an app's right-hand panel (Notes, Whiteboard…); the arrow keys resize it, Home restores its default width."
   },
-  "fusion.rhs.restoreWidth": {
-    "defaultMessage": "Restore default width",
-    "description": "Button in an app panel's header, shown once the user resized the panel, that gives it back its default width."
+  "fusion.rhs.restoreSize": {
+    "defaultMessage": "Restore the panel's size",
+    "description": "Button in the header of an app's side panel, shown only once the person has resized the panel by dragging its edge, that gives it back its default width."
   },
   "fusion.roles.addPeople": {
     "defaultMessage": "Add people of the community…",

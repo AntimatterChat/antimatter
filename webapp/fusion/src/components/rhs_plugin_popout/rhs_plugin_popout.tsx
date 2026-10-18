@@ -7,9 +7,8 @@ import {useSelector} from 'react-redux';
 import {useLocation, useParams} from 'react-router-dom';
 
 import LoadingScreen from 'components/loading_screen';
-import SearchResultsHeader from 'components/search_results_header';
 
-import {PanelAppIcon} from 'fusion/apps/app_rail';
+import AppPanelHeader from 'fusion/rhs/app_panel_header';
 import Pluggable from 'plugins/pluggable';
 import {readPanelState, withPanelState} from 'plugins/rhs_plugin/panel_state';
 import usePopoutTitle from 'utils/popouts/use_popout_title';
@@ -58,12 +57,14 @@ export default function RhsPluginPopout() {
         return <LoadingScreen/>;
     }
 
+    // The panel's header in its own window: the app's icon and name, without the buttons of the main window's
+    // panel (its size is the window's, and the window has its own close button).
     return (
         <>
-            <PanelAppIcon pluginId={pluginId}/>
-            <SearchResultsHeader>
-                {title}
-            </SearchResultsHeader>
+            <AppPanelHeader
+                pluginId={pluginId}
+                title={title}
+            />
             <Pluggable
                 pluggableName='RightHandSidebarComponent'
                 pluggableId={pluggableId}

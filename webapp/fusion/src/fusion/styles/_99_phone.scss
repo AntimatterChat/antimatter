@@ -53,9 +53,8 @@ body.app__body #root.am-root {
     :is(.am-app, .am-layer) .am-sheet-back .am-ic { transform: rotate(90deg); }
     .am-app .am-rhs > .am-sheet-back { position: absolute; z-index: 2; top: 6px; left: 4px; }
     .am-app .am-rhs:has(> .am-sheet-back) :is(.am-rhs-head, .sidebar--right__header) { padding-left: 48px; }
-    .am-app .am-rhs:has(> .am-sheet-back) .am-rhs-app-ic { left: 52px; }
     .am-app .am-rhs:has(> .am-sheet-back) .am-rhs-head > .am-icon-btn:not([aria-haspopup]) { display: none; }
-    .am-app .am-rhs:has(> .am-sheet-back) :is(.sidebar--right__expand, .sidebar--right__close, .PopoutButton, .am-rhs-tools) { display: none !important; }
+    .am-app .am-rhs:has(> .am-sheet-back) :is(.sidebar--right__expand, .sidebar--right__close, .PopoutButton) { display: none !important; }
     .am-app .am-rhs .am-rhs-head .am-icon-btn { width: 40px; height: 40px; }
     :is(.am-app, .am-layer) .am-mem-head { padding-left: 0; margin-left: 0; }
     :is(.am-app, .am-layer) .am-mem-head > .am-sheet-back + span { flex: 1; }

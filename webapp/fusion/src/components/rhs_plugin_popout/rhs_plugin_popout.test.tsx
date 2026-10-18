@@ -13,13 +13,6 @@ jest.mock('components/loading_screen', () => ({
     default: () => <div data-testid='loading-screen'>{'Loading Screen'}</div>,
 }));
 
-jest.mock('components/search_results_header', () => ({
-    __esModule: true,
-    default: ({children}: {children: React.ReactNode}) => (
-        <div data-testid='search-results-header'>{children}</div>
-    ),
-}));
-
 type MockPanelProps = {pluggableName: string; pluggableId: string; initialPanelState?: string; setPanelState?: (state: string | null) => void};
 const mockPanelProps: {current?: MockPanelProps} = {};
 jest.mock('plugins/pluggable', () => ({
@@ -92,11 +85,11 @@ describe('RhsPluginPopout', () => {
         );
 
         expect(screen.getByTestId('loading-screen')).toBeInTheDocument();
-        expect(screen.queryByTestId('search-results-header')).not.toBeInTheDocument();
+        expect(screen.queryByTestId('app-panel-header')).not.toBeInTheDocument();
         expect(screen.queryByTestId('pluggable-RightHandSidebarComponent-')).not.toBeInTheDocument();
     });
 
-    it('should render SearchResultsHeader and Pluggable when plugin is found', () => {
+    it("should render the app panel's header and Pluggable when plugin is found", () => {
         renderWithContext(
             <MemoryRouter initialEntries={['/_popout/rhs/team1/channel1/plugin/test-plugin']}>
                 <Route
@@ -108,8 +101,12 @@ describe('RhsPluginPopout', () => {
         );
 
         expect(screen.queryByTestId('loading-screen')).not.toBeInTheDocument();
-        expect(screen.getByTestId('search-results-header')).toBeInTheDocument();
+        expect(screen.getByTestId('app-panel-header')).toBeInTheDocument();
         expect(screen.getByText(pluginTitle)).toBeInTheDocument();
+
+        // In its own window, the header has none of the panel's buttons: its size is the window's, which has its own
+        // close button.
+        expect(screen.getByTestId('app-panel-header').querySelectorAll('button')).toHaveLength(0);
         expect(screen.getByTestId(`pluggable-RightHandSidebarComponent-${pluggableId}`)).toBeInTheDocument();
 
         const pluggable = screen.getByTestId(`pluggable-RightHandSidebarComponent-${pluggableId}`);
@@ -142,7 +139,8 @@ describe('RhsPluginPopout', () => {
             },
         );
 
-        expect(screen.getByTestId('search-results-header')).toBeInTheDocument();
+        // The header names the app from its manifest instead.
+        expect(screen.getByTestId('app-panel-header')).toHaveTextContent('Test Plugin');
         expect(screen.getByTestId(`pluggable-RightHandSidebarComponent-${pluggableId}`)).toBeInTheDocument();
     });
     describe('panel state', () => {

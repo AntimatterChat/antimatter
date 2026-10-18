@@ -67,21 +67,15 @@
 :is(.am-app, .am-layer) .am-result.am-file-result .am-attach-meta span { color: var(--am-muted); font-size: 12px; }
 :is(.am-app, .am-layer) .am-file-result .am-file { flex: none; width: 36px; height: 42px; border-radius: 6px; background: var(--am-matter-soft); color: var(--am-matter); display: grid; place-items: center; font: 700 10px var(--am-font-mono); }
 :is(.am-app, .am-layer) .am-results-tabs, :is(.am-app, .am-layer) .am-file-filters { padding: 0 12px; }
-// An app's panel: its icon before its title, in its colour, as in the app rail; the apps' own title icons give way.
-:is(.am-app, .am-layer) .am-rhs-app-ic { position: absolute; top: 15px; left: 16px; z-index: 5; display: grid; place-items: center; width: 22px; height: 22px; color: var(--am-text-2); pointer-events: none; }
-:is(.am-app, .am-layer) .am-rhs-app-ic .am-ic, :is(.am-app, .am-layer) .am-rhs-app-ic .am-app-img, :is(.am-app, .am-layer) .am-rhs-app-ic svg { width: 20px; height: 20px; }
-:is(.am-app, .am-layer) .am-rhs-classic:has(.am-rhs-app-ic) .sidebar--right__title { padding-left: 30px; }
-:is(.am-app, .am-layer) .am-rhs-classic:has(.am-rhs-app-ic) .sidebar--right__title :is(.boards-rhs-header-logo, .PlaybooksProductIcon, [class*="IconAIContainer"]) { display: none; }
 :is(.am-app, .am-layer) .am-rhs-classic .sidebar--right__title > div { display: flex; align-items: center; gap: 8px; min-width: 0; }
-// An app panel's own buttons (restore its default width, open a product as a full page) sit between its title and
-// the header's buttons (pop out, close; the expand button gives way to resizing): the title leaves them room.
-:is(.am-app, .am-layer) .am-rhs-tools { position: absolute; top: 10px; right: 76px; z-index: 5; display: flex; gap: 2px; }
-:is(.am-app, .am-layer) .am-rhs-classic:not(:has(.PopoutButton)) .am-rhs-tools { right: 42px; }
-:is(.am-app, .am-layer) .am-rhs-tools:empty { display: none; }
-:is(.am-app, .am-layer) .am-rhs-tools .am-icon-btn { width: 32px; height: 32px; border-radius: 8px; }
-:is(.am-app, .am-layer) .am-rhs-classic:has(.am-rhs-tools > :nth-child(1)) .sidebar--right__title { margin-right: 34px; }
-:is(.am-app, .am-layer) .am-rhs-classic:has(.am-rhs-tools > :nth-child(2)) .sidebar--right__title { margin-right: 68px; }
-:is(.am-app, .am-layer) .am-rhs.am-wide .am-rhs-classic .sidebar--right__expand { display: none; }
+// An app's panel has the same header for every app (AppPanelHeader): the app's icon, in its colour as in the app rail,
+// its name, then the panel's buttons (restore its size once resized, open it in a new window, close it). The app's own
+// controls are in its panel, under it.
+:is(.am-app, .am-layer) .am-rhs-app-ic { flex: none; display: grid; place-items: center; width: 22px; height: 22px; color: var(--am-text-2); }
+:is(.am-app, .am-layer) .am-rhs-app-ic .am-ic, :is(.am-app, .am-layer) .am-rhs-app-ic .am-app-img, :is(.am-app, .am-layer) .am-rhs-app-ic svg { width: 20px; height: 20px; }
+:is(.am-app, .am-layer) .am-app-head { gap: 6px; color: var(--am-text); }
+:is(.am-app, .am-layer) .am-app-head .am-app-name { flex: 1; margin-left: 2px; }
+:is(.am-app, .am-layer) .am-app-head .am-icon-btn { flex: none; width: 32px; height: 32px; border-radius: 8px; }
 /* The mod view (Antimatter), as Discord's: who, a timeout, the actions, then a summary, roles, notable permissions. */
 :is(.am-app, .am-layer) .am-mod-view { display: flex; flex-direction: column; min-height: 0; height: 100%; }
 :is(.am-app, .am-layer) .am-mod-body { flex: 1; min-height: 0; overflow-y: auto; padding: 16px; }
