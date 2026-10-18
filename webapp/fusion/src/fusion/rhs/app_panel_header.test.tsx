@@ -5,10 +5,11 @@ import fs from 'fs';
 import path from 'path';
 
 import React, {useRef} from 'react';
+import {FormattedMessage, IntlProvider} from 'react-intl';
 
-import {fireEvent, renderWithContext, screen, userEvent} from 'tests/react_testing_utils';
+import {act, fireEvent, renderWithContext, screen, userEvent} from 'tests/react_testing_utils';
 
-import AppPanelHeader from './app_panel_header';
+import AppPanelHeader, {isTextOnly} from './app_panel_header';
 import {PanelResizeHandle, usePanelWidth} from './panel_width';
 
 // jsdom has no pointer events: mouse events with a pointer id stand in for them.
@@ -103,6 +104,95 @@ describe('fusion/rhs/AppPanelHeader', () => {
         expect(nameOf('with.rail.icon', <b>{'Not text'}</b>)).toBe('Rail label');
         expect(nameOf('com.example.anything')).toBe('Manifest com.example.anything');
         expect(nameOf('unknown.app', undefined, stateFor('other'))).toBe('unknown.app');
+    });
+
+    test("names the app in the person's language: a title that's a translated message is drawn as it is", () => {
+        renderWithContext(
+            <IntlProvider
+                locale='fr'
+                messages={{'todo.app': 'Tâches'}}
+            >
+                <AppPanelHeader
+                    pluginId='com.mattermost.plugin-todo'
+                    title={
+                        <FormattedMessage
+                            id='todo.app'
+                            defaultMessage='Todo'
+                        />
+                    }
+                />
+            </IntlProvider>,
+            stateFor('com.mattermost.plugin-todo'),
+        );
+
+        expect(screen.getByRole('heading')).toHaveTextContent('Tâches');
+        expect(screen.getByRole('heading')).not.toHaveTextContent('Manifest');
+    });
+
+    test('names the app with any element that draws text only, inline formatting included', () => {
+        const Translated = () => <>{'Bloc-'}<b>{'notes'}</b></>;
+        renderWithContext(
+            <AppPanelHeader
+                pluginId='com.antimatterchat.notes'
+                title={<Translated/>}
+            />,
+            stateFor('com.antimatterchat.notes'),
+        );
+
+        expect(screen.getByRole('heading')).toHaveTextContent('Bloc-notes');
+    });
+
+    test.each([
+        ['a control', <span key='c'><button type='button'>{'All boards'}</button></span>],
+        ['a link', <a key='l' href='/x'>{'Kanban'}</a>],
+        ['a picture and text', <span key='p'><img alt=''/>{'Agents'}</span>],
+        ['an empty box (a slot)', <div key='s' className='app-head-slot'/>],
+        ['a focusable text', <span key='f' tabIndex={0}>{'Notes'}</span>],
+    ])('names the app from its rail or manifest instead of a title that draws %s', (_, title) => {
+        renderWithContext(
+            <AppPanelHeader
+                pluginId='com.example.anything'
+                title={title}
+            />,
+            stateFor('com.example.anything'),
+        );
+
+        const heading = screen.getByRole('heading');
+        expect(heading).toHaveTextContent('Manifest com.example.anything');
+        expect(heading.querySelectorAll('*:not(span)')).toHaveLength(0);
+        expect(heading.querySelector('.app-head-slot, [tabindex]')).toBeNull();
+    });
+
+    test('drops a title element as soon as it draws something else than text', () => {
+        let showButton: (show: boolean) => void = () => undefined;
+        const Sneaky = () => {
+            const [button, setButton] = React.useState(false);
+            showButton = setButton;
+            return button ? <button type='button'>{'Click'}</button> : <>{'Sneaky'}</>;
+        };
+        renderWithContext(
+            <AppPanelHeader
+                pluginId='com.example.anything'
+                title={<Sneaky/>}
+            />,
+            stateFor('com.example.anything'),
+        );
+        expect(screen.getByRole('heading')).toHaveTextContent('Sneaky');
+
+        act(() => showButton(true));
+        expect(screen.queryByRole('button', {name: 'Click'})).toBeNull();
+        expect(screen.getByRole('heading')).toHaveTextContent('Manifest com.example.anything');
+    });
+
+    test('isTextOnly: text and inline formatting only', () => {
+        const el = (html: string) => Object.assign(document.createElement('span'), {innerHTML: html});
+        expect(isTextOnly(el('Notes'))).toBe(true);
+        expect(isTextOnly(el('<span>Bloc-<b>notes</b></span>'))).toBe(true);
+        expect(isTextOnly(el(''))).toBe(false);
+        expect(isTextOnly(el('<span> </span>'))).toBe(false);
+        expect(isTextOnly(el('<button>x</button>'))).toBe(false);
+        expect(isTextOnly(el('<svg></svg>Kanban'))).toBe(false);
+        expect(isTextOnly(el('<span role="button">x</span>'))).toBe(false);
     });
 
     test("has no slot or portal for an app's controls: a title that isn't text never reaches the header", () => {
