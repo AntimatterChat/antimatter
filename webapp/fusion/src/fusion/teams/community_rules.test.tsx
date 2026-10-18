@@ -30,7 +30,7 @@ const rules = (patch: Partial<CommunityRules> = {}): CommunityRules => ({
     ...patch,
 });
 
-const state = (communityRulesByTeam: Record<string, CommunityRules> = {}) => ({
+const state = (communityRulesByTeam: Record<string, CommunityRules> = {}): Parameters<typeof renderWithContext>[1] => ({
     entities: {
         teams: {
             currentTeamId: 'team',
