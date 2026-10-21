@@ -24835,6 +24835,182 @@
     "defaultMessage": "{count, plural, one {Show image} other {Show # images}}",
     "description": "Entry of a message's ⋯ menu, and the line left under a message whose images are hidden, showing them again; {count} is how many."
   },
+  "fusion.focus.cancel": {
+    "defaultMessage": "Cancel",
+    "description": "Focus mode dialog: closes it without starting focus mode."
+  },
+  "fusion.focus.custom": {
+    "defaultMessage": "Custom",
+    "description": "Focus mode dialog: a duration chip that shows a date and time field to choose when the focus ends."
+  },
+  "fusion.focus.customInvalid": {
+    "defaultMessage": "Choose a time from a minute to a week from now.",
+    "description": "Focus mode dialog: the custom end is in the past, too soon or too far."
+  },
+  "fusion.focus.customLabel": {
+    "defaultMessage": "Focus until",
+    "description": "Focus mode dialog: the label of the date and time field for a custom end."
+  },
+  "fusion.focus.duration": {
+    "defaultMessage": "How long",
+    "description": "Focus mode dialog: the label of the duration chips."
+  },
+  "fusion.focus.end": {
+    "defaultMessage": "End focus",
+    "description": "Status menu (your avatar), while in focus mode: ends it now."
+  },
+  "fusion.focus.endedNothing": {
+    "defaultMessage": "Focus ended: nothing new came in",
+    "description": "Toast when focus mode ends and nothing arrived meanwhile."
+  },
+  "fusion.focus.endFailed": {
+    "defaultMessage": "Focus mode couldn't be ended",
+    "description": "Toast when ending focus mode from the status menu failed."
+  },
+  "fusion.focus.failed": {
+    "defaultMessage": "Focus mode couldn't be started.",
+    "description": "Error in the focus mode dialog when the server refused to start it."
+  },
+  "fusion.focus.for15m": {
+    "defaultMessage": "15 min",
+    "description": "Focus mode dialog: a duration chip, focus for 15 minutes."
+  },
+  "fusion.focus.for1h": {
+    "defaultMessage": "1 h",
+    "description": "Focus mode dialog: a duration chip, focus for 1 hour."
+  },
+  "fusion.focus.for2h": {
+    "defaultMessage": "2 h",
+    "description": "Focus mode dialog: a duration chip, focus for 2 hours."
+  },
+  "fusion.focus.for30m": {
+    "defaultMessage": "30 min",
+    "description": "Focus mode dialog: a duration chip, focus for 30 minutes."
+  },
+  "fusion.focus.for3h": {
+    "defaultMessage": "3 h",
+    "description": "Focus mode dialog: a duration chip, focus for 3 hours."
+  },
+  "fusion.focus.for4h": {
+    "defaultMessage": "4 h",
+    "description": "Focus mode dialog: a duration chip, focus for 4 hours."
+  },
+  "fusion.focus.for5h": {
+    "defaultMessage": "5 h",
+    "description": "Focus mode dialog: a duration chip, focus for 5 hours."
+  },
+  "fusion.focus.for6h": {
+    "defaultMessage": "6 h",
+    "description": "Focus mode dialog: a duration chip, focus for 6 hours."
+  },
+  "fusion.focus.label": {
+    "defaultMessage": "Focusing · until {time}",
+    "description": "Someone's status while in focus mode (Do not disturb with a reason, for a while): the tooltip of their purple status dot and their status line; {time} is when it ends."
+  },
+  "fusion.focus.lead": {
+    "defaultMessage": "Do not disturb for a while: notifications are muted and your unread badges hide. When it ends, you see what you missed.",
+    "description": "Focus mode dialog: what focus mode does."
+  },
+  "fusion.focus.leftHours": {
+    "defaultMessage": "{hours} h {minutes} min left",
+    "description": "Status menu, while in focus mode: the hours and minutes it has left."
+  },
+  "fusion.focus.leftMinutes": {
+    "defaultMessage": "{minutes} min left",
+    "description": "Status menu, while in focus mode: the minutes it has left."
+  },
+  "fusion.focus.markAllRead": {
+    "defaultMessage": "Mark all as read",
+    "description": "Summary after focus mode: marks everything it lists as read, up to the end of the focus."
+  },
+  "fusion.focus.markFailed": {
+    "defaultMessage": "What you missed couldn't be marked as read",
+    "description": "Toast when marking everything from the summary after focus mode as read failed."
+  },
+  "fusion.focus.menu": {
+    "defaultMessage": "Focus mode…",
+    "description": "Status menu (your avatar): opens the dialog to start focus mode (Do not disturb for a while, with a reason)."
+  },
+  "fusion.focus.menuSub": {
+    "defaultMessage": "Mutes notifications and hides your unread badges for a while",
+    "description": "Status menu (your avatar): under \"Focus mode…\", what it does."
+  },
+  "fusion.focus.reason": {
+    "defaultMessage": "Reason (optional)",
+    "description": "Focus mode dialog: the label of the reason field; the reason becomes your custom status."
+  },
+  "fusion.focus.reasonPlaceholder": {
+    "defaultMessage": "Working on the new release",
+    "description": "Focus mode dialog: an example reason, in the empty reason field."
+  },
+  "fusion.focus.showBadges": {
+    "defaultMessage": "Show unread badges",
+    "description": "Summary after focus mode: closes it, and the unread badges come back for what you missed."
+  },
+  "fusion.focus.start": {
+    "defaultMessage": "Start",
+    "description": "Focus mode dialog: starts focus mode."
+  },
+  "fusion.focus.started": {
+    "defaultMessage": "Focusing until {time}",
+    "description": "Toast after focus mode starts; {time} is when it ends."
+  },
+  "fusion.focus.summaryChannels": {
+    "defaultMessage": "Channels",
+    "description": "Summary after focus mode: the heading of the channels with new messages."
+  },
+  "fusion.focus.summaryCount": {
+    "defaultMessage": "{count, plural, one {# new message} other {{shown} new messages}} · last from {name}",
+    "description": "Summary after focus mode: how many messages arrived in a conversation, and who sent the last one; {shown} is the count, or 999+."
+  },
+  "fusion.focus.summaryDirect": {
+    "defaultMessage": "Direct messages",
+    "description": "Summary after focus mode: the heading of the direct and group messages that arrived."
+  },
+  "fusion.focus.summaryLead": {
+    "defaultMessage": "Here is what came in.",
+    "description": "Summary after focus mode, when nobody mentioned you: what follows is what arrived."
+  },
+  "fusion.focus.summaryLeadMentions": {
+    "defaultMessage": "{count, plural, one {# mention waits} other {# mentions wait}} for you.",
+    "description": "Summary after focus mode: the mentions waiting for you."
+  },
+  "fusion.focus.summaryMentions": {
+    "defaultMessage": "{count, plural, one {# mention} other {# mentions}}",
+    "description": "Summary after focus mode: the mentions waiting in a conversation or thread."
+  },
+  "fusion.focus.summaryReplies": {
+    "defaultMessage": "{count, plural, one {# new reply} other {{shown} new replies}} · last from {name}",
+    "description": "Summary after focus mode: how many replies arrived in a thread, and who wrote the last one; {shown} is the count, or 999+."
+  },
+  "fusion.focus.summaryThread": {
+    "defaultMessage": "Thread in {channel}",
+    "description": "Summary after focus mode: a followed thread with new replies, in the channel named."
+  },
+  "fusion.focus.summaryThreads": {
+    "defaultMessage": "Threads",
+    "description": "Summary after focus mode: the heading of the followed threads with new replies."
+  },
+  "fusion.focus.summaryTitle": {
+    "defaultMessage": "While you were focusing ({range})",
+    "description": "Title of the summary shown when focus mode ends; {range} is its start and end times, e.g. 14:00–15:30."
+  },
+  "fusion.focus.title": {
+    "defaultMessage": "Focus mode",
+    "description": "Title of the dialog that starts focus mode (Do not disturb for a while, with a reason)."
+  },
+  "fusion.focus.tomorrow": {
+    "defaultMessage": "Until tomorrow",
+    "description": "Focus mode dialog: a duration chip, focus until 9:00 the next morning in your timezone."
+  },
+  "fusion.focus.until": {
+    "defaultMessage": "Until {time}",
+    "description": "Focus mode dialog: when the focus chosen would end."
+  },
+  "fusion.focus.untilShort": {
+    "defaultMessage": "until {time}",
+    "description": "Status menu, while in focus mode: when it ends."
+  },
   "fusion.folded.blocked": {
     "defaultMessage": "Message from someone you blocked",
     "description": "One-line placeholder standing for a message written by someone you blocked, folded until clicked."

@@ -19,6 +19,7 @@ import Avatar from 'fusion/components/avatar';
 import Icon from 'fusion/components/icon';
 import {Popover} from 'fusion/components/layer';
 import {useExclusiveCard} from 'fusion/components/layer/exclusive';
+import {useFocusLabel, useFocusUntil} from 'fusion/focus/focus';
 import {useDisplayName, useUser, useUserStatus} from 'fusion/hooks/users';
 import {canModerateTeam, openModView} from 'fusion/moderation/moderation';
 import {useSettings} from 'fusion/shell/settings_context';
@@ -88,6 +89,7 @@ export default function UserPopover({userId, anchor, onClose, toggles}: Props) {
     const user = useUser(userId);
     const name = useDisplayName(user);
     const status = useUserStatus(userId);
+    const focusLabel = useFocusLabel(useFocusUntil(userId));
     const me = useSelector(getCurrentUserId);
     const team = useSelector(getCurrentTeam);
 
@@ -190,7 +192,7 @@ export default function UserPopover({userId, anchor, onClose, toggles}: Props) {
                             {`@${user.username} · `}
                             <AgentActivityLine user={user}/>
                         </>
-                    ) : `@${user.username} · ${formatMessage(STATUS_LABELS[status] || STATUS_LABELS.offline)}`}
+                    ) : `@${user.username} · ${focusLabel || formatMessage(STATUS_LABELS[status] || STATUS_LABELS.offline)}`}
                 </div>
                 {!bot && (
                     <div className={am('facts')}>

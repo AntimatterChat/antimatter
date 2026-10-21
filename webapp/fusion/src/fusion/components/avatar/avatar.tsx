@@ -3,6 +3,7 @@
 
 import React, {useState} from 'react';
 
+import {useFocusLabel, useFocusUntil} from 'fusion/focus/focus';
 import {useDisplayName, useUser, useUserStatus, initials} from 'fusion/hooks/users';
 import {am} from 'fusion/utils/class_names';
 import {imageURLForUser} from 'utils/utils';
@@ -26,11 +27,13 @@ export function hueFor(id: string) {
     return h;
 }
 
-// Avatar shows a user's profile picture, with their status dot when asked for.
+// Avatar shows a user's profile picture, with their status dot when asked for: purple while they focus (focus mode),
+// with its end in its tooltip.
 export default function Avatar({userId, size = '', status = false, speaking = false, className}: Props) {
     const user = useUser(userId);
     const name = useDisplayName(user);
     const userStatus = useUserStatus(status ? userId : undefined);
+    const focusLabel = useFocusLabel(useFocusUntil(status ? userId : undefined));
     const [failed, setFailed] = useState(false);
 
     return (
@@ -48,7 +51,12 @@ export default function Avatar({userId, size = '', status = false, speaking = fa
                     onError={() => setFailed(true)}
                 />
             ) : initials(name)}
-            {status && <span className={am('st', userStatus)}/>}
+            {status && (
+                <span
+                    className={am('st', focusLabel ? 'focus' : userStatus)}
+                    data-am-tip={focusLabel || undefined}
+                />
+            )}
         </span>
     );
 }
