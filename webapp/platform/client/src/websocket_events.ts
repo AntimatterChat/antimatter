@@ -73,6 +73,7 @@ export const enum WebSocketEvents {
     MemberTimeoutsUpdated = 'member_timeouts_updated',
     CommunityRulesUpdated = 'community_rules_updated',
     CommunityRulesAccepted = 'community_rules_accepted',
+    FocusEnded = 'focus_ended',
     PostPutOnTop = 'post_put_on_top',
     PostRemovedFromTop = 'post_removed_from_top',
     AgentActivityChanged = 'agent_activity_changed',

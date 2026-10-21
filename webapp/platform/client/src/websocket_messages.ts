@@ -457,6 +457,13 @@ export type CommunityRulesAccepted = BaseWebSocketMessage<WebSocketEvents.Commun
     version: number;
 }>;
 
+// Antimatter: the current user's focus mode ended (by them, on any device, by its timer, or as they picked a status).
+export type FocusEnded = BaseWebSocketMessage<WebSocketEvents.FocusEnded, {
+    start_at: number;
+    end_at: number;
+    ended_by: 'user' | 'timer' | 'status';
+}>;
+
 // Antimatter: a message was put on top of its channel (or again, with a new time), or taken off it.
 export type PostPutOnTop = BaseWebSocketMessage<WebSocketEvents.PostPutOnTop, {
     on_top: OnTopPost;
