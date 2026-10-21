@@ -86,6 +86,8 @@ func genStore() *mocks.Store {
 	mock.On("Moderation").Return(&mocks.ModerationStore{})
 	mock.On("OnTopPost").Return(&mocks.OnTopPostStore{})
 	mock.On("ServerCategory").Return(&mocks.ServerCategoryStore{})
+	mock.On("CommunityRules").Return(&mocks.CommunityRulesStore{})
+	mock.On("Focus").Return(&mocks.FocusStore{})
 	return mock
 }
 

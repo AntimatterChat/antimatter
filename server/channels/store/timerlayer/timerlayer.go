@@ -36,7 +36,6 @@ type TimerLayer struct {
 	CommandStore                    store.CommandStore
 	CommandWebhookStore             store.CommandWebhookStore
 	CommunityRulesStore             store.CommunityRulesStore
-	FocusStore                      store.FocusStore
 	ComplianceStore                 store.ComplianceStore
 	ContentFlaggingStore            store.ContentFlaggingStore
 	DeliveryTrackingStore           store.DeliveryTrackingStore
@@ -44,6 +43,7 @@ type TimerLayer struct {
 	DraftStore                      store.DraftStore
 	EmojiStore                      store.EmojiStore
 	FileInfoStore                   store.FileInfoStore
+	FocusStore                      store.FocusStore
 	GroupStore                      store.GroupStore
 	HealthFindingStore              store.HealthFindingStore
 	JobStore                        store.JobStore
@@ -163,10 +163,6 @@ func (s *TimerLayer) CommunityRules() store.CommunityRulesStore {
 	return s.CommunityRulesStore
 }
 
-func (s *TimerLayer) Focus() store.FocusStore {
-	return s.FocusStore
-}
-
 func (s *TimerLayer) Compliance() store.ComplianceStore {
 	return s.ComplianceStore
 }
@@ -193,6 +189,10 @@ func (s *TimerLayer) Emoji() store.EmojiStore {
 
 func (s *TimerLayer) FileInfo() store.FileInfoStore {
 	return s.FileInfoStore
+}
+
+func (s *TimerLayer) Focus() store.FocusStore {
+	return s.FocusStore
 }
 
 func (s *TimerLayer) Group() store.GroupStore {
@@ -465,11 +465,6 @@ type TimerLayerCommunityRulesStore struct {
 	Root *TimerLayer
 }
 
-type TimerLayerFocusStore struct {
-	store.FocusStore
-	Root *TimerLayer
-}
-
 type TimerLayerComplianceStore struct {
 	store.ComplianceStore
 	Root *TimerLayer
@@ -502,6 +497,11 @@ type TimerLayerEmojiStore struct {
 
 type TimerLayerFileInfoStore struct {
 	store.FileInfoStore
+	Root *TimerLayer
+}
+
+type TimerLayerFocusStore struct {
+	store.FocusStore
 	Root *TimerLayer
 }
 
@@ -4934,118 +4934,6 @@ func (s *TimerLayerCommunityRulesStore) Save(rctx request.CTX, rules *model.Comm
 	return result, err
 }
 
-func (s *TimerLayerFocusStore) Get(rctx request.CTX, userID string) (*model.UserFocus, error) {
-	start := time.Now()
-
-	result, err := s.FocusStore.Get(rctx, userID)
-
-	elapsed := float64(time.Since(start)) / float64(time.Second)
-	if s.Root.Metrics != nil {
-		success := "false"
-		if err == nil {
-			success = "true"
-		}
-		s.Root.Metrics.ObserveStoreMethodDuration("FocusStore.Get", success, elapsed)
-	}
-	return result, err
-}
-
-func (s *TimerLayerFocusStore) GetFirstPostsAfter(rctx request.CTX, channelIDs []string, after int64, rootOnly bool) (map[string]string, error) {
-	start := time.Now()
-
-	result, err := s.FocusStore.GetFirstPostsAfter(rctx, channelIDs, after, rootOnly)
-
-	elapsed := float64(time.Since(start)) / float64(time.Second)
-	if s.Root.Metrics != nil {
-		success := "false"
-		if err == nil {
-			success = "true"
-		}
-		s.Root.Metrics.ObserveStoreMethodDuration("FocusStore.GetFirstPostsAfter", success, elapsed)
-	}
-	return result, err
-}
-
-func (s *TimerLayerFocusStore) GetMissedChannels(rctx request.CTX, userID string, since int64, until int64, rootOnly bool, limit int) ([]*model.FocusSummaryChannel, error) {
-	start := time.Now()
-
-	result, err := s.FocusStore.GetMissedChannels(rctx, userID, since, until, rootOnly, limit)
-
-	elapsed := float64(time.Since(start)) / float64(time.Second)
-	if s.Root.Metrics != nil {
-		success := "false"
-		if err == nil {
-			success = "true"
-		}
-		s.Root.Metrics.ObserveStoreMethodDuration("FocusStore.GetMissedChannels", success, elapsed)
-	}
-	return result, err
-}
-
-func (s *TimerLayerFocusStore) GetMissedThreads(rctx request.CTX, userID string, since int64, until int64, limit int) ([]*model.FocusSummaryThread, error) {
-	start := time.Now()
-
-	result, err := s.FocusStore.GetMissedThreads(rctx, userID, since, until, limit)
-
-	elapsed := float64(time.Since(start)) / float64(time.Second)
-	if s.Root.Metrics != nil {
-		success := "false"
-		if err == nil {
-			success = "true"
-		}
-		s.Root.Metrics.ObserveStoreMethodDuration("FocusStore.GetMissedThreads", success, elapsed)
-	}
-	return result, err
-}
-
-func (s *TimerLayerFocusStore) MarkEnded(rctx request.CTX, userID string, startAt int64, endedAt int64) (bool, error) {
-	start := time.Now()
-
-	result, err := s.FocusStore.MarkEnded(rctx, userID, startAt, endedAt)
-
-	elapsed := float64(time.Since(start)) / float64(time.Second)
-	if s.Root.Metrics != nil {
-		success := "false"
-		if err == nil {
-			success = "true"
-		}
-		s.Root.Metrics.ObserveStoreMethodDuration("FocusStore.MarkEnded", success, elapsed)
-	}
-	return result, err
-}
-
-func (s *TimerLayerFocusStore) PermanentDeleteByUser(rctx request.CTX, userID string) error {
-	start := time.Now()
-
-	err := s.FocusStore.PermanentDeleteByUser(rctx, userID)
-
-	elapsed := float64(time.Since(start)) / float64(time.Second)
-	if s.Root.Metrics != nil {
-		success := "false"
-		if err == nil {
-			success = "true"
-		}
-		s.Root.Metrics.ObserveStoreMethodDuration("FocusStore.PermanentDeleteByUser", success, elapsed)
-	}
-	return err
-}
-
-func (s *TimerLayerFocusStore) Save(rctx request.CTX, focus *model.UserFocus) error {
-	start := time.Now()
-
-	err := s.FocusStore.Save(rctx, focus)
-
-	elapsed := float64(time.Since(start)) / float64(time.Second)
-	if s.Root.Metrics != nil {
-		success := "false"
-		if err == nil {
-			success = "true"
-		}
-		s.Root.Metrics.ObserveStoreMethodDuration("FocusStore.Save", success, elapsed)
-	}
-	return err
-}
-
 func (s *TimerLayerComplianceStore) ChannelExportCount(rctx request.CTX, filter model.ChannelExportFilter, limit int) (int, error) {
 	start := time.Now()
 
@@ -6032,6 +5920,118 @@ func (s *TimerLayerFileInfoStore) Upsert(rctx request.CTX, info *model.FileInfo)
 		s.Root.Metrics.ObserveStoreMethodDuration("FileInfoStore.Upsert", success, elapsed)
 	}
 	return result, err
+}
+
+func (s *TimerLayerFocusStore) Get(rctx request.CTX, userID string) (*model.UserFocus, error) {
+	start := time.Now()
+
+	result, err := s.FocusStore.Get(rctx, userID)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("FocusStore.Get", success, elapsed)
+	}
+	return result, err
+}
+
+func (s *TimerLayerFocusStore) GetFirstPostsAfter(rctx request.CTX, channelIDs []string, after int64, rootOnly bool) (map[string]string, error) {
+	start := time.Now()
+
+	result, err := s.FocusStore.GetFirstPostsAfter(rctx, channelIDs, after, rootOnly)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("FocusStore.GetFirstPostsAfter", success, elapsed)
+	}
+	return result, err
+}
+
+func (s *TimerLayerFocusStore) GetMissedChannels(rctx request.CTX, userID string, since int64, until int64, rootOnly bool, limit int) ([]*model.FocusSummaryChannel, error) {
+	start := time.Now()
+
+	result, err := s.FocusStore.GetMissedChannels(rctx, userID, since, until, rootOnly, limit)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("FocusStore.GetMissedChannels", success, elapsed)
+	}
+	return result, err
+}
+
+func (s *TimerLayerFocusStore) GetMissedThreads(rctx request.CTX, userID string, since int64, until int64, limit int) ([]*model.FocusSummaryThread, error) {
+	start := time.Now()
+
+	result, err := s.FocusStore.GetMissedThreads(rctx, userID, since, until, limit)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("FocusStore.GetMissedThreads", success, elapsed)
+	}
+	return result, err
+}
+
+func (s *TimerLayerFocusStore) MarkEnded(rctx request.CTX, userID string, startAt int64, endedAt int64) (bool, error) {
+	start := time.Now()
+
+	result, err := s.FocusStore.MarkEnded(rctx, userID, startAt, endedAt)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("FocusStore.MarkEnded", success, elapsed)
+	}
+	return result, err
+}
+
+func (s *TimerLayerFocusStore) PermanentDeleteByUser(rctx request.CTX, userID string) error {
+	start := time.Now()
+
+	err := s.FocusStore.PermanentDeleteByUser(rctx, userID)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("FocusStore.PermanentDeleteByUser", success, elapsed)
+	}
+	return err
+}
+
+func (s *TimerLayerFocusStore) Save(rctx request.CTX, focus *model.UserFocus) error {
+	start := time.Now()
+
+	err := s.FocusStore.Save(rctx, focus)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("FocusStore.Save", success, elapsed)
+	}
+	return err
 }
 
 func (s *TimerLayerGroupStore) AdminRoleGroupsForSyncableMember(userID string, syncableID string, syncableType model.GroupSyncableType) ([]string, error) {
@@ -17261,7 +17261,6 @@ func New(childStore store.Store, metrics einterfaces.MetricsInterface) *TimerLay
 	newStore.CommandStore = &TimerLayerCommandStore{CommandStore: childStore.Command(), Root: &newStore}
 	newStore.CommandWebhookStore = &TimerLayerCommandWebhookStore{CommandWebhookStore: childStore.CommandWebhook(), Root: &newStore}
 	newStore.CommunityRulesStore = &TimerLayerCommunityRulesStore{CommunityRulesStore: childStore.CommunityRules(), Root: &newStore}
-	newStore.FocusStore = &TimerLayerFocusStore{FocusStore: childStore.Focus(), Root: &newStore}
 	newStore.ComplianceStore = &TimerLayerComplianceStore{ComplianceStore: childStore.Compliance(), Root: &newStore}
 	newStore.ContentFlaggingStore = &TimerLayerContentFlaggingStore{ContentFlaggingStore: childStore.ContentFlagging(), Root: &newStore}
 	newStore.DeliveryTrackingStore = &TimerLayerDeliveryTrackingStore{DeliveryTrackingStore: childStore.DeliveryTracking(), Root: &newStore}
@@ -17269,6 +17268,7 @@ func New(childStore store.Store, metrics einterfaces.MetricsInterface) *TimerLay
 	newStore.DraftStore = &TimerLayerDraftStore{DraftStore: childStore.Draft(), Root: &newStore}
 	newStore.EmojiStore = &TimerLayerEmojiStore{EmojiStore: childStore.Emoji(), Root: &newStore}
 	newStore.FileInfoStore = &TimerLayerFileInfoStore{FileInfoStore: childStore.FileInfo(), Root: &newStore}
+	newStore.FocusStore = &TimerLayerFocusStore{FocusStore: childStore.Focus(), Root: &newStore}
 	newStore.GroupStore = &TimerLayerGroupStore{GroupStore: childStore.Group(), Root: &newStore}
 	newStore.HealthFindingStore = &TimerLayerHealthFindingStore{HealthFindingStore: childStore.HealthFinding(), Root: &newStore}
 	newStore.JobStore = &TimerLayerJobStore{JobStore: childStore.Job(), Root: &newStore}

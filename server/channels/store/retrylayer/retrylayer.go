@@ -37,7 +37,6 @@ type RetryLayer struct {
 	CommandStore                    store.CommandStore
 	CommandWebhookStore             store.CommandWebhookStore
 	CommunityRulesStore             store.CommunityRulesStore
-	FocusStore                      store.FocusStore
 	ComplianceStore                 store.ComplianceStore
 	ContentFlaggingStore            store.ContentFlaggingStore
 	DeliveryTrackingStore           store.DeliveryTrackingStore
@@ -45,6 +44,7 @@ type RetryLayer struct {
 	DraftStore                      store.DraftStore
 	EmojiStore                      store.EmojiStore
 	FileInfoStore                   store.FileInfoStore
+	FocusStore                      store.FocusStore
 	GroupStore                      store.GroupStore
 	HealthFindingStore              store.HealthFindingStore
 	JobStore                        store.JobStore
@@ -164,10 +164,6 @@ func (s *RetryLayer) CommunityRules() store.CommunityRulesStore {
 	return s.CommunityRulesStore
 }
 
-func (s *RetryLayer) Focus() store.FocusStore {
-	return s.FocusStore
-}
-
 func (s *RetryLayer) Compliance() store.ComplianceStore {
 	return s.ComplianceStore
 }
@@ -194,6 +190,10 @@ func (s *RetryLayer) Emoji() store.EmojiStore {
 
 func (s *RetryLayer) FileInfo() store.FileInfoStore {
 	return s.FileInfoStore
+}
+
+func (s *RetryLayer) Focus() store.FocusStore {
+	return s.FocusStore
 }
 
 func (s *RetryLayer) Group() store.GroupStore {
@@ -466,11 +466,6 @@ type RetryLayerCommunityRulesStore struct {
 	Root *RetryLayer
 }
 
-type RetryLayerFocusStore struct {
-	store.FocusStore
-	Root *RetryLayer
-}
-
 type RetryLayerComplianceStore struct {
 	store.ComplianceStore
 	Root *RetryLayer
@@ -503,6 +498,11 @@ type RetryLayerEmojiStore struct {
 
 type RetryLayerFileInfoStore struct {
 	store.FileInfoStore
+	Root *RetryLayer
+}
+
+type RetryLayerFocusStore struct {
+	store.FocusStore
 	Root *RetryLayer
 }
 
@@ -5971,153 +5971,6 @@ func (s *RetryLayerCommunityRulesStore) Save(rctx request.CTX, rules *model.Comm
 
 }
 
-func (s *RetryLayerFocusStore) Get(rctx request.CTX, userID string) (*model.UserFocus, error) {
-
-	tries := 0
-	for {
-		result, err := s.FocusStore.Get(rctx, userID)
-		if err == nil {
-			return result, nil
-		}
-		if !isRepeatableError(err) {
-			return result, err
-		}
-		tries++
-		if tries >= 3 {
-			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
-			return result, err
-		}
-		timepkg.Sleep(100 * timepkg.Millisecond)
-	}
-
-}
-
-func (s *RetryLayerFocusStore) GetFirstPostsAfter(rctx request.CTX, channelIDs []string, after int64, rootOnly bool) (map[string]string, error) {
-
-	tries := 0
-	for {
-		result, err := s.FocusStore.GetFirstPostsAfter(rctx, channelIDs, after, rootOnly)
-		if err == nil {
-			return result, nil
-		}
-		if !isRepeatableError(err) {
-			return result, err
-		}
-		tries++
-		if tries >= 3 {
-			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
-			return result, err
-		}
-		timepkg.Sleep(100 * timepkg.Millisecond)
-	}
-
-}
-
-func (s *RetryLayerFocusStore) GetMissedChannels(rctx request.CTX, userID string, since int64, until int64, rootOnly bool, limit int) ([]*model.FocusSummaryChannel, error) {
-
-	tries := 0
-	for {
-		result, err := s.FocusStore.GetMissedChannels(rctx, userID, since, until, rootOnly, limit)
-		if err == nil {
-			return result, nil
-		}
-		if !isRepeatableError(err) {
-			return result, err
-		}
-		tries++
-		if tries >= 3 {
-			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
-			return result, err
-		}
-		timepkg.Sleep(100 * timepkg.Millisecond)
-	}
-
-}
-
-func (s *RetryLayerFocusStore) GetMissedThreads(rctx request.CTX, userID string, since int64, until int64, limit int) ([]*model.FocusSummaryThread, error) {
-
-	tries := 0
-	for {
-		result, err := s.FocusStore.GetMissedThreads(rctx, userID, since, until, limit)
-		if err == nil {
-			return result, nil
-		}
-		if !isRepeatableError(err) {
-			return result, err
-		}
-		tries++
-		if tries >= 3 {
-			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
-			return result, err
-		}
-		timepkg.Sleep(100 * timepkg.Millisecond)
-	}
-
-}
-
-func (s *RetryLayerFocusStore) MarkEnded(rctx request.CTX, userID string, startAt int64, endedAt int64) (bool, error) {
-
-	tries := 0
-	for {
-		result, err := s.FocusStore.MarkEnded(rctx, userID, startAt, endedAt)
-		if err == nil {
-			return result, nil
-		}
-		if !isRepeatableError(err) {
-			return result, err
-		}
-		tries++
-		if tries >= 3 {
-			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
-			return result, err
-		}
-		timepkg.Sleep(100 * timepkg.Millisecond)
-	}
-
-}
-
-func (s *RetryLayerFocusStore) PermanentDeleteByUser(rctx request.CTX, userID string) error {
-
-	tries := 0
-	for {
-		err := s.FocusStore.PermanentDeleteByUser(rctx, userID)
-		if err == nil {
-			return nil
-		}
-		if !isRepeatableError(err) {
-			return err
-		}
-		tries++
-		if tries >= 3 {
-			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
-			return err
-		}
-		timepkg.Sleep(100 * timepkg.Millisecond)
-	}
-
-}
-
-func (s *RetryLayerFocusStore) Save(rctx request.CTX, focus *model.UserFocus) error {
-
-	tries := 0
-	for {
-		err := s.FocusStore.Save(rctx, focus)
-		if err == nil {
-			return nil
-		}
-		if !isRepeatableError(err) {
-			return err
-		}
-		tries++
-		if tries >= 3 {
-			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
-			return err
-		}
-		timepkg.Sleep(100 * timepkg.Millisecond)
-	}
-
-}
-
 func (s *RetryLayerComplianceStore) ChannelExportCount(rctx request.CTX, filter model.ChannelExportFilter, limit int) (int, error) {
 
 	tries := 0
@@ -7354,6 +7207,153 @@ func (s *RetryLayerFileInfoStore) Upsert(rctx request.CTX, info *model.FileInfo)
 		if tries >= 3 {
 			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
 			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerFocusStore) Get(rctx request.CTX, userID string) (*model.UserFocus, error) {
+
+	tries := 0
+	for {
+		result, err := s.FocusStore.Get(rctx, userID)
+		if err == nil {
+			return result, nil
+		}
+		if !isRepeatableError(err) {
+			return result, err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerFocusStore) GetFirstPostsAfter(rctx request.CTX, channelIDs []string, after int64, rootOnly bool) (map[string]string, error) {
+
+	tries := 0
+	for {
+		result, err := s.FocusStore.GetFirstPostsAfter(rctx, channelIDs, after, rootOnly)
+		if err == nil {
+			return result, nil
+		}
+		if !isRepeatableError(err) {
+			return result, err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerFocusStore) GetMissedChannels(rctx request.CTX, userID string, since int64, until int64, rootOnly bool, limit int) ([]*model.FocusSummaryChannel, error) {
+
+	tries := 0
+	for {
+		result, err := s.FocusStore.GetMissedChannels(rctx, userID, since, until, rootOnly, limit)
+		if err == nil {
+			return result, nil
+		}
+		if !isRepeatableError(err) {
+			return result, err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerFocusStore) GetMissedThreads(rctx request.CTX, userID string, since int64, until int64, limit int) ([]*model.FocusSummaryThread, error) {
+
+	tries := 0
+	for {
+		result, err := s.FocusStore.GetMissedThreads(rctx, userID, since, until, limit)
+		if err == nil {
+			return result, nil
+		}
+		if !isRepeatableError(err) {
+			return result, err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerFocusStore) MarkEnded(rctx request.CTX, userID string, startAt int64, endedAt int64) (bool, error) {
+
+	tries := 0
+	for {
+		result, err := s.FocusStore.MarkEnded(rctx, userID, startAt, endedAt)
+		if err == nil {
+			return result, nil
+		}
+		if !isRepeatableError(err) {
+			return result, err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerFocusStore) PermanentDeleteByUser(rctx request.CTX, userID string) error {
+
+	tries := 0
+	for {
+		err := s.FocusStore.PermanentDeleteByUser(rctx, userID)
+		if err == nil {
+			return nil
+		}
+		if !isRepeatableError(err) {
+			return err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerFocusStore) Save(rctx request.CTX, focus *model.UserFocus) error {
+
+	tries := 0
+	for {
+		err := s.FocusStore.Save(rctx, focus)
+		if err == nil {
+			return nil
+		}
+		if !isRepeatableError(err) {
+			return err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return err
 		}
 		timepkg.Sleep(100 * timepkg.Millisecond)
 	}
@@ -21809,7 +21809,6 @@ func New(childStore store.Store) *RetryLayer {
 	newStore.CommandStore = &RetryLayerCommandStore{CommandStore: childStore.Command(), Root: &newStore}
 	newStore.CommandWebhookStore = &RetryLayerCommandWebhookStore{CommandWebhookStore: childStore.CommandWebhook(), Root: &newStore}
 	newStore.CommunityRulesStore = &RetryLayerCommunityRulesStore{CommunityRulesStore: childStore.CommunityRules(), Root: &newStore}
-	newStore.FocusStore = &RetryLayerFocusStore{FocusStore: childStore.Focus(), Root: &newStore}
 	newStore.ComplianceStore = &RetryLayerComplianceStore{ComplianceStore: childStore.Compliance(), Root: &newStore}
 	newStore.ContentFlaggingStore = &RetryLayerContentFlaggingStore{ContentFlaggingStore: childStore.ContentFlagging(), Root: &newStore}
 	newStore.DeliveryTrackingStore = &RetryLayerDeliveryTrackingStore{DeliveryTrackingStore: childStore.DeliveryTracking(), Root: &newStore}
@@ -21817,6 +21816,7 @@ func New(childStore store.Store) *RetryLayer {
 	newStore.DraftStore = &RetryLayerDraftStore{DraftStore: childStore.Draft(), Root: &newStore}
 	newStore.EmojiStore = &RetryLayerEmojiStore{EmojiStore: childStore.Emoji(), Root: &newStore}
 	newStore.FileInfoStore = &RetryLayerFileInfoStore{FileInfoStore: childStore.FileInfo(), Root: &newStore}
+	newStore.FocusStore = &RetryLayerFocusStore{FocusStore: childStore.Focus(), Root: &newStore}
 	newStore.GroupStore = &RetryLayerGroupStore{GroupStore: childStore.Group(), Root: &newStore}
 	newStore.HealthFindingStore = &RetryLayerHealthFindingStore{HealthFindingStore: childStore.HealthFinding(), Root: &newStore}
 	newStore.JobStore = &RetryLayerJobStore{JobStore: childStore.Job(), Root: &newStore}
