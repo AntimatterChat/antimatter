@@ -83,7 +83,19 @@ describe('components/root/AppLinkRedirect', () => {
     });
 
     test('only answers the app paths', () => {
-        expect(APP_LINK_PATHS).toEqual(['/playbooks', '/kanban']);
+        expect(APP_LINK_PATHS).toEqual(['/playbooks', '/kanban', '/plug/mattermost-ai/agents']);
+    });
+
+    // The AI chat lost its full page (its agents page): its links open Integrations › Agents, the server's.
+    test.each([
+        ['/plug/mattermost-ai/agents', '/lumen/integrations/agents'],
+        ['/plug/mattermost-ai/agents/abcdefghijklmnopqrstuvwxyz', '/lumen/integrations/agents'],
+    ])('opens the AI chat\'s old agents page %s at Integrations › Agents', async (from, to) => {
+        const history = renderAt(from, 'lumen');
+
+        await waitFor(() => {
+            expect(history.location.pathname).toBe(to);
+        });
     });
 
     test.each([
@@ -93,6 +105,9 @@ describe('components/root/AppLinkRedirect', () => {
         ['/kanbanroom/channels/general', null],
         ['/playbooksclub', null],
         ['/channels/general', null],
+        ['/plug/mattermost-ai/agents', '/lumen/integrations/agents'],
+        ['/plug/mattermost-ai/agentsx', null],
+        ['/plug/other-app/agents', null],
     ])('sends %s to the app\'s route in the community', (from, to) => {
         expect(appLinkTarget(from, 'lumen')).toBe(to);
     });

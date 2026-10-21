@@ -123,6 +123,36 @@ func (_m *AIAgentStore) GetAll(rctx request.CTX) ([]*model.AIAgent, error) {
 	return r0, r1
 }
 
+// GetConversations provides a mock function with given fields: rctx, opts
+func (_m *AIAgentStore) GetConversations(rctx request.CTX, opts model.AIAgentConversationsOptions) ([]*model.AIAgentConversation, error) {
+	ret := _m.Called(rctx, opts)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetConversations")
+	}
+
+	var r0 []*model.AIAgentConversation
+	var r1 error
+	if rf, ok := ret.Get(0).(func(request.CTX, model.AIAgentConversationsOptions) ([]*model.AIAgentConversation, error)); ok {
+		return rf(rctx, opts)
+	}
+	if rf, ok := ret.Get(0).(func(request.CTX, model.AIAgentConversationsOptions) []*model.AIAgentConversation); ok {
+		r0 = rf(rctx, opts)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]*model.AIAgentConversation)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(request.CTX, model.AIAgentConversationsOptions) error); ok {
+		r1 = rf(rctx, opts)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // GetForScopes provides a mock function with given fields: rctx, scopes
 func (_m *AIAgentStore) GetForScopes(rctx request.CTX, scopes []string) ([]*model.AIAgent, error) {
 	ret := _m.Called(rctx, scopes)

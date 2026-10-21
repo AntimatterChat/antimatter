@@ -1,0 +1,6 @@
+// Apps' side panels (Antimatter): the conversation and composer Fusion lends to apps (fusion/apps/app_conversation.tsx),
+// e.g. the AI chat's conversation with an agent. The app draws its header; the messages scroll above the one composer.
+
+:is(.am-app, .am-layer) .am-app-conv { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+:is(.am-app, .am-layer) .am-app-conv-body { flex: 1; min-height: 0; overflow-y: auto; padding: 8px 0 4px; overscroll-behavior: contain; }
+:is(.am-app, .am-layer) .am-app-conv .am-composer { flex: none; }

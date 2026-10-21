@@ -19,14 +19,26 @@ export const APP_LINK_ROUTES: Record<string, string> = {
     '/kanban': 'focalboard',
 };
 
-export const APP_LINK_PATHS = Object.keys(APP_LINK_ROUTES);
+// Pages that moved to a community's own page: the AI chat's agents page (the Agents plugin's full page, where agents
+// were managed) is the server's Integrations › Agents now.
+export const MOVED_PAGE_ROUTES: Record<string, string> = {
+    '/plug/mattermost-ai/agents': 'integrations/agents',
+};
+
+export const APP_LINK_PATHS = [...Object.keys(APP_LINK_ROUTES), ...Object.keys(MOVED_PAGE_ROUTES)];
 
 /**
  * appLinkTarget is where an app's old link opens in a community: /playbooks/runs/<id> is /<team>/playbooks/runs/<id>,
- * /kanban/team/<id>/<board> is /<team>/focalboard/team/<id>/<board>. Null for a path that isn't an app's.
+ * /kanban/team/<id>/<board> is /<team>/focalboard/team/<id>/<board>, the AI chat's agents page (and its pages) the
+ * community's Integrations › Agents. Null for a path that isn't an app's.
  */
 export function appLinkTarget(pathname: string, team: string): string | null {
-    for (const base of APP_LINK_PATHS) {
+    for (const [base, page] of Object.entries(MOVED_PAGE_ROUTES)) {
+        if (pathname === base || pathname.startsWith(base + '/')) {
+            return `/${team}/${page}`;
+        }
+    }
+    for (const base of Object.keys(APP_LINK_ROUTES)) {
         if (pathname === base || pathname.startsWith(base + '/')) {
             return `/${team}/${APP_LINK_ROUTES[base]}${pathname.slice(base.length)}`;
         }

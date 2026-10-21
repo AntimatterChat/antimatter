@@ -30,6 +30,8 @@ import Timestamp from 'components/timestamp';
 import BotTag from 'components/widgets/tag/bot_tag';
 import Avatar from 'components/widgets/users/avatar';
 
+import {AgentActivityLine} from 'fusion/agents/agent_status';
+import {AppComposer, AppConversation} from 'fusion/apps/app_conversation';
 import {getHistory} from 'utils/browser_history';
 import {ModalIdentifiers} from 'utils/constants';
 import DesktopApp from 'utils/desktop_api';
@@ -122,6 +124,11 @@ interface WindowWithLibraries {
         MenuSeparator: typeof Menu.Separator;
         AccessControlTableEditor: typeof AccessControlTableEditor;
         AccessControlCELEditor: typeof AccessControlCELEditor;
+
+        // Antimatter: Fusion's own conversation, composer and agent activity, for apps' side panels (the AI chat).
+        FusionConversation: typeof AppConversation;
+        FusionComposer: typeof AppComposer;
+        FusionAgentActivity: typeof AgentActivityLine;
     };
     ProductApi: {
         useWebSocket: typeof useWebSocket;
@@ -241,6 +248,9 @@ window.Components = {
     MenuSeparator: Menu.Separator,
     AccessControlTableEditor,
     AccessControlCELEditor,
+    FusionConversation: AppConversation,
+    FusionComposer: AppComposer,
+    FusionAgentActivity: AgentActivityLine,
 };
 
 // This is a prototype of the Product API for use by internal plugins only while we transition to the proper architecture

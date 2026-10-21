@@ -1241,6 +1241,12 @@ type AIAgentStore interface {
 	// GetAgentsPluginUserAgents gives the agents people made in the Agents plugin, from its own table
 	// Agents_UserAgents (not deleted ones); none when the table isn't there.
 	GetAgentsPluginUserAgents(rctx request.CTX) ([]*model.AIAgentsPluginAgent, error)
+
+	// GetConversations gives a page of a person's conversations with agents, the most recent first: the threads they
+	// started in their direct messages with the agents (opts.DirectChannelIds), and the threads elsewhere they follow
+	// that one of opts.AgentIds replied in (with their participants, to tell which). It doesn't check that the person
+	// may still read them.
+	GetConversations(rctx request.CTX, opts model.AIAgentConversationsOptions) ([]*model.AIAgentConversation, error)
 }
 
 // AgentActivityStore keeps what each agent is doing now (Antimatter).

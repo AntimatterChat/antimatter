@@ -35,7 +35,7 @@ const GlobalHeader = () => {
             id='global-header'
             className='globalHeader'
         >
-            <LeftControls productId={currentProductID}/>
+            <LeftControls/>
             <CenterControls productId={currentProductID}/>
             <RightControls productId={currentProductID}/>
         </header>

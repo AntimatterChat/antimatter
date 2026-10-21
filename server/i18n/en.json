@@ -6607,6 +6607,11 @@
     "description": "API error of the agents (Antimatter). The connection picked for the agent."
   },
   {
+    "id": "app.ai.agent.conversations.app_error",
+    "translation": "Couldn't load your conversations with agents.",
+    "description": "Error when the AI chat side panel can't list the person's conversations with agents (a server problem)."
+  },
+  {
     "id": "app.ai.agent.get.app_error",
     "translation": "The agents couldn't be read.",
     "description": "API error of the agents (Antimatter). A database failure."
@@ -6630,6 +6635,91 @@
     "id": "app.ai.agent.save.app_error",
     "translation": "The agent couldn't be saved.",
     "description": "API error of the agents (Antimatter). A database failure."
+  },
+  {
+    "id": "app.ai.agent.task.agent_disabled.app_error",
+    "translation": "This agent is turned off.",
+    "description": "Error when someone asks an agent for a task (a summary...) while the agent's account is deactivated."
+  },
+  {
+    "id": "app.ai.agent.task.channel.app_error",
+    "translation": "The channel isn't there, or you can't read it.",
+    "description": "Error when someone asks an agent to summarise a channel, or answer about it, that doesn't exist or they may not read."
+  },
+  {
+    "id": "app.ai.agent.task.external.app_error",
+    "translation": "An external agent doesn't take tasks here: send it a message instead.",
+    "description": "Error when someone asks an external agent (a program connected from elsewhere) for a built-in task such as a summary."
+  },
+  {
+    "id": "app.ai.agent.task.not_transcription.app_error",
+    "translation": "This message isn't a call's transcription.",
+    "description": "Error when someone asks an agent to summarise a call transcription on a message that isn't one."
+  },
+  {
+    "id": "app.ai.agent.task.post.app_error",
+    "translation": "The message isn't there, or you can't read it.",
+    "description": "Error when someone asks an agent for a task on a message (summarise its thread...) that doesn't exist or they may not read."
+  },
+  {
+    "id": "app.ai.agent.task.request.ask_channel",
+    "translation": "About {{.Channel}}: {{.Question}}",
+    "description": "The message a person sends to an agent (in their direct message with it) when they ask a question about a channel from the AI chat. {{.Channel}} is the channel as ~name, or 'this conversation'; {{.Question}} is their question."
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items",
+    "translation": "Find the action items in this thread: {{.Link}}",
+    "description": "The message a person sends to an agent (in their direct message with it) with the 'Find action items' message action. {{.Link}} is a link to the thread."
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items_channel",
+    "translation": "Find the action items in the latest messages of {{.Channel}}",
+    "description": "The message a person sends to an agent (in their direct message with it) to find the action items in a channel. {{.Channel}} is the channel as ~name, or 'this conversation'."
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items_channel_since",
+    "translation": "Find the action items in {{.Channel}} since {{.Since}}",
+    "description": "The message a person sends to an agent to find the action items in a channel's unread or recent messages. {{.Channel}} is the channel as ~name, or 'this conversation'; {{.Since}} is a date and time in UTC, e.g. 2026-10-18 14:05 UTC."
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions",
+    "translation": "Find the open questions in this thread: {{.Link}}",
+    "description": "The message a person sends to an agent (in their direct message with it) with the 'Find open questions' message action. {{.Link}} is a link to the thread."
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions_channel",
+    "translation": "Find the open questions in the latest messages of {{.Channel}}",
+    "description": "The message a person sends to an agent (in their direct message with it) to find the open questions in a channel. {{.Channel}} is the channel as ~name, or 'this conversation'."
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions_channel_since",
+    "translation": "Find the open questions in {{.Channel}} since {{.Since}}",
+    "description": "The message a person sends to an agent to find the open questions in a channel's unread or recent messages. {{.Channel}} is the channel as ~name, or 'this conversation'; {{.Since}} is a date and time in UTC, e.g. 2026-10-18 14:05 UTC."
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_channel",
+    "translation": "Summarise the latest messages in {{.Channel}}",
+    "description": "The message a person sends to an agent (in their direct message with it) when they ask the AI chat to summarise a channel. {{.Channel}} is the channel as ~name, or 'this conversation'."
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_channel_since",
+    "translation": "Summarise the messages in {{.Channel}} since {{.Since}}",
+    "description": "The message a person sends to an agent when they ask the AI chat to summarise a channel's unread or recent messages. {{.Channel}} is the channel as ~name, or 'this conversation'; {{.Since}} is a date and time in UTC, e.g. 2026-10-18 14:05 UTC."
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_thread",
+    "translation": "Summarise this thread: {{.Link}}",
+    "description": "The message a person sends to an agent (in their direct message with it) with the 'Summarise thread' message action. {{.Link}} is a link to the thread."
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_transcription",
+    "translation": "Summarise this call's transcription: {{.Link}}",
+    "description": "The message a person sends to an agent (in their direct message with it) with the 'Create meeting summary' button of a call's transcription. {{.Link}} is a link to the transcription."
+  },
+  {
+    "id": "app.ai.agent.task.this_conversation",
+    "translation": "this conversation",
+    "description": "Stands for a direct or group message in an agent task's request, e.g. 'Summarise the latest messages in this conversation'."
   },
   {
     "id": "app.ai.agent.turn.empty",
@@ -14798,6 +14888,26 @@
     "id": "model.ai_agent.user_id.app_error",
     "translation": "An agent needs a valid account.",
     "description": "Validation error of an agent's settings (Antimatter) when it is made or changed."
+  },
+  {
+    "id": "model.ai_agent_task.channel_id.app_error",
+    "translation": "This task needs a channel.",
+    "description": "Validation error for an agent task about a channel (summarise a channel, ask about it) sent without a valid channel."
+  },
+  {
+    "id": "model.ai_agent_task.post_id.app_error",
+    "translation": "This task needs a message.",
+    "description": "Validation error for an agent task about a message (summarise its thread, a transcription) sent without a valid message."
+  },
+  {
+    "id": "model.ai_agent_task.question.app_error",
+    "translation": "Ask a question of up to 2,000 characters.",
+    "description": "Validation error when the question asked about a channel is empty or too long."
+  },
+  {
+    "id": "model.ai_agent_task.task.app_error",
+    "translation": "This task isn't one an agent knows.",
+    "description": "Validation error for an agent task of an unknown kind."
   },
   {
     "id": "model.ai_connection.api_key.app_error",

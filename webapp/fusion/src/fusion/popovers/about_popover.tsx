@@ -22,14 +22,10 @@ import {MenuHeading, MenuItem} from 'fusion/components/menu';
 import {useDialogs} from 'fusion/shell/dialogs_context';
 import {am} from 'fusion/utils/class_names';
 import {openKeyboardShortcuts} from 'fusion/utils/modals';
-import {getHistory} from 'utils/browser_history';
 
 import type {GlobalState} from 'types/store';
-import type {ProductComponent} from 'types/store/plugins';
 
 import {appDownloadLink} from './admin_links';
-
-const NO_PRODUCTS: ProductComponent[] = [];
 
 // Where Antimatter's source code is (AGPL §13). The server has no setting for it.
 const SOURCE_CODE_URL = 'https://github.com/AntimatterChat/antimatter';
@@ -78,7 +74,6 @@ export default function AboutPopover({anchor, onClose}: {anchor: HTMLElement | n
     const dispatch = useDispatch();
     const reportLink = useSelector(getReportAProblemLink);
     const helpItems = useSelector(getUserGuideDropdownPluginMenuItems);
-    const products = useSelector((state: GlobalState) => state.plugins.components.Product) || NO_PRODUCTS;
     const downloadLink = useSelector(appDownloadLink);
     const [termsOpen, setTermsOpen] = useState(false);
     const run = (action: () => void) => () => {
@@ -197,18 +192,6 @@ export default function AboutPopover({anchor, onClose}: {anchor: HTMLElement | n
                     >
                         <Icon name='plug'/>
                         {item.text}
-                    </button>
-                ))}
-                {products.length > 0 && <MenuHeading>{formatMessage({id: 'fusion.about.products', defaultMessage: 'Products'})}</MenuHeading>}
-                {products.map((product) => (
-                    <button
-                        key={product.id}
-                        type='button'
-                        role='menuitem'
-                        onClick={run(() => getHistory().push(product.switcherLinkURL || product.baseURL))}
-                    >
-                        <Icon name='apps'/>
-                        {product.switcherText}
                     </button>
                 ))}
             </div>

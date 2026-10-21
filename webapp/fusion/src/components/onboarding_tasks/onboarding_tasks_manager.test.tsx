@@ -133,8 +133,7 @@ describe('onboarding tasks manager', () => {
         });
     });
 
-    // Antimatter: the product menu, where the tour pointed at the System Console, only shows when an app has a page of
-    // its own; without it, the task opens the System Console.
+    // Antimatter: Fusion has no product menu, where the tour pointed at the System Console: the task opens it.
     describe('the visit_system_console task', () => {
         const ConsoleButton = (): JSX.Element => {
             const trigger = useHandleOnBoardingTaskTrigger();
@@ -145,7 +144,7 @@ describe('onboarding tasks manager', () => {
             );
         };
 
-        it('opens the System Console when there is no product menu', async () => {
+        it('opens the System Console', async () => {
             const push = jest.spyOn(getHistory(), 'push').mockImplementation(() => {});
             renderWithContext(<ConsoleButton/>, initialState);
 
@@ -155,7 +154,7 @@ describe('onboarding tasks manager', () => {
             push.mockRestore();
         });
 
-        it('opens the product menu when it shows', async () => {
+        it('opens it even with a button of the old product menu on the page', async () => {
             const push = jest.spyOn(getHistory(), 'push').mockImplementation(() => {});
             const menuButton = document.createElement('button');
             menuButton.id = 'switchProductMenuButton';
@@ -166,8 +165,8 @@ describe('onboarding tasks manager', () => {
 
             await userEvent.click(screen.getByRole('button', {name: 'console'}));
 
-            expect(click).toHaveBeenCalled();
-            expect(push).not.toHaveBeenCalledWith('/admin_console');
+            expect(click).not.toHaveBeenCalled();
+            expect(push).toHaveBeenCalledWith('/admin_console');
             menuButton.remove();
             push.mockRestore();
         });

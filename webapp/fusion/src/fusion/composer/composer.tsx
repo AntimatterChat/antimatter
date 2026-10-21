@@ -17,6 +17,7 @@ import {getFormattedFileSize} from 'mattermost-redux/utils/file_utils';
 import {uploadFile} from 'actions/file_actions';
 import {emitLocalUserTypingEvent} from 'actions/global_actions';
 import {editLatestPost, onSubmit} from 'actions/views/create_comment';
+import type {SubmitPostReturnType} from 'actions/views/create_comment';
 import {removeDraft, updateDraft} from 'actions/views/drafts';
 import {replyToLatestPostInChannel} from 'actions/views/rhs';
 
@@ -80,6 +81,9 @@ type Props = {
     // Replies in a thread have a root; messages to the channel don't.
     rootId?: string;
     placeholder: string;
+
+    // Called once a message is posted (not a command), e.g. by an app's panel to open the conversation it starts.
+    afterSubmit?: (response: SubmitPostReturnType) => void;
 };
 
 type Pending = {clientId: string; name: string; progress: number};
@@ -107,7 +111,7 @@ export default function Composer(props: Props) {
     );
 }
 
-function MessageBox({channelId, rootId = '', placeholder}: Props) {
+function MessageBox({channelId, rootId = '', placeholder, afterSubmit}: Props) {
     const intl = useIntl();
     const {formatMessage} = intl;
     const dialogs = useDialogs();
@@ -348,7 +352,7 @@ function MessageBox({channelId, rootId = '', placeholder}: Props) {
 
         // Sent: the draft goes, on the server too, or it would come back from there.
         dispatch(removeDraft(key, channelId, rootId));
-        const result = await dispatch(onSubmit(channelId, rootId, toSend, {}));
+        const result = await dispatch(onSubmit(channelId, rootId, toSend, afterSubmit ? {afterSubmit} : {}));
         if (result && 'error' in result && result.error) {
             setDraft(toSend);
             const error = result.error as {message?: string};
