@@ -1,9 +1,10 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import type {Location} from 'history';
+import type {ComponentType} from 'react';
 import {connect} from 'react-redux';
 import {withRouter, matchPath} from 'react-router-dom';
+import type {RouteComponentProps} from 'react-router-dom';
 
 import type {GlobalState} from '@mattermost/types/store';
 
@@ -14,7 +15,7 @@ import {getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
 import UnreadsStatusHandler from './unreads_status_handler';
 
 // hideUnreads (Fusion's focus mode): no unread or mention marks in the title, the icon and the desktop app's badge.
-type Props = {location: Location; hideUnreads?: boolean};
+type Props = Pick<RouteComponentProps, 'location'> & {hideUnreads?: boolean};
 
 export function mapStateToProps(state: GlobalState, {location: {pathname}, hideUnreads}: Props) {
     const config = getConfig(state);
@@ -34,4 +35,5 @@ export function mapStateToProps(state: GlobalState, {location: {pathname}, hideU
     };
 }
 
-export default withRouter(connect(mapStateToProps)(UnreadsStatusHandler));
+// Its own prop is hideUnreads; withRouter gives it the location (withRouter's types drop the other props).
+export default withRouter(connect(mapStateToProps)(UnreadsStatusHandler)) as unknown as ComponentType<{hideUnreads?: boolean}>;

@@ -8,8 +8,8 @@ import type {FocusSummary} from '@mattermost/types/focus';
 import {Client4} from 'mattermost-redux/client';
 
 import {selectPostById} from 'actions/views/rhs';
-import webSocketClient from 'client/web_websocket_client';
 
+import webSocketClient from 'client/web_websocket_client';
 import {act, renderWithContext, screen, userEvent, waitFor} from 'tests/react_testing_utils';
 import {getHistory} from 'utils/browser_history';
 
@@ -18,7 +18,7 @@ import FocusSummaryHost from './focus_summary';
 
 const mockToast = jest.fn();
 jest.mock('fusion/shell/toast_context', () => ({useToast: () => mockToast}));
-jest.mock('actions/views/rhs', () => ({selectPostById: jest.fn(() => ({type: 'SELECT_POST'}))}));
+jest.mock('actions/views/rhs', () => ({selectPostById: jest.fn(() => ({type: 'MOCK_SELECT_POST'}))}));
 jest.mock('mattermost-redux/actions/users', () => ({
     ...jest.requireActual('mattermost-redux/actions/users'),
     getMissingProfilesByIds: jest.fn(() => ({type: 'MISSING_PROFILES'})),

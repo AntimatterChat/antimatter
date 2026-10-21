@@ -19,8 +19,8 @@ import {getCurrentTeam, getTeams} from 'mattermost-redux/selectors/entities/team
 import {getCurrentUserId} from 'mattermost-redux/selectors/entities/users';
 
 import {selectPostById} from 'actions/views/rhs';
-import webSocketClient from 'client/web_websocket_client';
 
+import webSocketClient from 'client/web_websocket_client';
 import {Dialog} from 'fusion/components/layer';
 import {useMyZone} from 'fusion/composer/schedule';
 import {useDisplayName, useUser} from 'fusion/hooks/users';

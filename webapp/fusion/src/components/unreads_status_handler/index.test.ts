@@ -4,11 +4,18 @@
 import {mapStateToProps} from './index';
 
 jest.mock('mattermost-redux/selectors/entities/channels', () => ({
+    ...jest.requireActual('mattermost-redux/selectors/entities/channels'),
     getCurrentChannel: () => undefined,
     getUnreadStatus: () => 3,
 }));
-jest.mock('mattermost-redux/selectors/entities/general', () => ({getConfig: () => ({SiteName: 'Antimatter'})}));
-jest.mock('mattermost-redux/selectors/entities/teams', () => ({getCurrentTeam: () => undefined}));
+jest.mock('mattermost-redux/selectors/entities/general', () => ({
+    ...jest.requireActual('mattermost-redux/selectors/entities/general'),
+    getConfig: () => ({SiteName: 'Antimatter'}),
+}));
+jest.mock('mattermost-redux/selectors/entities/teams', () => ({
+    ...jest.requireActual('mattermost-redux/selectors/entities/teams'),
+    getCurrentTeam: () => undefined,
+}));
 
 // Fusion's focus mode hides your unread marks: the tab's title and icon, and the desktop app's badge, which all come
 // from unreadStatus.

@@ -5,15 +5,17 @@ import React from 'react';
 
 import Avatar from 'fusion/components/avatar';
 import {useUnreadMentions} from 'fusion/hooks/mentions';
-
 import {act, renderHookWithContext, renderWithContext} from 'tests/react_testing_utils';
 
 import {focusUntil, setFocusSummary, useFocusUntil, useHideUnreads, useShownUnread} from './focus';
 
-jest.mock('fusion/selectors', () => ({getUnreadDirectChannels: () => [{channel: {id: 'dm'}, mentions: 2, messages: 2}]}));
+// The same results every time, as selectors give.
+const mockDMs = [{channel: {id: 'dm'}, mentions: 2, messages: 2}];
+const mockTeamUnreads = [new Set(['t1']), new Map([['t1', 1]])];
+jest.mock('fusion/selectors', () => ({getUnreadDirectChannels: () => mockDMs}));
 jest.mock('mattermost-redux/selectors/entities/channels', () => ({
     ...jest.requireActual('mattermost-redux/selectors/entities/channels'),
-    getTeamsUnreadStatuses: () => [new Set(['t1']), new Map([['t1', 1]])],
+    getTeamsUnreadStatuses: () => mockTeamUnreads,
 }));
 
 const NOW = new Date('2026-10-21T13:00:00Z').getTime();

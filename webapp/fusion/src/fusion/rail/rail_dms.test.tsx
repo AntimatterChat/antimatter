@@ -4,7 +4,6 @@
 import React from 'react';
 
 import {setFocusSummary} from 'fusion/focus/focus';
-
 import {act, renderWithContext, screen, userEvent} from 'tests/react_testing_utils';
 import {getHistory} from 'utils/browser_history';
 import {TestHelper} from 'utils/test_helper';

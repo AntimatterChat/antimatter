@@ -46,7 +46,7 @@ describe('fusion/focus/FocusDialog', () => {
         const chips = screen.getAllByRole('radio').map((chip) => chip.textContent);
         expect(chips).toEqual(['15 min', '30 min', '1 h', '2 h', '3 h', '4 h', '5 h', '6 h', 'Until tomorrow', 'Custom']);
         expect(screen.getByRole('radio', {name: '1 h'})).toHaveAttribute('aria-checked', 'true');
-        expect(screen.getByText(/^Until /)).toBeInTheDocument();
+        expect(screen.getByText(/^Until \d/)).toBeInTheDocument();
     });
 
     test('starts for the duration picked, with the reason', async () => {
