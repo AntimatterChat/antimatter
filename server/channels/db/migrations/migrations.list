@@ -505,3 +505,5 @@ channels/db/migrations/postgres/1000020_antimatter_create_communityrules.down.sq
 channels/db/migrations/postgres/1000020_antimatter_create_communityrules.up.sql
 channels/db/migrations/postgres/1000021_antimatter_create_communityrulesacceptances.down.sql
 channels/db/migrations/postgres/1000021_antimatter_create_communityrulesacceptances.up.sql
+channels/db/migrations/postgres/1000022_antimatter_create_userfocus.down.sql
+channels/db/migrations/postgres/1000022_antimatter_create_userfocus.up.sql

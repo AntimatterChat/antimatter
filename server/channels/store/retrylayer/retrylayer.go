@@ -37,6 +37,7 @@ type RetryLayer struct {
 	CommandStore                    store.CommandStore
 	CommandWebhookStore             store.CommandWebhookStore
 	CommunityRulesStore             store.CommunityRulesStore
+	FocusStore                      store.FocusStore
 	ComplianceStore                 store.ComplianceStore
 	ContentFlaggingStore            store.ContentFlaggingStore
 	DeliveryTrackingStore           store.DeliveryTrackingStore
@@ -161,6 +162,10 @@ func (s *RetryLayer) CommandWebhook() store.CommandWebhookStore {
 
 func (s *RetryLayer) CommunityRules() store.CommunityRulesStore {
 	return s.CommunityRulesStore
+}
+
+func (s *RetryLayer) Focus() store.FocusStore {
+	return s.FocusStore
 }
 
 func (s *RetryLayer) Compliance() store.ComplianceStore {
@@ -458,6 +463,11 @@ type RetryLayerCommandWebhookStore struct {
 
 type RetryLayerCommunityRulesStore struct {
 	store.CommunityRulesStore
+	Root *RetryLayer
+}
+
+type RetryLayerFocusStore struct {
+	store.FocusStore
 	Root *RetryLayer
 }
 
@@ -5934,6 +5944,174 @@ func (s *RetryLayerCommunityRulesStore) Save(rctx request.CTX, rules *model.Comm
 		if tries >= 3 {
 			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
 			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerFocusStore) Get(rctx request.CTX, userID string) (*model.UserFocus, error) {
+
+	tries := 0
+	for {
+		result, err := s.FocusStore.Get(rctx, userID)
+		if err == nil {
+			return result, nil
+		}
+		if !isRepeatableError(err) {
+			return result, err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerFocusStore) GetExpired(rctx request.CTX, before int64, limit int) ([]*model.UserFocus, error) {
+
+	tries := 0
+	for {
+		result, err := s.FocusStore.GetExpired(rctx, before, limit)
+		if err == nil {
+			return result, nil
+		}
+		if !isRepeatableError(err) {
+			return result, err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerFocusStore) GetFirstPostsAfter(rctx request.CTX, channelIDs []string, after int64, rootOnly bool) (map[string]string, error) {
+
+	tries := 0
+	for {
+		result, err := s.FocusStore.GetFirstPostsAfter(rctx, channelIDs, after, rootOnly)
+		if err == nil {
+			return result, nil
+		}
+		if !isRepeatableError(err) {
+			return result, err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerFocusStore) GetMissedChannels(rctx request.CTX, userID string, since int64, until int64, rootOnly bool, limit int) ([]*model.FocusSummaryChannel, error) {
+
+	tries := 0
+	for {
+		result, err := s.FocusStore.GetMissedChannels(rctx, userID, since, until, rootOnly, limit)
+		if err == nil {
+			return result, nil
+		}
+		if !isRepeatableError(err) {
+			return result, err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerFocusStore) GetMissedThreads(rctx request.CTX, userID string, since int64, until int64, limit int) ([]*model.FocusSummaryThread, error) {
+
+	tries := 0
+	for {
+		result, err := s.FocusStore.GetMissedThreads(rctx, userID, since, until, limit)
+		if err == nil {
+			return result, nil
+		}
+		if !isRepeatableError(err) {
+			return result, err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerFocusStore) MarkEnded(rctx request.CTX, userID string, startAt int64, endedAt int64) (bool, error) {
+
+	tries := 0
+	for {
+		result, err := s.FocusStore.MarkEnded(rctx, userID, startAt, endedAt)
+		if err == nil {
+			return result, nil
+		}
+		if !isRepeatableError(err) {
+			return result, err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerFocusStore) PermanentDeleteByUser(rctx request.CTX, userID string) error {
+
+	tries := 0
+	for {
+		err := s.FocusStore.PermanentDeleteByUser(rctx, userID)
+		if err == nil {
+			return nil
+		}
+		if !isRepeatableError(err) {
+			return err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerFocusStore) Save(rctx request.CTX, focus *model.UserFocus) error {
+
+	tries := 0
+	for {
+		err := s.FocusStore.Save(rctx, focus)
+		if err == nil {
+			return nil
+		}
+		if !isRepeatableError(err) {
+			return err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return err
 		}
 		timepkg.Sleep(100 * timepkg.Millisecond)
 	}
@@ -21631,6 +21809,7 @@ func New(childStore store.Store) *RetryLayer {
 	newStore.CommandStore = &RetryLayerCommandStore{CommandStore: childStore.Command(), Root: &newStore}
 	newStore.CommandWebhookStore = &RetryLayerCommandWebhookStore{CommandWebhookStore: childStore.CommandWebhook(), Root: &newStore}
 	newStore.CommunityRulesStore = &RetryLayerCommunityRulesStore{CommunityRulesStore: childStore.CommunityRules(), Root: &newStore}
+	newStore.FocusStore = &RetryLayerFocusStore{FocusStore: childStore.Focus(), Root: &newStore}
 	newStore.ComplianceStore = &RetryLayerComplianceStore{ComplianceStore: childStore.Compliance(), Root: &newStore}
 	newStore.ContentFlaggingStore = &RetryLayerContentFlaggingStore{ContentFlaggingStore: childStore.ContentFlagging(), Root: &newStore}
 	newStore.DeliveryTrackingStore = &RetryLayerDeliveryTrackingStore{DeliveryTrackingStore: childStore.DeliveryTracking(), Root: &newStore}

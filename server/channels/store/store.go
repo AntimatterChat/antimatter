@@ -65,6 +65,7 @@ type Store interface {
 	Moderation() ModerationStore
 	OnTopPost() OnTopPostStore
 	CommunityRules() CommunityRulesStore
+	Focus() FocusStore
 	AIConnection() AIConnectionStore
 	AIAgent() AIAgentStore
 	AgentActivity() AgentActivityStore
@@ -1194,6 +1195,30 @@ type CommunityRulesStore interface {
 	// agreed to a version.
 	CountAcceptances(rctx request.CTX, teamID string, version int64) (*model.CommunityRulesStats, error)
 	DeleteForTeam(rctx request.CTX, teamID string) error
+	PermanentDeleteByUser(rctx request.CTX, userID string) error
+}
+
+// FocusStore keeps everyone's focus mode (Antimatter): the current one, or the last one once it ended, one row per
+// person; and finds what they missed while focusing.
+type FocusStore interface {
+	// Save puts in place someone's focus, replacing their previous one.
+	Save(rctx request.CTX, focus *model.UserFocus) error
+	// Get gives someone's current or last focus; ErrNotFound when they never focused.
+	Get(rctx request.CTX, userID string) (*model.UserFocus, error)
+	// MarkEnded ends the focus started at startAt, atomically: false when it had already ended (or another one
+	// started), so only one caller restores the status and tells the user.
+	MarkEnded(rctx request.CTX, userID string, startAt, endedAt int64) (bool, error)
+	// GetExpired gives the focuses still on whose end is at or before the time given, the oldest first.
+	GetExpired(rctx request.CTX, before int64, limit int) ([]*model.UserFocus, error)
+	// GetMissedChannels gives the channels the user is a member of (not archived) with messages from others between
+	// since and until, after they last read them, the most recent first: rootOnly counts only root messages (collapsed
+	// threads).
+	GetMissedChannels(rctx request.CTX, userID string, since, until int64, rootOnly bool, limit int) ([]*model.FocusSummaryChannel, error)
+	// GetMissedThreads gives the threads the user follows, in channels they're still a member of, with replies from
+	// others between since and until, after they last read them, the most recent first.
+	GetMissedThreads(rctx request.CTX, userID string, since, until int64, limit int) ([]*model.FocusSummaryThread, error)
+	// GetFirstPostsAfter gives, per channel, the first message after the time given (a root one when rootOnly).
+	GetFirstPostsAfter(rctx request.CTX, channelIDs []string, after int64, rootOnly bool) (map[string]string, error)
 	PermanentDeleteByUser(rctx request.CTX, userID string) error
 }
 

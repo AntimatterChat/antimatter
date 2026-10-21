@@ -109,6 +109,7 @@ type SqlStoreStores struct {
 	moderation                 store.ModerationStore
 	onTopPost                  store.OnTopPostStore
 	communityRules             store.CommunityRulesStore
+	focus                      store.FocusStore
 	aiConnection               store.AIConnectionStore
 	aiAgent                    store.AIAgentStore
 	agentActivity              store.AgentActivityStore
@@ -310,6 +311,7 @@ func New(settings model.SqlSettings, logger mlog.LoggerIFace, metrics einterface
 	store.stores.moderation = newSqlModerationStore(store)
 	store.stores.onTopPost = newSqlOnTopPostStore(store)
 	store.stores.communityRules = newSqlCommunityRulesStore(store)
+	store.stores.focus = newSqlFocusStore(store)
 	store.stores.aiConnection = newSqlAIConnectionStore(store)
 	store.stores.aiAgent = newSqlAIAgentStore(store)
 	store.stores.agentActivity = newSqlAgentActivityStore(store)
@@ -950,6 +952,10 @@ func (ss *SqlStore) OnTopPost() store.OnTopPostStore {
 
 func (ss *SqlStore) CommunityRules() store.CommunityRulesStore {
 	return ss.stores.communityRules
+}
+
+func (ss *SqlStore) Focus() store.FocusStore {
+	return ss.stores.focus
 }
 
 func (ss *SqlStore) AIConnection() store.AIConnectionStore {
