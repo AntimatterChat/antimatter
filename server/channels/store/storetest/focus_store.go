@@ -16,7 +16,6 @@ import (
 
 func TestFocusStore(t *testing.T, rctx request.CTX, ss store.Store) {
 	t.Run("SaveGetAndEnd", func(t *testing.T) { testFocusSaveGetAndEnd(t, rctx, ss) })
-	t.Run("GetExpired", func(t *testing.T) { testFocusGetExpired(t, rctx, ss) })
 	t.Run("GetMissedChannels", func(t *testing.T) { testFocusGetMissedChannels(t, rctx, ss) })
 	t.Run("GetMissedThreads", func(t *testing.T) { testFocusGetMissedThreads(t, rctx, ss) })
 	t.Run("GetFirstPostsAfter", func(t *testing.T) { testFocusGetFirstPostsAfter(t, rctx, ss) })
@@ -64,29 +63,6 @@ func testFocusSaveGetAndEnd(t *testing.T, rctx request.CTX, ss store.Store) {
 	require.NoError(t, ss.Focus().PermanentDeleteByUser(rctx, userID))
 	_, err = ss.Focus().Get(rctx, userID)
 	require.ErrorAs(t, err, &nfErr)
-}
-
-func testFocusGetExpired(t *testing.T, rctx request.CTX, ss store.Store) {
-	now := model.GetMillis()
-	due, later, ended := model.NewId(), model.NewId(), model.NewId()
-	require.NoError(t, ss.Focus().Save(rctx, &model.UserFocus{UserId: due, StartAt: now - 2000, EndAt: now - 1000}))
-	require.NoError(t, ss.Focus().Save(rctx, &model.UserFocus{UserId: later, StartAt: now - 2000, EndAt: now + 60000}))
-	require.NoError(t, ss.Focus().Save(rctx, &model.UserFocus{UserId: ended, StartAt: now - 2000, EndAt: now - 1000, EndedAt: now - 1500}))
-	defer func() {
-		for _, id := range []string{due, later, ended} {
-			_ = ss.Focus().PermanentDeleteByUser(rctx, id)
-		}
-	}()
-
-	expired, err := ss.Focus().GetExpired(rctx, now, 100)
-	require.NoError(t, err)
-	ids := []string{}
-	for _, f := range expired {
-		ids = append(ids, f.UserId)
-	}
-	assert.Contains(t, ids, due)
-	assert.NotContains(t, ids, later, "a focus still running isn't expired")
-	assert.NotContains(t, ids, ended, "a focus that ended isn't ended again")
 }
 
 // focusFixture is a user, someone else, and channels they're members of (or not), with posts at given times.

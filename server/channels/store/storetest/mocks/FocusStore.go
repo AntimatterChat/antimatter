@@ -46,36 +46,6 @@ func (_m *FocusStore) Get(rctx request.CTX, userID string) (*model.UserFocus, er
 	return r0, r1
 }
 
-// GetExpired provides a mock function with given fields: rctx, before, limit
-func (_m *FocusStore) GetExpired(rctx request.CTX, before int64, limit int) ([]*model.UserFocus, error) {
-	ret := _m.Called(rctx, before, limit)
-
-	if len(ret) == 0 {
-		panic("no return value specified for GetExpired")
-	}
-
-	var r0 []*model.UserFocus
-	var r1 error
-	if rf, ok := ret.Get(0).(func(request.CTX, int64, int) ([]*model.UserFocus, error)); ok {
-		return rf(rctx, before, limit)
-	}
-	if rf, ok := ret.Get(0).(func(request.CTX, int64, int) []*model.UserFocus); ok {
-		r0 = rf(rctx, before, limit)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]*model.UserFocus)
-		}
-	}
-
-	if rf, ok := ret.Get(1).(func(request.CTX, int64, int) error); ok {
-		r1 = rf(rctx, before, limit)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
 // GetFirstPostsAfter provides a mock function with given fields: rctx, channelIDs, after, rootOnly
 func (_m *FocusStore) GetFirstPostsAfter(rctx request.CTX, channelIDs []string, after int64, rootOnly bool) (map[string]string, error) {
 	ret := _m.Called(rctx, channelIDs, after, rootOnly)

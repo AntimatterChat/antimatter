@@ -1208,8 +1208,6 @@ type FocusStore interface {
 	// MarkEnded ends the focus started at startAt, atomically: false when it had already ended (or another one
 	// started), so only one caller restores the status and tells the user.
 	MarkEnded(rctx request.CTX, userID string, startAt, endedAt int64) (bool, error)
-	// GetExpired gives the focuses still on whose end is at or before the time given, the oldest first.
-	GetExpired(rctx request.CTX, before int64, limit int) ([]*model.UserFocus, error)
 	// GetMissedChannels gives the channels the user is a member of (not archived) with messages from others between
 	// since and until, after they last read them, the most recent first: rootOnly counts only root messages (collapsed
 	// threads).

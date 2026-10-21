@@ -5971,27 +5971,6 @@ func (s *RetryLayerFocusStore) Get(rctx request.CTX, userID string) (*model.User
 
 }
 
-func (s *RetryLayerFocusStore) GetExpired(rctx request.CTX, before int64, limit int) ([]*model.UserFocus, error) {
-
-	tries := 0
-	for {
-		result, err := s.FocusStore.GetExpired(rctx, before, limit)
-		if err == nil {
-			return result, nil
-		}
-		if !isRepeatableError(err) {
-			return result, err
-		}
-		tries++
-		if tries >= 3 {
-			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
-			return result, err
-		}
-		timepkg.Sleep(100 * timepkg.Millisecond)
-	}
-
-}
-
 func (s *RetryLayerFocusStore) GetFirstPostsAfter(rctx request.CTX, channelIDs []string, after int64, rootOnly bool) (map[string]string, error) {
 
 	tries := 0

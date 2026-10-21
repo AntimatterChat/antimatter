@@ -4934,22 +4934,6 @@ func (s *TimerLayerFocusStore) Get(rctx request.CTX, userID string) (*model.User
 	return result, err
 }
 
-func (s *TimerLayerFocusStore) GetExpired(rctx request.CTX, before int64, limit int) ([]*model.UserFocus, error) {
-	start := time.Now()
-
-	result, err := s.FocusStore.GetExpired(rctx, before, limit)
-
-	elapsed := float64(time.Since(start)) / float64(time.Second)
-	if s.Root.Metrics != nil {
-		success := "false"
-		if err == nil {
-			success = "true"
-		}
-		s.Root.Metrics.ObserveStoreMethodDuration("FocusStore.GetExpired", success, elapsed)
-	}
-	return result, err
-}
-
 func (s *TimerLayerFocusStore) GetFirstPostsAfter(rctx request.CTX, channelIDs []string, after int64, rootOnly bool) (map[string]string, error) {
 	start := time.Now()
 

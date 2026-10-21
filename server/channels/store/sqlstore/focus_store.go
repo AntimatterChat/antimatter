@@ -69,20 +69,6 @@ func (s *SqlFocusStore) MarkEnded(rctx request.CTX, userID string, startAt, ende
 	return rows == 1, nil
 }
 
-func (s *SqlFocusStore) GetExpired(rctx request.CTX, before int64, limit int) ([]*model.UserFocus, error) {
-	query := s.getQueryBuilder().
-		Select(focusColumns...).
-		From("UserFocus").
-		Where(sq.And{sq.Eq{"EndedAt": 0}, sq.LtOrEq{"EndAt": before}}).
-		OrderBy("EndAt").
-		Limit(uint64(limit))
-	focuses := []*model.UserFocus{}
-	if err := s.GetMaster().SelectBuilder(&focuses, query); err != nil {
-		return nil, errors.Wrap(err, "failed to find the focuses that ended")
-	}
-	return focuses, nil
-}
-
 // The messages counted: from others, not deleted, no system messages; at most FocusSummaryMaxCount per channel or
 // thread, so a busy channel costs no more than that.
 const focusMissedPosts = `
