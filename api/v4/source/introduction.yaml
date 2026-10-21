@@ -485,6 +485,8 @@ tags:
     description: Endpoints for managing agents (bot accounts of kind agent that people talk to like coworkers) and their live activity.
   - name: community rules
     description: Endpoints for a community's rules, which its members agree to before they post in its channels.
+  - name: focus mode
+    description: Endpoints for your focus mode (Do not disturb until a time, with a reason), and what you missed during it.
   - name: Delivery Tracking
     description: Endpoints for configuring post delivery audit logging.
   - name: health

@@ -24,30 +24,45 @@ func (a *App) SetStatusLastActivityAt(userID string, activityAt int64) {
 	a.Srv().Platform().SetStatusLastActivityAt(userID, activityAt)
 }
 
+// The status setters below end a focus (Antimatter) when the user picks a status themself (manual): the one they
+// picked stays. Focus mode itself goes straight to the platform's.
+
 func (a *App) SetStatusOnline(userID string, manual bool) {
 	a.Srv().Platform().SetStatusOnline(userID, manual)
+	if manual {
+		a.endFocusAfterStatusChange(userID)
+	}
 }
 
 func (a *App) SetStatusOffline(userID string, manual bool, force bool) {
 	a.Srv().Platform().SetStatusOffline(userID, manual, force)
+	if manual {
+		a.endFocusAfterStatusChange(userID)
+	}
 }
 
 func (a *App) SetStatusAwayIfNeeded(userID string, manual bool) {
 	a.Srv().Platform().SetStatusAwayIfNeeded(userID, manual)
+	if manual {
+		a.endFocusAfterStatusChange(userID)
+	}
 }
 
 // SetStatusDoNotDisturbTimed takes endtime in unix epoch format in UTC
 // and sets status of given userId to dnd which will be restored back after endtime
 func (a *App) SetStatusDoNotDisturbTimed(userId string, endtime int64) {
 	a.Srv().Platform().SetStatusDoNotDisturbTimed(userId, endtime)
+	a.endFocusAfterStatusChange(userId)
 }
 
 func (a *App) SetStatusDoNotDisturb(userID string) {
 	a.Srv().Platform().SetStatusDoNotDisturb(userID)
+	a.endFocusAfterStatusChange(userID)
 }
 
 func (a *App) SetStatusOutOfOffice(userID string) {
 	a.Srv().Platform().SetStatusOutOfOffice(userID)
+	a.endFocusAfterStatusChange(userID)
 }
 
 func (a *App) SaveAndBroadcastStatus(status *model.Status) {
@@ -79,6 +94,9 @@ func (a *App) UpdateDNDStatusOfUsers() {
 			scs.NotifyUserStatusChanged(statuses[i])
 		}
 	}
+
+	// The focuses whose time came end with their Do not disturb.
+	a.endFocusesAfterDND(statuses)
 }
 
 func (a *App) SetCustomStatus(rctx request.CTX, userID string, cs *model.CustomStatus) *model.AppError {

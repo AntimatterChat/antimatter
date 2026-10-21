@@ -1,0 +1,234 @@
+  "/api/v4/users/{user_id}/focus":
+    get:
+      tags:
+        - focus mode
+      summary: Get your focus mode
+      description: >
+        Gets your focus mode: the current one (`active`), or the last one once it ended (`ended_at` set, for the
+        summary of what you missed), or nothing (all zero).
+
+
+        Focus mode is Do not disturb with an end time: notifications are muted as in Do not disturb (no push, email,
+        desktop or persistent notifications, urgent messages included), the reason becomes your custom status with
+        the 🎯 emoji (`dart`), expiring at the end, and Antimatter's apps hide your own unread badges. While it's on,
+        the user prop `focus_until` (milliseconds) is set on your account, so everyone's apps can show the focusing
+        status dot; it can't be changed through the profile.
+
+
+        It ends when you end it, when its time comes (with the Do not disturb expiry, within a minute), or when you
+        pick a status yourself (which then stays). Unless you picked a status, the one from before comes back; the
+        custom status from before too, unless you changed the 🎯 one meanwhile. All your sessions then get the
+        `focus_ended` websocket event, with `start_at`, `end_at` (milliseconds) and `ended_by` (`user`, `timer` or
+        `status`).
+
+
+        ##### Permissions
+
+        Only the user themself (`me` or their own id). Nobody else, system admins included, may start, end or read
+        someone's focus or its summary: the summary tells what someone was sent.
+
+
+        __Minimum server version__: 11.11 (Antimatter)
+      operationId: GetFocus
+      parameters:
+        - name: user_id
+          in: path
+          description: User GUID, or `me`
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Your focus mode
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FocusState"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+    post:
+      tags:
+        - focus mode
+      summary: Start focus mode
+      description: >
+        Turns focus mode on until the end given, or, while you're focusing, changes its end and its reason (what comes
+        back at the end stays what was there before). The end is a `duration` (a duration such as `15m`, `1h` or
+        `1h30m`, or `tomorrow` for 09:00 the next day in your timezone) or an `end_at` (milliseconds), one of the two,
+        from a minute to a week away; it's rounded down to the minute, as Do not disturb's. Your status becomes Do not
+        disturb until then.
+
+
+        ##### Permissions
+
+        Only the user themself. User statuses must be on (`ServiceSettings.EnableUserStatuses`); bots can't focus.
+
+
+        __Minimum server version__: 11.11 (Antimatter)
+      operationId: StartFocus
+      parameters:
+        - name: user_id
+          in: path
+          description: User GUID, or `me`
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FocusRequest"
+        required: true
+      responses:
+        "201":
+          description: Focusing
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FocusState"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "501":
+          $ref: "#/components/responses/NotImplemented"
+    delete:
+      tags:
+        - focus mode
+      summary: End focus mode
+      description: >
+        Ends your focus now: the status and custom status from before come back, and your sessions get the
+        `focus_ended` websocket event. Ending no focus does nothing.
+
+
+        ##### Permissions
+
+        Only the user themself.
+
+
+        __Minimum server version__: 11.11 (Antimatter)
+      operationId: EndFocus
+      parameters:
+        - name: user_id
+          in: path
+          description: User GUID, or `me`
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: The focus, ended
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FocusState"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  "/api/v4/users/{user_id}/focus/summary":
+    get:
+      tags:
+        - focus mode
+      summary: Get what you missed
+      description: >
+        Gets what you missed between `since` and `until` (milliseconds; a focus's `start_at` and `ended_at`): the
+        channels you're a member of (not archived) with messages from others after you last read them, direct and
+        group messages first, then those with mentions, then the others, the most recent first; and, with collapsed
+        reply threads, the threads you follow there with replies from others. Muted channels only show when they
+        mention you. At most 100 channels and 50 threads; each count stops at 1000. `mention_count` and each item's
+        are the unread mentions waiting there.
+
+
+        ##### Permissions
+
+        Only the user themself. The window must be in the past, in order, and at most eight days long.
+
+
+        __Minimum server version__: 11.11 (Antimatter)
+      operationId: GetFocusSummary
+      parameters:
+        - name: user_id
+          in: path
+          description: User GUID, or `me`
+          required: true
+          schema:
+            type: string
+        - name: since
+          in: query
+          description: The start of the window (milliseconds).
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: until
+          in: query
+          description: The end of the window (milliseconds).
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: What you missed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FocusSummary"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  "/api/v4/users/{user_id}/focus/summary/read":
+    post:
+      tags:
+        - focus mode
+      summary: Mark what you missed as read
+      description: >
+        Marks read the channels and threads the summary of the window lists, up to `until` only: what came after
+        stays unread (a channel with later messages is read up to the first of them). Your sessions get the usual
+        `multiple_channels_viewed`, `post_unread` and `thread_read_changed` websocket events.
+
+
+        ##### Permissions
+
+        Only the user themself.
+
+
+        __Minimum server version__: 11.11 (Antimatter)
+      operationId: MarkFocusSummaryRead
+      parameters:
+        - name: user_id
+          in: path
+          description: User GUID, or `me`
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FocusWindow"
+        required: true
+      responses:
+        "200":
+          description: Marked as read
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StatusOK"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"

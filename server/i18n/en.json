@@ -8807,6 +8807,41 @@
     "description": "Internal error when restoring previously deleted file attachments of posts fails; log/admin-facing."
   },
   {
+    "id": "app.focus.bot.app_error",
+    "translation": "Bots can't use focus mode.",
+    "description": "Error when focus mode is started for a bot account."
+  },
+  {
+    "id": "app.focus.delete.app_error",
+    "translation": "Unable to delete the focus mode of the account.",
+    "description": "Error when an account is deleted for good and its focus mode can't be removed."
+  },
+  {
+    "id": "app.focus.get.app_error",
+    "translation": "Unable to get your focus mode.",
+    "description": "Error when the server can't read someone's focus mode."
+  },
+  {
+    "id": "app.focus.mark_read.app_error",
+    "translation": "Unable to mark what you missed as read.",
+    "description": "Error when the channels and threads listed in the summary after focus mode can't be marked as read."
+  },
+  {
+    "id": "app.focus.save.app_error",
+    "translation": "Unable to start focus mode.",
+    "description": "Error when the server can't save someone's focus mode."
+  },
+  {
+    "id": "app.focus.statuses_disabled.app_error",
+    "translation": "Focus mode needs user statuses, which are turned off on this server.",
+    "description": "Error when focus mode is started while the system admin turned user statuses off."
+  },
+  {
+    "id": "app.focus.summary.app_error",
+    "translation": "Unable to get what you missed while focusing.",
+    "description": "Error when the summary of what someone missed during focus mode can't be put together."
+  },
+  {
     "id": "app.get_user_team_scheduled_posts.error",
     "translation": "Error occurred fetching scheduled posts.",
     "description": "API error shown when fetching the user's scheduled posts for a team fails; 'scheduled posts' are messages queued to send later."
@@ -16800,6 +16835,26 @@
     "id": "model.file_info.is_valid.user_id.app_error",
     "translation": "Invalid value for user_id.",
     "description": "API validation error for an uploaded file's metadata record; 'user_id' is the literal field name for the uploader."
+  },
+  {
+    "id": "model.focus.duration.app_error",
+    "translation": "Focus mode lasts from one minute to one week.",
+    "description": "Error when focus mode is started with a duration or end time that is too short, too long, in the past or not understood."
+  },
+  {
+    "id": "model.focus.duration_or_end.app_error",
+    "translation": "Choose how long to focus: a duration or an end time.",
+    "description": "Error when focus mode is started with neither, or both, a duration and an end time."
+  },
+  {
+    "id": "model.focus.reason.app_error",
+    "translation": "The reason is too long: it becomes your custom status, of at most 100 characters.",
+    "description": "Error when the reason given for focus mode is longer than a custom status."
+  },
+  {
+    "id": "model.focus.window.app_error",
+    "translation": "The time range of the summary isn't valid: it must be in the past, in order, and at most eight days long.",
+    "description": "Error when the summary of what someone missed is asked for a time range that is not valid."
   },
   {
     "id": "model.group.channel_id.app_error",
