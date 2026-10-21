@@ -6,12 +6,18 @@ import {useSelector} from 'react-redux';
 import {getTeamsUnreadStatuses} from 'mattermost-redux/selectors/entities/channels';
 import {getCurrentTeamId} from 'mattermost-redux/selectors/entities/teams';
 
+import {useHideUnreads} from 'fusion/focus/focus';
 import {getUnreadDirectChannels} from 'fusion/selectors';
 
-// useUnreadMentions counts the mentions waiting for you: in the current team's channels and in direct messages.
+// useUnreadMentions counts the mentions waiting for you: in the current team's channels and in direct messages. None
+// show while your unread badges hide (focus mode).
 export function useUnreadMentions(): number {
+    const hide = useHideUnreads();
     const teamId = useSelector(getCurrentTeamId);
     const [, mentionsInTeam] = useSelector(getTeamsUnreadStatuses);
     const unreadDMs = useSelector(getUnreadDirectChannels);
+    if (hide) {
+        return 0;
+    }
     return (mentionsInTeam.get(teamId) || 0) + unreadDMs.reduce((n, dm) => n + dm.mentions, 0);
 }

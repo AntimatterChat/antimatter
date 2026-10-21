@@ -409,6 +409,26 @@ func (_m *Store) CommunityRules() store.CommunityRulesStore {
 	return r0
 }
 
+// Focus provides a mock function with no fields
+func (_m *Store) Focus() store.FocusStore {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for Focus")
+	}
+
+	var r0 store.FocusStore
+	if rf, ok := ret.Get(0).(func() store.FocusStore); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(store.FocusStore)
+		}
+	}
+
+	return r0
+}
+
 // Compliance provides a mock function with no fields
 func (_m *Store) Compliance() store.ComplianceStore {
 	ret := _m.Called()

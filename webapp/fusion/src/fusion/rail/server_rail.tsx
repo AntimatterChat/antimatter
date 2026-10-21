@@ -17,6 +17,7 @@ import {switchTeam, updateTeamsOrderForUser} from 'actions/team_actions';
 import Icon from 'fusion/components/icon';
 import {Dialog, Popover} from 'fusion/components/layer';
 import {MenuItem} from 'fusion/components/menu';
+import {useHideUnreads} from 'fusion/focus/focus';
 import ServerMenu from 'fusion/popovers/server_menu';
 import {getLastTeamChannelName, getSortedMyTeams} from 'fusion/selectors';
 import {useDialogs} from 'fusion/shell/dialogs_context';
@@ -64,6 +65,10 @@ function menuPoint(e: React.MouseEvent<HTMLElement>): {x: number; y: number} {
     const r = e.currentTarget.getBoundingClientRect();
     return {x: r.right, y: r.top + (r.height / 2)};
 }
+
+// The unread marks while they hide.
+const NO_TEAMS = new Set<string>();
+const NO_MENTIONS = new Map<string, number>();
 
 function TeamButton({team, active, unread, mentions, onSelect, drag}: {team: Team; active: boolean; unread: boolean; mentions: number; onSelect: () => void; drag: Drop}) {
     // Teams are reordered by dragging them in the rail, as in the classic team sidebar, and dropped on each other to
@@ -338,7 +343,12 @@ export default function ServerRail() {
     const globalSearch = useGlobalSearch();
     const teams = useSelector(getSortedMyTeams);
     const currentTeamId = useSelector(getCurrentTeamId);
-    const [unreadTeams, mentionsInTeam] = useSelector(getTeamsUnreadStatuses);
+    const [allUnreadTeams, allMentionsInTeam] = useSelector(getTeamsUnreadStatuses);
+
+    // No unread marks while your unread badges hide (focus mode).
+    const hideUnreads = useHideUnreads();
+    const unreadTeams = hideUnreads ? NO_TEAMS : allUnreadTeams;
+    const mentionsInTeam = hideUnreads ? NO_MENTIONS : allMentionsInTeam;
     const currentChannelId = useSelector((state: GlobalState) => state.entities.channels.currentChannelId);
     const store = useStore<GlobalState>();
 

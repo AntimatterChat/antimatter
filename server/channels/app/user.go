@@ -1318,6 +1318,11 @@ func (a *App) SanitizeProfile(user *model.User, asAdmin bool) {
 }
 
 func (a *App) UpdateUserAsUser(rctx request.CTX, user *model.User, asAdmin bool) (*model.User, *model.AppError) {
+	// Antimatter: the focus marker is the server's.
+	if previous, err := a.GetUser(rctx, user.Id); err == nil {
+		keepFocusMarker(previous, user)
+	}
+
 	updatedUser, err := a.UpdateUser(rctx, user, true)
 	if err != nil {
 		return nil, err
@@ -1412,7 +1417,10 @@ func (a *App) PatchUser(rctx request.CTX, userID string, patch *model.UserPatch,
 		return nil, err
 	}
 
+	previous := user.DeepCopy()
 	user.Patch(patch)
+	// Antimatter: the focus marker is the server's.
+	keepFocusMarker(previous, user)
 
 	updatedUser, err := a.UpdateUser(rctx, user, true)
 	if err != nil {
@@ -2133,6 +2141,11 @@ func (a *App) PermanentDeleteUser(rctx request.CTX, user *model.User) *model.App
 
 	if err := a.Srv().Store().Draft().PermanentDeleteByUser(user.Id); err != nil {
 		return model.NewAppError("PermanentDeleteUser", "app.drafts.permanent_delete_by_user.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
+	}
+
+	// Antimatter: their focus mode.
+	if err := a.Srv().Store().Focus().PermanentDeleteByUser(rctx, user.Id); err != nil {
+		return model.NewAppError("PermanentDeleteUser", "app.focus.delete.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
 	}
 
 	// Antimatter: the communities' rules they agreed to.

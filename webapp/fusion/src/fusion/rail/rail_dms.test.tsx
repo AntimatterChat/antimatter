@@ -3,7 +3,8 @@
 
 import React from 'react';
 
-import {renderWithContext, screen, userEvent} from 'tests/react_testing_utils';
+import {setFocusSummary} from 'fusion/focus/focus';
+import {act, renderWithContext, screen, userEvent} from 'tests/react_testing_utils';
 import {getHistory} from 'utils/browser_history';
 import {TestHelper} from 'utils/test_helper';
 
@@ -138,5 +139,31 @@ describe('fusion/rail/RailDirectMessages', () => {
         mockStill = true;
         const {container: still} = render();
         expect(still.querySelector('.am-dm-dock')).toHaveClass('am-still');
+    });
+
+    test('keeps no conversation waiting while you focus (your unread badges hide), and they come back after', () => {
+        const focusing = (until: number) => renderWithContext(
+            <RailDirectMessages/>,
+            {
+                entities: {
+                    teams: {currentTeamId: team.id, teams: {[team.id]: team}},
+                    channels: {currentChannelId: 'general', channels: {[alice.id]: alice, [carol.id]: carol}},
+                    users: {currentUserId: 'me', profiles: {me: {id: 'me', username: 'me', props: until ? {focus_until: String(until)} : {}}}},
+                },
+            } as never,
+        );
+
+        const {container, unmount} = focusing(Date.now() + 36e5);
+        expect(container.querySelector('.am-dm-srv')).not.toBeInTheDocument();
+        expect(screen.getByRole('button', {name: 'All direct messages'})).not.toHaveClass('am-mini');
+        unmount();
+
+        // Ended, the summary still open: still hidden; once it's left, back.
+        act(() => setFocusSummary({start_at: Date.now() - 36e5, end_at: Date.now()}));
+        const after = focusing(0);
+        expect(after.container.querySelector('.am-dm-srv')).not.toBeInTheDocument();
+        act(() => setFocusSummary(null));
+        expect(after.container.querySelectorAll('.am-dm-srv')).toHaveLength(2);
+        expect(screen.getByRole('button', {name: 'All direct messages, 5 unread messages'})).toBeInTheDocument();
     });
 });

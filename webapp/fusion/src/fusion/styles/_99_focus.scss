@@ -1,0 +1,32 @@
+// Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
+// See LICENSE.txt for license information.
+
+// Focus mode: the purple status dot of those who focus (Fusion's matter colour), the status menu's row, the dialog
+// that starts it, and the summary of what was missed, shown when it ends.
+:is(.am-app, .am-layer) .am-av .am-st.am-focus, :is(.am-app, .am-layer) .am-status-dot.am-focus { background: var(--am-matter); }
+
+:is(.am-app, .am-layer) .am-focus-durations { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 10px; }
+:is(.am-app, .am-layer) .am-focus-durations .am-onboarding-option { padding: 6px 12px; font-size: 13.5px; }
+:is(.am-app, .am-layer) .am-focus-custom { margin: 0 0 8px; }
+:is(.am-app, .am-layer) .am-focus-custom input { width: 100%; height: 38px; padding: 0 12px; border-radius: 9px; border: 1px solid var(--am-line); background: var(--am-side); color: var(--am-text); color-scheme: light dark; outline: none; }
+:is(.am-app, .am-layer) .am-focus-custom input:focus { border-color: var(--am-matter); }
+:is(.am-app, .am-layer) .am-focus-custom input[aria-invalid="true"] { border-color: var(--am-danger); }
+:is(.am-app, .am-layer) .am-focus-end { margin: 0 0 16px; color: var(--am-muted); font-size: 13px; }
+
+:is(.am-app, .am-layer) .am-focus-list { max-height: min(52vh, 440px); overflow-y: auto; margin: 0 -8px 8px; padding: 0 8px; }
+:is(.am-app, .am-layer) .am-focus-list section + section { margin-top: 14px; }
+:is(.am-app, .am-layer) .am-focus-list h3 { margin: 0 0 4px; font: 700 11px var(--am-font-ui); letter-spacing: .07em; text-transform: uppercase; color: var(--am-muted); }
+:is(.am-app, .am-layer) .am-focus-list ul { margin: 0; padding: 0; list-style: none; }
+:is(.am-app, .am-layer) .am-focus-item { display: flex; align-items: center; gap: 10px; width: 100%; padding: 7px 8px; border-radius: 8px; text-align: left; color: var(--am-text-2); }
+:is(.am-app, .am-layer) .am-focus-item:hover, :is(.am-app, .am-layer) .am-focus-item:focus-visible { background: var(--am-hover); color: var(--am-text); }
+:is(.am-app, .am-layer) .am-focus-item .am-grow { flex: 1; min-width: 0; }
+:is(.am-app, .am-layer) .am-focus-item b, :is(.am-app, .am-layer) .am-focus-item .am-grow > span { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+:is(.am-app, .am-layer) .am-focus-item b { font-weight: 600; font-size: 14px; color: var(--am-text); }
+:is(.am-app, .am-layer) .am-focus-item .am-grow > span { font-size: 12.5px; color: var(--am-muted); }
+:is(.am-app, .am-layer) .am-focus-item .am-badge { flex: none; }
+
+// On a phone, the summary's two choices take the width, one above the other.
+@media (max-width: 480px) {
+  :is(.am-app, .am-layer) .am-focus-summary .am-modal-actions { flex-direction: column-reverse; }
+  :is(.am-app, .am-layer) .am-focus-summary .am-modal-actions .am-btn { justify-content: center; }
+}

@@ -4,6 +4,7 @@
 import React from 'react';
 
 import {savePreferences} from 'mattermost-redux/actions/preferences';
+import * as channelSelectors from 'mattermost-redux/selectors/entities/channels';
 
 import {updateTeamsOrderForUser} from 'actions/team_actions';
 
@@ -55,6 +56,33 @@ describe('fusion/rail/ServerRail', () => {
         }
         mockTeams = [mockTeam];
         mockUnread = [{channel: alice, mentions: 0, messages: 3}, {channel: bob, mentions: 2, messages: 5}];
+    });
+
+    test('hides a community\'s unread mark and mentions while you focus', () => {
+        mockTeams = [mockTeam, otherTeam];
+        const teamUnreads: ReturnType<typeof channelSelectors.getTeamsUnreadStatuses> = [new Set([otherTeam.id]), new Map([[otherTeam.id, 4]]), new Map()];
+        const spy = jest.spyOn(channelSelectors, 'getTeamsUnreadStatuses').mockReturnValue(teamUnreads);
+        const rail = (until: number) => renderWithContext(
+            <ServerRail/>,
+            {
+                entities: {
+                    teams: {currentTeamId: mockTeam.id, teams: {[mockTeam.id]: mockTeam, [otherTeam.id]: otherTeam}, myMembers: {[mockTeam.id]: {team_id: mockTeam.id}, [otherTeam.id]: {team_id: otherTeam.id}}},
+                    channels: {currentChannelId: 'general', channels: {general: TestHelper.getChannelMock({id: 'general', type: 'O'})}},
+                    users: {currentUserId: 'me', profiles: {me: {id: 'me', username: 'me', roles: 'system_user', props: until ? {focus_until: String(until)} : {}}}},
+                    preferences: {myPreferences: {}},
+                },
+            } as never,
+        );
+
+        const {unmount} = rail(0);
+        expect(screen.getByRole('button', {name: 'Other'})).toHaveClass('am-unread');
+        expect(screen.getByRole('button', {name: 'Other'})).toHaveTextContent('4');
+        unmount();
+
+        rail(Date.now() + 36e5);
+        expect(screen.getByRole('button', {name: 'Other'})).not.toHaveClass('am-unread');
+        expect(screen.getByRole('button', {name: 'Other'}).querySelector('.am-badge')).not.toBeInTheDocument();
+        spy.mockRestore();
     });
 
     test('starts with the teams; the direct messages are at the bottom, above search', () => {

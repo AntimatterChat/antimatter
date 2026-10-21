@@ -6380,6 +6380,60 @@ func (c *Client4) GetUserStatus(ctx context.Context, userId, etag string) (*Stat
 	return DecodeJSONFromResponse[*Status](r)
 }
 
+// GetFocus gives a user's focus mode (Antimatter): the current one, or the last one, or nothing. Only the user
+// themself may ask.
+func (c *Client4) GetFocus(ctx context.Context, userId string) (*FocusState, *Response, error) {
+	r, err := c.doAPIGet(ctx, c.userRoute(userId).Join("focus"), "")
+	if err != nil {
+		return nil, BuildResponse(r), err
+	}
+	defer closeBody(r)
+	return DecodeJSONFromResponse[*FocusState](r)
+}
+
+// StartFocus turns focus mode on for a user (Antimatter), or changes its end and reason while they focus.
+func (c *Client4) StartFocus(ctx context.Context, userId string, request *FocusRequest) (*FocusState, *Response, error) {
+	r, err := c.doAPIPostJSON(ctx, c.userRoute(userId).Join("focus"), request)
+	if err != nil {
+		return nil, BuildResponse(r), err
+	}
+	defer closeBody(r)
+	return DecodeJSONFromResponse[*FocusState](r)
+}
+
+// EndFocus ends a user's focus mode now (Antimatter).
+func (c *Client4) EndFocus(ctx context.Context, userId string) (*FocusState, *Response, error) {
+	r, err := c.doAPIDelete(ctx, c.userRoute(userId).Join("focus"))
+	if err != nil {
+		return nil, BuildResponse(r), err
+	}
+	defer closeBody(r)
+	return DecodeJSONFromResponse[*FocusState](r)
+}
+
+// GetFocusSummary gives what a user missed between since and until (milliseconds), as after a focus (Antimatter).
+func (c *Client4) GetFocusSummary(ctx context.Context, userId string, since, until int64) (*FocusSummary, *Response, error) {
+	query := url.Values{}
+	query.Set("since", strconv.FormatInt(since, 10))
+	query.Set("until", strconv.FormatInt(until, 10))
+	r, err := c.doAPIGetWithQuery(ctx, c.userRoute(userId).Join("focus", "summary"), query, "")
+	if err != nil {
+		return nil, BuildResponse(r), err
+	}
+	defer closeBody(r)
+	return DecodeJSONFromResponse[*FocusSummary](r)
+}
+
+// MarkFocusSummaryRead marks read what a user missed between since and until, up to until only (Antimatter).
+func (c *Client4) MarkFocusSummaryRead(ctx context.Context, userId string, since, until int64) (*Response, error) {
+	r, err := c.doAPIPostJSON(ctx, c.userRoute(userId).Join("focus", "summary", "read"), &FocusWindow{Since: since, Until: until})
+	if err != nil {
+		return BuildResponse(r), err
+	}
+	defer closeBody(r)
+	return BuildResponse(r), nil
+}
+
 // GetUsersStatusesByIds returns a list of users status based on the provided user ids.
 func (c *Client4) GetUsersStatusesByIds(ctx context.Context, userIds []string) ([]*Status, *Response, error) {
 	r, err := c.doAPIPostJSON(ctx, c.userStatusesRoute().Join("ids"), userIds)

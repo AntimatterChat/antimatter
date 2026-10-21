@@ -9,6 +9,7 @@ import {CustomStatusDuration} from '@mattermost/types/users';
 import type {UserCustomStatus} from '@mattermost/types/users';
 
 import {removeRecentCustomStatus, setCustomStatus, setStatus, unsetCustomStatus, updateMe} from 'mattermost-redux/actions/users';
+import {Client4} from 'mattermost-redux/client';
 import {getConfig} from 'mattermost-redux/selectors/entities/general';
 import {getCurrentUser, getDndEndTimeForUserId} from 'mattermost-redux/selectors/entities/users';
 
@@ -25,8 +26,10 @@ import {Popover} from 'fusion/components/layer';
 import {MenuHeading, MenuItem} from 'fusion/components/menu';
 import StatusEmoji from 'fusion/components/status_emoji';
 import {CustomTimeForm} from 'fusion/composer/schedule';
+import {useFocusLabel, useFocusTime, useMyFocusUntil} from 'fusion/focus/focus';
 import {useDisplayName, useUserStatus} from 'fusion/hooks/users';
 import EmojiPicker from 'fusion/popovers/emoji_picker';
+import {useDialogs} from 'fusion/shell/dialogs_context';
 import {useSettings} from 'fusion/shell/settings_context';
 import {useToast} from 'fusion/shell/toast_context';
 import {am} from 'fusion/utils/class_names';
@@ -106,10 +109,16 @@ export default function StatusPopover({anchor, onClose}: Props) {
     const {formatMessage} = intl;
     const dispatch = useDispatch();
     const settings = useSettings();
+    const dialogs = useDialogs();
     const toast = useToast();
     const me = useSelector(getCurrentUser);
     const name = useDisplayName(me);
     const status = useUserStatus(me?.id);
+
+    // Focus mode: Do not disturb until a time, started and ended here (and nowhere else).
+    const focusUntil = useMyFocusUntil();
+    const focusLabel = useFocusLabel(focusUntil);
+    const focusTime = useFocusTime(focusUntil);
     const dndEndTime = useSelector((state: GlobalState) => (me ? getDndEndTimeForUserId(state, me.id) : 0));
     const getCustomStatus = useMemo(() => makeGetCustomStatus(), []);
     const custom = useSelector((state: GlobalState) => getCustomStatus(state, me?.id));
@@ -175,6 +184,15 @@ export default function StatusPopover({anchor, onClose}: Props) {
         dispatch(setCustomStatus({emoji: emoji || 'speech_balloon', text: text.trim(), duration: CustomStatusDuration.DATE_AND_TIME, expires_at: iso}));
     };
 
+    // The time a focus has left, in minutes, or hours and minutes.
+    const focusLeft = (until: number) => {
+        const minutes = Math.max(1, Math.ceil((until - Date.now()) / 6e4));
+        if (minutes < 60) {
+            return formatMessage({id: 'fusion.focus.leftMinutes', defaultMessage: '{minutes} min left', description: 'Status menu, while in focus mode: the minutes it has left.'}, {minutes});
+        }
+        return formatMessage({id: 'fusion.focus.leftHours', defaultMessage: '{hours} h {minutes} min left', description: 'Status menu, while in focus mode: the hours and minutes it has left.'}, {hours: Math.floor(minutes / 60), minutes: minutes % 60});
+    };
+
     const choose = (s: string, endTime = 0) => {
         dispatch(setStatus({user_id: me.id, status: s, dnd_end_time: endTime}));
         toast(formatMessage({id: 'fusion.toast.status', defaultMessage: 'Status set to {status}'}, {status: label(s)}));
@@ -200,7 +218,7 @@ export default function StatusPopover({anchor, onClose}: Props) {
                         {name}
                         <StatusEmoji userId={me.id}/>
                     </b>
-                    <span>{`@${me.username} · ${label(status)}${status === 'dnd' && dndEndTime > 0 ? ' · ' + formatMessage({id: 'fusion.status.until', defaultMessage: 'until {time}'}, {time: intl.formatDate(dndEndTime * 1000, {weekday: 'short', hour: 'numeric', minute: '2-digit'})}) : ''}`}</span>
+                    <span>{focusLabel ? `@${me.username} · ${focusLabel}` : `@${me.username} · ${label(status)}${status === 'dnd' && dndEndTime > 0 ? ' · ' + formatMessage({id: 'fusion.status.until', defaultMessage: 'until {time}'}, {time: intl.formatDate(dndEndTime * 1000, {weekday: 'short', hour: 'numeric', minute: '2-digit'})}) : ''}`}</span>
                 </div>
             </div>
             <form
@@ -446,7 +464,8 @@ export default function StatusPopover({anchor, onClose}: Props) {
                     </button>
                 )}
                 {STATUSES.map((s) => {
-                    const on = status === s.status;
+                    // While focusing, the focus row is the one on, not Do not disturb.
+                    const on = status === s.status && !(focusUntil && s.status === 'dnd');
                     const option = (
                         <button
                             className={am('sp-opt', {on})}
@@ -508,6 +527,30 @@ export default function StatusPopover({anchor, onClose}: Props) {
                         </div>
                     );
                 })}
+                <button
+                    className={am('sp-opt', 'sp-focus', {on: Boolean(focusUntil)})}
+                    aria-pressed={Boolean(focusUntil)}
+                    onClick={() => {
+                        if (focusUntil) {
+                            Client4.endFocus().catch(() => toast(formatMessage({id: 'fusion.focus.endFailed', defaultMessage: 'Focus mode couldn\'t be ended', description: 'Toast when ending focus mode from the status menu failed.'})));
+                        } else {
+                            dialogs.focus();
+                        }
+                        onClose();
+                    }}
+                >
+                    <span className={am('status-dot', 'focus')}/>
+                    <span className={am('grow')}>
+                        <b>{focusUntil ? formatMessage({id: 'fusion.focus.end', defaultMessage: 'End focus', description: 'Status menu (your avatar), while in focus mode: ends it now.'}) : formatMessage({id: 'fusion.focus.menu', defaultMessage: 'Focus mode…', description: 'Status menu (your avatar): opens the dialog to start focus mode (Do not disturb for a while, with a reason).'})}</b>
+                        <span>{focusUntil ? `${focusLeft(focusUntil)} · ${formatMessage({id: 'fusion.focus.untilShort', defaultMessage: 'until {time}', description: 'Status menu, while in focus mode: when it ends.'}, {time: focusTime})}` : formatMessage({id: 'fusion.focus.menuSub', defaultMessage: 'Mutes notifications and hides your unread badges for a while', description: 'Status menu (your avatar): under "Focus mode…", what it does.'})}</span>
+                    </span>
+                    {focusUntil > 0 && (
+                        <Icon
+                            name='check'
+                            size='sm'
+                        />
+                    )}
+                </button>
             </div>
             <div className={am('sp-links')}>
                 <button

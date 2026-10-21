@@ -14,6 +14,7 @@ import {useIsVoiceChannel} from 'fusion/calls/hooks';
 import {CallLiveMarker} from 'fusion/calls/markers';
 import VoiceChannelRow from 'fusion/calls/voice_channel_row';
 import Icon from 'fusion/components/icon';
+import {useShownUnread} from 'fusion/focus/focus';
 import ChannelMenu from 'fusion/popovers/channel_menu';
 import {useLayout} from 'fusion/shell/layout_context';
 import {am} from 'fusion/utils/class_names';
@@ -40,7 +41,7 @@ export default function ChannelRow({channelId, collapsed}: Props) {
     const channel = useSelector((state: GlobalState) => getChannel(state, channelId));
     const team = useSelector(getCurrentTeam);
     const active = useSelector(getCurrentChannelId) === channelId;
-    const unread = useSelector((state: GlobalState) => getUnreadCount(state, channelId));
+    const unread = useShownUnread(useSelector((state: GlobalState) => getUnreadCount(state, channelId)));
     const muted = useSelector((state: GlobalState) => isChannelMuted(getMyChannelMembership(state, channelId)));
     const hideMuted = useSelector((state: GlobalState) => Boolean(team && isHidingMutedChannels(state, team.id)));
 

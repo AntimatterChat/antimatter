@@ -9,6 +9,7 @@ import {getCurrentChannelId} from 'mattermost-redux/selectors/entities/channels'
 import {getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
 
 import Icon from 'fusion/components/icon';
+import {useHideUnreads} from 'fusion/focus/focus';
 import {useReducedMotion} from 'fusion/hooks/media';
 import {getUnreadDirectChannels} from 'fusion/selectors';
 import {isPhoneLayout, useLayout} from 'fusion/shell/layout_context';
@@ -24,6 +25,8 @@ import type {GlobalState} from 'types/store';
 // How many unread conversations the rail shows at most.
 const MAX_BUBBLES = 5;
 
+const NO_DMS: ReturnType<typeof getUnreadDirectChannels> = [];
+
 // RailDirectMessages sits at the bottom of the team rail, above search: the direct messages waiting for you, as round
 // faces with their counts, under a small chat bubble that opens the list of all the direct messages. Without any, the
 // chat bubble is a rail bubble of its own; it shrinks to the small icon, or grows back, with an animation (none with
@@ -35,7 +38,11 @@ export default function RailDirectMessages() {
     const {formatMessage} = useIntl();
     const layout = useLayout();
     const still = useReducedMotion();
-    const unreadDMs = useSelector(getUnreadDirectChannels);
+    const allUnreadDMs = useSelector(getUnreadDirectChannels);
+
+    // None waits on the rail while your unread badges hide (focus mode).
+    const hideUnreads = useHideUnreads();
+    const unreadDMs = hideUnreads ? NO_DMS : allUnreadDMs;
     const currentChannelId = useSelector(getCurrentChannelId);
     const currentTeam = useSelector(getCurrentTeam);
     const getDockChannelIds = useMemo(() => makeGetDockChannelIds(), []);

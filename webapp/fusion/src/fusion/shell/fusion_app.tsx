@@ -27,6 +27,8 @@ import {useOpenVoiceChat} from 'fusion/calls/voice_chat';
 import {IconSprite} from 'fusion/components/icon';
 import {LAYER_ID} from 'fusion/components/layer';
 import Toasts from 'fusion/components/toast';
+import {useHideUnreads} from 'fusion/focus/focus';
+import FocusSummaryHost from 'fusion/focus/focus_summary';
 import {isPhone} from 'fusion/hooks/media';
 import MemberList from 'fusion/members/member_list';
 import ServerRail from 'fusion/rail/server_rail';
@@ -74,6 +76,9 @@ function Frame({children}: Props) {
     const settings = useSettings();
     const teamId = useSelector(getCurrentTeamId);
     const voiceChat = useOpenVoiceChat();
+
+    // Focus mode hides your unread marks, in the tab's title and icon and the desktop app's badge too.
+    const hideUnreads = useHideUnreads();
 
     // The home's pages (drafts, scheduled messages, recaps, threads) belong to no channel: no member list beside them.
     const onPage = Boolean(useRouteMatch({path: `/:team/(drafts|${SCHEDULED_POST_URL_SUFFIX}|recaps|threads)`}));
@@ -230,7 +235,10 @@ function Frame({children}: Props) {
             <TeamSetupHost/>
 
             {/* The tab's title and icon tell about unread messages and mentions, as in the classic web app. */}
-            <UnreadsStatusHandler/>
+            <UnreadsStatusHandler hideUnreads={hideUnreads}/>
+
+            {/* What you missed, when a focus of yours ends. */}
+            <FocusSummaryHost/>
         </>
     );
 }

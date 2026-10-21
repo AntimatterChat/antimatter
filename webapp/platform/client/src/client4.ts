@@ -50,6 +50,7 @@ import type {
     PreviewModalContentData,
 } from '@mattermost/types/cloud';
 import type {CommunityRules, CommunityRulesRequest, CommunityRulesStats} from '@mattermost/types/community_rules';
+import type {FocusRequest, FocusState, FocusSummary} from '@mattermost/types/focus';
 import type {Compliance} from '@mattermost/types/compliance';
 import type {
     ClientConfig,
@@ -4843,6 +4844,47 @@ export default class Client4 {
         return this.doFetch<CommunityRulesStats>(
             `${this.getTeamRoute(teamId)}/rules/stats`,
             {method: 'get'},
+        );
+    };
+
+    // Antimatter: your focus mode, current or last.
+    getFocus = () => {
+        return this.doFetch<FocusState>(
+            `${this.getUserRoute('me')}/focus`,
+            {method: 'get'},
+        );
+    };
+
+    // Antimatter: starts focus mode (Do not disturb until the end, the reason as your custom status), or changes its
+    // end and reason while you focus.
+    startFocus = (request: FocusRequest) => {
+        return this.doFetch<FocusState>(
+            `${this.getUserRoute('me')}/focus`,
+            {method: 'post', body: JSON.stringify(request)},
+        );
+    };
+
+    // Antimatter: ends focus mode now.
+    endFocus = () => {
+        return this.doFetch<FocusState>(
+            `${this.getUserRoute('me')}/focus`,
+            {method: 'delete'},
+        );
+    };
+
+    // Antimatter: what you missed between since and until (milliseconds).
+    getFocusSummary = (since: number, until: number) => {
+        return this.doFetch<FocusSummary>(
+            `${this.getUserRoute('me')}/focus/summary${buildQueryString({since, until})}`,
+            {method: 'get'},
+        );
+    };
+
+    // Antimatter: marks what you missed between since and until read, up to until only.
+    markFocusSummaryRead = (since: number, until: number) => {
+        return this.doFetch<StatusOK>(
+            `${this.getUserRoute('me')}/focus/summary/read`,
+            {method: 'post', body: JSON.stringify({since, until})},
         );
     };
 
