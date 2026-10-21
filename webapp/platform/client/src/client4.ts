@@ -50,7 +50,6 @@ import type {
     PreviewModalContentData,
 } from '@mattermost/types/cloud';
 import type {CommunityRules, CommunityRulesRequest, CommunityRulesStats} from '@mattermost/types/community_rules';
-import type {FocusRequest, FocusState, FocusSummary} from '@mattermost/types/focus';
 import type {Compliance} from '@mattermost/types/compliance';
 import type {
     ClientConfig,
@@ -75,6 +74,7 @@ import type {Draft} from '@mattermost/types/drafts';
 import type {CustomEmoji} from '@mattermost/types/emojis';
 import type {ServerError} from '@mattermost/types/errors';
 import type {FileInfo, FileUploadResponse, FileSearchResults} from '@mattermost/types/files';
+import type {FocusRequest, FocusState, FocusSummary} from '@mattermost/types/focus';
 import type {SystemSetting} from '@mattermost/types/general';
 import type {
     Group,
