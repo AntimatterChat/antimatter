@@ -4,11 +4,11 @@
 package app
 
 import (
+	"cmp"
 	"context"
 	"fmt"
 	"regexp"
 	"slices"
-	"sort"
 	"strings"
 	"time"
 
@@ -588,7 +588,7 @@ func (a *App) buildAgentConversation(rctx request.CTX, agent *model.AIAgent, bot
 				}
 				posts = append(posts, p)
 			}
-			sort.Slice(posts, func(i, j int) bool { return posts[i].CreateAt < posts[j].CreateAt })
+			slices.SortFunc(posts, func(x, y *model.Post) int { return cmp.Compare(x.CreateAt, y.CreateAt) })
 			if len(posts) > agentConversationMaxPosts {
 				posts = posts[len(posts)-agentConversationMaxPosts:]
 			}

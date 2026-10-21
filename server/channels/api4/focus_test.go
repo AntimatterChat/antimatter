@@ -78,15 +78,16 @@ func TestFocusAPI(t *testing.T) {
 		_, _, err := th.Client.StartFocus(ctx, model.Me, &model.FocusRequest{Duration: "1h", Reason: "Private"})
 		require.NoError(t, err)
 		defer func() {
-			_, _, err := th.Client.EndFocus(ctx, model.Me)
-			require.NoError(t, err)
+			_, _, endErr := th.Client.EndFocus(ctx, model.Me)
+			require.NoError(t, endErr)
 		}()
 
 		other := th.CreateClient()
 		th.LoginBasic2WithClient(t, other)
 		now := model.GetMillis()
 		for name, client := range map[string]*model.Client4{"another user": other, "a system admin": th.SystemAdminClient} {
-			_, resp, err := client.GetFocus(ctx, me.Id)
+			var resp *model.Response
+			_, resp, err = client.GetFocus(ctx, me.Id)
 			require.Error(t, err, name)
 			CheckForbiddenStatus(t, resp)
 			_, resp, err = client.StartFocus(ctx, me.Id, &model.FocusRequest{Duration: "2h"})
@@ -194,8 +195,8 @@ func TestFocusAPI(t *testing.T) {
 		started, _, err := th.Client.StartFocus(ctx, model.Me, &model.FocusRequest{Duration: "1h"})
 		require.NoError(t, err)
 		post := func(channelID, message string) *model.Post {
-			p, _, err := other.CreatePost(ctx, &model.Post{ChannelId: channelID, Message: message})
-			require.NoError(t, err)
+			p, _, postErr := other.CreatePost(ctx, &model.Post{ChannelId: channelID, Message: message})
+			require.NoError(t, postErr)
 			return p
 		}
 		post(th.BasicChannel.Id, "one")

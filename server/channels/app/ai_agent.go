@@ -548,10 +548,8 @@ func (a *App) aiAgentAllows(rctx request.CTX, agent *model.AIAgent, user *model.
 	if agent.Access.Everyone {
 		return nil
 	}
-	for _, id := range agent.Access.UserIDs {
-		if id == user.Id {
-			return nil
-		}
+	if slices.Contains(agent.Access.UserIDs, user.Id) {
+		return nil
 	}
 	for _, id := range agent.Access.TeamIDs {
 		if member, appErr := a.GetTeamMember(rctx, id, user.Id); appErr == nil && member.DeleteAt == 0 {

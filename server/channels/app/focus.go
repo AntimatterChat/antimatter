@@ -7,7 +7,7 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
-	"sort"
+	"slices"
 	"strconv"
 	"time"
 
@@ -318,7 +318,7 @@ func (a *App) GetFocusSummary(rctx request.CTX, userID string, window *model.Foc
 			return 2
 		}
 	}
-	sort.SliceStable(summary.Channels, func(i, j int) bool { return rank(summary.Channels[i]) < rank(summary.Channels[j]) })
+	slices.SortStableFunc(summary.Channels, func(x, y *model.FocusSummaryChannel) int { return rank(x) - rank(y) })
 	return summary, nil
 }
 

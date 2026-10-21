@@ -145,11 +145,11 @@ func TestAgentsFromBotsMigration(t *testing.T) {
 	require.NoError(t, th.App.Srv().doAgentsFromBotsMigration())
 
 	for _, bot := range []*model.Bot{configured, custom, unknown} {
-		got, appErr := th.App.GetBot(th.Context, bot.UserId, false)
-		require.Nil(t, appErr)
+		got, getErr := th.App.GetBot(th.Context, bot.UserId, false)
+		require.Nil(t, getErr)
 		assert.Equal(t, model.BotKindAgent, got.Kind, "the plugin's bot %s is an agent", bot.Username)
-		user, appErr := th.App.GetUser(th.Context, bot.UserId)
-		require.Nil(t, appErr)
+		user, getErr := th.App.GetUser(th.Context, bot.UserId)
+		require.Nil(t, getErr)
 		assert.True(t, user.IsAgent, "and its account says so")
 	}
 	got, appErr := th.App.GetBot(th.Context, plain.UserId, false)
