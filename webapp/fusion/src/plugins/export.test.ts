@@ -125,6 +125,13 @@ describe('window.Components exposes ABAC policy editors', () => {
     });
 });
 
+// Antimatter: apps' side panels (the AI chat) draw conversations with Fusion's own pieces.
+describe('window.Components lends Fusion\'s conversation pieces to apps', () => {
+    test.each(['FusionConversation', 'FusionComposer', 'FusionAgentActivity'])('%s is defined', (name) => {
+        expect(typeof (window as any).Components[name]).toBe('function');
+    });
+});
+
 describe('window.WebappUtils.channels exposes channel actions', () => {
     test('favoriteChannel is defined', () => {
         expect((window as any).WebappUtils.channels.favoriteChannel).toBeDefined();

@@ -102,12 +102,14 @@ describe('components/global/GlobalHeader', () => {
         expect(screen.getByRole('banner')).toBeInTheDocument();
     });
 
-    test('should pass the current product id to each of the controls', () => {
+    // Antimatter: the left controls have no product menu any more, so only the centre and right ones take the id.
+    test('should pass the current product id to the centre and right controls', () => {
         jest.spyOn(productUtils, 'useCurrentProductId').mockReturnValue('product_id');
 
         renderWithContext(<GlobalHeader/>, loggedInState);
 
         expect(screen.getByRole('banner')).toBeInTheDocument();
-        expect(screen.getAllByText('product_id')).toHaveLength(3);
+        expect(screen.getAllByText('product_id')).toHaveLength(2);
+        expect(document.getElementById('mock-left-controls')?.textContent).toBe('');
     });
 });

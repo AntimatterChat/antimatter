@@ -9,19 +9,19 @@ import {renderWithContext, screen} from 'tests/react_testing_utils';
 import {TestHelper} from 'utils/test_helper';
 
 import type {GlobalState} from 'types/store';
-import type {ProductComponent, ProductSwitcherMenuItemRegistration} from 'types/store/plugins';
+import type {ProductComponent} from 'types/store/plugins';
 
-import LeftControls, {hasProductSwitcherEntries} from './left_controls';
+import LeftControls from './left_controls';
 
 jest.mock('@mattermost/shared/utils/user_agent', () => ({
     ...jest.requireActual('@mattermost/shared/utils/user_agent'),
     isDesktopApp: jest.fn(() => false),
 }));
 
-// Antimatter: no Antimatter app has a page of its own any more (Kanban and Playbooks are apps of the side panel), so
-// the product menu only shows when an app still registers one, or adds an entry to the menu.
+// Antimatter: Fusion has no product menu (the app switcher), whatever the apps register; the classic web app keeps its
+// own (see webapp/channels).
 describe('components/global_header/left_controls', () => {
-    const state = (plugins: {Product?: ProductComponent[]; ProductSwitcherMenuItem?: ProductSwitcherMenuItemRegistration[]} = {}): DeepPartial<GlobalState> => ({
+    const state = (products: ProductComponent[] = []): DeepPartial<GlobalState> => ({
         entities: {
             general: {config: {}},
             users: {
@@ -35,16 +35,13 @@ describe('components/global_header/left_controls', () => {
         },
         plugins: {
             components: {
-                Product: plugins.Product ?? [],
-                ProductSwitcherMenuItem: plugins.ProductSwitcherMenuItem ?? [],
+                Product: products,
             },
         },
     });
 
-    const product = TestHelper.makeProduct('Agents');
-
-    test('has no product menu when no app registers a product', () => {
-        renderWithContext(<LeftControls productId={null}/>, state());
+    test('has no product menu', () => {
+        renderWithContext(<LeftControls/>, state());
 
         expect(screen.queryByRole('button', {name: 'Open product menu'})).not.toBeInTheDocument();
 
@@ -52,24 +49,10 @@ describe('components/global_header/left_controls', () => {
         expect(screen.getByRole('heading', {name: 'Channels'})).toBeInTheDocument();
     });
 
-    test('has the product menu while an app registers a product', () => {
-        renderWithContext(<LeftControls productId={null}/>, state({Product: [product]}));
+    test('has none either while an app still registers a product', () => {
+        renderWithContext(<LeftControls/>, state([TestHelper.makeProduct('Agents')]));
 
-        expect(screen.getByRole('button', {name: 'Open product menu'})).toBeInTheDocument();
-    });
-
-    test('has the product menu while an app adds an entry to it', () => {
-        const item = {id: 'item', pluginId: 'plugin', text: 'Item', action: jest.fn()} as unknown as ProductSwitcherMenuItemRegistration;
-        renderWithContext(<LeftControls productId={null}/>, state({ProductSwitcherMenuItem: [item]}));
-
-        expect(screen.getByRole('button', {name: 'Open product menu'})).toBeInTheDocument();
-    });
-
-    test.each([
-        [{}, false],
-        [{Product: [product]}, true],
-        [{ProductSwitcherMenuItem: [{id: 'item'} as ProductSwitcherMenuItemRegistration]}, true],
-    ])('hasProductSwitcherEntries(%o) is %s', (plugins, expected) => {
-        expect(hasProductSwitcherEntries({plugins: {components: plugins}} as unknown as GlobalState)).toBe(expected);
+        expect(screen.queryByRole('button', {name: 'Open product menu'})).not.toBeInTheDocument();
+        expect(document.getElementById('switchProductMenuButton')).toBeNull();
     });
 });

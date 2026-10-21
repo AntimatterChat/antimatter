@@ -5179,7 +5179,6 @@
   "onboardingTask.checklist.task_start_enterprise_trial": "Learn more about Enterprise-level high-security features",
   "onboardingTask.completeYourProfileTour.Description": "Use this menu item to update your profile details and security settings.",
   "onboardingTask.completeYourProfileTour.title": "Edit your profile",
-  "onboardingTask.visitSystemConsole.title": "Visit the System Console",
   "onboardingTour.ChannelsAndDirectMessagesTour.channels": "Channels are where you can communicate with your team about a topic or project.",
   "onboardingTour.ChannelsAndDirectMessagesTour.directMessages": "<b>Direct messages</b> are for private conversations between individuals or small groups.",
   "onboardingTour.ChannelsAndDirectMessagesTour.firstChannel": "Hey look, there’s your **{firstChannelName}** channel! ",

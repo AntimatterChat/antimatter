@@ -86,7 +86,6 @@ export type PluginsState = {
         ComposerMode: ComposerModeRegistration[];
         EmojiPickerTab: EmojiPickerTabRegistration[];
         IntegrationsOption: IntegrationsOptionRegistration[];
-        ProductSwitcherMenuItem: ProductSwitcherMenuItemRegistration[];
         FilesWillUploadHook: FilesWillUploadHook[];
         DesktopNotificationHooks: DesktopNotificationHook[];
         MessageWillFormat: MessageWillFormatHook[];
@@ -629,13 +628,6 @@ export type EmojiPickerTabRegistration = PluginComponent & {
 
     /** Whether the tab replaces the core GIF picker (Giphy), which is hidden while the tab shows. */
     replacesGifPicker: boolean;
-};
-
-export type ProductSwitcherMenuItemRegistration = PluginComponent & {
-    text: string;
-    icon: IconGlyphTypes | React.ReactNode;
-    action: () => void;
-    isHidden?: (state: GlobalState) => boolean;
 };
 
 export type ChannelTypeOptionComponent = PluginComponent & {

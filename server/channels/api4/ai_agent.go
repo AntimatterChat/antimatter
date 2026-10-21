@@ -6,6 +6,7 @@ package api4
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 
 	"github.com/gorilla/mux"
 
@@ -27,6 +28,8 @@ func (api *API) InitAIAgents() {
 	agents.Handle("/connections", api.APISessionRequired(getAIAgentConnections)).Methods(http.MethodGet)
 	agents.Handle("/connections/{connection_id:[A-Za-z0-9]+}/models", api.APISessionRequired(getAIAgentConnectionModels)).Methods(http.MethodGet)
 	agents.Handle("/activity/ids", api.APISessionRequired(getAgentActivitiesByIds)).Methods(http.MethodPost)
+	// The AI chat: the person's conversations with the agents they may use.
+	agents.Handle("/conversations", api.APISessionRequired(getAIAgentConversations)).Methods(http.MethodGet)
 
 	agent := agents.PathPrefix("/{agent_id:[A-Za-z0-9]+}").Subrouter()
 	agent.Handle("", api.APISessionRequired(getAIAgent)).Methods(http.MethodGet)
@@ -36,6 +39,8 @@ func (api *API) InitAIAgents() {
 	agent.Handle("/disable", api.APISessionRequired(disableAIAgent)).Methods(http.MethodPost)
 	agent.Handle("/activity", api.APISessionRequired(getAgentActivity)).Methods(http.MethodGet)
 	agent.Handle("/activity", api.APISessionRequired(setAgentActivity)).Methods(http.MethodPut)
+	// The AI chat and the message actions: ask the agent for a task (a summary...), as the session's person.
+	agent.Handle("/tasks", api.APISessionRequired(startAIAgentTask)).Methods(http.MethodPost)
 }
 
 // aiAgentScopePermission is the permission that manages a scope's agents, for the error message.
@@ -349,4 +354,70 @@ func getAgentActivitiesByIds(c *Context, w http.ResponseWriter, r *http.Request)
 		return
 	}
 	writeJSON(c, w, activities)
+}
+
+// getAIAgentConversations lists the session's person's conversations with agents (one agent's with agent_id), the
+// most recent first, before the "before" cursor (milliseconds).
+func getAIAgentConversations(c *Context, w http.ResponseWriter, r *http.Request) {
+	query := r.URL.Query()
+	agentID := query.Get("agent_id")
+	if agentID != "" && !model.IsValidId(agentID) {
+		c.SetInvalidParam("agent_id")
+		return
+	}
+	var before int64
+	if v := query.Get("before"); v != "" {
+		n, err := strconv.ParseInt(v, 10, 64)
+		if err != nil || n < 0 {
+			c.SetInvalidParam("before")
+			return
+		}
+		before = n
+	}
+	perPage := model.AIAgentConversationsPerPage
+	if v := query.Get("per_page"); v != "" {
+		n, err := strconv.Atoi(v)
+		if err != nil || n <= 0 || n > model.AIAgentConversationsMaxPerPage {
+			c.SetInvalidParam("per_page")
+			return
+		}
+		perPage = n
+	}
+	conversations, appErr := c.App.GetAIAgentConversations(c.AppContext, c.AppContext.Session().UserId, agentID, before, perPage)
+	if appErr != nil {
+		c.Err = appErr
+		return
+	}
+	writeJSON(c, w, conversations)
+}
+
+// startAIAgentTask asks an agent for a task, for the session's person: it answers in their direct message with it.
+// The answer is the person's message that asks for it (the conversation's first message).
+func startAIAgentTask(c *Context, w http.ResponseWriter, r *http.Request) {
+	auditRec := c.MakeAuditRecord(model.AuditEventStartAIAgentTask, model.AuditStatusFail)
+	defer c.LogAuditRec(auditRec)
+
+	agent := requestedAIAgent(c, r)
+	if agent == nil {
+		return
+	}
+	var req model.AIAgentTaskRequest
+	if err := json.NewDecoder(http.MaxBytesReader(w, r.Body, 16*1024)).Decode(&req); err != nil {
+		c.SetInvalidParamWithErr("task", err)
+		return
+	}
+	model.AddEventParameterToAuditRec(auditRec, "agent_id", agent.UserId)
+	model.AddEventParameterToAuditRec(auditRec, "task", req.Task)
+	model.AddEventParameterToAuditRec(auditRec, "post_id", req.PostId)
+	model.AddEventParameterToAuditRec(auditRec, "channel_id", req.ChannelId)
+
+	post, appErr := c.App.StartAIAgentTask(c.AppContext, *c.AppContext.Session(), agent, &req)
+	if appErr != nil {
+		c.Err = appErr
+		return
+	}
+	model.AddEventParameterToAuditRec(auditRec, "request_post_id", post.Id)
+	auditRec.Success()
+	w.WriteHeader(http.StatusCreated)
+	writeJSON(c, w, post)
 }
