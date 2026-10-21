@@ -3,7 +3,7 @@
 
 import {DateTime} from 'luxon';
 import React, {useState} from 'react';
-import {useIntl} from 'react-intl';
+import {defineMessage, useIntl} from 'react-intl';
 
 import type {FocusRequest} from '@mattermost/types/focus';
 
@@ -24,16 +24,16 @@ const MIN_FOCUS = 6e4;
 type Choice = {key: string; duration?: string; minutes?: number; label: {id: string; defaultMessage: string; description: string}};
 
 export const FOCUS_DURATIONS: Choice[] = [
-    {key: '15m', duration: '15m', minutes: 15, label: {id: 'fusion.focus.for15m', defaultMessage: '15 min', description: 'Focus mode dialog: a duration chip, focus for 15 minutes.'}},
-    {key: '30m', duration: '30m', minutes: 30, label: {id: 'fusion.focus.for30m', defaultMessage: '30 min', description: 'Focus mode dialog: a duration chip, focus for 30 minutes.'}},
-    {key: '1h', duration: '1h', minutes: 60, label: {id: 'fusion.focus.for1h', defaultMessage: '1 h', description: 'Focus mode dialog: a duration chip, focus for 1 hour.'}},
-    {key: '2h', duration: '2h', minutes: 120, label: {id: 'fusion.focus.for2h', defaultMessage: '2 h', description: 'Focus mode dialog: a duration chip, focus for 2 hours.'}},
-    {key: '3h', duration: '3h', minutes: 180, label: {id: 'fusion.focus.for3h', defaultMessage: '3 h', description: 'Focus mode dialog: a duration chip, focus for 3 hours.'}},
-    {key: '4h', duration: '4h', minutes: 240, label: {id: 'fusion.focus.for4h', defaultMessage: '4 h', description: 'Focus mode dialog: a duration chip, focus for 4 hours.'}},
-    {key: '5h', duration: '5h', minutes: 300, label: {id: 'fusion.focus.for5h', defaultMessage: '5 h', description: 'Focus mode dialog: a duration chip, focus for 5 hours.'}},
-    {key: '6h', duration: '6h', minutes: 360, label: {id: 'fusion.focus.for6h', defaultMessage: '6 h', description: 'Focus mode dialog: a duration chip, focus for 6 hours.'}},
-    {key: 'tomorrow', duration: 'tomorrow', label: {id: 'fusion.focus.tomorrow', defaultMessage: 'Until tomorrow', description: 'Focus mode dialog: a duration chip, focus until 9:00 the next morning in your timezone.'}},
-    {key: 'custom', label: {id: 'fusion.focus.custom', defaultMessage: 'Custom', description: 'Focus mode dialog: a duration chip that shows a date and time field to choose when the focus ends.'}},
+    {key: '15m', duration: '15m', minutes: 15, label: defineMessage({id: 'fusion.focus.for15m', defaultMessage: '15 min', description: 'Focus mode dialog: a duration chip, focus for 15 minutes.'})},
+    {key: '30m', duration: '30m', minutes: 30, label: defineMessage({id: 'fusion.focus.for30m', defaultMessage: '30 min', description: 'Focus mode dialog: a duration chip, focus for 30 minutes.'})},
+    {key: '1h', duration: '1h', minutes: 60, label: defineMessage({id: 'fusion.focus.for1h', defaultMessage: '1 h', description: 'Focus mode dialog: a duration chip, focus for 1 hour.'})},
+    {key: '2h', duration: '2h', minutes: 120, label: defineMessage({id: 'fusion.focus.for2h', defaultMessage: '2 h', description: 'Focus mode dialog: a duration chip, focus for 2 hours.'})},
+    {key: '3h', duration: '3h', minutes: 180, label: defineMessage({id: 'fusion.focus.for3h', defaultMessage: '3 h', description: 'Focus mode dialog: a duration chip, focus for 3 hours.'})},
+    {key: '4h', duration: '4h', minutes: 240, label: defineMessage({id: 'fusion.focus.for4h', defaultMessage: '4 h', description: 'Focus mode dialog: a duration chip, focus for 4 hours.'})},
+    {key: '5h', duration: '5h', minutes: 300, label: defineMessage({id: 'fusion.focus.for5h', defaultMessage: '5 h', description: 'Focus mode dialog: a duration chip, focus for 5 hours.'})},
+    {key: '6h', duration: '6h', minutes: 360, label: defineMessage({id: 'fusion.focus.for6h', defaultMessage: '6 h', description: 'Focus mode dialog: a duration chip, focus for 6 hours.'})},
+    {key: 'tomorrow', duration: 'tomorrow', label: defineMessage({id: 'fusion.focus.tomorrow', defaultMessage: 'Until tomorrow', description: 'Focus mode dialog: a duration chip, focus until 9:00 the next morning in your timezone.'})},
+    {key: 'custom', label: defineMessage({id: 'fusion.focus.custom', defaultMessage: 'Custom', description: 'Focus mode dialog: a duration chip that shows a date and time field to choose when the focus ends.'})},
 ];
 
 // tomorrowAt9 is 09:00 tomorrow in your timezone, as the server works it out for "tomorrow".
