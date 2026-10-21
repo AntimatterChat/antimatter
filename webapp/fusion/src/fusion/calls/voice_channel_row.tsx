@@ -12,6 +12,7 @@ import {isChannelMuted} from 'mattermost-redux/utils/channel_utils';
 
 import Avatar from 'fusion/components/avatar';
 import Icon from 'fusion/components/icon';
+import {useShownUnread} from 'fusion/focus/focus';
 import {useDisplayName, useUser} from 'fusion/hooks/users';
 import ChannelMenu from 'fusion/popovers/channel_menu';
 import {useLayout} from 'fusion/shell/layout_context';
@@ -134,7 +135,7 @@ export default function VoiceChannelRow({channelId, collapsed}: Props) {
     const channel = useSelector((state: GlobalState) => getChannel(state, channelId));
     const team = useSelector(getCurrentTeam);
     const active = useSelector(getCurrentChannelId) === channelId;
-    const unread = useSelector((state: GlobalState) => getUnreadCount(state, channelId));
+    const unread = useShownUnread(useSelector((state: GlobalState) => getUnreadCount(state, channelId)));
     const muted = useSelector((state: GlobalState) => isChannelMuted(getMyChannelMembership(state, channelId)));
     const participants = useParticipants(channelId);
     const connected = useLocalCall()?.channelId === channelId;

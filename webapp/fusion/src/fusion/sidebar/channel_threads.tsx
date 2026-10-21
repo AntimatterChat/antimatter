@@ -16,19 +16,20 @@ import {getThreads} from 'mattermost-redux/selectors/entities/threads';
 import {selectPostById} from 'actions/views/rhs';
 import {getSelectedPostId} from 'selectors/rhs';
 
+import {useHideUnreads} from 'fusion/focus/focus';
 import {getThreadTitle} from 'fusion/messages/thread_title';
 import {am} from 'fusion/utils/class_names';
 import {plainText} from 'fusion/utils/plain_text';
 
 import type {GlobalState} from 'types/store';
 
-// A followed thread shows under its channel while it has unread replies, while it's open in the right panel, and
-// always when it's a topic (a named thread): topics first.
-function sidebarThreadIds(state: GlobalState, channelId: string): string[] {
+// A followed thread shows under its channel while it has unread replies (not while your unread badges hide, in focus
+// mode), while it's open in the right panel, and always when it's a topic (a named thread): topics first.
+function sidebarThreadIds(state: GlobalState, channelId: string, hideUnreads: boolean): string[] {
     const selected = getSelectedPostId(state);
     const named = (thread: UserThread) => Boolean(getThreadTitle(getPost(state, thread.id)));
     return Object.values(getThreads(state)).
-        filter((thread: UserThread) => thread.post?.channel_id === channelId && thread.is_following && (thread.unread_replies > 0 || thread.id === selected || named(thread))).
+        filter((thread: UserThread) => thread.post?.channel_id === channelId && thread.is_following && ((!hideUnreads && thread.unread_replies > 0) || thread.id === selected || named(thread))).
         sort((a, b) => Number(named(b)) - Number(named(a)) || b.last_reply_at - a.last_reply_at).
         slice(0, 8).
         map((thread) => thread.id);
@@ -42,6 +43,7 @@ function ThreadRow({threadId}: {threadId: string}) {
     const firstWords = useSelector((state: GlobalState) => plainText(getPost(state, threadId)?.message || '').slice(0, 80));
     const title = named || firstWords;
     const open = useSelector(getSelectedPostId) === threadId;
+    const hideUnreads = useHideUnreads();
     if (!thread) {
         return null;
     }
@@ -49,7 +51,7 @@ function ThreadRow({threadId}: {threadId: string}) {
     return (
         <button
             type='button'
-            className={am('ch', 'ch-thread', {active: open, unread: thread.unread_replies > 0, named: Boolean(named)})}
+            className={am('ch', 'ch-thread', {active: open, unread: thread.unread_replies > 0 && !hideUnreads, named: Boolean(named)})}
             title={name}
             aria-label={named ? formatMessage({id: 'fusion.sidebar.topicLabel', defaultMessage: 'Topic: {name}, {count, plural, one {# new reply} other {# new replies}}'}, {name, count: thread.unread_replies}) : formatMessage({id: 'fusion.sidebar.threadLabel', defaultMessage: 'Thread: {name}, {count, plural, one {# new reply} other {# new replies}}'}, {name, count: thread.unread_replies})}
             onClick={() => dispatch(selectPostById(threadId))}
@@ -59,7 +61,7 @@ function ThreadRow({threadId}: {threadId: string}) {
                 aria-hidden='true'
             />
             <span className={am('name')}>{name}</span>
-            {thread.unread_mentions > 0 && <span className={am('badge')}>{thread.unread_mentions}</span>}
+            {thread.unread_mentions > 0 && !hideUnreads && <span className={am('badge')}>{thread.unread_mentions}</span>}
         </button>
     );
 }
@@ -68,7 +70,8 @@ function ThreadRow({threadId}: {threadId: string}) {
 // with new replies, and the one open in the right panel. With collapsed reply threads only.
 export default function ChannelThreads({channelId}: {channelId: string}) {
     const crt = useSelector(isCollapsedThreadsEnabled);
-    const ids = useSelector((state: GlobalState) => (crt ? sidebarThreadIds(state, channelId) : []), shallowEqual);
+    const hideUnreads = useHideUnreads();
+    const ids = useSelector((state: GlobalState) => (crt ? sidebarThreadIds(state, channelId, hideUnreads) : []), shallowEqual);
     if (!ids.length) {
         return null;
     }

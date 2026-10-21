@@ -19,6 +19,11 @@ jest.mock('fusion/sidebar/home_sidebar', () => ({DM_FIND_ID: 'am-dm-find'}));
 jest.mock('actions/team_actions', () => ({switchTeam: jest.fn(() => ({type: 'SWITCH'})), updateTeamsOrderForUser: jest.fn(() => ({type: 'ORDER'}))}));
 jest.mock('fusion/shell/global_search_context', () => ({useGlobalSearch: () => ({open: jest.fn()})}));
 jest.mock('mattermost-redux/actions/preferences', () => ({savePreferences: jest.fn(() => ({type: 'PREFS'}))}));
+let mockTeamUnreads: [Set<string>, Map<string, number>] = [new Set(), new Map()];
+jest.mock('mattermost-redux/selectors/entities/channels', () => ({
+    ...jest.requireActual('mattermost-redux/selectors/entities/channels'),
+    getTeamsUnreadStatuses: () => mockTeamUnreads,
+}));
 
 const mockTeam = TestHelper.getTeamMock({id: 'team', name: 'antimatter', display_name: 'Antimatter'});
 const alice = TestHelper.getChannelMock({id: 'alice-dm', type: 'G', display_name: 'alice, bob'});
@@ -55,6 +60,32 @@ describe('fusion/rail/ServerRail', () => {
         }
         mockTeams = [mockTeam];
         mockUnread = [{channel: alice, mentions: 0, messages: 3}, {channel: bob, mentions: 2, messages: 5}];
+        mockTeamUnreads = [new Set(), new Map()];
+    });
+
+    test('hides a community\'s unread mark and mentions while you focus', () => {
+        mockTeams = [mockTeam, otherTeam];
+        mockTeamUnreads = [new Set([otherTeam.id]), new Map([[otherTeam.id, 4]])];
+        const rail = (until: number) => renderWithContext(
+            <ServerRail/>,
+            {
+                entities: {
+                    teams: {currentTeamId: mockTeam.id, teams: {[mockTeam.id]: mockTeam, [otherTeam.id]: otherTeam}, myMembers: {[mockTeam.id]: {team_id: mockTeam.id}, [otherTeam.id]: {team_id: otherTeam.id}}},
+                    channels: {currentChannelId: 'general', channels: {general: TestHelper.getChannelMock({id: 'general', type: 'O'})}},
+                    users: {currentUserId: 'me', profiles: {me: {id: 'me', username: 'me', props: until ? {focus_until: String(until)} : {}}}},
+                    preferences: {myPreferences: {}},
+                },
+            } as never,
+        );
+
+        const {unmount} = rail(0);
+        expect(screen.getByRole('button', {name: 'Other'})).toHaveClass('am-unread');
+        expect(screen.getByRole('button', {name: 'Other'})).toHaveTextContent('4');
+        unmount();
+
+        rail(Date.now() + 36e5);
+        expect(screen.getByRole('button', {name: 'Other'})).not.toHaveClass('am-unread');
+        expect(screen.getByRole('button', {name: 'Other'}).querySelector('.am-badge')).not.toBeInTheDocument();
     });
 
     test('starts with the teams; the direct messages are at the bottom, above search', () => {

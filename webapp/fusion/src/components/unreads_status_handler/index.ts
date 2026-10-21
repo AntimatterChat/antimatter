@@ -13,9 +13,10 @@ import {getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
 
 import UnreadsStatusHandler from './unreads_status_handler';
 
-type Props = {location: Location};
+// hideUnreads (Fusion's focus mode): no unread or mention marks in the title, the icon and the desktop app's badge.
+type Props = {location: Location; hideUnreads?: boolean};
 
-function mapStateToProps(state: GlobalState, {location: {pathname}}: Props) {
+export function mapStateToProps(state: GlobalState, {location: {pathname}, hideUnreads}: Props) {
     const config = getConfig(state);
     const currentChannel = getCurrentChannel(state);
     const currentTeammate = (currentChannel && currentChannel.teammate_id) ? currentChannel : null;
@@ -26,7 +27,7 @@ function mapStateToProps(state: GlobalState, {location: {pathname}}: Props) {
         currentTeam,
         currentTeammate,
         siteName: config.SiteName,
-        unreadStatus: getUnreadStatus(state),
+        unreadStatus: hideUnreads ? false : getUnreadStatus(state),
         inGlobalThreads: matchPath(pathname, {path: '/:team/threads/:threadIdentifier?'}) != null,
         inDrafts: matchPath(pathname, {path: '/:team/drafts'}) != null,
         inScheduledPosts: matchPath(pathname, {path: '/:team/scheduled_posts'}) != null,

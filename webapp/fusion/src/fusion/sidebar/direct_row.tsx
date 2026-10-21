@@ -21,6 +21,7 @@ import {DirectCallMarker} from 'fusion/calls/markers';
 import Avatar from 'fusion/components/avatar';
 import Icon from 'fusion/components/icon';
 import StatusEmoji from 'fusion/components/status_emoji';
+import {useShownUnread} from 'fusion/focus/focus';
 import {useLayout} from 'fusion/shell/layout_context';
 import {am} from 'fusion/utils/class_names';
 import {channelPath} from 'fusion/utils/paths';
@@ -74,7 +75,7 @@ export default function DirectRow({channel, dock, meta}: Props) {
     const team = useSelector(getCurrentTeam);
     const userId = useSelector(getCurrentUserId);
     const active = useSelector(getCurrentChannelId) === channel.id;
-    const unread = useSelector((state: GlobalState) => getUnreadCount(state, channel.id));
+    const unread = useShownUnread(useSelector((state: GlobalState) => getUnreadCount(state, channel.id)));
     const badge = unread.mentions || (unread.showUnread ? unread.messages : 0);
     const teammateId = useTeammateId(channel);
     const name = useConversationName(channel);
