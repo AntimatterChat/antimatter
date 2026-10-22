@@ -3018,15 +3018,15 @@
     "translation": "刪除前從資料庫取得存取代符時遇到錯誤。"
   },
   {
-    "id": "api.oauth.singup_with_oauth.disabled.app_error",
+    "id": "api.oauth.signup_with_oauth.disabled.app_error",
     "translation": "使用者註冊已被停用。"
   },
   {
-    "id": "api.oauth.singup_with_oauth.expired_link.app_error",
+    "id": "api.oauth.signup_with_oauth.expired_link.app_error",
     "translation": "註冊連結已過期。"
   },
   {
-    "id": "api.oauth.singup_with_oauth.invalid_link.app_error",
+    "id": "api.oauth.signup_with_oauth.invalid_link.app_error",
     "translation": "此註冊連結不是有效連結。"
   },
   {
@@ -9170,11 +9170,11 @@
     "translation": "無法刪除持續性通知訊息"
   },
   {
-    "id": "app.post_prority.get_for_post.app_error",
+    "id": "app.post_priority.get_for_post.app_error",
     "translation": "無法取得訊息的 postpriority"
   },
   {
-    "id": "app.post_prority.get_for_post_with_context.app_error",
+    "id": "app.post_priority.get_for_post_with_context.app_error",
     "translation": "無法取得訊息的 postpriority（含請求內容）"
   },
   {
@@ -9202,7 +9202,7 @@
     "translation": "更新偏好設定時遇到錯誤。"
   },
   {
-    "id": "app.prepackged-plugin.invalid_version.app_error",
+    "id": "app.prepackaged-plugin.invalid_version.app_error",
     "translation": "無法解析預先打包的擴充程式版本。"
   },
   {
@@ -12042,11 +12042,11 @@
     "translation": "目前的授權無法使用 {{.Feature}} 功能"
   },
   {
-    "id": "manaultesting.manual_test.parse.app_error",
+    "id": "manualtesting.manual_test.parse.app_error",
     "translation": "無法解析網址。"
   },
   {
-    "id": "manaultesting.test_autolink.unable.app_error",
+    "id": "manualtesting.test_autolink.unable.app_error",
     "translation": "無法取得頻道。"
   },
   {

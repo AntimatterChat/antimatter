@@ -3018,15 +3018,15 @@
     "translation": "Lỗi nhận mã thông báo truy cập từ DB trước khi xóa"
   },
   {
-    "id": "api.oauth.singup_with_oauth.disabled.app_error",
+    "id": "api.oauth.signup_with_oauth.disabled.app_error",
     "translation": "Đăng ký người dùng bị vô hiệu hóa."
   },
   {
-    "id": "api.oauth.singup_with_oauth.expired_link.app_error",
+    "id": "api.oauth.signup_with_oauth.expired_link.app_error",
     "translation": "Liên kết đăng ký đã hết hạn"
   },
   {
-    "id": "api.oauth.singup_with_oauth.invalid_link.app_error",
+    "id": "api.oauth.signup_with_oauth.invalid_link.app_error",
     "translation": "Link đăng ký không hợp lệ"
   },
   {
@@ -9170,11 +9170,11 @@
     "translation": "Không thể xóa bài đăng thông báo liên tục"
   },
   {
-    "id": "app.post_prority.get_for_post.app_error",
+    "id": "app.post_priority.get_for_post.app_error",
     "translation": "Không thể nhận được ưu tiên sau cho bài đăng"
   },
   {
-    "id": "app.post_prority.get_for_post_with_context.app_error",
+    "id": "app.post_priority.get_for_post_with_context.app_error",
     "translation": "Không thể lấy mức độ ưu tiên cho bài đăng với ngữ cảnh"
   },
   {
@@ -9202,7 +9202,7 @@
     "translation": "Chúng tôi đã gặp lỗi khi cập nhật tùy chọn."
   },
   {
-    "id": "app.prepackged-plugin.invalid_version.app_error",
+    "id": "app.prepackaged-plugin.invalid_version.app_error",
     "translation": "Không thể phân tích cú pháp phiên bản plugin đóng gói sẵn."
   },
   {
@@ -12042,11 +12042,11 @@
     "translation": "Tính năng {{.Feature}} không khả dụng với giấy phép hiện tại"
   },
   {
-    "id": "manaultesting.manual_test.parse.app_error",
+    "id": "manualtesting.manual_test.parse.app_error",
     "translation": "Không thể phân tích URL"
   },
   {
-    "id": "manaultesting.test_autolink.unable.app_error",
+    "id": "manualtesting.test_autolink.unable.app_error",
     "translation": "Không thể cập nhật kênh"
   },
   {

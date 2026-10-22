@@ -2840,15 +2840,15 @@
     "translation": "เกิดข้อผิดพลาดในการดึงโทเคนการเข้าถึงจากฐานข้อมูลก่อนการลบ"
   },
   {
-    "id": "api.oauth.singup_with_oauth.disabled.app_error",
+    "id": "api.oauth.signup_with_oauth.disabled.app_error",
     "translation": "การสมัครสมาชิกผู้ใช้ถูกปิดใช้งานแล้ว"
   },
   {
-    "id": "api.oauth.singup_with_oauth.expired_link.app_error",
+    "id": "api.oauth.signup_with_oauth.expired_link.app_error",
     "translation": "ลิงก์สมัครสมาชิกหมดอายุแล้ว"
   },
   {
-    "id": "api.oauth.singup_with_oauth.invalid_link.app_error",
+    "id": "api.oauth.signup_with_oauth.invalid_link.app_error",
     "translation": "ลิงก์สมัครสมาชิกดูเหมือนจะไม่ถูกต้อง"
   },
   {
@@ -8724,11 +8724,11 @@
     "translation": "ไม่สามารถลบข้อความการแจ้งเตือนถาวรได้"
   },
   {
-    "id": "app.post_prority.get_for_post.app_error",
+    "id": "app.post_priority.get_for_post.app_error",
     "translation": "ไม่สามารถได้อันดับความสำคญของข้อความได้"
   },
   {
-    "id": "app.post_prority.get_for_post_with_context.app_error",
+    "id": "app.post_priority.get_for_post_with_context.app_error",
     "translation": "ไม่สามารถได้อันดับความสำคญของข้อความพรอมกบบริบทได้"
   },
   {
@@ -8756,7 +8756,7 @@
     "translation": "พบข้อผดิพลาดในระหว่่งการอัปเดตการตั้่งค่า"
   },
   {
-    "id": "app.prepackged-plugin.invalid_version.app_error",
+    "id": "app.prepackaged-plugin.invalid_version.app_error",
     "translation": "ไม่สามารถอ่านเวอร์ชั่่นของปลั๊กอินที่แพ็คไว้แล้วได้"
   },
   {
@@ -11328,11 +11328,11 @@
     "translation": "ไม่สามารถตั้่งสถานะงานเป็น error ได้"
   },
   {
-    "id": "manaultesting.manual_test.parse.app_error",
+    "id": "manualtesting.manual_test.parse.app_error",
     "translation": "ไม่สามารถ parse URL ได้"
   },
   {
-    "id": "manaultesting.test_autolink.unable.app_error",
+    "id": "manualtesting.test_autolink.unable.app_error",
     "translation": "ไม่สามารถได้อัตโนมัติช่องได้"
   },
   {

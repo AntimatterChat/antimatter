@@ -2840,15 +2840,15 @@
     "translation": "Σφάλμα κατά την ανάκτηση του διαπιστευτηρίου πρόσβασης από τη βάση δεδομένων πριν από τη διαγραφή."
   },
   {
-    "id": "api.oauth.singup_with_oauth.disabled.app_error",
+    "id": "api.oauth.signup_with_oauth.disabled.app_error",
     "translation": "Η εγγραφή χρηστών είναι απενεργοποιημένη."
   },
   {
-    "id": "api.oauth.singup_with_oauth.expired_link.app_error",
+    "id": "api.oauth.signup_with_oauth.expired_link.app_error",
     "translation": "Ο σύνδεσμος εγγραφής έχει λήξει."
   },
   {
-    "id": "api.oauth.singup_with_oauth.invalid_link.app_error",
+    "id": "api.oauth.signup_with_oauth.invalid_link.app_error",
     "translation": "Ο σύνδεσμος εγγραφής δεν φαίνεται να είναι έγκυρος."
   },
   {
@@ -8724,11 +8724,11 @@
     "translation": "Αποτυχία διαγραφής μόνιμης ειδοποίησης μηνύματος"
   },
   {
-    "id": "app.post_prority.get_for_post.app_error",
+    "id": "app.post_priority.get_for_post.app_error",
     "translation": "Δεν ήταν δυνατή η λήψη προτεραιότητας μηνύματος"
   },
   {
-    "id": "app.post_prority.get_for_post_with_context.app_error",
+    "id": "app.post_priority.get_for_post_with_context.app_error",
     "translation": "Δεν ήταν δυνατή η λήψη προτεραιότητας μηνύματος με πλαίσιο"
   },
   {
@@ -8756,7 +8756,7 @@
     "translation": "Συναντήθηκε σφάλμα κατά την ενημέρωση των προτιμήσεων."
   },
   {
-    "id": "app.prepackged-plugin.invalid_version.app_error",
+    "id": "app.prepackaged-plugin.invalid_version.app_error",
     "translation": "Δεν ήταν δυνατή η ανάλυση της έκδοσης του προ-συσκευασμένου plugin."
   },
   {
@@ -11328,11 +11328,11 @@
     "translation": "Αποτυχία ορισμού της κατάστασης της εργασίας σε σφάλμα"
   },
   {
-    "id": "manaultesting.manual_test.parse.app_error",
+    "id": "manualtesting.manual_test.parse.app_error",
     "translation": "Δεν ήταν δυνατή η ανάλυση της διεύθυνσης URL."
   },
   {
-    "id": "manaultesting.test_autolink.unable.app_error",
+    "id": "manualtesting.test_autolink.unable.app_error",
     "translation": "Δεν ήταν δυνατή η λήψη των καναλιών."
   },
   {

@@ -3021,15 +3021,15 @@
     "translation": "Fel då acces-token hämtades från DB innan radering."
   },
   {
-    "id": "api.oauth.singup_with_oauth.disabled.app_error",
+    "id": "api.oauth.signup_with_oauth.disabled.app_error",
     "translation": "Funktionen för användarregistrering är avaktiverad."
   },
   {
-    "id": "api.oauth.singup_with_oauth.expired_link.app_error",
+    "id": "api.oauth.signup_with_oauth.expired_link.app_error",
     "translation": "Registreringslänken är inte längre giltig."
   },
   {
-    "id": "api.oauth.singup_with_oauth.invalid_link.app_error",
+    "id": "api.oauth.signup_with_oauth.invalid_link.app_error",
     "translation": "Registreringslänken är ogiltig."
   },
   {
@@ -9177,11 +9177,11 @@
     "translation": "Kunde inte ta bort persistent notiferingspost"
   },
   {
-    "id": "app.post_prority.get_for_post.app_error",
+    "id": "app.post_priority.get_for_post.app_error",
     "translation": "Det går inte att få fram inläggets prioritet"
   },
   {
-    "id": "app.post_prority.get_for_post_with_context.app_error",
+    "id": "app.post_priority.get_for_post_with_context.app_error",
     "translation": "Det går inte att få fram meddelandets prioritet med kontext"
   },
   {
@@ -9209,7 +9209,7 @@
     "translation": "Ett fel uppstod när inställningar uppdaterades."
   },
   {
-    "id": "app.prepackged-plugin.invalid_version.app_error",
+    "id": "app.prepackaged-plugin.invalid_version.app_error",
     "translation": "Den förpaketerade plugin-versionen kunde inte tolkas."
   },
   {
@@ -12051,11 +12051,11 @@
     "translation": "Funktionen {{.Feature}} är inte tillgänglig med den aktuella licensen"
   },
   {
-    "id": "manaultesting.manual_test.parse.app_error",
+    "id": "manualtesting.manual_test.parse.app_error",
     "translation": "Kan inte tolka URL:en."
   },
   {
-    "id": "manaultesting.test_autolink.unable.app_error",
+    "id": "manualtesting.test_autolink.unable.app_error",
     "translation": "Kan inte hämta kanaler."
   },
   {

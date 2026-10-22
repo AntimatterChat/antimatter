@@ -3021,15 +3021,15 @@
     "translation": "Erro ao obter o token de acesso do DB antes da exclusão."
   },
   {
-    "id": "api.oauth.singup_with_oauth.disabled.app_error",
+    "id": "api.oauth.signup_with_oauth.disabled.app_error",
     "translation": "Inscrição de usuário desativada."
   },
   {
-    "id": "api.oauth.singup_with_oauth.expired_link.app_error",
+    "id": "api.oauth.signup_with_oauth.expired_link.app_error",
     "translation": "O link de inscrição expirou."
   },
   {
-    "id": "api.oauth.singup_with_oauth.invalid_link.app_error",
+    "id": "api.oauth.signup_with_oauth.invalid_link.app_error",
     "translation": "O link de inscrição não parece ser válido."
   },
   {
@@ -9177,11 +9177,11 @@
     "translation": "Falha ao excluir a publicação de notificação persistente"
   },
   {
-    "id": "app.post_prority.get_for_post.app_error",
+    "id": "app.post_priority.get_for_post.app_error",
     "translation": "Não foi possível obter prioridade de publicação para a publicação"
   },
   {
-    "id": "app.post_prority.get_for_post_with_context.app_error",
+    "id": "app.post_priority.get_for_post_with_context.app_error",
     "translation": "Não foi possível obter a prioridade de publicação para a publicação com contexto"
   },
   {
@@ -9209,7 +9209,7 @@
     "translation": "Encontramos um erro enquanto atualizava as preferências."
   },
   {
-    "id": "app.prepackged-plugin.invalid_version.app_error",
+    "id": "app.prepackaged-plugin.invalid_version.app_error",
     "translation": "A versão do plug-in pré-empacotado não pôde ser analisada."
   },
   {
@@ -12051,11 +12051,11 @@
     "translation": "O recurso {{.Feature}} não está disponível para a licença atual"
   },
   {
-    "id": "manaultesting.manual_test.parse.app_error",
+    "id": "manualtesting.manual_test.parse.app_error",
     "translation": "Não é possível processar a URL."
   },
   {
-    "id": "manaultesting.test_autolink.unable.app_error",
+    "id": "manualtesting.test_autolink.unable.app_error",
     "translation": "Não é possível obter canais."
   },
   {

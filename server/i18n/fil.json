@@ -2840,15 +2840,15 @@
     "translation": "May error sa pagkuha ng access token mula sa DB bago itong tanggalin."
   },
   {
-    "id": "api.oauth.singup_with_oauth.disabled.app_error",
+    "id": "api.oauth.signup_with_oauth.disabled.app_error",
     "translation": "Hindi pinapayagan ang sign-up ng user."
   },
   {
-    "id": "api.oauth.singup_with_oauth.expired_link.app_error",
+    "id": "api.oauth.signup_with_oauth.expired_link.app_error",
     "translation": "Naubos na ang signup link."
   },
   {
-    "id": "api.oauth.singup_with_oauth.invalid_link.app_error",
+    "id": "api.oauth.signup_with_oauth.invalid_link.app_error",
     "translation": "Hindi tila wasto ang signup link."
   },
   {
@@ -8724,11 +8724,11 @@
     "translation": "Hindi matagumpay ang pagtanggal ng persistent notification post."
   },
   {
-    "id": "app.post_prority.get_for_post.app_error",
+    "id": "app.post_priority.get_for_post.app_error",
     "translation": "Hindi makuha ang post priority ng post."
   },
   {
-    "id": "app.post_prority.get_for_post_with_context.app_error",
+    "id": "app.post_priority.get_for_post_with_context.app_error",
     "translation": "Hindi makuha ang post priority ng post na may context."
   },
   {
@@ -8756,7 +8756,7 @@
     "translation": "May naregistrang error habang inu-update ang mga preference."
   },
   {
-    "id": "app.prepackged-plugin.invalid_version.app_error",
+    "id": "app.prepackaged-plugin.invalid_version.app_error",
     "translation": "Hindi ma-parse ang bersyon ng prepackaged plugin."
   },
   {
@@ -11328,11 +11328,11 @@
     "translation": "Hindi nakapag-set ng job status sa error."
   },
   {
-    "id": "manaultesting.manual_test.parse.app_error",
+    "id": "manualtesting.manual_test.parse.app_error",
     "translation": "Hindi ma-parse ang URL."
   },
   {
-    "id": "manaultesting.test_autolink.unable.app_error",
+    "id": "manualtesting.test_autolink.unable.app_error",
     "translation": "Hindi makuha ang mga Channel."
   },
   {

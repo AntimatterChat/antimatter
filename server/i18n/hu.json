@@ -3021,15 +3021,15 @@
     "translation": "Hiba történt a hozzáférési token beolvasásakor az adatbázisból történő törlés előtt."
   },
   {
-    "id": "api.oauth.singup_with_oauth.disabled.app_error",
+    "id": "api.oauth.signup_with_oauth.disabled.app_error",
     "translation": "Felhasználói regisztráció kikapcsolva."
   },
   {
-    "id": "api.oauth.singup_with_oauth.expired_link.app_error",
+    "id": "api.oauth.signup_with_oauth.expired_link.app_error",
     "translation": "A regisztrációs link lejárt."
   },
   {
-    "id": "api.oauth.singup_with_oauth.invalid_link.app_error",
+    "id": "api.oauth.signup_with_oauth.invalid_link.app_error",
     "translation": "A regisztrációs link nem tűnik érvényesnek."
   },
   {
@@ -9177,11 +9177,11 @@
     "translation": "Nem sikerült törölni a tartós értesítésű bejegyzést"
   },
   {
-    "id": "app.post_prority.get_for_post.app_error",
+    "id": "app.post_priority.get_for_post.app_error",
     "translation": "Nem sikerült lekérni a bejegyzés prioritását"
   },
   {
-    "id": "app.post_prority.get_for_post_with_context.app_error",
+    "id": "app.post_priority.get_for_post_with_context.app_error",
     "translation": "Nem sikerült lekérni a bejegyzés prioritását a kontextussal"
   },
   {
@@ -9209,7 +9209,7 @@
     "translation": "Hiba merült fel a beállítások frissítése közben."
   },
   {
-    "id": "app.prepackged-plugin.invalid_version.app_error",
+    "id": "app.prepackaged-plugin.invalid_version.app_error",
     "translation": "Az előre becsomagolt plugin verzióját nem lehetett értelmezni."
   },
   {
@@ -12051,11 +12051,11 @@
     "translation": "A(z) {{.Feature}} funkció nem érhető el a jelenlegi licenccel"
   },
   {
-    "id": "manaultesting.manual_test.parse.app_error",
+    "id": "manualtesting.manual_test.parse.app_error",
     "translation": "Nem lehet értelmezni az URL-t."
   },
   {
-    "id": "manaultesting.test_autolink.unable.app_error",
+    "id": "manualtesting.test_autolink.unable.app_error",
     "translation": "Nem lehet lekérni a csatornákat."
   },
   {

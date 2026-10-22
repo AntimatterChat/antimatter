@@ -2840,15 +2840,15 @@
     "translation": "মুছে ফেলার আগে ডাটাবেস থেকে অ্যাক্সেস টোকেন আনার সময় এরর হয়েছে।"
   },
   {
-    "id": "api.oauth.singup_with_oauth.disabled.app_error",
+    "id": "api.oauth.signup_with_oauth.disabled.app_error",
     "translation": "ইউজার সাইন-আপ বন্ধ আছে।"
   },
   {
-    "id": "api.oauth.singup_with_oauth.expired_link.app_error",
+    "id": "api.oauth.signup_with_oauth.expired_link.app_error",
     "translation": "সাইন-আপ লিংকটির মেয়াদ শেষ হয়ে গেছে।"
   },
   {
-    "id": "api.oauth.singup_with_oauth.invalid_link.app_error",
+    "id": "api.oauth.signup_with_oauth.invalid_link.app_error",
     "translation": "সাইন-আপ লিংকটি বৈধ মনে হচ্ছে না।"
   },
   {
@@ -8724,11 +8724,11 @@
     "translation": "স্থায়ী নোটিফিকেশন পোস্ট মুছে ফেলা যায়নি"
   },
   {
-    "id": "app.post_prority.get_for_post.app_error",
+    "id": "app.post_priority.get_for_post.app_error",
     "translation": "পোস্টের জন্য পোস্ট প্রায়োরিটি আনা যায়নি"
   },
   {
-    "id": "app.post_prority.get_for_post_with_context.app_error",
+    "id": "app.post_priority.get_for_post_with_context.app_error",
     "translation": "কনটেক্সটসহ পোস্টের জন্য পোস্ট প্রায়োরিটি আনা যায়নি"
   },
   {
@@ -8756,7 +8756,7 @@
     "translation": "প্রেফারেন্স আপডেট করার সময় একটি ত্রুটি দেখা দিয়েছে।"
   },
   {
-    "id": "app.prepackged-plugin.invalid_version.app_error",
+    "id": "app.prepackaged-plugin.invalid_version.app_error",
     "translation": "প্রিপ্যাকড প্লাগইনের ভার্সন পড়া যায়নি।"
   },
   {
@@ -11328,11 +11328,11 @@
     "translation": "জবের স্ট্যাটাসকে এররে সেট করা যায়নি"
   },
   {
-    "id": "manaultesting.manual_test.parse.app_error",
+    "id": "manualtesting.manual_test.parse.app_error",
     "translation": "URL পার্স করা যায়নি।"
   },
   {
-    "id": "manaultesting.test_autolink.unable.app_error",
+    "id": "manualtesting.test_autolink.unable.app_error",
     "translation": "চ্যানেলসমূহ পাওয়া যায়নি।"
   },
   {

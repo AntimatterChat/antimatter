@@ -2840,15 +2840,15 @@
     "translation": "Ralat mendapatkan token akses dari pangkalan data sebelum pemadaman."
   },
   {
-    "id": "api.oauth.singup_with_oauth.disabled.app_error",
+    "id": "api.oauth.signup_with_oauth.disabled.app_error",
     "translation": "Pendaftaran pengguna telah dilumpuhkan."
   },
   {
-    "id": "api.oauth.singup_with_oauth.expired_link.app_error",
+    "id": "api.oauth.signup_with_oauth.expired_link.app_error",
     "translation": "Pautan pendaftaran telah tamat tempoh."
   },
   {
-    "id": "api.oauth.singup_with_oauth.invalid_link.app_error",
+    "id": "api.oauth.signup_with_oauth.invalid_link.app_error",
     "translation": "Pautan pendaftaran tidak kelihatan sah."
   },
   {
@@ -8724,11 +8724,11 @@
     "translation": "Gagal memadamkan hantaran pemberitahuan kekal"
   },
   {
-    "id": "app.post_prority.get_for_post.app_error",
+    "id": "app.post_priority.get_for_post.app_error",
     "translation": "Tidak dapat mendapatkan keutamaan hantaran untuk hantaran"
   },
   {
-    "id": "app.post_prority.get_for_post_with_context.app_error",
+    "id": "app.post_priority.get_for_post_with_context.app_error",
     "translation": "Tidak dapat mendapatkan keutamaan hantaran untuk hantaran dengan konteks"
   },
   {
@@ -8756,7 +8756,7 @@
     "translation": "Kami menghadapi ralat semasa mengemas kini tetapan."
   },
   {
-    "id": "app.prepackged-plugin.invalid_version.app_error",
+    "id": "app.prepackaged-plugin.invalid_version.app_error",
     "translation": "Versi plugin prapakej tidak dapat dianalisis."
   },
   {
@@ -11328,11 +11328,11 @@
     "translation": "Gagal menetapkan status tugasan kepada ralat"
   },
   {
-    "id": "manaultesting.manual_test.parse.app_error",
+    "id": "manualtesting.manual_test.parse.app_error",
     "translation": "Tidak dapat menganalisis URL."
   },
   {
-    "id": "manaultesting.test_autolink.unable.app_error",
+    "id": "manualtesting.test_autolink.unable.app_error",
     "translation": "Tidak dapat mendapatkan saluran."
   },
   {

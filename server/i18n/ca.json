@@ -2840,15 +2840,15 @@
     "translation": "Error en obtenir el testimoni d'accés de la base de dades abans de la supressió."
   },
   {
-    "id": "api.oauth.singup_with_oauth.disabled.app_error",
+    "id": "api.oauth.signup_with_oauth.disabled.app_error",
     "translation": "El registre d'usuaris està desactivat."
   },
   {
-    "id": "api.oauth.singup_with_oauth.expired_link.app_error",
+    "id": "api.oauth.signup_with_oauth.expired_link.app_error",
     "translation": "L'enllaç de registre ha caducat."
   },
   {
-    "id": "api.oauth.singup_with_oauth.invalid_link.app_error",
+    "id": "api.oauth.signup_with_oauth.invalid_link.app_error",
     "translation": "L'enllaç de registre no sembla ser vàlid."
   },
   {
@@ -8724,11 +8724,11 @@
     "translation": "No s'ha pogut suprimir el missatge de notificació persistent"
   },
   {
-    "id": "app.post_prority.get_for_post.app_error",
+    "id": "app.post_priority.get_for_post.app_error",
     "translation": "No s'ha pogut obtenir la prioritat del missatge"
   },
   {
-    "id": "app.post_prority.get_for_post_with_context.app_error",
+    "id": "app.post_priority.get_for_post_with_context.app_error",
     "translation": "No s'ha pogut obtenir la prioritat del missatge amb context"
   },
   {
@@ -8756,7 +8756,7 @@
     "translation": "S'ha produït un error en actualitzar les preferències."
   },
   {
-    "id": "app.prepackged-plugin.invalid_version.app_error",
+    "id": "app.prepackaged-plugin.invalid_version.app_error",
     "translation": "No s'ha pogut analitzar la versió del plugin prepaquetitzat."
   },
   {
@@ -11328,11 +11328,11 @@
     "translation": "No s'ha pogut establir l'estat de la tasca com a error"
   },
   {
-    "id": "manaultesting.manual_test.parse.app_error",
+    "id": "manualtesting.manual_test.parse.app_error",
     "translation": "No s'ha pogut analitzar l'URL."
   },
   {
-    "id": "manaultesting.test_autolink.unable.app_error",
+    "id": "manualtesting.test_autolink.unable.app_error",
     "translation": "No s'han pogut obtenir els canals."
   },
   {

@@ -2840,15 +2840,15 @@
     "translation": "حذف کرنے سے پہلے ڈیٹا بیس سے ایکسیس ٹوکن حاصل کرنے میں خرابی۔"
   },
   {
-    "id": "api.oauth.singup_with_oauth.disabled.app_error",
+    "id": "api.oauth.signup_with_oauth.disabled.app_error",
     "translation": "صارف کی رجسٹریشن غیر فعال ہے۔"
   },
   {
-    "id": "api.oauth.singup_with_oauth.expired_link.app_error",
+    "id": "api.oauth.signup_with_oauth.expired_link.app_error",
     "translation": "رجسٹریشن لنک کی میعاد ختم ہو چکی ہے۔"
   },
   {
-    "id": "api.oauth.singup_with_oauth.invalid_link.app_error",
+    "id": "api.oauth.signup_with_oauth.invalid_link.app_error",
     "translation": "رجسٹریشن لنک درست نہیں لگتا۔"
   },
   {
@@ -8724,11 +8724,11 @@
     "translation": "مستقل اطلاع پوسٹ حذف کرنے میں ناکامی"
   },
   {
-    "id": "app.post_prority.get_for_post.app_error",
+    "id": "app.post_priority.get_for_post.app_error",
     "translation": "پوسٹ کے لیے پوسٹ پرائورٹی حاصل کرنے میں ناکامی"
   },
   {
-    "id": "app.post_prority.get_for_post_with_context.app_error",
+    "id": "app.post_priority.get_for_post_with_context.app_error",
     "translation": "پوسٹ کے لیے پوسٹ پرائورٹی (کونٹیکٹ کے ساتھ) حاصل کرنے میں ناکامی"
   },
   {
@@ -8756,7 +8756,7 @@
     "translation": "ترتیبات اپڈیٹ کرتے وقت ہمیں ایک خرابی کا سامنا ہوا۔"
   },
   {
-    "id": "app.prepackged-plugin.invalid_version.app_error",
+    "id": "app.prepackaged-plugin.invalid_version.app_error",
     "translation": "پری پیکیجڈ پلگ ان ورژن کو پارس نہیں کیا جا سکا۔"
   },
   {
@@ -11328,11 +11328,11 @@
     "translation": "جاب کی اسٹیٹس کو ایرر میں تبدیل کرنے میں ناکامی۔"
   },
   {
-    "id": "manaultesting.manual_test.parse.app_error",
+    "id": "manualtesting.manual_test.parse.app_error",
     "translation": "URL کو پارس کرنے میں ناکام۔"
   },
   {
-    "id": "manaultesting.test_autolink.unable.app_error",
+    "id": "manualtesting.test_autolink.unable.app_error",
     "translation": "چینلز حاصل کرنے میں ناکام۔"
   },
   {

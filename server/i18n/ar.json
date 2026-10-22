@@ -2840,15 +2840,15 @@
     "translation": "حدث خطأ أثناء جلب رمز الوصول من قاعدة البيانات قبل حذفه."
   },
   {
-    "id": "api.oauth.singup_with_oauth.disabled.app_error",
+    "id": "api.oauth.signup_with_oauth.disabled.app_error",
     "translation": "تسجيل المستخدمين معطّل."
   },
   {
-    "id": "api.oauth.singup_with_oauth.expired_link.app_error",
+    "id": "api.oauth.signup_with_oauth.expired_link.app_error",
     "translation": "انتهت صلاحية رابط التسجيل."
   },
   {
-    "id": "api.oauth.singup_with_oauth.invalid_link.app_error",
+    "id": "api.oauth.signup_with_oauth.invalid_link.app_error",
     "translation": "يبدو أن رابط التسجيل غير صالح."
   },
   {
@@ -8724,11 +8724,11 @@
     "translation": "تعذّر حذف منشور الإشعار الدائم."
   },
   {
-    "id": "app.post_prority.get_for_post.app_error",
+    "id": "app.post_priority.get_for_post.app_error",
     "translation": "تعذّر الحصول على أولوية المنشور."
   },
   {
-    "id": "app.post_prority.get_for_post_with_context.app_error",
+    "id": "app.post_priority.get_for_post_with_context.app_error",
     "translation": "تعذّر الحصول على أولوية المنشور مع السياق."
   },
   {
@@ -8756,7 +8756,7 @@
     "translation": "وقعنا في خطأ أثناء تحديث التفضيلات."
   },
   {
-    "id": "app.prepackged-plugin.invalid_version.app_error",
+    "id": "app.prepackaged-plugin.invalid_version.app_error",
     "translation": "تعذّر تحليل إصدار الإضافة المعبأة مسبقاً."
   },
   {
@@ -11328,11 +11328,11 @@
     "translation": "تعذّر تعيين حالة المهمة إلى خطأ"
   },
   {
-    "id": "manaultesting.manual_test.parse.app_error",
+    "id": "manualtesting.manual_test.parse.app_error",
     "translation": "تعذّر تحليل عنوان URL."
   },
   {
-    "id": "manaultesting.test_autolink.unable.app_error",
+    "id": "manualtesting.test_autolink.unable.app_error",
     "translation": "تعذّر جلب القنوات."
   },
   {

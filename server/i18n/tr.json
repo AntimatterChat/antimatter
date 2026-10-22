@@ -3021,15 +3021,15 @@
     "translation": "Silinmeden önce erişim kodu veri tabanından alınırken sorun çıktı."
   },
   {
-    "id": "api.oauth.singup_with_oauth.disabled.app_error",
+    "id": "api.oauth.signup_with_oauth.disabled.app_error",
     "translation": "Kullanıcı hesap açma özelliği kapalı."
   },
   {
-    "id": "api.oauth.singup_with_oauth.expired_link.app_error",
+    "id": "api.oauth.signup_with_oauth.expired_link.app_error",
     "translation": "Hesap açma bağlantısının süresi geçmiş."
   },
   {
-    "id": "api.oauth.singup_with_oauth.invalid_link.app_error",
+    "id": "api.oauth.signup_with_oauth.invalid_link.app_error",
     "translation": "Hesap açma bağlantısı geçersiz gibi görünüyor."
   },
   {
@@ -9177,11 +9177,11 @@
     "translation": "Kalıcı bildirim iletisi silinemedi"
   },
   {
-    "id": "app.post_prority.get_for_post.app_error",
+    "id": "app.post_priority.get_for_post.app_error",
     "translation": "İletinin önceliği alınamadı"
   },
   {
-    "id": "app.post_prority.get_for_post_with_context.app_error",
+    "id": "app.post_priority.get_for_post_with_context.app_error",
     "translation": "Bağlam ile iletinin önceliği alınamadı"
   },
   {
@@ -9209,7 +9209,7 @@
     "translation": "Ayarlar güncellenirken bir sorun çıktı."
   },
   {
-    "id": "app.prepackged-plugin.invalid_version.app_error",
+    "id": "app.prepackaged-plugin.invalid_version.app_error",
     "translation": "Önceden hazırlanmış uygulama eki sürümü işlenemedi."
   },
   {
@@ -12051,11 +12051,11 @@
     "translation": "{{.Feature}} özelliği geçerli lisans ile kullanılamaz"
   },
   {
-    "id": "manaultesting.manual_test.parse.app_error",
+    "id": "manualtesting.manual_test.parse.app_error",
     "translation": "Adres işlenemedi."
   },
   {
-    "id": "manaultesting.test_autolink.unable.app_error",
+    "id": "manualtesting.test_autolink.unable.app_error",
     "translation": "Kanallar alınamadı."
   },
   {

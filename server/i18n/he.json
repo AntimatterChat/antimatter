@@ -2840,15 +2840,15 @@
     "translation": "שגיאה בשליפת תוקף הגישה ממסד הנתונים לפני המחיקה."
   },
   {
-    "id": "api.oauth.singup_with_oauth.disabled.app_error",
+    "id": "api.oauth.signup_with_oauth.disabled.app_error",
     "translation": "הרשמת משתמשים כבויה."
   },
   {
-    "id": "api.oauth.singup_with_oauth.expired_link.app_error",
+    "id": "api.oauth.signup_with_oauth.expired_link.app_error",
     "translation": "תוקף קישור ההרשמה פג."
   },
   {
-    "id": "api.oauth.singup_with_oauth.invalid_link.app_error",
+    "id": "api.oauth.signup_with_oauth.invalid_link.app_error",
     "translation": "קישור ההרשמה אינו נראה תקין."
   },
   {
@@ -8724,11 +8724,11 @@
     "translation": "נכשל במחיקת ההודעה להודעה קבועה"
   },
   {
-    "id": "app.post_prority.get_for_post.app_error",
+    "id": "app.post_priority.get_for_post.app_error",
     "translation": "לא ניתן להשיג את עדיפות ההודעה"
   },
   {
-    "id": "app.post_prority.get_for_post_with_context.app_error",
+    "id": "app.post_priority.get_for_post_with_context.app_error",
     "translation": "לא ניתן להשיג את עדיפות ההודעה עם ההקשר"
   },
   {
@@ -8756,7 +8756,7 @@
     "translation": "אירעה שגיאה במהלך עדכון ההעדפות."
   },
   {
-    "id": "app.prepackged-plugin.invalid_version.app_error",
+    "id": "app.prepackaged-plugin.invalid_version.app_error",
     "translation": "לא ניתן לפרש את גרסת ההרחבה המארוזת מראש."
   },
   {
@@ -11328,11 +11328,11 @@
     "translation": "נכשל בהגדרת סטטוס המשימה לשגיאה"
   },
   {
-    "id": "manaultesting.manual_test.parse.app_error",
+    "id": "manualtesting.manual_test.parse.app_error",
     "translation": "לא ניתן לפרס את כתובת האתר (URL)."
   },
   {
-    "id": "manaultesting.test_autolink.unable.app_error",
+    "id": "manualtesting.test_autolink.unable.app_error",
     "translation": "לא ניתן להשיג את הערוצים."
   },
   {

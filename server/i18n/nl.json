@@ -3021,15 +3021,15 @@
     "translation": "Fout bij het ophalen van het access token uit de database, voor het verwijderen."
   },
   {
-    "id": "api.oauth.singup_with_oauth.disabled.app_error",
+    "id": "api.oauth.signup_with_oauth.disabled.app_error",
     "translation": "Gebruikers registratie is uitgeschakeld."
   },
   {
-    "id": "api.oauth.singup_with_oauth.expired_link.app_error",
+    "id": "api.oauth.signup_with_oauth.expired_link.app_error",
     "translation": "De aanmeldlink is verlopen."
   },
   {
-    "id": "api.oauth.singup_with_oauth.invalid_link.app_error",
+    "id": "api.oauth.signup_with_oauth.invalid_link.app_error",
     "translation": "De aanmeldlink lijkt niet geldig te zijn."
   },
   {
@@ -9177,11 +9177,11 @@
     "translation": "Blijvend bericht kon niet worden verwijderd"
   },
   {
-    "id": "app.post_prority.get_for_post.app_error",
+    "id": "app.post_priority.get_for_post.app_error",
     "translation": "Kon geen berichtprioriteit ophalen voor bericht"
   },
   {
-    "id": "app.post_prority.get_for_post_with_context.app_error",
+    "id": "app.post_priority.get_for_post_with_context.app_error",
     "translation": "Kan geen postprioriteit krijgen voor bericht met context"
   },
   {
@@ -9209,7 +9209,7 @@
     "translation": "Er is een probleem opgetreden tijdens het bijwerken van de voorkeuren."
   },
   {
-    "id": "app.prepackged-plugin.invalid_version.app_error",
+    "id": "app.prepackaged-plugin.invalid_version.app_error",
     "translation": "Voorverpakte plugin versie kon niet geparsed worden."
   },
   {
@@ -12051,11 +12051,11 @@
     "translation": "{{.Feature}} functie is niet beschikbaar binnen de huidige licentie"
   },
   {
-    "id": "manaultesting.manual_test.parse.app_error",
+    "id": "manualtesting.manual_test.parse.app_error",
     "translation": "Kan URL niet verwerken."
   },
   {
-    "id": "manaultesting.test_autolink.unable.app_error",
+    "id": "manualtesting.test_autolink.unable.app_error",
     "translation": "Kan de kanalen niet ophalen."
   },
   {

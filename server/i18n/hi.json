@@ -2840,15 +2840,15 @@
     "translation": "हटाने से पहले DB से एक्सेस टोकन प्राप्त करने में त्रुटि।"
   },
   {
-    "id": "api.oauth.singup_with_oauth.disabled.app_error",
+    "id": "api.oauth.signup_with_oauth.disabled.app_error",
     "translation": "यूज़र साइन-अप बंद है।"
   },
   {
-    "id": "api.oauth.singup_with_oauth.expired_link.app_error",
+    "id": "api.oauth.signup_with_oauth.expired_link.app_error",
     "translation": "साइन-अप लिंक समाप्त हो चुका है।"
   },
   {
-    "id": "api.oauth.singup_with_oauth.invalid_link.app_error",
+    "id": "api.oauth.signup_with_oauth.invalid_link.app_error",
     "translation": "साइन-अप लिंक मान्य नहीं प्रतीत होता है।"
   },
   {
@@ -8724,11 +8724,11 @@
     "translation": "स्थायी सूचना पोस्ट को हटाने में विफल रहा"
   },
   {
-    "id": "app.post_prority.get_for_post.app_error",
+    "id": "app.post_priority.get_for_post.app_error",
     "translation": "पोस्ट के लिए पोस्ट प्रायोरिटी प्राप्त नहीं कर पाए"
   },
   {
-    "id": "app.post_prority.get_for_post_with_context.app_error",
+    "id": "app.post_priority.get_for_post_with_context.app_error",
     "translation": "संदर्भ के साथ पोस्ट के लिए पोस्ट प्रायोरिटी प्राप्त नहीं कर पाए"
   },
   {
@@ -8756,7 +8756,7 @@
     "translation": "प्राथमिकताओं को अपडेट करने के दौरान हमें एक त्रुटि का सामना करना पड़ा।"
   },
   {
-    "id": "app.prepackged-plugin.invalid_version.app_error",
+    "id": "app.prepackaged-plugin.invalid_version.app_error",
     "translation": "प्रीपैकेज्ड प्लगइन संस्करण का विश्लेषण नहीं किया जा सका।"
   },
   {
@@ -11328,11 +11328,11 @@
     "translation": "जॉब की स्थिति को 'error' सेट करने में विफलता."
   },
   {
-    "id": "manaultesting.manual_test.parse.app_error",
+    "id": "manualtesting.manual_test.parse.app_error",
     "translation": "URL को पार्स करने में असमर्थ."
   },
   {
-    "id": "manaultesting.test_autolink.unable.app_error",
+    "id": "manualtesting.test_autolink.unable.app_error",
     "translation": "चैनल प्राप्त करने में असमर्थ."
   },
   {

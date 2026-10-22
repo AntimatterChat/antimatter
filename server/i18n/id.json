@@ -2840,15 +2840,15 @@
     "translation": "Kesalahan saat mengambil token akses dari DB sebelum penghapusan."
   },
   {
-    "id": "api.oauth.singup_with_oauth.disabled.app_error",
+    "id": "api.oauth.signup_with_oauth.disabled.app_error",
     "translation": "Pendaftaran pengguna dinonaktifkan."
   },
   {
-    "id": "api.oauth.singup_with_oauth.expired_link.app_error",
+    "id": "api.oauth.signup_with_oauth.expired_link.app_error",
     "translation": "Tautan pendaftaran telah kedaluwarsa."
   },
   {
-    "id": "api.oauth.singup_with_oauth.invalid_link.app_error",
+    "id": "api.oauth.signup_with_oauth.invalid_link.app_error",
     "translation": "Tautan pendaftaran tampaknya tidak valid."
   },
   {
@@ -8724,11 +8724,11 @@
     "translation": "Gagal menghapus pesan notifikasi permanen"
   },
   {
-    "id": "app.post_prority.get_for_post.app_error",
+    "id": "app.post_priority.get_for_post.app_error",
     "translation": "Tidak dapat mengambil prioritas untuk pesan"
   },
   {
-    "id": "app.post_prority.get_for_post_with_context.app_error",
+    "id": "app.post_priority.get_for_post_with_context.app_error",
     "translation": "Tidak dapat mengambil prioritas untuk pesan dengan konteks"
   },
   {
@@ -8756,7 +8756,7 @@
     "translation": "Kami mengalami kesalahan saat memperbarui preferensi."
   },
   {
-    "id": "app.prepackged-plugin.invalid_version.app_error",
+    "id": "app.prepackaged-plugin.invalid_version.app_error",
     "translation": "Versi plugin prepackged tidak dapat diparse."
   },
   {
@@ -11328,11 +11328,11 @@
     "translation": "Gagal mengatur status pekerjaan menjadi error"
   },
   {
-    "id": "manaultesting.manual_test.parse.app_error",
+    "id": "manualtesting.manual_test.parse.app_error",
     "translation": "Tidak dapat mengurai URL."
   },
   {
-    "id": "manaultesting.test_autolink.unable.app_error",
+    "id": "manualtesting.test_autolink.unable.app_error",
     "translation": "Tidak dapat mengambil kanal."
   },
   {

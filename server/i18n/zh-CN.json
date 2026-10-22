@@ -3018,15 +3018,15 @@
     "translation": "删除前从数据库获取访问令牌遇到错误。"
   },
   {
-    "id": "api.oauth.singup_with_oauth.disabled.app_error",
+    "id": "api.oauth.signup_with_oauth.disabled.app_error",
     "translation": "用户注册已停用。"
   },
   {
-    "id": "api.oauth.singup_with_oauth.expired_link.app_error",
+    "id": "api.oauth.signup_with_oauth.expired_link.app_error",
     "translation": "注册链接已过期。"
   },
   {
-    "id": "api.oauth.singup_with_oauth.invalid_link.app_error",
+    "id": "api.oauth.signup_with_oauth.invalid_link.app_error",
     "translation": "注册链接无效。"
   },
   {
@@ -9170,11 +9170,11 @@
     "translation": "删除持久通知消息失败"
   },
   {
-    "id": "app.post_prority.get_for_post.app_error",
+    "id": "app.post_priority.get_for_post.app_error",
     "translation": "无法取得消息的优先级"
   },
   {
-    "id": "app.post_prority.get_for_post_with_context.app_error",
+    "id": "app.post_priority.get_for_post_with_context.app_error",
     "translation": "无法获取带上下文消息的优先级。"
   },
   {
@@ -9202,7 +9202,7 @@
     "translation": "我们在更新偏好设置时遇到错误。"
   },
   {
-    "id": "app.prepackged-plugin.invalid_version.app_error",
+    "id": "app.prepackaged-plugin.invalid_version.app_error",
     "translation": "无法解析该插件包。"
   },
   {
@@ -12042,11 +12042,11 @@
     "translation": "{{.Feature}} 功能在当前许可证下不可用"
   },
   {
-    "id": "manaultesting.manual_test.parse.app_error",
+    "id": "manualtesting.manual_test.parse.app_error",
     "translation": "无法解析 URL。"
   },
   {
-    "id": "manaultesting.test_autolink.unable.app_error",
+    "id": "manualtesting.test_autolink.unable.app_error",
     "translation": "无法获得频道。"
   },
   {

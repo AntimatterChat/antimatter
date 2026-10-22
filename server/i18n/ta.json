@@ -2840,15 +2840,15 @@
     "translation": "நீக்குவதற்கு முன் DB இலிருந்து அணுகல் டோக்கனை பெறும்போது பிழை."
   },
   {
-    "id": "api.oauth.singup_with_oauth.disabled.app_error",
+    "id": "api.oauth.signup_with_oauth.disabled.app_error",
     "translation": "பயனர் பதிவு முடக்கப்பட்டுள்ளது."
   },
   {
-    "id": "api.oauth.singup_with_oauth.expired_link.app_error",
+    "id": "api.oauth.signup_with_oauth.expired_link.app_error",
     "translation": "பதிவு இணைப்பு காலாவதியானது."
   },
   {
-    "id": "api.oauth.singup_with_oauth.invalid_link.app_error",
+    "id": "api.oauth.signup_with_oauth.invalid_link.app_error",
     "translation": "பதிவு இணைப்பு சரியானதாகத் தெரியவில்லை."
   },
   {
@@ -8724,11 +8724,11 @@
     "translation": "நிரந்தர அறிவிப்பு பதிவை நீக்குவதில் தோல்வி."
   },
   {
-    "id": "app.post_prority.get_for_post.app_error",
+    "id": "app.post_priority.get_for_post.app_error",
     "translation": "பதிவின் நிலையைப் பெற முடியவில்லை."
   },
   {
-    "id": "app.post_prority.get_for_post_with_context.app_error",
+    "id": "app.post_priority.get_for_post_with_context.app_error",
     "translation": "பொருளடக்கத்துடன் பதிவின் நிலையைப் பெற முடியவில்லை."
   },
   {
@@ -8756,7 +8756,7 @@
     "translation": "விருப்பங்களைப் புதுப்பிக்கும்போது ஒரு பிழை ஏற்பட்டது."
   },
   {
-    "id": "app.prepackged-plugin.invalid_version.app_error",
+    "id": "app.prepackaged-plugin.invalid_version.app_error",
     "translation": "முன்சேர்க்கப்பட்ட பிளக்-இன் பதிப்பை விளக்க முடியவில்லை."
   },
   {
@@ -11328,11 +11328,11 @@
     "translation": "பணியின் நிலையை பிழையாக அமைக்க முடியவில்லை."
   },
   {
-    "id": "manaultesting.manual_test.parse.app_error",
+    "id": "manualtesting.manual_test.parse.app_error",
     "translation": "URL-ஐ பகுத்தாய்வு செய்ய முடியவில்லை."
   },
   {
-    "id": "manaultesting.test_autolink.unable.app_error",
+    "id": "manualtesting.test_autolink.unable.app_error",
     "translation": "சேனல்களைப் பெற முடியவில்லை."
   },
   {

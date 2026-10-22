@@ -3021,15 +3021,15 @@
     "translation": "Virhe noudettaessa access token tietokannasta ennen poistoa."
   },
   {
-    "id": "api.oauth.singup_with_oauth.disabled.app_error",
+    "id": "api.oauth.signup_with_oauth.disabled.app_error",
     "translation": "Käyttäjän liittyminen on pois käytöstä."
   },
   {
-    "id": "api.oauth.singup_with_oauth.expired_link.app_error",
+    "id": "api.oauth.signup_with_oauth.expired_link.app_error",
     "translation": "Rekisteröitymislinkki on umpeutunut."
   },
   {
-    "id": "api.oauth.singup_with_oauth.invalid_link.app_error",
+    "id": "api.oauth.signup_with_oauth.invalid_link.app_error",
     "translation": "Rekisteröitymislinkki ei näytä olevan kelvollinen."
   },
   {
@@ -9177,11 +9177,11 @@
     "translation": "Pysyvän ilmoituksen viestiä ei voitu poistaa"
   },
   {
-    "id": "app.post_prority.get_for_post.app_error",
+    "id": "app.post_priority.get_for_post.app_error",
     "translation": "Viestin prioriteettia ei voitu hakea"
   },
   {
-    "id": "app.post_prority.get_for_post_with_context.app_error",
+    "id": "app.post_priority.get_for_post_with_context.app_error",
     "translation": "Viestin prioriteettia ei voitu hakea kontekstin kanssa"
   },
   {
@@ -9209,7 +9209,7 @@
     "translation": "Asetusten päivittämisessä tapahtui virhe."
   },
   {
-    "id": "app.prepackged-plugin.invalid_version.app_error",
+    "id": "app.prepackaged-plugin.invalid_version.app_error",
     "translation": "Esipakatun lisäosan versiota ei voitu jäsentää."
   },
   {
@@ -12051,11 +12051,11 @@
     "translation": "Ominaisuus {{.Feature}} ei ole käytettävissä nykyisellä lisenssillä"
   },
   {
-    "id": "manaultesting.manual_test.parse.app_error",
+    "id": "manualtesting.manual_test.parse.app_error",
     "translation": "Ei voitu parsia URL arvoa"
   },
   {
-    "id": "manaultesting.test_autolink.unable.app_error",
+    "id": "manualtesting.test_autolink.unable.app_error",
     "translation": "Ei voitu hakea kanavia"
   },
   {
