@@ -181,8 +181,9 @@ type FeatureFlags struct {
 	// on config save. When off, the same paths only produce an error log line.
 	EnforceLogPathRoot bool
 
-	// HealthDashboard replaces the Workspace Optimization dashboard with the rules-driven
-	// Health Dashboard. Off by default.
+	// HealthDashboard runs the hourly health check and shows its findings on the System Console's
+	// Site health page, which replaces Workspace Optimization for system admins. On by default in
+	// Antimatter; AM_FEATUREFLAGS_HEALTHDASHBOARD=false turns it off.
 	HealthDashboard bool
 }
 
@@ -254,7 +255,7 @@ func (f *FeatureFlags) SetDefaults() {
 
 	f.EnforceLogPathRoot = true
 
-	f.HealthDashboard = false
+	f.HealthDashboard = true
 }
 
 // isValid rejects feature flag combinations that are no longer supported.
