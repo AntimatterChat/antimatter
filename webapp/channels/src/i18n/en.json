@@ -1756,7 +1756,7 @@
     "description": "Link under the access-rule editors that opens a help modal about CEL access expressions."
   },
   "admin.access_control.table_editor.not_safe_to_use": {
-    "defaultMessage": "Values for this attribute are managed by users and should not be used for access control. Please link attribute to AD/LDAP for use in access policies.",
+    "defaultMessage": "Values for this attribute are managed by users and should not be used for access control. Link the attribute to AD/LDAP, SAML or OpenID Connect to use it in access policies.",
     "description": "Tooltip on a disabled attribute in the attribute picker of the access-rule editor, explaining user-managed attributes cannot be used for access control."
   },
   "admin.access_control.table_editor.operator": {
@@ -3779,21 +3779,29 @@
     "defaultMessage": "(Optional) The attribute in the AD/LDAP server used to populate the {name} of users in Antimatter. When set, users cannot edit their {name}, since it is synchronized with the LDAP server. When left blank, users can set their {name} in <strong>Account Menu > Account Settings > Profile</strong>.",
     "description": "Help text for a user-attribute mapping field in AD/LDAP admin settings; {name} is the attribute's display name, <strong> wraps a UI navigation path."
   },
+  "admin.customProfileAttribDesc.openid": {
+    "defaultMessage": "(Optional) The claim in the ID token or userinfo response used to populate the {name} of users in Antimatter. Use dots for nested claims, such as address.country. If the claim is missing at sign-in, the value is removed.",
+    "description": "Help text under a user attribute's field in the 'User attributes sync' section of the OpenID Connect settings page. {name} is the attribute's label. 'ID token' and 'userinfo' are OpenID Connect terms; address.country is a literal example claim path and should stay as-is."
+  },
   "admin.customProfileAttribDesc.saml": {
     "defaultMessage": "(Optional) The attribute in the SAML Assertion that will be used to populate the {name} of users in Antimatter.",
     "description": "Help text for a user-attribute mapping field in SAML admin settings; {name} is the attribute's display name."
   },
+  "admin.customProfileAttributes.exclusiveSource": {
+    "defaultMessage": "This attribute is synced from {sources}. An attribute synced from OpenID Connect can't also sync from AD/LDAP or SAML.",
+    "description": "Help text under a disabled field in the 'User attributes sync' section, explaining that the attribute is already synced from another identity source that cannot be combined with OpenID Connect. {sources} is a list of source names, such as AD/LDAP or OpenID Connect."
+  },
   "admin.customProfileAttributes.linkedNonText": {
-    "defaultMessage": "This field is a management attribute of type {type} and cannot be synced via LDAP or SAML. Only text-type fields support sync.",
-    "description": "Help text under a linked (Global Attribute) user-attribute field that is not text type; explains why the LDAP/SAML sync box is disabled."
+    "defaultMessage": "This field is linked to an attribute of type {type} in Attribute Management, so it cannot be synced from an identity source. Only text, select and multiselect attributes support sync.",
+    "description": "Help text under a user-attribute field in the AD/LDAP, SAML or OpenID Connect user attributes sync settings when the field is linked to an attribute defined on the System Console Attribute Management page and that attribute's type cannot be synced; explains why the sync box is disabled. {type} is the raw type identifier, such as date or user, and is not translated. 'Attribute Management' is the page name; match its translation."
   },
   "admin.customProfileAttributes.managedByPlugin": {
     "defaultMessage": "This field is managed by the {pluginId} plugin and cannot be edited.",
     "description": "Help text under a user-attribute field that is read-only because a plugin owns it; {pluginId} is the plugin's display name."
   },
   "admin.customProfileAttributes.subtitle": {
-    "defaultMessage": "You can add or remove user attributes by going to the <link>user attributes page</link>.",
-    "description": "Subtitle of the 'User attributes sync' settings group in LDAP/SAML admin settings; <link> wraps a link to the user attributes admin page."
+    "defaultMessage": "You can add or remove user attributes on the <link>Attribute Management</link> page.",
+    "description": "Subtitle of the 'User attributes sync' settings group in the AD/LDAP and SAML admin settings; <link> wraps a link to the Attribute Management page, whose name should stay as the page is titled."
   },
   "admin.customProfileAttributes.title": {
     "defaultMessage": "User attributes sync",
@@ -5511,6 +5519,14 @@
     "defaultMessage": "{source}: {value}",
     "description": "Text of the chip shown on the attribute detail page for an attribute linked to an external directory. {source} is the source name ('AD/LDAP' or 'SAML') and {value} is the external attribute name it syncs from. Keep the separator format."
   },
+  "admin.global_attributes.attribute_details.external_source.conflict_label": {
+    "defaultMessage": "Can't be combined with {sources}",
+    "description": "Second line of a disabled entry in the 'Link to external source' menu on the attribute detail page. {sources} lists the already-linked identity sources (AD/LDAP, SAML, OpenID Connect) that this source cannot be combined with."
+  },
+  "admin.global_attributes.attribute_details.external_source.conflict_tooltip": {
+    "defaultMessage": "An attribute synced from OpenID Connect can't also sync from AD/LDAP or SAML. Remove the {sources} {count, plural, one {link} other {links}} to link {source}.",
+    "description": "Tooltip on a disabled entry in the 'Link to external source' menu. {sources} lists the linked identity sources to remove, {count} is how many there are, and {source} is the source the admin wanted to link. AD/LDAP, SAML and OpenID Connect are product names."
+  },
   "admin.global_attributes.attribute_details.external_source.disabled_applies_to_tooltip": {
     "defaultMessage": "Cannot link an external source while this attribute applies to a resource.",
     "description": "Tooltip on the disabled external-source control in the attribute details page in System Console > System Attributes > Attribute Management, explaining it cannot be linked while the attribute applies to a resource."
@@ -5539,6 +5555,22 @@
     "defaultMessage": "{count, plural, one {External source link removed} other {External source links removed}}",
     "description": "Screen-reader-only status announcement on the attribute detail page after changing the attribute Type clears its external source link(s). {count} is how many links were cleared; the message names no source, only the number."
   },
+  "admin.global_attributes.attribute_details.external_source.openid.help_text": {
+    "defaultMessage": "The claim in the ID token or userinfo response to sync this value from, for example department. Use dots for nested claims, such as address.country. If the claim is missing at sign-in, the value is removed.",
+    "description": "Help text in the 'Link to OpenID Connect' dialog on the attribute detail page, under the field where the admin types a claim name. 'ID token' and 'userinfo' are OpenID Connect terms; department and address.country are literal example claim names and should stay as-is."
+  },
+  "admin.global_attributes.attribute_details.external_source.openid.modal_title": {
+    "defaultMessage": "Link to OpenID Connect",
+    "description": "Title of the dialog where an admin types the OpenID Connect claim an attribute is synced from. 'OpenID Connect' is a protocol name."
+  },
+  "admin.global_attributes.attribute_details.external_source.openid.subtitle": {
+    "defaultMessage": "Map claims at sign-in",
+    "description": "Second line of the OpenID Connect entry in the 'Link to external source' menu, describing that values come from OpenID Connect claims when users sign in."
+  },
+  "admin.global_attributes.attribute_details.external_source.openid.title": {
+    "defaultMessage": "OpenID Connect",
+    "description": "Name of the OpenID Connect identity source in the 'Link to external source' menu, its link chip and the attributes table. Protocol name; usually left untranslated."
+  },
   "admin.global_attributes.attribute_details.external_source.remove_link": {
     "defaultMessage": "Remove {source} link",
     "description": "Accessible label (aria-label) of the X button on an external source chip on the attribute detail page. {source} is 'AD/LDAP' or 'SAML'. 'Remove' is a verb and 'link' is a noun meaning the configured mapping."
@@ -5566,6 +5598,22 @@
   "admin.global_attributes.attribute_details.external_source.trigger_label": {
     "defaultMessage": "Link to external source",
     "description": "Label of the dropdown button on the attribute detail page that opens the AD/LDAP and SAML choices. 'Link' is a verb here."
+  },
+  "admin.global_attributes.attribute_details.external_source.unavailable.flag_off.label": {
+    "defaultMessage": "Turned off on this server",
+    "description": "Second line of the disabled OpenID Connect entry in the 'Link to external source' menu when the server has turned this feature off."
+  },
+  "admin.global_attributes.attribute_details.external_source.unavailable.flag_off.tooltip": {
+    "defaultMessage": "Syncing attributes from {source} is turned off on this server.",
+    "description": "Tooltip on the disabled OpenID Connect entry in the 'Link to external source' menu when the server has turned this feature off. {source} is the source name, OpenID Connect."
+  },
+  "admin.global_attributes.attribute_details.external_source.unavailable.not_enabled.label": {
+    "defaultMessage": "Set up {source} first",
+    "description": "Second line of the disabled OpenID Connect entry in the 'Link to external source' menu when OpenID Connect sign-in is not set up yet. {source} is the source name, OpenID Connect."
+  },
+  "admin.global_attributes.attribute_details.external_source.unavailable.not_enabled.tooltip": {
+    "defaultMessage": "Turn on {source} in System Console > Authentication > {source} to link attributes to its claims.",
+    "description": "Tooltip on the disabled OpenID Connect entry in the 'Link to external source' menu when OpenID Connect sign-in is off. {source} is OpenID Connect; 'System Console > Authentication > {source}' is the navigation path to its settings page and should match those menu names."
   },
   "admin.global_attributes.attribute_details.graph.delete.blocked.go_to": {
     "defaultMessage": "Go to {name}",
@@ -5843,6 +5891,18 @@
     "defaultMessage": "At least one option is required.",
     "description": "Inline validation error under the Options field on the attribute detail page when a select-type attribute has no options defined."
   },
+  "admin.global_attributes.attribute_details.options.synced_help": {
+    "defaultMessage": "Options are managed by the {source} sync. Each value it sends is added as an option, and options that no user holds any more are removed.",
+    "description": "Shown under the read-only option list of a select or multiselect attribute linked to an identity source. {source} is the source name, such as AD/LDAP or SAML; the sync creates and removes the options, so the admin cannot edit them."
+  },
+  "admin.global_attributes.attribute_details.options.synced_list_label": {
+    "defaultMessage": "Options",
+    "description": "Accessible name of the read-only list of option chips on a synced select or multiselect attribute's detail page. Plural noun."
+  },
+  "admin.global_attributes.attribute_details.options.synced_need_users": {
+    "defaultMessage": "Add Users under Applies to. The {source} sync creates these options from the values it syncs to users.",
+    "description": "Inline error under the read-only options of a select or multiselect attribute linked to an external source while the attribute does not apply to Users, which keeps it from being saved. \"Users\" and \"Applies to\" are the labels of the resource and the card on the same page. {source} is the external source name, such as AD/LDAP or SAML."
+  },
   "admin.global_attributes.attribute_details.options.values_unique": {
     "defaultMessage": "Values must be unique.",
     "description": "Inline validation error shown while editing or adding an option value on the attribute detail page, when the typed value duplicates an existing option."
@@ -5967,9 +6027,9 @@
     "defaultMessage": "Type: {value}. Locked while this attribute applies to a resource.",
     "description": "Screen-reader label for the locked Type field in the attribute details page in System Console > System Attributes > Attribute Management while the attribute applies to a resource. {value} is the current type."
   },
-  "admin.global_attributes.attribute_details.type.field_locked_aria_label": {
-    "defaultMessage": "Type: Text. Locked while linked to an external source.",
-    "description": "Screen-reader label for the Type dropdown on the New attribute page when the control is disabled because the attribute is linked to AD/LDAP or SAML. \"Text\" is the fixed attribute type name and should match the Text type label used elsewhere."
+  "admin.global_attributes.attribute_details.type.field_locked_external_source_aria_label": {
+    "defaultMessage": "Type: {value}. Locked while linked to an external source.",
+    "description": "Screen-reader label for the locked Type field in the attribute details page in System Console > System Attributes > Attribute Management while the attribute is linked to AD/LDAP, SAML, or OpenID Connect. {value} is the current type."
   },
   "admin.global_attributes.attribute_details.type.field_locked_graph_aria_label": {
     "defaultMessage": "Type: {value}. Locked because a hierarchical attribute cannot be converted to another type.",
@@ -6283,14 +6343,6 @@
     "defaultMessage": "Classification Markings",
     "description": "Value in the Source column of the attributes table for the built-in Classification Markings attribute. This is the product feature name."
   },
-  "admin.global_attributes.table.source.ldap": {
-    "defaultMessage": "AD/LDAP",
-    "description": "Value in the Source column of the attributes table when the attribute is synced from Active Directory/LDAP. Keep the AD/LDAP abbreviation as-is."
-  },
-  "admin.global_attributes.table.source.ldap_and_saml": {
-    "defaultMessage": "AD/LDAP, SAML",
-    "description": "Value in the Source column of the attributes table when the attribute is synced from both AD/LDAP and SAML. Keep both abbreviations as-is; only the separator may change."
-  },
   "admin.global_attributes.table.source.managed": {
     "defaultMessage": "Managed here",
     "description": "Value in the Source column of the attributes table meaning the attribute's values are maintained inside Mattermost rather than synced from an external directory. \"here\" refers to this admin console screen."
@@ -6298,10 +6350,6 @@
   "admin.global_attributes.table.source.owned_by": {
     "defaultMessage": "Managed by {owners}",
     "description": "Value in the Source column of the attributes table in System Console > Attribute Management when integrations own the attribute and set its values. {owners} is a localized list of the integrations that own the attribute (for example \"SCIM and svc-sync\")."
-  },
-  "admin.global_attributes.table.source.saml": {
-    "defaultMessage": "SAML",
-    "description": "Value in the Source column of the attributes table when the attribute is synced from SAML. Keep the abbreviation as-is."
   },
   "admin.global_attributes.table.type": {
     "defaultMessage": "Type",
@@ -8918,6 +8966,18 @@
   "admin.office365.userTitle": {
     "defaultMessage": "User API Endpoint:",
     "description": "Setting label for a text field in the Entra ID (Office 365) OAuth admin settings; the API endpoint used to fetch the user profile. Ends with a colon."
+  },
+  "admin.openid.additionalScopesDescription": {
+    "defaultMessage": "Space-separated scopes to request in addition to profile, openid and email, for claims your provider releases only under another scope, such as groups.",
+    "description": "Help text for the Additional Scopes setting on the OpenID Connect settings page. profile, openid, email and groups are literal OAuth scope names and should stay as-is."
+  },
+  "admin.openid.additionalScopesExample": {
+    "defaultMessage": "E.g.: \"groups\"",
+    "description": "Placeholder of the Additional Scopes setting on the OpenID Connect settings page; groups is a literal scope name."
+  },
+  "admin.openid.additionalScopesTitle": {
+    "defaultMessage": "Additional Scopes:",
+    "description": "Label of the setting on the OpenID Connect settings page that lists extra OAuth scopes to request at sign-in."
   },
   "admin.openid.buttonColorDesc": {
     "defaultMessage": "Specify the color of the OpenID login button for white labeling purposes. Use a hex code with a #-sign before the code.",
@@ -16010,6 +16070,14 @@
   "admin.userManagement.userDetail.notFound": {
     "defaultMessage": "User not found",
     "description": "Placeholder message on the admin user detail card when the requested user does not exist."
+  },
+  "admin.userManagement.userDetail.openid": {
+    "defaultMessage": "OpenID Connect: {propertyName}",
+    "description": "Chip on a user's detail page in the System Console naming the OpenID Connect claim an attribute is synced from. {propertyName} is the claim name."
+  },
+  "admin.userManagement.userDetail.openId": {
+    "defaultMessage": "OpenID Connect",
+    "description": "Authentication method shown on a user's System Console detail page for a user who signs in through OpenID Connect; 'OpenID Connect' is a product name and should stay as-is."
   },
   "admin.userManagement.userDetail.picture.edit": {
     "defaultMessage": "Edit profile picture",
@@ -30450,6 +30518,10 @@
   "user.settings.general.loginOffice365": {
     "defaultMessage": "Login done through Entra ID ({email})",
     "description": "Read-only text in the email row of Profile Settings when the account authenticates via Microsoft Entra ID; {email} is the linked address."
+  },
+  "user.settings.general.loginOpenId": {
+    "defaultMessage": "Login done through OpenID Connect ({email})",
+    "description": "Profile settings, collapsed Email row for a user who signs in through OpenID Connect; {email} is the address Antimatter sends notifications to. 'OpenID Connect' is a product name and should stay as-is."
   },
   "user.settings.general.loginSaml": {
     "defaultMessage": "Login done through SAML ({email})",

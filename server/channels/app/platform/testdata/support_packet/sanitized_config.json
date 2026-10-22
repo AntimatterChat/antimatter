@@ -368,7 +368,8 @@
         "DiscoveryEndpoint": null,
         "ButtonText": null,
         "ButtonColor": null,
-        "UsePreferredUsername": null
+        "UsePreferredUsername": null,
+        "AdditionalScopes": null
     },
     "GoogleSettings": {
         "Enable": null,
@@ -381,7 +382,8 @@
         "DiscoveryEndpoint": null,
         "ButtonText": null,
         "ButtonColor": null,
-        "UsePreferredUsername": null
+        "UsePreferredUsername": null,
+        "AdditionalScopes": null
     },
     "Office365Settings": {
         "Enable": null,
@@ -406,7 +408,8 @@
         "DiscoveryEndpoint": null,
         "ButtonText": null,
         "ButtonColor": null,
-        "UsePreferredUsername": null
+        "UsePreferredUsername": null,
+        "AdditionalScopes": null
     },
     "LdapSettings": {
         "Enable": null,
@@ -783,6 +786,7 @@
         "PostDeliveryTracking": false,
         "EnforceLogPathRoot": false,
         "HealthDashboard": false,
-        "EnableBrotliCompression": false
+        "EnableBrotliCompression": false,
+        "OpenIdAttributeSync": false
     }
 }

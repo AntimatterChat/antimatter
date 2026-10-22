@@ -4,6 +4,8 @@
 package oauthopenid
 
 import (
+	"crypto/rand"
+	"crypto/rsa"
 	"strings"
 	"testing"
 
@@ -14,6 +16,7 @@ import (
 	"github.com/mattermost/mattermost/server/public/model"
 	"github.com/mattermost/mattermost/server/public/shared/request"
 	"github.com/mattermost/mattermost/server/v8/channels/app/oauthproviders/oidc/oidctest"
+	"github.com/mattermost/mattermost/server/v8/einterfaces"
 )
 
 func setup(t *testing.T) (*Provider, *oidctest.Provider, *model.Config, request.CTX) {
@@ -202,4 +205,63 @@ func TestManualEndpoints(t *testing.T) {
 
 	_, err = p.GetUserFromIdToken(rctx, idp.Sign(jwt.MapClaims{"iss": idp.URL(), "aud": "other", "sub": "s"}))
 	require.Error(t, err)
+}
+
+func TestGetClaimValues(t *testing.T) {
+	p, idp, cfg, rctx := setup(t)
+	input := func(idToken, userInfo string) einterfaces.OAuthClaimsInput {
+		return einterfaces.OAuthClaimsInput{Service: model.ServiceOpenid, IDToken: idToken, UserInfo: []byte(userInfo), Config: cfg}
+	}
+	idToken := idp.Sign(jwt.MapClaims{
+		"iss": idp.URL(), "aud": "client-id", "sub": "subject-1",
+		"employee_id": "E-42", "org": map[string]any{"department": "From token", "site": "Paris"},
+	})
+
+	t.Run("merges the verified token and the userinfo response, userinfo winning", func(t *testing.T) {
+		values, err := p.GetClaimValues(rctx, input(idToken, `{"sub":"subject-1","org":{"department":"R&D"},"clearances":["secret","top secret"],"level":3,"https://example.com/roles":["admin"]}`),
+			[]string{"employee_id", "org.department", "clearances", "level", "https://example.com/roles", "missing"})
+		require.NoError(t, err)
+		assert.Equal(t, map[string][]string{
+			"employee_id":               {"E-42"},
+			"org.department":            {"R&D"},
+			"clearances":                {"secret", "top secret"},
+			"level":                     {"3"},
+			"https://example.com/roles": {"admin"},
+		}, values, "a claim that resolves to nothing is left out, which clears its attribute")
+	})
+
+	t.Run("a token that fails verification is an error", func(t *testing.T) {
+		forged := oidctest.SignWith(mustKey(t), "unknown-kid", jwt.MapClaims{
+			"iss": idp.URL(), "aud": "client-id", "sub": "subject-1", "employee_id": "E-1",
+		})
+		_, err := p.GetClaimValues(rctx, input(forged, `{"sub":"subject-1"}`), []string{"employee_id"})
+		require.Error(t, err)
+
+		other := idp.Sign(jwt.MapClaims{"iss": idp.URL(), "aud": "another-client", "sub": "subject-1"})
+		_, err = p.GetClaimValues(rctx, input(other, `{"sub":"subject-1"}`), []string{"employee_id"})
+		require.Error(t, err)
+	})
+
+	t.Run("a userinfo response for another subject is an error", func(t *testing.T) {
+		_, err := p.GetClaimValues(rctx, input(idToken, `{"sub":"attacker","org":{"department":"Board"}}`), []string{"org.department"})
+		require.Error(t, err)
+	})
+
+	t.Run("a malformed userinfo response is an error", func(t *testing.T) {
+		_, err := p.GetClaimValues(rctx, input(idToken, `not json`), []string{"org.department"})
+		require.Error(t, err)
+	})
+
+	t.Run("without an id token the userinfo response is used", func(t *testing.T) {
+		values, err := p.GetClaimValues(rctx, input("", `{"sub":"s2","department":"Ops"}`), []string{"department"})
+		require.NoError(t, err)
+		assert.Equal(t, map[string][]string{"department": {"Ops"}}, values)
+	})
+}
+
+func mustKey(t *testing.T) *rsa.PrivateKey {
+	t.Helper()
+	key, err := rsa.GenerateKey(rand.Reader, 2048)
+	require.NoError(t, err)
+	return key
 }

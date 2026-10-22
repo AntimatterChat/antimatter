@@ -16,6 +16,7 @@ import {Client4} from 'mattermost-redux/client';
 import {getConfig, getCustomProfileAttributes} from 'mattermost-redux/selectors/entities/general';
 import {getCurrentUser} from 'mattermost-redux/selectors/entities/users';
 import {isEmail} from 'mattermost-redux/utils/helpers';
+import {isPropertyFieldSyncedForAuthService} from 'mattermost-redux/utils/property_utils';
 import {hasUserAccessTokenRole, isSystemAdmin} from 'mattermost-redux/utils/user_utils';
 
 import {emitUserLoggedOutEvent} from 'actions/global_actions';
@@ -430,7 +431,7 @@ export function EmailChange({onClose}: {onClose: () => void}) {
 // they can.
 function customFieldLock(field: UserPropertyField, authService: string, formatMessage: IntlShape['formatMessage']): string {
     const attrs = field.attrs || {};
-    if ((authService === Constants.LDAP_SERVICE && attrs.ldap) || (authService === Constants.SAML_SERVICE && attrs.saml)) {
+    if (isPropertyFieldSyncedForAuthService(field, authService)) {
         return formatMessage({id: 'fusion.settings.lockedByProvider', defaultMessage: 'Set by your login provider.'});
     }
     if (attrs.owners?.length || attrs.protected) {

@@ -11362,10 +11362,6 @@
     "translation": "LDAP接続テストに失敗しました。Server: {{.Server}}:{{.Port}}、接続セキュリティ: {{.ConnectionType}}、秘密鍵ファイル名: {{.PrivateKeyFilename}}、公開証明書ファイル名: {{.PublicCertFilename}}、バインドユーザー名: {{.BindUsername}}。エラー: {{.Error}}"
   },
   {
-    "id": "ent.ldap.cpa_field_mapping.list_error",
-    "translation": "CPAフィールドを取得できませんでした"
-  },
-  {
     "id": "ent.ldap.create_fail",
     "translation": "LDAPユーザーを作成できません。"
   },
@@ -11460,10 +11456,6 @@
   {
     "id": "ent.ldap.syncronize.search_failure_size_exceeded.app_error",
     "translation": "サイズ制限を超えました。システムコンソール > 認証 > AD/LDAP の「最大ページサイズ」設定を増やしてみてください。"
-  },
-  {
-    "id": "ent.ldap.update_cpa.empty_attribute",
-    "translation": "空のLDAP属性値です"
   },
   {
     "id": "ent.ldap.validate_admin_filter.app_error",
@@ -11644,10 +11636,6 @@
   {
     "id": "ent.saml.configure.not_encrypted_response.app_error",
     "translation": "SAMLログインは、認証プロバイダーのレスポンスが暗号化されていないため失敗しました。システム管理者に連絡してください。"
-  },
-  {
-    "id": "ent.saml.cpa_field_mapping.list_error",
-    "translation": "CPAフィールドを取得できませんでした"
   },
   {
     "id": "ent.saml.do_login.empty_response.app_error",

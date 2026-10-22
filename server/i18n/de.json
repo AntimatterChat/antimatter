@@ -11503,10 +11503,6 @@
     "translation": "LDAP Verbindungstest fehlgeschlagen. Server: {{.Server}}:{{.Port}}, ConnectionSecurity: {{.ConnectionType}}, PrivateKeyFilename: {{.PrivateKeyFilename}}, PublicCertificateFilename: {{.PublicCertFilename}}, BindUsername: {{.BindUsername}}. Fehler: {{.Error}}"
   },
   {
-    "id": "ent.ldap.cpa_field_mapping.list_error",
-    "translation": "CPA-Felder konnten nicht abgerufen werden"
-  },
-  {
     "id": "ent.ldap.create_fail",
     "translation": "Konnte LDAP-Benutzer nicht erstellen."
   },
@@ -11601,10 +11597,6 @@
   {
     "id": "ent.ldap.syncronize.search_failure_size_exceeded.app_error",
     "translation": "Größenlimit überschritten. Versuchen Sie, die Einstellung „Maximale Seitengröße“ in Systemkonsole > Authentifizierung > AD/LDAP zu erhöhen."
-  },
-  {
-    "id": "ent.ldap.update_cpa.empty_attribute",
-    "translation": "Leerer LDAP-Attributwert"
   },
   {
     "id": "ent.ldap.validate_admin_filter.app_error",
@@ -11829,10 +11821,6 @@
   {
     "id": "ent.saml.configure.not_encrypted_response.app_error",
     "translation": "SAML-Anmeldung war nicht erfolgreich, da die Antwort des Identity Providers nicht verschlüsselt war. Bitte kontaktiere deinen Systemadministrator."
-  },
-  {
-    "id": "ent.saml.cpa_field_mapping.list_error",
-    "translation": "CPA-Feld(er) konnte(n) nicht abgerufen werden"
   },
   {
     "id": "ent.saml.do_login.empty_response.app_error",

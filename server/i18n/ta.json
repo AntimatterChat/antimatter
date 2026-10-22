@@ -11124,10 +11124,6 @@
     "translation": "அடையாள வழங்குநர் (Identity Provider) பதில் குறியாக்கம் (encrypted) செய்யப்படாததால் SAML உள்நுழைவு தோல்வியடைந்தது. உங்கள் அமைப்பு நிர்வாகியை (System Administrator) தொடர்பு கொள்ளவும்."
   },
   {
-    "id": "ent.saml.cpa_field_mapping.list_error",
-    "translation": "CPA புலங்களை (fields) பெற முடியவில்லை"
-  },
-  {
     "id": "ent.saml.do_login.empty_response.app_error",
     "translation": "அடையாள வழங்குநரிடமிருந்து (Identity Provider) காலி பதிலை பெற்றோம்."
   },

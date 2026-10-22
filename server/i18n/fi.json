@@ -11503,10 +11503,6 @@
     "translation": "LDAP-yhteystesti epäonnistui. Palvelin: {{.Server}}:{{.Port}}, ConnectionSecurity: {{.ConnectionType}}, PrivateKeyFilename: {{.PrivateKeyFilename}}, PublicCertificateFilename: {{.PublicCertFilename}}, BindUsername: {{.BindUsername}}. Virhe: {{.Error}}"
   },
   {
-    "id": "ent.ldap.cpa_field_mapping.list_error",
-    "translation": "CPA-kenttien hakeminen epäonnistui"
-  },
-  {
     "id": "ent.ldap.create_fail",
     "translation": "Ei voitu luoda LDAP käyttäjää."
   },
@@ -11601,10 +11597,6 @@
   {
     "id": "ent.ldap.syncronize.search_failure_size_exceeded.app_error",
     "translation": "Koon raja ylitetty. Yritä lisätä Asetus: Enimmäissivukoko -asetuksen arvoa Järjestelmäkonsoli > Tunnistautuminen > AD/LDAP -osiossa."
-  },
-  {
-    "id": "ent.ldap.update_cpa.empty_attribute",
-    "translation": "Tyhjä LDAP-attribuutin arvo"
   },
   {
     "id": "ent.ldap.validate_admin_filter.app_error",
@@ -11829,10 +11821,6 @@
   {
     "id": "ent.saml.configure.not_encrypted_response.app_error",
     "translation": "SAML kirjautuminen epäonnistui koska Identity Provider vastausta ei ollut salattu. Ota yhteys järjestelmänvalvojaan."
-  },
-  {
-    "id": "ent.saml.cpa_field_mapping.list_error",
-    "translation": "CPA-kenttien hakeminen epäonnistui"
   },
   {
     "id": "ent.saml.do_login.empty_response.app_error",

@@ -11494,10 +11494,6 @@
     "translation": "LDAP 连接测试失败。服务器：{{.Server}}:{{.Port}}，连接安全性：{{.ConnectionType}}，私钥文件名：{{.PrivateKeyFilename}}，公共证书文件名：{{.PublicCertFilename}}，绑定用户名：{{.BindUsername}}。错误：{{.Error}}"
   },
   {
-    "id": "ent.ldap.cpa_field_mapping.list_error",
-    "translation": "获取 CPA 字段失败"
-  },
-  {
     "id": "ent.ldap.create_fail",
     "translation": "无法创建 LDAP 用户。"
   },
@@ -11592,10 +11588,6 @@
   {
     "id": "ent.ldap.syncronize.search_failure_size_exceeded.app_error",
     "translation": "超出大小限制。请尝试在系统控制台 > 身份验证 > AD/LDAP 中增加“最大页面大小”设置。"
-  },
-  {
-    "id": "ent.ldap.update_cpa.empty_attribute",
-    "translation": "空的 LDAP 属性值"
   },
   {
     "id": "ent.ldap.validate_admin_filter.app_error",
@@ -11820,10 +11812,6 @@
   {
     "id": "ent.saml.configure.not_encrypted_response.app_error",
     "translation": "SAML 登录失败，因为身份提供者响应未加密。请联系您的系统管理员。"
-  },
-  {
-    "id": "ent.saml.cpa_field_mapping.list_error",
-    "translation": "无法检索 CPA 字段"
   },
   {
     "id": "ent.saml.do_login.empty_response.app_error",

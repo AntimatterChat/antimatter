@@ -11503,10 +11503,6 @@
     "translation": "LDAP-tilkoblingstesten mislyktes. Server: {{.Server}}:{{.Port}}, ConnectionSecurity: {{.ConnectionType}}, PrivateKeyFilename: {{.PrivateKeyFilename}}, PublicCertificateFilename: {{.PublicCertFilename}}, BindUsername: {{.BindUsername}}. Feil: {{.Error}}"
   },
   {
-    "id": "ent.ldap.cpa_field_mapping.list_error",
-    "translation": "Kunne ikke hente CPA-feltene"
-  },
-  {
     "id": "ent.ldap.create_fail",
     "translation": "Kan ikke opprette LDAP-brukeren."
   },
@@ -11601,10 +11597,6 @@
   {
     "id": "ent.ldap.syncronize.search_failure_size_exceeded.app_error",
     "translation": "Størrelsesgrense overskredet. Prøv å øke innstillingen for maksimalt sidestørrelse i Systemkonsoll > Autentisering > AD/LDAP."
-  },
-  {
-    "id": "ent.ldap.update_cpa.empty_attribute",
-    "translation": "Tom verdi for LDAP-attributt"
   },
   {
     "id": "ent.ldap.validate_admin_filter.app_error",
@@ -11829,10 +11821,6 @@
   {
     "id": "ent.saml.configure.not_encrypted_response.app_error",
     "translation": "SAML-innloggingen mislyktes fordi svaret fra identitetsleverandøren ikke er kryptert. Kontakt systemadministratoren."
-  },
-  {
-    "id": "ent.saml.cpa_field_mapping.list_error",
-    "translation": "Kunne ikke hente CPA-felt"
   },
   {
     "id": "ent.saml.do_login.empty_response.app_error",

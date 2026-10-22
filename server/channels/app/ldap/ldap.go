@@ -171,13 +171,9 @@ func (l *Ldap) DoLogin(rctx request.CTX, id string, password string) (*model.Use
 	}
 	defer ss.Close()
 
-	cpa, err := l.loadCPAMapping(rctx)
-	if err != nil {
-		rctx.Logger().Debug("Unable to load user attribute fields synchronized with AD/LDAP", mlog.Err(err))
-		cpa = nil
-	}
+	attrSyncer := l.loadAttributeSyncer(rctx)
 
-	lu, appErr := l.findUser(ss, s.IdAttribute, id, cpa.attributes()...)
+	lu, appErr := l.findUser(ss, s.IdAttribute, id, syncedAttributes(attrSyncer)...)
 	if appErr != nil {
 		return nil, appErr
 	}
@@ -214,9 +210,7 @@ func (l *Ldap) DoLogin(rctx request.CTX, id string, password string) (*model.Use
 
 	user = l.applyLoginRoles(rctx, ss, user, lu)
 
-	if err := l.syncCPAWithMapping(rctx, cpa, user.Id, lu.Entry); err != nil {
-		rctx.Logger().Warn("Failed to synchronize user attributes from AD/LDAP", mlog.String("user_id", user.Id), mlog.Err(err))
-	}
+	l.syncAttributes(rctx, attrSyncer, user.Id, lu.Entry, true)
 
 	if firstLogin {
 		if appErr := l.firstLoginSync(rctx, ss, user, lu); appErr != nil {

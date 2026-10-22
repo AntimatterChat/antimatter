@@ -181,4 +181,16 @@ describe('fusion/attributes/UserAttributesDialog', () => {
         await screen.findByText('In Lumen');
         expect(screen.queryByText('Everywhere on the server')).not.toBeInTheDocument();
     });
+
+    test('an attribute synced from OpenID Connect is set by the provider of a user who signs in with it', async () => {
+        mockSystemPerms = new Set(['edit_other_users']);
+        const serverFields = {
+            dept: {id: 'dept', name: 'Department', type: 'text', attrs: {sort_order: 0, openid: 'org.department'}},
+        };
+        const openIdUser = {sofia: TestHelper.getUserMock({id: 'sofia', username: 'sofia', first_name: '', last_name: '', nickname: '', auth_service: 'openid'})};
+        render('sofia', serverFields, openIdUser);
+
+        expect(await screen.findByText('Set by their login provider.')).toBeInTheDocument();
+        expect(screen.queryByRole('textbox', {name: 'Department'})).not.toBeInTheDocument();
+    });
 });

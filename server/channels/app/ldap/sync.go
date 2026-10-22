@@ -85,14 +85,10 @@ func (l *Ldap) Synchronize(rctx request.CTX, opts syncOptions) (*syncStats, *mod
 		since = lastJob.StartAt
 	}
 
-	cpa, err := l.loadCPAMapping(rctx)
-	if err != nil {
-		logger.Warn("Unable to load user attribute fields synchronized with AD/LDAP", mlog.Err(err))
-		cpa = nil
-	}
+	attrSyncer := l.loadAttributeSyncer(rctx)
 
 	// 1. Read the users selected by the user filter.
-	entries, err := ss.search(s.userFilter(), s.userAttributes(cpa.attributes()...))
+	entries, err := ss.search(s.userFilter(), s.userAttributes(syncedAttributes(attrSyncer)...))
 	if err != nil {
 		return stats, searchError("Ldap.Synchronize", err)
 	}
@@ -136,7 +132,7 @@ func (l *Ldap) Synchronize(rctx request.CTX, opts syncOptions) (*syncStats, *mod
 		if user.AuthData != nil {
 			lu = byID[*user.AuthData]
 		}
-		l.syncUser(rctx, s, user, lu, true, guestDNs, cpa, stats)
+		l.syncUser(rctx, s, user, lu, true, guestDNs, attrSyncer, stats)
 		if lu != nil {
 			userIDsByDN[normalizeDN(lu.DN)] = user.Id
 		}
@@ -162,12 +158,16 @@ func (l *Ldap) Synchronize(rctx request.CTX, opts syncOptions) (*syncStats, *mod
 			if lu == nil {
 				lu = byEmail[strings.ToLower(user.Email)]
 			}
-			l.syncSamlUser(rctx, s, user, lu, includeAuth, bindWithID, cpa, stats)
+			l.syncSamlUser(rctx, s, user, lu, includeAuth, bindWithID, attrSyncer, stats)
 			if lu != nil {
 				userIDsByDN[normalizeDN(lu.DN)] = user.Id
 			}
 		}
 	}
+
+	// Every user is synchronized: remove the options of the synced user
+	// attributes that nobody holds any more.
+	l.pruneAttributeOptions(rctx, attrSyncer)
 
 	// 4. Synchronize the groups.
 	if s.GroupIdAttribute != "" {
@@ -224,7 +224,7 @@ func (l *Ldap) guestDNs(ss *session, cfg *model.Config) (map[string]bool, *model
 
 // syncUser updates, reactivates or deactivates an AD/LDAP user. lu is nil
 // when the user is not selected by the user filter anymore.
-func (l *Ldap) syncUser(rctx request.CTX, s *settings, user *model.User, lu *ldapUser, includeIdentity bool, guestDNs map[string]bool, cpa *cpaMapping, stats *syncStats) {
+func (l *Ldap) syncUser(rctx request.CTX, s *settings, user *model.User, lu *ldapUser, includeIdentity bool, guestDNs map[string]bool, attrSyncer AttributeSyncer, stats *syncStats) {
 	logger := rctx.Logger().With(mlog.String("user_id", user.Id))
 
 	if lu == nil {
@@ -272,15 +272,11 @@ func (l *Ldap) syncUser(rctx request.CTX, s *settings, user *model.User, lu *lda
 		stats.Updated++
 	}
 
-	if cpa != nil {
-		if err := l.syncCPAWithMapping(rctx, cpa, user.Id, lu.Entry); err != nil {
-			logger.Warn("Failed to synchronize user attributes from AD/LDAP", mlog.Err(err))
-		}
-	}
+	l.syncAttributes(rctx, attrSyncer, user.Id, lu.Entry, false)
 }
 
 // syncSamlUser updates or deactivates a SAML user synchronized with AD/LDAP.
-func (l *Ldap) syncSamlUser(rctx request.CTX, s *settings, user *model.User, lu *ldapUser, includeAuth, bindWithID bool, cpa *cpaMapping, stats *syncStats) {
+func (l *Ldap) syncSamlUser(rctx request.CTX, s *settings, user *model.User, lu *ldapUser, includeAuth, bindWithID bool, attrSyncer AttributeSyncer, stats *syncStats) {
 	if lu == nil {
 		l.syncUser(rctx, s, user, nil, false, nil, nil, stats)
 		return
@@ -310,7 +306,7 @@ func (l *Ldap) syncSamlUser(rctx request.CTX, s *settings, user *model.User, lu 
 		}
 	}
 
-	l.syncUser(rctx, s, user, lu, false, nil, cpa, stats)
+	l.syncUser(rctx, s, user, lu, false, nil, attrSyncer, stats)
 }
 
 // syncGroups synchronizes the Mattermost groups linked to directory groups.

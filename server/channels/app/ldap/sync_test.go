@@ -103,6 +103,33 @@ func TestSynchronizeSamlUsers(t *testing.T) {
 	assert.Equal(t, "bob", *env.b.user(samlBob.Id).AuthData)
 }
 
+func TestSynchronizeCustomProfileAttributes(t *testing.T) {
+	env := setupEnv(t)
+	*env.b.cfg.SamlSettings.EnableSyncWithLdap = true
+	syncer := newFakeAttributeSyncer("departmentNumber", "businessCategory")
+	env.b.attrSyncer = syncer
+
+	alice := ldapAccount(env, "alice", "alice@example.com")
+	gone := ldapAccount(env, "gone", "gone@example.com")
+	email := "bob@example.com"
+	samlBob := env.b.addUser(&model.User{Username: "bobby", Email: email, AuthService: model.UserAuthServiceSaml, AuthData: &email})
+
+	aliceEntry := env.dir.get("uid=alice,ou=people,dc=example,dc=com")
+	aliceEntry.replace("departmentNumber", "R&D")
+	aliceEntry.replace("businessCategory", "Sales", "Support")
+	env.dir.get("uid=bob,ou=people,dc=example,dc=com").replace("departmentNumber", "Ops")
+
+	_, appErr := env.l.Synchronize(env.b.rctx(), syncOptions{})
+	require.Nil(t, appErr)
+
+	assert.Equal(t, 1, syncer.loads, "one syncer serves the whole run")
+	assert.Equal(t, map[string][]string{"departmentNumber": {"R&D"}, "businessCategory": {"Sales", "Support"}}, syncer.synced[alice.Id])
+	assert.False(t, syncer.syncOpts[alice.Id].PruneOrphanedOptions, "the job prunes once at the end, not per user")
+	assert.Equal(t, map[string][]string{"departmentNumber": {"Ops"}}, syncer.synced[samlBob.Id], "SAML users synchronized with AD/LDAP get their attributes too")
+	assert.NotContains(t, syncer.synced, gone.Id, "a user gone from the directory is deactivated, not synced")
+	assert.Equal(t, 1, syncer.prunes)
+}
+
 func TestSynchronizeGroups(t *testing.T) {
 	env := setupEnv(t)
 	alice := ldapAccount(env, "alice", "alice@example.com")

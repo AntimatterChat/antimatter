@@ -4,7 +4,6 @@
 package ldap
 
 import (
-	"encoding/json"
 	"fmt"
 	"testing"
 	"time"
@@ -344,42 +343,77 @@ func TestObjectGUIDAsID(t *testing.T) {
 }
 
 func TestCustomProfileAttributes(t *testing.T) {
-	env := setupEnv(t)
-	dept := &model.CPAField{
-		PropertyField: model.PropertyField{ID: model.NewId(), GroupID: env.b.cpaGroupID, Name: "department", Type: model.PropertyFieldTypeText, ObjectType: model.PropertyFieldObjectTypeUser},
-		Attrs:         model.CPAAttrs{LDAP: "departmentNumber"},
-	}
-	site := &model.CPAField{
-		PropertyField: model.PropertyField{ID: model.NewId(), GroupID: env.b.cpaGroupID, Name: "site", Type: model.PropertyFieldTypeSelect, ObjectType: model.PropertyFieldObjectTypeUser},
-		Attrs: model.CPAAttrs{LDAP: "l", Options: model.PropertyOptions[*model.CustomProfileAttributesSelectOption]{
-			{ID: "opt-paris", Name: "Paris"}, {ID: "opt-lyon", Name: "Lyon"},
-		}},
-	}
-	unsynced := &model.CPAField{
-		PropertyField: model.PropertyField{ID: model.NewId(), GroupID: env.b.cpaGroupID, Name: "free", Type: model.PropertyFieldTypeText, ObjectType: model.PropertyFieldObjectTypeUser},
-	}
-	env.b.cpaFields = []*model.PropertyField{dept.ToPropertyField(), site.ToPropertyField(), unsynced.ToPropertyField()}
+	t.Run("sign-in hands every directory value of the synced attributes to the syncer", func(t *testing.T) {
+		env := setupEnv(t)
+		syncer := newFakeAttributeSyncer("departmentNumber", "l", "businessCategory")
+		env.b.attrSyncer = syncer
 
-	entry := env.dir.get("uid=alice,ou=people,dc=example,dc=com")
-	entry.replace("departmentNumber", "R&D")
-	entry.replace("l", "paris")
+		entry := env.dir.get("uid=alice,ou=people,dc=example,dc=com")
+		entry.replace("departmentNumber", "R&D")
+		entry.replace("l", "Paris")
+		entry.replace("businessCategory", "Sales", "Support")
 
-	user, appErr := env.l.DoLogin(env.b.rctx(), "alice", "alice-pwd")
-	require.Nil(t, appErr)
-	values := env.b.cpaValues[user.Id]
-	require.Len(t, values, 2)
-	var text, option string
-	require.NoError(t, json.Unmarshal(values[dept.ID].Value, &text))
-	require.NoError(t, json.Unmarshal(values[site.ID].Value, &option))
-	assert.Equal(t, "R&D", text)
-	assert.Equal(t, "opt-paris", option)
+		user, appErr := env.l.DoLogin(env.b.rctx(), "alice", "alice-pwd")
+		require.Nil(t, appErr)
 
-	// removed attribute deletes the value
-	entry.replace("departmentNumber")
-	_, appErr = env.l.DoLogin(env.b.rctx(), "alice", "alice-pwd")
-	require.Nil(t, appErr)
-	assert.NotContains(t, env.b.cpaValues[user.Id], dept.ID)
-	assert.Contains(t, env.b.cpaValues[user.Id], site.ID)
+		// The directory only returns the attributes the search asks for, so
+		// getting the values shows the synced attributes were requested.
+		assert.Equal(t, map[string][]string{
+			"departmentNumber": {"R&D"},
+			"l":                {"Paris"},
+			"businessCategory": {"Sales", "Support"},
+		}, syncer.synced[user.Id])
+		assert.True(t, syncer.syncOpts[user.Id].PruneOrphanedOptions, "a sign-in prunes the options the user was the last to hold")
+	})
+
+	t.Run("an attribute removed from the directory is left out, which clears the value", func(t *testing.T) {
+		env := setupEnv(t)
+		syncer := newFakeAttributeSyncer("departmentNumber", "l")
+		env.b.attrSyncer = syncer
+		entry := env.dir.get("uid=alice,ou=people,dc=example,dc=com")
+		entry.replace("departmentNumber", "R&D")
+		entry.replace("l", "Paris")
+
+		user, appErr := env.l.DoLogin(env.b.rctx(), "alice", "alice-pwd")
+		require.Nil(t, appErr)
+		require.Contains(t, syncer.synced[user.Id], "departmentNumber")
+
+		entry.replace("departmentNumber")
+		_, appErr = env.l.DoLogin(env.b.rctx(), "alice", "alice-pwd")
+		require.Nil(t, appErr)
+		assert.NotContains(t, syncer.synced[user.Id], "departmentNumber")
+		assert.Equal(t, []string{"Paris"}, syncer.synced[user.Id]["l"])
+	})
+
+	t.Run("nothing is synced when no attribute is synced from AD/LDAP", func(t *testing.T) {
+		env := setupEnv(t)
+		syncer := newFakeAttributeSyncer()
+		env.b.attrSyncer = syncer
+
+		_, appErr := env.l.DoLogin(env.b.rctx(), "alice", "alice-pwd")
+		require.Nil(t, appErr)
+		assert.Zero(t, syncer.syncCalls)
+	})
+
+	t.Run("sign-in still works when the synced attributes cannot be loaded", func(t *testing.T) {
+		env := setupEnv(t)
+		env.b.attrSyncerErr = model.NewAppError("test", "app.property_group.get.app_error", nil, "", 500)
+
+		user, appErr := env.l.DoLogin(env.b.rctx(), "alice", "alice-pwd")
+		require.Nil(t, appErr)
+		assert.Equal(t, "alice", user.Username)
+	})
+
+	t.Run("a failed password check syncs nothing", func(t *testing.T) {
+		env := setupEnv(t)
+		syncer := newFakeAttributeSyncer("l")
+		env.b.attrSyncer = syncer
+		env.dir.get("uid=alice,ou=people,dc=example,dc=com").replace("l", "Paris")
+
+		_, appErr := env.l.DoLogin(env.b.rctx(), "alice", "wrong")
+		require.NotNil(t, appErr)
+		assert.Zero(t, syncer.syncCalls)
+	})
 }
 
 func TestStartSynchronizeJob(t *testing.T) {

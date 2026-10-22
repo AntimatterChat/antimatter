@@ -94,11 +94,8 @@ type fakeBackend struct {
 	users  map[string]*model.User
 	tokens map[string]*model.Token
 
-	group  *model.PropertyGroup
-	fields []*model.PropertyField
-	values map[string]*model.PropertyValue
-
-	cpaCallerIDs []string
+	attrSyncer    *fakeAttributeSyncer
+	attrSyncerErr *model.AppError
 }
 
 func newFakeBackend() *fakeBackend {
@@ -130,8 +127,6 @@ func newFakeBackend() *fakeBackend {
 		files:   map[string][]byte{},
 		users:   map[string]*model.User{},
 		tokens:  map[string]*model.Token{},
-		group:   &model.PropertyGroup{ID: model.NewId(), Name: model.AccessControlPropertyGroupName},
-		values:  map[string]*model.PropertyValue{},
 	}
 }
 
@@ -285,69 +280,46 @@ func (f *fakeBackend) DeleteToken(token string) error {
 	return nil
 }
 
-func (f *fakeBackend) recordCaller(rctx request.CTX) {
-	id, _ := model.CallerIDFromContext(rctx.Context())
-	f.cpaCallerIDs = append(f.cpaCallerIDs, id)
-}
-
-func (f *fakeBackend) GetPropertyGroup(rctx request.CTX, name string) (*model.PropertyGroup, *model.AppError) {
-	if name != f.group.Name {
-		return nil, model.NewAppError("GetPropertyGroup", "app.property_group.get.app_error", nil, "", http.StatusNotFound)
+func (f *fakeBackend) NewAttributeSyncer(_ request.CTX) (AttributeSyncer, *model.AppError) {
+	if f.attrSyncerErr != nil {
+		return nil, f.attrSyncerErr
 	}
-	return f.group, nil
-}
-
-func (f *fakeBackend) SearchPropertyFields(rctx request.CTX, groupID string, opts model.PropertyFieldSearchOpts) ([]*model.PropertyField, *model.AppError) {
-	f.recordCaller(rctx)
-	return f.fields, nil
-}
-
-func (f *fakeBackend) SearchPropertyValues(rctx request.CTX, groupID string, opts model.PropertyValueSearchOpts) ([]*model.PropertyValue, *model.AppError) {
-	var out []*model.PropertyValue
-	for _, v := range f.values {
-		if slices.Contains(opts.TargetIDs, v.TargetID) {
-			c := *v
-			out = append(out, &c)
-		}
+	if f.attrSyncer == nil {
+		return nil, nil
 	}
-	return out, nil
+	return f.attrSyncer, nil
 }
 
-func (f *fakeBackend) UpsertPropertyValues(rctx request.CTX, values []*model.PropertyValue, objectType, targetID string) ([]*model.PropertyValue, *model.AppError) {
-	f.recordCaller(rctx)
-	for _, v := range values {
-		var existing *model.PropertyValue
-		for _, e := range f.values {
-			if e.FieldID == v.FieldID && e.TargetID == v.TargetID {
-				existing = e
-			}
-		}
-		if existing != nil {
-			existing.Value = v.Value
-			continue
-		}
-		c := *v
-		c.ID = model.NewId()
-		f.values[c.ID] = &c
+// fakeAttributeSyncer records what the SAML service hands to the
+// PropertySyncer; the syncer itself is tested in the app package.
+type fakeAttributeSyncer struct {
+	attributes []string
+	synced     map[string]map[string][]string // user ID -> attrs of the last sync
+	syncOpts   map[string]model.PropertySyncOptions
+	syncCalls  int
+	syncErr    *model.AppError
+}
+
+func newFakeAttributeSyncer(attributes ...string) *fakeAttributeSyncer {
+	return &fakeAttributeSyncer{
+		attributes: attributes,
+		synced:     map[string]map[string][]string{},
+		syncOpts:   map[string]model.PropertySyncOptions{},
 	}
-	return values, nil
 }
 
-func (f *fakeBackend) DeletePropertyValue(rctx request.CTX, groupID, valueID string) *model.AppError {
-	f.recordCaller(rctx)
-	delete(f.values, valueID)
-	return nil
-}
+func (f *fakeAttributeSyncer) HasMappings() bool { return len(f.attributes) > 0 }
 
-func (f *fakeBackend) valueFor(userID, fieldID string) (string, bool) {
-	for _, v := range f.values {
-		if v.TargetID == userID && v.FieldID == fieldID {
-			var s string
-			_ = json.Unmarshal(v.Value, &s)
-			return s, true
-		}
+func (f *fakeAttributeSyncer) ExternalAttributes() []string { return slices.Clone(f.attributes) }
+
+func (f *fakeAttributeSyncer) SyncUser(_ request.CTX, userID string, attrs map[string][]string, opts model.PropertySyncOptions) (*model.PropertySyncResult, *model.AppError) {
+	f.syncCalls++
+	if f.syncErr != nil {
+		return nil, f.syncErr
 	}
-	return "", false
+	f.synced[userID] = attrs
+	f.syncOpts[userID] = opts
+	return &model.PropertySyncResult{UserID: userID}, nil
 }
 
 // ---------------------------------------------------------------------------

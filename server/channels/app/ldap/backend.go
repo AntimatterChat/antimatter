@@ -53,12 +53,12 @@ type Backend interface {
 	DeleteGroupConstrainedMemberships(rctx request.CTX) error
 	SyncGroupConstrainedRoles(rctx request.CTX, groupIDs []string) error
 
-	// Custom profile attributes
-	GetCPAGroupID(rctx request.CTX) (string, error)
-	GetCPAFields(rctx request.CTX, groupID string) ([]*model.PropertyField, error)
-	GetCPAValues(rctx request.CTX, groupID string, userID string) ([]*model.PropertyValue, error)
-	UpsertCPAValues(rctx request.CTX, userID string, values []*model.PropertyValue) error
-	DeleteCPAValue(rctx request.CTX, groupID string, valueID string) error
+	// User attributes (custom profile attributes)
+	//
+	// NewAttributeSyncer returns the syncer of the user attributes synced from
+	// AD/LDAP, loaded at the time of the call: one per synchronization run or
+	// sign-in.
+	NewAttributeSyncer(rctx request.CTX) (AttributeSyncer, *model.AppError)
 
 	// Jobs
 	CreateSyncJob(rctx request.CTX, data map[string]string) (*model.Job, *model.AppError)
