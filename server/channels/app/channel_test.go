@@ -3603,6 +3603,12 @@ func TestConvertGroupMessageToChannel(t *testing.T) {
 	mockStore.On("System").Return(&mockSystemStore)
 	mockSystemStore.On("GetByName", model.MigrationKeyAdvancedPermissionsPhase2).Return(nil, nil)
 
+	// The saved post the mock gives back is a blank one, which CreatePost takes for one that may be for an agent:
+	// the agents' directory is looked up, and there are none.
+	mockAIAgentStore := mocks.AIAgentStore{}
+	mockStore.On("AIAgent").Return(&mockAIAgentStore)
+	mockAIAgentStore.On("GetAll", mock.Anything).Return([]*model.AIAgent{}, nil)
+
 	var err error
 
 	th.App.ch.srv.userService, err = users.New(users.ServiceConfig{
