@@ -1770,6 +1770,38 @@
     "translation": "{{.Username}} non è un membro di questo canale."
   },
   {
+    "id": "api.command_rules.agree_hint",
+    "translation": "Digita `/rules agree` per accettare le regole, quindi potrai pubblicare messaggi."
+  },
+  {
+    "id": "api.command_rules.agreed",
+    "translation": "Grazie: hai accettato le regole di {{.Community}}. Ora puoi pubblicare messaggi."
+  },
+  {
+    "id": "api.command_rules.already_agreed",
+    "translation": "Hai già accettato queste regole."
+  },
+  {
+    "id": "api.command_rules.desc",
+    "translation": "Leggi le regole di questa community o accettale"
+  },
+  {
+    "id": "api.command_rules.hint",
+    "translation": "[accetta]"
+  },
+  {
+    "id": "api.command_rules.name",
+    "translation": "rules"
+  },
+  {
+    "id": "api.command_rules.none",
+    "translation": "Questa community non ha regole da accettare."
+  },
+  {
+    "id": "api.command_rules.title",
+    "translation": "**Regole di {{.Community}}**"
+  },
+  {
     "id": "api.command_search.desc",
     "translation": "Cerca testo nei messaggi"
   },
@@ -3113,6 +3145,14 @@
     "translation": "@{{.Username}} non ha ricevuto notifiche per questa citazione perché non è membro di questa squadra."
   },
   {
+    "id": "api.post.community_rules_not_accepted",
+    "translation": "Accetta le regole di questa community prima di pubblicare."
+  },
+  {
+    "id": "api.post.community_rules_not_accepted.reminder",
+    "translation": "Questa community richiede l'accettazione delle regole prima di pubblicare. Digita `/rules` per leggerle, poi `/rules agree` per accettarle."
+  },
+  {
     "id": "api.post.create_post.burn_on_read.abac_denied.app_error",
     "translation": "Non hai il permesso di inviare messaggi che si cancellano dopo la lettura in questo canale."
   },
@@ -3215,6 +3255,10 @@
   {
     "id": "api.post.fill_in_post_props.burn_on_read.config.app_error",
     "translation": "Le pubblicazioni con distruzione alla lettura non sono abilitate. Abilita il feature flag e l'impostazione del servizio."
+  },
+  {
+    "id": "api.post.fill_in_post_props.burn_on_read.duration.app_error",
+    "translation": "La durata della cancellazione dopo la lettura deve essere un numero positivo di millisecondi."
   },
   {
     "id": "api.post.fill_in_post_props.burn_on_read.license.app_error",
@@ -5575,6 +5619,134 @@
     "translation": "Chiamata al bridge non riuscita."
   },
   {
+    "id": "app.agents.status.no_agents",
+    "translation": "Nessun agente disponibile per te."
+  },
+  {
+    "id": "app.ai.agent.access.app_error",
+    "translation": "Non puoi parlare con questo agente qui."
+  },
+  {
+    "id": "app.ai.agent.activity.get.app_error",
+    "translation": "Impossibile leggere l'attività degli agenti."
+  },
+  {
+    "id": "app.ai.agent.activity.save.app_error",
+    "translation": "Impossibile salvare l'attività dell'agente."
+  },
+  {
+    "id": "app.ai.agent.connection.app_error",
+    "translation": "Un agente in questo contesto non può utilizzare questa connessione al modello: un agente a livello di server richiede una connessione a livello di server, mentre un agente di una community richiede una connessione della propria community o condivisa con essa."
+  },
+  {
+    "id": "app.ai.agent.conversations.app_error",
+    "translation": "Impossibile caricare le conversazioni con gli agenti."
+  },
+  {
+    "id": "app.ai.agent.get.app_error",
+    "translation": "Impossibile leggere gli agenti."
+  },
+  {
+    "id": "app.ai.agent.manage_permission.app_error",
+    "translation": "Non puoi gestire gli agenti qui."
+  },
+  {
+    "id": "app.ai.agent.not_found.app_error",
+    "translation": "Questo agente non esiste o è stato eliminato."
+  },
+  {
+    "id": "app.ai.agent.references.app_error",
+    "translation": "L'agente fa riferimento a una community, un canale o una persona inesistenti, oppure a un canale di un'altra community."
+  },
+  {
+    "id": "app.ai.agent.save.app_error",
+    "translation": "Impossibile salvare l'agente."
+  },
+  {
+    "id": "app.ai.agent.task.agent_disabled.app_error",
+    "translation": "Questo agente è disattivato."
+  },
+  {
+    "id": "app.ai.agent.task.channel.app_error",
+    "translation": "Il canale non esiste o non hai i permessi per leggerlo."
+  },
+  {
+    "id": "app.ai.agent.task.external.app_error",
+    "translation": "Un agente esterno non accetta attività qui: inviaci un messaggio."
+  },
+  {
+    "id": "app.ai.agent.task.not_transcription.app_error",
+    "translation": "Questo messaggio non è una trascrizione di una chiamata."
+  },
+  {
+    "id": "app.ai.agent.task.post.app_error",
+    "translation": "Il messaggio non esiste o non hai i permessi per leggerlo."
+  },
+  {
+    "id": "app.ai.agent.task.request.ask_channel",
+    "translation": "Riguardo a {{.Channel}}: {{.Question}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items",
+    "translation": "Trova le attività da svolgere in questo thread: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items_channel",
+    "translation": "Trova le attività da svolgere negli ultimi messaggi di {{.Channel}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items_channel_since",
+    "translation": "Trova le attività da svolgere in {{.Channel}} da {{.Since}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions",
+    "translation": "Trova le domande aperte in questo thread: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions_channel",
+    "translation": "Trova le domande aperte negli ultimi messaggi di {{.Channel}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions_channel_since",
+    "translation": "Trova le domande aperte in {{.Channel}} da {{.Since}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_channel",
+    "translation": "Riassumi gli ultimi messaggi in {{.Channel}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_channel_since",
+    "translation": "Riassumi i messaggi in {{.Channel}} da {{.Since}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_thread",
+    "translation": "Riassumi questo thread: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_transcription",
+    "translation": "Riassumi la trascrizione di questa chiamata: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.this_conversation",
+    "translation": "questa conversazione"
+  },
+  {
+    "id": "app.ai.agent.turn.empty",
+    "translation": "Mi dispiace, non ho una risposta a riguardo."
+  },
+  {
+    "id": "app.ai.agent.turn.failed",
+    "translation": "Mi dispiace, non ho potuto rispondere: {{.Reason}}"
+  },
+  {
+    "id": "app.ai.agent.turn.interrupted",
+    "translation": "Mi dispiace, la mia risposta è stata interrotta. Riprova tra un momento."
+  },
+  {
+    "id": "app.ai.agent.turn.not_allowed",
+    "translation": "{{.Agent}} non è disponibile qui per te."
+  },
+  {
     "id": "app.ai.call.audience.app_error",
     "translation": "Non puoi utilizzare questa connessione al modello."
   },
@@ -6495,6 +6667,38 @@
     "translation": "Questo valore non è valido per l'attributo {{.Name}}."
   },
   {
+    "id": "app.community_rules.accept.app_error",
+    "translation": "Impossibile salvare la tua accettazione delle regole della community."
+  },
+  {
+    "id": "app.community_rules.accept.changed.app_error",
+    "translation": "Le regole della community sono cambiate da quando le hai lette. Rileggile prima di accettarle."
+  },
+  {
+    "id": "app.community_rules.accept.not_member.app_error",
+    "translation": "Solo i membri della community possono accettare le sue regole."
+  },
+  {
+    "id": "app.community_rules.accept.off.app_error",
+    "translation": "Questa community non ha regole da accettare."
+  },
+  {
+    "id": "app.community_rules.delete.app_error",
+    "translation": "Impossibile eliminare le regole della community."
+  },
+  {
+    "id": "app.community_rules.get.app_error",
+    "translation": "Impossibile recuperare le regole della community."
+  },
+  {
+    "id": "app.community_rules.save.app_error",
+    "translation": "Impossibile salvare le regole della community."
+  },
+  {
+    "id": "app.community_rules.stats.app_error",
+    "translation": "Impossibile contare chi ha accettato le regole della community."
+  },
+  {
     "id": "app.compile_csv_chunks.header_error",
     "translation": "Impossibile scrivere le intestazioni del CSV."
   },
@@ -7279,6 +7483,34 @@
   {
     "id": "app.file_info.undelete_for_post_ids.app_error",
     "translation": "Impossibile ripristinare gli allegati delle pubblicazioni."
+  },
+  {
+    "id": "app.focus.bot.app_error",
+    "translation": "I bot non possono usare la modalità focus."
+  },
+  {
+    "id": "app.focus.delete.app_error",
+    "translation": "Impossibile eliminare la modalità focus dell'account."
+  },
+  {
+    "id": "app.focus.get.app_error",
+    "translation": "Impossibile ottenere la tua modalità focus."
+  },
+  {
+    "id": "app.focus.mark_read.app_error",
+    "translation": "Impossibile segnare come letti gli elementi persi."
+  },
+  {
+    "id": "app.focus.save.app_error",
+    "translation": "Impossibile avviare la modalità focus."
+  },
+  {
+    "id": "app.focus.statuses_disabled.app_error",
+    "translation": "La modalità focus richiede gli stati degli utenti, che sono disattivati su questo server."
+  },
+  {
+    "id": "app.focus.summary.app_error",
+    "translation": "Impossibile ottenere il riepilogo di ciò che hai perso durante la modalità focus."
   },
   {
     "id": "app.get_user_team_scheduled_posts.error",
@@ -12327,6 +12559,90 @@
     "translation": "ID utente non valido."
   },
   {
+    "id": "model.agent_activity.expires.app_error",
+    "translation": "L'attività di un agente dura tra 1 secondo e 24 ore."
+  },
+  {
+    "id": "model.agent_activity.state.app_error",
+    "translation": "Lo stato di un agente è inattivo, in elaborazione, operativo, in attesa, bloccato o offline."
+  },
+  {
+    "id": "model.agent_activity.text.app_error",
+    "translation": "La descrizione dell'attività dell'agente deve stare in una riga di massimo 200 caratteri."
+  },
+  {
+    "id": "model.agent_activity.thread_post_id.app_error",
+    "translation": "Il thread dell'attività di un agente deve essere un ID messaggio."
+  },
+  {
+    "id": "model.ai_agent.access.app_error",
+    "translation": "L'accesso all'agente specifica community, canali, ruoli o persone non validi, oppure troppi."
+  },
+  {
+    "id": "model.ai_agent.access_community.app_error",
+    "translation": "L'agente di una community è riservato alla sua stessa community."
+  },
+  {
+    "id": "model.ai_agent.connection_id.app_error",
+    "translation": "Seleziona la connessione al modello utilizzata dall'agente."
+  },
+  {
+    "id": "model.ai_agent.external.app_error",
+    "translation": "Un agente esterno non ha modello, connessione o prompt di sistema: risponde tramite il suo programma."
+  },
+  {
+    "id": "model.ai_agent.max_tool_turns.app_error",
+    "translation": "Un agente può effettuare tra 0 (valore predefinito) e 250 turni di strumento."
+  },
+  {
+    "id": "model.ai_agent.model.app_error",
+    "translation": "Il nome del modello è troppo lungo o contiene più righe."
+  },
+  {
+    "id": "model.ai_agent.needs_attention.app_error",
+    "translation": "La nota sugli elementi che richiedono attenzione è troppo lunga."
+  },
+  {
+    "id": "model.ai_agent.reasoning.app_error",
+    "translation": "Lo sforzo di ragionamento deve essere minimo, basso, medio o alto, con un budget tra 0 e 128.000 token."
+  },
+  {
+    "id": "model.ai_agent.scope.app_error",
+    "translation": "Un agente appartiene al server o a una singola community."
+  },
+  {
+    "id": "model.ai_agent.system_prompt.app_error",
+    "translation": "Il prompt di sistema è troppo lungo (massimo 32.000 caratteri)."
+  },
+  {
+    "id": "model.ai_agent.times.app_error",
+    "translation": "Le date di creazione e aggiornamento dell'agente sono mancanti."
+  },
+  {
+    "id": "model.ai_agent.tools.app_error",
+    "translation": "Il nome di uno strumento non è valido o ce ne sono troppi (massimo 256)."
+  },
+  {
+    "id": "model.ai_agent.user_id.app_error",
+    "translation": "Un agente richiede un account valido."
+  },
+  {
+    "id": "model.ai_agent_task.channel_id.app_error",
+    "translation": "Questa attività richiede un canale."
+  },
+  {
+    "id": "model.ai_agent_task.post_id.app_error",
+    "translation": "Questa attività richiede un messaggio."
+  },
+  {
+    "id": "model.ai_agent_task.question.app_error",
+    "translation": "Poni una domanda di massimo 2.000 caratteri."
+  },
+  {
+    "id": "model.ai_agent_task.task.app_error",
+    "translation": "Questo compito non è noto a un agente."
+  },
+  {
     "id": "model.ai_connection.api_key.app_error",
     "translation": "La chiave API è troppo lunga o contiene un a capo."
   },
@@ -12489,6 +12805,10 @@
   {
     "id": "model.bot.is_valid.description.app_error",
     "translation": "Descrizione invalida."
+  },
+  {
+    "id": "model.bot.is_valid.kind.app_error",
+    "translation": "Un account bot deve essere un bot o un agente."
   },
   {
     "id": "model.bot.is_valid.update_at.app_error",
@@ -12877,6 +13197,14 @@
   {
     "id": "model.command_response.is_valid.response_type.app_error",
     "translation": "Tipo di risposta non valido."
+  },
+  {
+    "id": "model.community_rules.empty.app_error",
+    "translation": "Scrivi le regole prima di attivarle."
+  },
+  {
+    "id": "model.community_rules.text.app_error",
+    "translation": "Le regole possono contenere al massimo {{.Max}} caratteri."
   },
   {
     "id": "model.compliance.is_valid.create_at.app_error",
@@ -13655,6 +13983,10 @@
     "translation": "BurnOnReadDurationSeconds deve essere un numero positivo."
   },
   {
+    "id": "model.config.is_valid.service_settings.burn_on_read_maximum_duration_seconds.app_error",
+    "translation": "BurnOnReadMaximumDurationSeconds deve essere un numero positivo."
+  },
+  {
     "id": "model.config.is_valid.service_settings.burn_on_read_maximum_time_to_live_seconds.app_error",
     "translation": "BurnOnReadMaximumTimeToLiveSeconds deve essere un numero positivo."
   },
@@ -13913,6 +14245,22 @@
   {
     "id": "model.file_info.is_valid.user_id.app_error",
     "translation": "Valore non valido per user_id."
+  },
+  {
+    "id": "model.focus.duration.app_error",
+    "translation": "La modalità di concentrazione dura da un minuto a una settimana."
+  },
+  {
+    "id": "model.focus.duration_or_end.app_error",
+    "translation": "Scegli la durata della sessione di concentrazione: una durata o un orario di fine."
+  },
+  {
+    "id": "model.focus.reason.app_error",
+    "translation": "Il motivo è troppo lungo: diventa il tuo stato personalizzato, di massimo 100 caratteri."
+  },
+  {
+    "id": "model.focus.window.app_error",
+    "translation": "L'intervallo di tempo del riepilogo non è valido: deve essere nel passato, in ordine cronologico e di massimo otto giorni."
   },
   {
     "id": "model.group.channel_id.app_error",

@@ -1720,6 +1720,38 @@
     "translation": "{{.Username}} bukan anggota kanal ini."
   },
   {
+    "id": "api.command_rules.agree_hint",
+    "translation": "Ketik `/rules agree` untuk menyetujui, lalu Anda dapat mengirim pesan."
+  },
+  {
+    "id": "api.command_rules.agreed",
+    "translation": "Terima kasih: Anda telah menyetujui aturan {{.Community}}. Anda kini dapat mengirim pesan di sana."
+  },
+  {
+    "id": "api.command_rules.already_agreed",
+    "translation": "Anda telah menyetujui aturan ini."
+  },
+  {
+    "id": "api.command_rules.desc",
+    "translation": "Baca aturan komunitas ini, atau setujui"
+  },
+  {
+    "id": "api.command_rules.hint",
+    "translation": "[setuju]"
+  },
+  {
+    "id": "api.command_rules.name",
+    "translation": "rules"
+  },
+  {
+    "id": "api.command_rules.none",
+    "translation": "Komunitas ini tidak memiliki aturan yang harus disetujui."
+  },
+  {
+    "id": "api.command_rules.title",
+    "translation": "**Aturan {{.Community}}**"
+  },
+  {
     "id": "api.command_search.desc",
     "translation": "Cari teks dalam pesan"
   },
@@ -2932,6 +2964,14 @@
     "translation": "@{{.Username}} tidak menerima notifikasi dari sebutan ini karena mereka bukan anggota tim ini."
   },
   {
+    "id": "api.post.community_rules_not_accepted",
+    "translation": "Setujui aturan komunitas ini sebelum Anda mengirim pesan di dalamnya."
+  },
+  {
+    "id": "api.post.community_rules_not_accepted.reminder",
+    "translation": "Komunitas ini meminta semua orang untuk menyetujui peraturannya sebelum mengirim pesan. Ketik `/rules` untuk membacanya, lalu ketik `/rules agree` untuk menyetujuinya."
+  },
+  {
     "id": "api.post.create_post.burn_on_read.abac_denied.app_error",
     "translation": "Anda tidak memiliki izin untuk mengirim pesan yang dibakar saat dibaca di kanal ini."
   },
@@ -3034,6 +3074,10 @@
   {
     "id": "api.post.fill_in_post_props.burn_on_read.config.app_error",
     "translation": "Pesan burn-on-read tidak diaktifkan. Silakan aktifkan bendera fitur dan pengaturan layanan."
+  },
+  {
+    "id": "api.post.fill_in_post_props.burn_on_read.duration.app_error",
+    "translation": "Durasi baca-hapus harus berupa angka milidetik positif."
   },
   {
     "id": "api.post.fill_in_post_props.burn_on_read.self_dm.app_error",
@@ -5200,6 +5244,134 @@
     "translation": "Panggilan bridge gagal."
   },
   {
+    "id": "app.agents.status.no_agents",
+    "translation": "Tidak ada agen yang tersedia untuk Anda."
+  },
+  {
+    "id": "app.ai.agent.access.app_error",
+    "translation": "Anda tidak dapat berbicara dengan agen ini di sini."
+  },
+  {
+    "id": "app.ai.agent.activity.get.app_error",
+    "translation": "Aktivitas agen tidak dapat dibaca."
+  },
+  {
+    "id": "app.ai.agent.activity.save.app_error",
+    "translation": "Aktivitas agen tidak dapat disimpan."
+  },
+  {
+    "id": "app.ai.agent.connection.app_error",
+    "translation": "Agen di sini tidak dapat menggunakan koneksi model ini: agen tingkat server memerlukan koneksi tingkat server, dan agen komunitas memerlukan koneksi milik komunitasnya sendiri atau yang dibagikan kepadanya."
+  },
+  {
+    "id": "app.ai.agent.conversations.app_error",
+    "translation": "Gagal memuat percakapan Anda dengan agen."
+  },
+  {
+    "id": "app.ai.agent.get.app_error",
+    "translation": "Agen tidak dapat dibaca."
+  },
+  {
+    "id": "app.ai.agent.manage_permission.app_error",
+    "translation": "Anda tidak dapat mengelola agen di sini."
+  },
+  {
+    "id": "app.ai.agent.not_found.app_error",
+    "translation": "Agen ini tidak ada, atau telah dihapus."
+  },
+  {
+    "id": "app.ai.agent.references.app_error",
+    "translation": "Agen menyebut komunitas, kanal, atau orang yang tidak ada, atau kanal di komunitas lain."
+  },
+  {
+    "id": "app.ai.agent.save.app_error",
+    "translation": "Agen tidak dapat disimpan."
+  },
+  {
+    "id": "app.ai.agent.task.agent_disabled.app_error",
+    "translation": "Agen ini dinonaktifkan."
+  },
+  {
+    "id": "app.ai.agent.task.channel.app_error",
+    "translation": "Kanal tidak ditemukan, atau Anda tidak dapat membacanya."
+  },
+  {
+    "id": "app.ai.agent.task.external.app_error",
+    "translation": "Agen eksternal tidak menerima tugas di sini: kirim pesan kepadanya saja."
+  },
+  {
+    "id": "app.ai.agent.task.not_transcription.app_error",
+    "translation": "Pesan ini bukan transkripsi panggilan."
+  },
+  {
+    "id": "app.ai.agent.task.post.app_error",
+    "translation": "Pesan tidak ditemukan, atau Anda tidak dapat membacanya."
+  },
+  {
+    "id": "app.ai.agent.task.request.ask_channel",
+    "translation": "Tentang {{.Channel}}: {{.Question}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items",
+    "translation": "Temukan item tindakan dalam utas ini: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items_channel",
+    "translation": "Temukan item tindakan dalam pesan terbaru di {{.Channel}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items_channel_since",
+    "translation": "Temukan item tindakan di {{.Channel}} sejak {{.Since}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions",
+    "translation": "Temukan pertanyaan yang belum terjawab di utas ini: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions_channel",
+    "translation": "Temukan pertanyaan yang belum terjawab dalam pesan terbaru di {{.Channel}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions_channel_since",
+    "translation": "Temukan pertanyaan yang belum terjawab di {{.Channel}} sejak {{.Since}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_channel",
+    "translation": "Ringkas pesan terbaru di {{.Channel}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_channel_since",
+    "translation": "Ringkas pesan di {{.Channel}} sejak {{.Since}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_thread",
+    "translation": "Ringkas utas ini: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_transcription",
+    "translation": "Ringkas transkripsi panggilan ini: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.this_conversation",
+    "translation": "percakapan ini"
+  },
+  {
+    "id": "app.ai.agent.turn.empty",
+    "translation": "Maaf, saya tidak punya jawaban untuk itu."
+  },
+  {
+    "id": "app.ai.agent.turn.failed",
+    "translation": "Maaf, saya tidak dapat menjawab: {{.Reason}}"
+  },
+  {
+    "id": "app.ai.agent.turn.interrupted",
+    "translation": "Maaf, jawaban saya terputus. Silakan tanyakan lagi sebentar lagi."
+  },
+  {
+    "id": "app.ai.agent.turn.not_allowed",
+    "translation": "{{.Agent}} tidak tersedia untuk Anda di sini."
+  },
+  {
     "id": "app.ai.call.audience.app_error",
     "translation": "Anda tidak dapat menggunakan koneksi model ini."
   },
@@ -6104,6 +6276,38 @@
     "translation": "Nilai ini tidak sesuai dengan atribut {{.Name}}."
   },
   {
+    "id": "app.community_rules.accept.app_error",
+    "translation": "Gagal menyimpan persetujuan Anda terhadap aturan komunitas."
+  },
+  {
+    "id": "app.community_rules.accept.changed.app_error",
+    "translation": "Aturan komunitas telah berubah sejak Anda membacanya. Baca kembali sebelum menyetujuinya."
+  },
+  {
+    "id": "app.community_rules.accept.not_member.app_error",
+    "translation": "Hanya anggota komunitas yang dapat menyetujui peraturannya."
+  },
+  {
+    "id": "app.community_rules.accept.off.app_error",
+    "translation": "Komunitas ini tidak memiliki aturan yang harus disetujui."
+  },
+  {
+    "id": "app.community_rules.delete.app_error",
+    "translation": "Gagal menghapus aturan komunitas."
+  },
+  {
+    "id": "app.community_rules.get.app_error",
+    "translation": "Gagal mengambil aturan komunitas."
+  },
+  {
+    "id": "app.community_rules.save.app_error",
+    "translation": "Gagal menyimpan aturan komunitas."
+  },
+  {
+    "id": "app.community_rules.stats.app_error",
+    "translation": "Tidak dapat menghitung siapa yang telah menyetujui aturan komunitas."
+  },
+  {
     "id": "app.compile_csv_chunks.header_error",
     "translation": "Gagal menulis header CSV."
   },
@@ -6866,6 +7070,34 @@
   {
     "id": "app.file_info.undelete_for_post_ids.app_error",
     "translation": "Gagal memulihkan lampiran berkas kiriman."
+  },
+  {
+    "id": "app.focus.bot.app_error",
+    "translation": "Bot tidak dapat menggunakan mode fokus."
+  },
+  {
+    "id": "app.focus.delete.app_error",
+    "translation": "Gagal menghapus mode fokus akun."
+  },
+  {
+    "id": "app.focus.get.app_error",
+    "translation": "Tidak dapat mengambil mode fokus Anda."
+  },
+  {
+    "id": "app.focus.mark_read.app_error",
+    "translation": "Gagal menandai hal yang terlewat sebagai telah dibaca."
+  },
+  {
+    "id": "app.focus.save.app_error",
+    "translation": "Tidak dapat memulai mode fokus."
+  },
+  {
+    "id": "app.focus.statuses_disabled.app_error",
+    "translation": "Mode fokus memerlukan status pengguna, yang dinonaktifkan di server ini."
+  },
+  {
+    "id": "app.focus.summary.app_error",
+    "translation": "Tidak dapat mengambil ringkasan pesan yang terlewat saat fokus."
   },
   {
     "id": "app.get_user_team_scheduled_posts.error",
@@ -11604,6 +11836,90 @@
     "translation": "ID pengguna tidak valid."
   },
   {
+    "id": "model.agent_activity.expires.app_error",
+    "translation": "Aktivitas agen berlangsung antara 1 detik dan 24 jam."
+  },
+  {
+    "id": "model.agent_activity.state.app_error",
+    "translation": "Status agen adalah diam, berpikir, bekerja, menunggu, terblokir, atau luring."
+  },
+  {
+    "id": "model.agent_activity.text.app_error",
+    "translation": "Aktivitas agen harus muat dalam satu baris dengan maksimal 200 karakter."
+  },
+  {
+    "id": "model.agent_activity.thread_post_id.app_error",
+    "translation": "ID utas aktivitas agen harus berupa ID pesan."
+  },
+  {
+    "id": "model.ai_agent.access.app_error",
+    "translation": "Siapa yang boleh berbicara dengan agen memiliki nama komunitas, kanal, peran, atau orang yang tidak valid, atau terlalu banyak."
+  },
+  {
+    "id": "model.ai_agent.access_community.app_error",
+    "translation": "Agen komunitas hanya dapat digunakan di komunitasnya sendiri."
+  },
+  {
+    "id": "model.ai_agent.connection_id.app_error",
+    "translation": "Pilih koneksi model yang digunakan agen."
+  },
+  {
+    "id": "model.ai_agent.external.app_error",
+    "translation": "Agen eksternal tidak memiliki model, koneksi, atau prompt sistem: programnya yang menjawab."
+  },
+  {
+    "id": "model.ai_agent.max_tool_turns.app_error",
+    "translation": "Agen memerlukan antara 0 (default) dan 250 giliran alat."
+  },
+  {
+    "id": "model.ai_agent.model.app_error",
+    "translation": "Nama model terlalu panjang atau terdiri dari lebih dari satu baris."
+  },
+  {
+    "id": "model.ai_agent.needs_attention.app_error",
+    "translation": "Catatan tentang hal yang perlu perhatian terlalu panjang."
+  },
+  {
+    "id": "model.ai_agent.reasoning.app_error",
+    "translation": "Usaha penalaran minimal, rendah, sedang, atau tinggi, dengan anggaran antara 0 dan 128.000 token."
+  },
+  {
+    "id": "model.ai_agent.scope.app_error",
+    "translation": "Agen termasuk ke dalam server atau ke dalam satu komunitas."
+  },
+  {
+    "id": "model.ai_agent.system_prompt.app_error",
+    "translation": "Prompt sistem terlalu panjang (maksimum 32.000 karakter)."
+  },
+  {
+    "id": "model.ai_agent.times.app_error",
+    "translation": "Waktu pembuatan dan pembaruan agen tidak ada."
+  },
+  {
+    "id": "model.ai_agent.tools.app_error",
+    "translation": "Nama alat tidak valid, atau jumlahnya terlalu banyak (maksimal 256)."
+  },
+  {
+    "id": "model.ai_agent.user_id.app_error",
+    "translation": "Agen memerlukan akun yang valid."
+  },
+  {
+    "id": "model.ai_agent_task.channel_id.app_error",
+    "translation": "Tugas ini memerlukan kanal."
+  },
+  {
+    "id": "model.ai_agent_task.post_id.app_error",
+    "translation": "Tugas ini memerlukan pesan."
+  },
+  {
+    "id": "model.ai_agent_task.question.app_error",
+    "translation": "Ajukan pertanyaan hingga 2.000 karakter."
+  },
+  {
+    "id": "model.ai_agent_task.task.app_error",
+    "translation": "Tugas ini tidak dikenali oleh agen."
+  },
+  {
     "id": "model.ai_connection.api_key.app_error",
     "translation": "Kunci API terlalu panjang atau mengandung baris baru."
   },
@@ -11766,6 +12082,10 @@
   {
     "id": "model.bot.is_valid.description.app_error",
     "translation": "Deskripsi tidak valid."
+  },
+  {
+    "id": "model.bot.is_valid.kind.app_error",
+    "translation": "Akun bot adalah bot atau agen."
   },
   {
     "id": "model.bot.is_valid.update_at.app_error",
@@ -12154,6 +12474,14 @@
   {
     "id": "model.command_response.is_valid.response_type.app_error",
     "translation": "Jenis respons tidak valid."
+  },
+  {
+    "id": "model.community_rules.empty.app_error",
+    "translation": "Tulis aturan sebelum mengaktifkannya."
+  },
+  {
+    "id": "model.community_rules.text.app_error",
+    "translation": "Aturan harus memiliki panjang maksimal {{.Max}} karakter."
   },
   {
     "id": "model.compliance.is_valid.create_at.app_error",
@@ -12932,6 +13260,10 @@
     "translation": "BurnOnReadDurationSeconds harus berupa angka positif."
   },
   {
+    "id": "model.config.is_valid.service_settings.burn_on_read_maximum_duration_seconds.app_error",
+    "translation": "BurnOnReadMaximumDurationSeconds harus berupa angka positif."
+  },
+  {
     "id": "model.config.is_valid.service_settings.burn_on_read_maximum_time_to_live_seconds.app_error",
     "translation": "BurnOnReadMaximumTimeToLiveSeconds harus berupa angka positif."
   },
@@ -13190,6 +13522,22 @@
   {
     "id": "model.file_info.is_valid.user_id.app_error",
     "translation": "Nilai user_id tidak valid."
+  },
+  {
+    "id": "model.focus.duration.app_error",
+    "translation": "Mode fokus berlangsung dari satu menit hingga satu minggu."
+  },
+  {
+    "id": "model.focus.duration_or_end.app_error",
+    "translation": "Pilih durasi fokus: waktu atau waktu selesai."
+  },
+  {
+    "id": "model.focus.reason.app_error",
+    "translation": "Alasan terlalu panjang: ini akan menjadi status khusus Anda, dengan maksimal 100 karakter."
+  },
+  {
+    "id": "model.focus.window.app_error",
+    "translation": "Rentang waktu ringkasan tidak valid: harus di masa lalu, berurutan, dan maksimal delapan hari."
   },
   {
     "id": "model.group.channel_id.app_error",

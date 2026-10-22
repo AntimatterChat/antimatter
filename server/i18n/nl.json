@@ -1770,6 +1770,38 @@
     "translation": "{{.Username}} is geen lid van dit kanaal."
   },
   {
+    "id": "api.command_rules.agree_hint",
+    "translation": "Typ `/rules agree` om akkoord te gaan, daarna kun je berichten plaatsen."
+  },
+  {
+    "id": "api.command_rules.agreed",
+    "translation": "Bedankt: je hebt ingestemd met de regels van {{.Community}}. Je kunt er nu berichten plaatsen."
+  },
+  {
+    "id": "api.command_rules.already_agreed",
+    "translation": "Je hebt al ingestemd met deze regels."
+  },
+  {
+    "id": "api.command_rules.desc",
+    "translation": "Lees de regels van deze community of ga ermee akkoord"
+  },
+  {
+    "id": "api.command_rules.hint",
+    "translation": "[akkoord]"
+  },
+  {
+    "id": "api.command_rules.name",
+    "translation": "regels"
+  },
+  {
+    "id": "api.command_rules.none",
+    "translation": "Deze community heeft geen regels om mee akkoord te gaan."
+  },
+  {
+    "id": "api.command_rules.title",
+    "translation": "**Regels van {{.Community}}**"
+  },
+  {
     "id": "api.command_search.desc",
     "translation": "Zoek tekst in berichten"
   },
@@ -3113,6 +3145,14 @@
     "translation": "@{{.Username}} kreeg geen melding van deze vermelding omdat die geen lid is van dit team."
   },
   {
+    "id": "api.post.community_rules_not_accepted",
+    "translation": "Ga akkoord met de regels van deze community voordat je hier een bericht plaatst."
+  },
+  {
+    "id": "api.post.community_rules_not_accepted.reminder",
+    "translation": "Deze community vraagt iedereen om akkoord te gaan met de regels voordat ze een bericht plaatsen. Typ `/rules` om ze te lezen en `/rules agree` om akkoord te gaan."
+  },
+  {
     "id": "api.post.create_post.burn_on_read.abac_denied.app_error",
     "translation": "Je hebt geen machtiging om berichten die na het lezen worden gewist te versturen in dit kanaal."
   },
@@ -3215,6 +3255,10 @@
   {
     "id": "api.post.fill_in_post_props.burn_on_read.config.app_error",
     "translation": "Verbranden bij gelezen berichten is niet ingeschakeld. Schakel de feature flag en service-instelling in."
+  },
+  {
+    "id": "api.post.fill_in_post_props.burn_on_read.duration.app_error",
+    "translation": "De tijdsduur voor zelfvernietiging moet een positief aantal milliseconden zijn."
   },
   {
     "id": "api.post.fill_in_post_props.burn_on_read.license.app_error",
@@ -5575,6 +5619,134 @@
     "translation": "Bridge call mislukt."
   },
   {
+    "id": "app.agents.status.no_agents",
+    "translation": "Er is geen agent voor u beschikbaar."
+  },
+  {
+    "id": "app.ai.agent.access.app_error",
+    "translation": "Je kunt hier niet met deze agent praten."
+  },
+  {
+    "id": "app.ai.agent.activity.get.app_error",
+    "translation": "De activiteit van de agents kon niet worden gelezen."
+  },
+  {
+    "id": "app.ai.agent.activity.save.app_error",
+    "translation": "De activiteit van de agent kon niet worden opgeslagen."
+  },
+  {
+    "id": "app.ai.agent.connection.app_error",
+    "translation": "Een agent hier kan deze modelverbinding niet gebruiken: een serverbrede agent heeft een serverbrede verbinding nodig, en een agent van een community diens eigen verbinding of een met de community gedeelde verbinding."
+  },
+  {
+    "id": "app.ai.agent.conversations.app_error",
+    "translation": "Kan je gesprekken met agents niet laden."
+  },
+  {
+    "id": "app.ai.agent.get.app_error",
+    "translation": "De agents konden niet worden gelezen."
+  },
+  {
+    "id": "app.ai.agent.manage_permission.app_error",
+    "translation": "Je kunt de agents hier niet beheren."
+  },
+  {
+    "id": "app.ai.agent.not_found.app_error",
+    "translation": "Deze agent bestaat niet of is verwijderd."
+  },
+  {
+    "id": "app.ai.agent.references.app_error",
+    "translation": "De agent verwijst naar een community, kanaal of persoon die niet bestaat, of naar een kanaal van een andere community."
+  },
+  {
+    "id": "app.ai.agent.save.app_error",
+    "translation": "De agent kon niet worden opgeslagen."
+  },
+  {
+    "id": "app.ai.agent.task.agent_disabled.app_error",
+    "translation": "Deze agent is uitgeschakeld."
+  },
+  {
+    "id": "app.ai.agent.task.channel.app_error",
+    "translation": "Het kanaal bestaat niet of je hebt er geen leesrechten voor."
+  },
+  {
+    "id": "app.ai.agent.task.external.app_error",
+    "translation": "Een externe agent neemt hier geen taken over: stuur in plaats daarvan een bericht."
+  },
+  {
+    "id": "app.ai.agent.task.not_transcription.app_error",
+    "translation": "Dit bericht is geen transcriptie van een gesprek."
+  },
+  {
+    "id": "app.ai.agent.task.post.app_error",
+    "translation": "Het bericht bestaat niet of je kunt het niet lezen."
+  },
+  {
+    "id": "app.ai.agent.task.request.ask_channel",
+    "translation": "Over {{.Channel}}: {{.Question}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items",
+    "translation": "Zoek de actiepunten in dit draadje: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items_channel",
+    "translation": "Zoek de actiepunten in de nieuwste berichten van {{.Channel}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items_channel_since",
+    "translation": "Zoek de actiepunten in {{.Channel}} sinds {{.Since}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions",
+    "translation": "Zoek de openstaande vragen in dit draadje: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions_channel",
+    "translation": "Zoek de openstaande vragen in de nieuwste berichten van {{.Channel}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions_channel_since",
+    "translation": "Zoek de openstaande vragen in {{.Channel}} sinds {{.Since}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_channel",
+    "translation": "Vat de nieuwste berichten in {{.Channel}} samen"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_channel_since",
+    "translation": "Vat de berichten in {{.Channel}} sinds {{.Since}} samen"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_thread",
+    "translation": "Vat dit draadje samen: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_transcription",
+    "translation": "Vat de transcriptie van dit gesprek samen: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.this_conversation",
+    "translation": "dit gesprek"
+  },
+  {
+    "id": "app.ai.agent.turn.empty",
+    "translation": "Sorry, daar heb ik geen antwoord op."
+  },
+  {
+    "id": "app.ai.agent.turn.failed",
+    "translation": "Sorry, ik kon niet antwoorden: {{.Reason}}"
+  },
+  {
+    "id": "app.ai.agent.turn.interrupted",
+    "translation": "Sorry, mijn antwoord werd onderbroken. Probeer het over een moment opnieuw."
+  },
+  {
+    "id": "app.ai.agent.turn.not_allowed",
+    "translation": "{{.Agent}} is hier niet beschikbaar voor jou."
+  },
+  {
     "id": "app.ai.call.audience.app_error",
     "translation": "U kunt deze modelverbinding niet gebruiken."
   },
@@ -6495,6 +6667,38 @@
     "translation": "Deze waarde komt niet overeen met het attribuut {{.Name}}."
   },
   {
+    "id": "app.community_rules.accept.app_error",
+    "translation": "Kan je akkoord met de community-regels niet opslaan."
+  },
+  {
+    "id": "app.community_rules.accept.changed.app_error",
+    "translation": "De community-regels zijn gewijzigd sinds je ze hebt gelezen. Lees ze opnieuw voordat je akkoord gaat."
+  },
+  {
+    "id": "app.community_rules.accept.not_member.app_error",
+    "translation": "Alleen leden van de community kunnen akkoord gaan met de regels."
+  },
+  {
+    "id": "app.community_rules.accept.off.app_error",
+    "translation": "Deze community heeft geen regels om akkoord mee te gaan."
+  },
+  {
+    "id": "app.community_rules.delete.app_error",
+    "translation": "Kan de community-regels niet verwijderen."
+  },
+  {
+    "id": "app.community_rules.get.app_error",
+    "translation": "Kan de community-regels niet ophalen."
+  },
+  {
+    "id": "app.community_rules.save.app_error",
+    "translation": "Kan de community-regels niet opslaan."
+  },
+  {
+    "id": "app.community_rules.stats.app_error",
+    "translation": "Kan niet vaststellen wie akkoord is gegaan met de community-regels."
+  },
+  {
     "id": "app.compile_csv_chunks.header_error",
     "translation": "Fout bij het schrijven van CSV-headers."
   },
@@ -7279,6 +7483,34 @@
   {
     "id": "app.file_info.undelete_for_post_ids.app_error",
     "translation": "Het is niet gelukt om bijlagen van berichtbestanden te herstellen."
+  },
+  {
+    "id": "app.focus.bot.app_error",
+    "translation": "Bots kunnen de focusmodus niet gebruiken."
+  },
+  {
+    "id": "app.focus.delete.app_error",
+    "translation": "Kan de focusmodus van het account niet verwijderen."
+  },
+  {
+    "id": "app.focus.get.app_error",
+    "translation": "Kan uw focusmodus niet ophalen."
+  },
+  {
+    "id": "app.focus.mark_read.app_error",
+    "translation": "Kan gemiste berichten niet als gelezen markeren."
+  },
+  {
+    "id": "app.focus.save.app_error",
+    "translation": "Kan de focusmodus niet starten."
+  },
+  {
+    "id": "app.focus.statuses_disabled.app_error",
+    "translation": "De focusmodus vereist gebruikersstatussen, maar deze zijn op deze server uitgeschakeld."
+  },
+  {
+    "id": "app.focus.summary.app_error",
+    "translation": "Kan niet ophalen wat je hebt gemist tijdens het focussen."
   },
   {
     "id": "app.get_user_team_scheduled_posts.error",
@@ -12327,6 +12559,90 @@
     "translation": "Ongeldig gebruikersid."
   },
   {
+    "id": "model.agent_activity.expires.app_error",
+    "translation": "De activiteit van een agent duurt tussen 1 seconde en 24 uur."
+  },
+  {
+    "id": "model.agent_activity.state.app_error",
+    "translation": "De status van een agent is inactief, denkend, werkend, wachtend, geblokkeerd of offline."
+  },
+  {
+    "id": "model.agent_activity.text.app_error",
+    "translation": "De activiteit van de agent past op één regel van maximaal 200 tekens."
+  },
+  {
+    "id": "model.agent_activity.thread_post_id.app_error",
+    "translation": "Het draadje van een agentactiviteit moet een bericht-ID zijn."
+  },
+  {
+    "id": "model.ai_agent.access.app_error",
+    "translation": "De lijst met wie met de agent mag praten bevat ongeldige communities, kanalen, rollen of personen, of bevat te veel items."
+  },
+  {
+    "id": "model.ai_agent.access_community.app_error",
+    "translation": "De agent van een community is alleen voor die eigen community."
+  },
+  {
+    "id": "model.ai_agent.connection_id.app_error",
+    "translation": "Kies de modelverbinding die de agent gebruikt."
+  },
+  {
+    "id": "model.ai_agent.external.app_error",
+    "translation": "Een externe agent heeft geen model, verbinding of systeemprompt: het programma geeft het antwoord."
+  },
+  {
+    "id": "model.ai_agent.max_tool_turns.app_error",
+    "translation": "Een agent mag tussen de 0 (standaard) en 250 toolbeurten hebben."
+  },
+  {
+    "id": "model.ai_agent.model.app_error",
+    "translation": "De modelnaam is te lang of bevat meer dan één regel."
+  },
+  {
+    "id": "model.ai_agent.needs_attention.app_error",
+    "translation": "De notitie over wat aandacht nodig heeft, is te lang."
+  },
+  {
+    "id": "model.ai_agent.reasoning.app_error",
+    "translation": "De redeneerinspanning is minimaal, laag, gemiddeld of hoog, en het budget ligt tussen 0 en 128.000 tokens."
+  },
+  {
+    "id": "model.ai_agent.scope.app_error",
+    "translation": "Een agent behoort tot de server of tot één community."
+  },
+  {
+    "id": "model.ai_agent.system_prompt.app_error",
+    "translation": "De systeemprompt is te lang (maximaal 32.000 tekens)."
+  },
+  {
+    "id": "model.ai_agent.times.app_error",
+    "translation": "De aanmaak- en bijwerktijden van de agent ontbreken."
+  },
+  {
+    "id": "model.ai_agent.tools.app_error",
+    "translation": "De naam van een tool is ongeldig of er zijn er te veel (maximaal 256)."
+  },
+  {
+    "id": "model.ai_agent.user_id.app_error",
+    "translation": "Een agent heeft een geldig account nodig."
+  },
+  {
+    "id": "model.ai_agent_task.channel_id.app_error",
+    "translation": "Deze taak heeft een kanaal nodig."
+  },
+  {
+    "id": "model.ai_agent_task.post_id.app_error",
+    "translation": "Deze taak heeft een bericht nodig."
+  },
+  {
+    "id": "model.ai_agent_task.question.app_error",
+    "translation": "Stel een vraag van maximaal 2.000 tekens."
+  },
+  {
+    "id": "model.ai_agent_task.task.app_error",
+    "translation": "Deze taak is niet een taak die een agent kent."
+  },
+  {
     "id": "model.ai_connection.api_key.app_error",
     "translation": "De API-sleutel is te lang of bevat een nieuwe regel."
   },
@@ -12489,6 +12805,10 @@
   {
     "id": "model.bot.is_valid.description.app_error",
     "translation": "Ongeldige description."
+  },
+  {
+    "id": "model.bot.is_valid.kind.app_error",
+    "translation": "Een botaccount is een bot of een agent."
   },
   {
     "id": "model.bot.is_valid.update_at.app_error",
@@ -12877,6 +13197,14 @@
   {
     "id": "model.command_response.is_valid.response_type.app_error",
     "translation": "Ongeldig antwoordtype."
+  },
+  {
+    "id": "model.community_rules.empty.app_error",
+    "translation": "Schrijf de regels voordat je ze inschakelt."
+  },
+  {
+    "id": "model.community_rules.text.app_error",
+    "translation": "De regels mogen maximaal {{.Max}} tekens lang zijn."
   },
   {
     "id": "model.compliance.is_valid.create_at.app_error",
@@ -13655,6 +13983,10 @@
     "translation": "BurnOnReadDurationSeconds moet een positief getal zijn."
   },
   {
+    "id": "model.config.is_valid.service_settings.burn_on_read_maximum_duration_seconds.app_error",
+    "translation": "BurnOnReadMaximumDurationSeconds moet een positief getal zijn."
+  },
+  {
     "id": "model.config.is_valid.service_settings.burn_on_read_maximum_time_to_live_seconds.app_error",
     "translation": "BurnOnReadMaximumTimeToLiveSeconds moet een positief getal zijn."
   },
@@ -13913,6 +14245,22 @@
   {
     "id": "model.file_info.is_valid.user_id.app_error",
     "translation": "Ongeldige waarde voor user_id."
+  },
+  {
+    "id": "model.focus.duration.app_error",
+    "translation": "De focusmodus duurt van één minuut tot één week."
+  },
+  {
+    "id": "model.focus.duration_or_end.app_error",
+    "translation": "Kies hoe lang je je wilt concentreren: een duur of een eindtijd."
+  },
+  {
+    "id": "model.focus.reason.app_error",
+    "translation": "De reden is te lang: deze wordt je aangepaste status van maximaal 100 tekens."
+  },
+  {
+    "id": "model.focus.window.app_error",
+    "translation": "Het tijdsbereik van de samenvatting is niet geldig: het moet in het verleden liggen, chronologisch zijn en maximaal acht dagen duren."
   },
   {
     "id": "model.group.channel_id.app_error",

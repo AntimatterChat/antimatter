@@ -1770,6 +1770,38 @@
     "translation": "{{.Username}} bu kanalın bir üyesi değil."
   },
   {
+    "id": "api.command_rules.agree_hint",
+    "translation": "Kuralları kabul etmek için `/rules agree` yazın, ardından paylaşım yapabilirsiniz."
+  },
+  {
+    "id": "api.command_rules.agreed",
+    "translation": "Teşekkürler: {{.Community}} kurallarını kabul ettiniz. Artık orada paylaşım yapabilirsiniz."
+  },
+  {
+    "id": "api.command_rules.already_agreed",
+    "translation": "Bu kuralları zaten kabul ettiniz."
+  },
+  {
+    "id": "api.command_rules.desc",
+    "translation": "Bu topluluğun kurallarını okuyun veya kuralları kabul edin"
+  },
+  {
+    "id": "api.command_rules.hint",
+    "translation": "[kabul et]"
+  },
+  {
+    "id": "api.command_rules.name",
+    "translation": "kurallar"
+  },
+  {
+    "id": "api.command_rules.none",
+    "translation": "Bu topluluğun kabul edilecek kuralları yok."
+  },
+  {
+    "id": "api.command_rules.title",
+    "translation": "**{{.Community}} Kuralları**"
+  },
+  {
     "id": "api.command_search.desc",
     "translation": "İletilerde bir yazıyı arar"
   },
@@ -3113,6 +3145,14 @@
     "translation": "{{.Username}} bu takımın bir üyesi olmadığından bu anma ile bilgilendirilmedi."
   },
   {
+    "id": "api.post.community_rules_not_accepted",
+    "translation": "Bu toplulukta paylaşım yapmadan önce topluluk kurallarını kabul edin."
+  },
+  {
+    "id": "api.post.community_rules_not_accepted.reminder",
+    "translation": "Bu topluluk, herkesin gönderi paylaşmadan önce kurallarını kabul etmesini istiyor. Kuralları okumak için `/rules`, kabul etmek için `/rules agree` yazın."
+  },
+  {
     "id": "api.post.create_post.burn_on_read.abac_denied.app_error",
     "translation": "Bu kanalda okunduğunda yanar (burn-on-read) iletiler gönderme izniniz yok."
   },
@@ -3215,6 +3255,10 @@
   {
     "id": "api.post.fill_in_post_props.burn_on_read.config.app_error",
     "translation": "Okunduğunda yok edilecek iletiler açık değil. Lütfen özellik ve hizmet ayarını açın."
+  },
+  {
+    "id": "api.post.fill_in_post_props.burn_on_read.duration.app_error",
+    "translation": "Okuma sonrası silme süresi, milisaniye cinsinden pozitif bir sayı olmalıdır."
   },
   {
     "id": "api.post.fill_in_post_props.burn_on_read.license.app_error",
@@ -5575,6 +5619,134 @@
     "translation": "Köprü çağrısı yapılamadı."
   },
   {
+    "id": "app.agents.status.no_agents",
+    "translation": "Kullanabileceğiniz bir ajan yok."
+  },
+  {
+    "id": "app.ai.agent.access.app_error",
+    "translation": "Burada bu ajanla konuşamazsınız."
+  },
+  {
+    "id": "app.ai.agent.activity.get.app_error",
+    "translation": "Ajanların etkinliği okunamadı."
+  },
+  {
+    "id": "app.ai.agent.activity.save.app_error",
+    "translation": "Ajanın etkinliği kaydedilemedi."
+  },
+  {
+    "id": "app.ai.agent.connection.app_error",
+    "translation": "Buradaki bir ajan bu model bağlantısını kullanamaz: sunucu genelindeki bir ajan, sunucu genelinde bir bağlantıya; bir topluluğun ajanı ise kendi topluluğunun bağlantısına veya onunla paylaşılan bir bağlantıya gereksinim duyar."
+  },
+  {
+    "id": "app.ai.agent.conversations.app_error",
+    "translation": "Ajanlarla olan konuşmalarınız yüklenemedi."
+  },
+  {
+    "id": "app.ai.agent.get.app_error",
+    "translation": "Ajanlar okunamadı."
+  },
+  {
+    "id": "app.ai.agent.manage_permission.app_error",
+    "translation": "Buradaki ajanları yönetemezsiniz."
+  },
+  {
+    "id": "app.ai.agent.not_found.app_error",
+    "translation": "Bu ajan mevcut değil veya silinmiş."
+  },
+  {
+    "id": "app.ai.agent.references.app_error",
+    "translation": "Ajan, mevcut olmayan bir topluluk, kanal veya kişiye ya da başka bir topluluğun kanalına atıfta bulunuyor."
+  },
+  {
+    "id": "app.ai.agent.save.app_error",
+    "translation": "Ajan kaydedilemedi."
+  },
+  {
+    "id": "app.ai.agent.task.agent_disabled.app_error",
+    "translation": "Bu ajan kapalı."
+  },
+  {
+    "id": "app.ai.agent.task.channel.app_error",
+    "translation": "Kanal mevcut değil veya okuma izniniz yok."
+  },
+  {
+    "id": "app.ai.agent.task.external.app_error",
+    "translation": "Harici ajan burada görev almaz: bunun yerine ona bir ileti gönderin."
+  },
+  {
+    "id": "app.ai.agent.task.not_transcription.app_error",
+    "translation": "Bu ileti bir aramanın transkripsiyonu değil."
+  },
+  {
+    "id": "app.ai.agent.task.post.app_error",
+    "translation": "İleti yok veya okuma izniniz yok."
+  },
+  {
+    "id": "app.ai.agent.task.request.ask_channel",
+    "translation": "{{.Channel}} hakkında: {{.Question}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items",
+    "translation": "Bu konuda yapılacakları bul: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items_channel",
+    "translation": "{{.Channel}} kanalındaki son iletilerdeki eylem maddelerini bul"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items_channel_since",
+    "translation": "{{.Since}} tarihinden bu yana {{.Channel}} kanalındaki eylem maddelerini bul"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions",
+    "translation": "Bu konudaki açık soruları bul: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions_channel",
+    "translation": "Find the open questions in the latest messages of {{.Channel}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions_channel_since",
+    "translation": "{{.Since}} tarihinden bu yana {{.Channel}} kanalındaki açık soruları bul"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_channel",
+    "translation": "{{.Channel}} kanalındaki en son iletileri özetle"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_channel_since",
+    "translation": "{{.Since}} tarihinden itibaren {{.Channel}} kanalındaki iletileri özetle"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_thread",
+    "translation": "Bu konuyu özetle: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_transcription",
+    "translation": "Bu aramanın transkripsiyonunu özetle: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.this_conversation",
+    "translation": "bu konuşma"
+  },
+  {
+    "id": "app.ai.agent.turn.empty",
+    "translation": "Üzgünüm, buna bir cevabım yok."
+  },
+  {
+    "id": "app.ai.agent.turn.failed",
+    "translation": "Üzgünüm, yanıtlayamadım: {{.Reason}}"
+  },
+  {
+    "id": "app.ai.agent.turn.interrupted",
+    "translation": "Üzgünüm, yanıtım kesintiye uğradı. Lütfen biraz sonra tekrar sorun."
+  },
+  {
+    "id": "app.ai.agent.turn.not_allowed",
+    "translation": "{{.Agent}} burada size uygun değil."
+  },
+  {
     "id": "app.ai.call.audience.app_error",
     "translation": "Bu model bağlantısını kullanamıyorsunuz."
   },
@@ -6495,6 +6667,38 @@
     "translation": "Bu değer, {{.Name}} özniteliğine uygun değil."
   },
   {
+    "id": "app.community_rules.accept.app_error",
+    "translation": "Topluluk kurallarını kabul etme işleminiz kaydedilemedi."
+  },
+  {
+    "id": "app.community_rules.accept.changed.app_error",
+    "translation": "Kuralları okuduğunuzdan beri topluluk kuralları değişti. Kabul etmeden önce tekrar okuyun."
+  },
+  {
+    "id": "app.community_rules.accept.not_member.app_error",
+    "translation": "Yalnızca topluluk üyeleri kuralları kabul edebilir."
+  },
+  {
+    "id": "app.community_rules.accept.off.app_error",
+    "translation": "Bu toplulukta kabul edilecek kurallar yok."
+  },
+  {
+    "id": "app.community_rules.delete.app_error",
+    "translation": "Topluluk kuralları silinemiyor."
+  },
+  {
+    "id": "app.community_rules.get.app_error",
+    "translation": "Topluluk kuralları alınamıyor."
+  },
+  {
+    "id": "app.community_rules.save.app_error",
+    "translation": "Topluluk kuralları kaydedilemedi."
+  },
+  {
+    "id": "app.community_rules.stats.app_error",
+    "translation": "Topluluk kurallarını kabul edenler sayılamıyor."
+  },
+  {
     "id": "app.compile_csv_chunks.header_error",
     "translation": "CSV üst bilgileri yazılamadı."
   },
@@ -7279,6 +7483,34 @@
   {
     "id": "app.file_info.undelete_for_post_ids.app_error",
     "translation": "İleti ek dosyaları geri yüklenemedi."
+  },
+  {
+    "id": "app.focus.bot.app_error",
+    "translation": "Botlar odaklanma modunu kullanamaz."
+  },
+  {
+    "id": "app.focus.delete.app_error",
+    "translation": "Hesabın odaklanma modu silinemiyor."
+  },
+  {
+    "id": "app.focus.get.app_error",
+    "translation": "Odak modunuz alınamıyor."
+  },
+  {
+    "id": "app.focus.mark_read.app_error",
+    "translation": "Kaçırdıklarınız okundu olarak işaretlenemedi."
+  },
+  {
+    "id": "app.focus.save.app_error",
+    "translation": "Odak modu başlatılamıyor."
+  },
+  {
+    "id": "app.focus.statuses_disabled.app_error",
+    "translation": "Odak modu, bu sunucuda kapalı olan kullanıcı durumlarına ihtiyaç duyar."
+  },
+  {
+    "id": "app.focus.summary.app_error",
+    "translation": "Odaklanırken kaçırdıklarınızı alamıyoruz."
   },
   {
     "id": "app.get_user_team_scheduled_posts.error",
@@ -12327,6 +12559,90 @@
     "translation": "Kullanıcı kimliği geçersiz."
   },
   {
+    "id": "model.agent_activity.expires.app_error",
+    "translation": "Bir ajanın etkinliği 1 saniye ile 24 saat arasında olabilir."
+  },
+  {
+    "id": "model.agent_activity.state.app_error",
+    "translation": "Bir ajanın durumu boşta, düşünüyor, çalışıyor, bekliyor, engellendi veya çevrim dışı olabilir."
+  },
+  {
+    "id": "model.agent_activity.text.app_error",
+    "translation": "Ajanın yaptığı iş en fazla 200 karakterlik tek bir satıra sığmalıdır."
+  },
+  {
+    "id": "model.agent_activity.thread_post_id.app_error",
+    "translation": "Bir ajanın etkinliğinin konusu bir ileti kimliği olmalıdır."
+  },
+  {
+    "id": "model.ai_agent.access.app_error",
+    "translation": "Ajanla kimlerin konuşabileceği tanımı geçersiz topluluklar, kanallar, roller veya kişiler içeriyor ya da sayı sınırı aşıldı."
+  },
+  {
+    "id": "model.ai_agent.access_community.app_error",
+    "translation": "Bir topluluğun ajanı yalnızca kendi topluluğu içindir."
+  },
+  {
+    "id": "model.ai_agent.connection_id.app_error",
+    "translation": "Ajanın kullandığı model bağlantısını seçin."
+  },
+  {
+    "id": "model.ai_agent.external.app_error",
+    "translation": "Harici bir ajanın modeli, bağlantısı veya sistem istemi yoktur; programı yanıt verir."
+  },
+  {
+    "id": "model.ai_agent.max_tool_turns.app_error",
+    "translation": "Bir ajan, 0 (varsayılan) ile 250 araç turu arasında bir değer alabilir."
+  },
+  {
+    "id": "model.ai_agent.model.app_error",
+    "translation": "Model adı çok uzun veya birden fazla satır içeriyor."
+  },
+  {
+    "id": "model.ai_agent.needs_attention.app_error",
+    "translation": "Dikkat edilmesi gerekenler hakkında not çok uzun."
+  },
+  {
+    "id": "model.ai_agent.reasoning.app_error",
+    "translation": "Akıl yürütme çabası minimal, düşük, orta veya yüksek olabilir ve bütçesi 0 ile 128.000 belirteç arasında olmalıdır."
+  },
+  {
+    "id": "model.ai_agent.scope.app_error",
+    "translation": "Bir ajan, sunucuya veya tek bir topluluğa ait olabilir."
+  },
+  {
+    "id": "model.ai_agent.system_prompt.app_error",
+    "translation": "Sistem istemi çok uzun (en fazla 32.000 karakter)."
+  },
+  {
+    "id": "model.ai_agent.times.app_error",
+    "translation": "Ajanın oluşturma ve güncelleştirme zamanları eksik."
+  },
+  {
+    "id": "model.ai_agent.tools.app_error",
+    "translation": "Bir araç adı geçersiz veya araç sayısı çok fazla (en fazla 256)."
+  },
+  {
+    "id": "model.ai_agent.user_id.app_error",
+    "translation": "Bir ajanın geçerli bir hesabı olmalıdır."
+  },
+  {
+    "id": "model.ai_agent_task.channel_id.app_error",
+    "translation": "Bu görev için bir kanal gerekli."
+  },
+  {
+    "id": "model.ai_agent_task.post_id.app_error",
+    "translation": "Bu görev için bir ileti gerekiyor."
+  },
+  {
+    "id": "model.ai_agent_task.question.app_error",
+    "translation": "En fazla 2.000 karakter uzunluğunda bir soru sorun."
+  },
+  {
+    "id": "model.ai_agent_task.task.app_error",
+    "translation": "Bu görev, ajanın tanıdığı bir görev değil."
+  },
+  {
     "id": "model.ai_connection.api_key.app_error",
     "translation": "API anahtarı çok uzun veya satır sonu içeriyor."
   },
@@ -12489,6 +12805,10 @@
   {
     "id": "model.bot.is_valid.description.app_error",
     "translation": "Açıklama geçersiz."
+  },
+  {
+    "id": "model.bot.is_valid.kind.app_error",
+    "translation": "Bir bot hesabı, bir bot veya bir ajandır."
   },
   {
     "id": "model.bot.is_valid.update_at.app_error",
@@ -12877,6 +13197,14 @@
   {
     "id": "model.command_response.is_valid.response_type.app_error",
     "translation": "Yanıt türü geçersiz."
+  },
+  {
+    "id": "model.community_rules.empty.app_error",
+    "translation": "Kuralları etkinleştirmeden önce yazın."
+  },
+  {
+    "id": "model.community_rules.text.app_error",
+    "translation": "Kurallar en fazla {{.Max}} karakter uzunluğunda olabilir."
   },
   {
     "id": "model.compliance.is_valid.create_at.app_error",
@@ -13655,6 +13983,10 @@
     "translation": "BurnOnReadDurationSeconds değeri pozitif bir sayı olmalıdır."
   },
   {
+    "id": "model.config.is_valid.service_settings.burn_on_read_maximum_duration_seconds.app_error",
+    "translation": "BurnOnReadMaximumDurationSeconds pozitif bir sayı olmalıdır."
+  },
+  {
     "id": "model.config.is_valid.service_settings.burn_on_read_maximum_time_to_live_seconds.app_error",
     "translation": "BurnOnReadMaximumTimeToLiveSeconds değeri pozitif bir sayı olmalıdır."
   },
@@ -13913,6 +14245,22 @@
   {
     "id": "model.file_info.is_valid.user_id.app_error",
     "translation": "user_id değeri geçersiz."
+  },
+  {
+    "id": "model.focus.duration.app_error",
+    "translation": "Odak modu süresi bir dakika ile bir hafta arasında olmalıdır."
+  },
+  {
+    "id": "model.focus.duration_or_end.app_error",
+    "translation": "Odaklanma süresini seçin: bir süre veya bitiş zamanı."
+  },
+  {
+    "id": "model.focus.reason.app_error",
+    "translation": "Sebep çok uzun: en fazla 100 karakterden oluşan özel durumunuz haline gelir."
+  },
+  {
+    "id": "model.focus.window.app_error",
+    "translation": "Özetin zaman aralığı geçerli değil: geçmişte olmalı, sıralı olmalı ve en fazla sekiz gün uzunluğunda olmalıdır."
   },
   {
     "id": "model.group.channel_id.app_error",

@@ -1720,6 +1720,38 @@
     "translation": "{{.Username}} இந்த சேனலின் உறுப்பினர் இல்லை."
   },
   {
+    "id": "api.command_rules.agree_hint",
+    "translation": "ஒப்புதல் அளிக்க `/rules agree` எனத் தட்டச்சு செய்யவும், பின்னர் நீங்கள் இடுகையிடலாம்."
+  },
+  {
+    "id": "api.command_rules.agreed",
+    "translation": "நன்றி: {{.Community}} இன் விதிகளை நீங்கள் ஒப்புக்கொண்டீர்கள். இப்போது அங்கு இடுகையிடலாம்."
+  },
+  {
+    "id": "api.command_rules.already_agreed",
+    "translation": "இந்த விதிகளுக்கு நீங்கள் ஏற்கனவே ஒப்புதல் அளித்துள்ளீர்கள்."
+  },
+  {
+    "id": "api.command_rules.desc",
+    "translation": "இந்த சமூகத்தின் விதிகளைப் படிக்கவும் அல்லது அவற்றுக்கு ஒப்புதல் அளிக்கவும்"
+  },
+  {
+    "id": "api.command_rules.hint",
+    "translation": "[ஒப்புக்கொள்கிறேன்]"
+  },
+  {
+    "id": "api.command_rules.name",
+    "translation": "விதிகள்"
+  },
+  {
+    "id": "api.command_rules.none",
+    "translation": "இந்த சமூகத்தில் ஒப்புக்கொள்ள விதிகள் எதுவும் இல்லை."
+  },
+  {
+    "id": "api.command_rules.title",
+    "translation": "**{{.Community}} விதிகள்**"
+  },
+  {
     "id": "api.command_search.desc",
     "translation": "செய்திகளில எழுத்து தேட"
   },
@@ -2932,6 +2964,14 @@
     "translation": "@{{.Username}} இந்த குறியீட்டால் அறிவிக்கப்படவில்லை, ஏனெனில் அவர் இந்த குழுவின் உறுப்பினர் அல்ல."
   },
   {
+    "id": "api.post.community_rules_not_accepted",
+    "translation": "இந்த சமூகத்தில் பதிவிடுவதற்கு முன் அதன் விதிகளுக்கு ஒப்புதல் அளிக்கவும்."
+  },
+  {
+    "id": "api.post.community_rules_not_accepted.reminder",
+    "translation": "இந்த சமூகத்தில் இடுகையிடும் முன் அதன் விதிகளுக்கு ஒப்புதல் அளிக்க அனைவரிடமும் கேட்கிறது. விதிகளைப் படிக்க `/rules` என தட்டச்சு செய்யவும், பின்னர் ஒப்புதல் அளிக்க `/rules agree` என தட்டச்சு செய்யவும்."
+  },
+  {
     "id": "api.post.create_post.burn_on_read.abac_denied.app_error",
     "translation": "இந்த சேனலில் படித்தவுடன் எரிக்கப்படும் செய்திகளை அனுப்ப உங்களுக்கு அனுமதி இல்லை."
   },
@@ -3034,6 +3074,10 @@
   {
     "id": "api.post.fill_in_post_props.burn_on_read.config.app_error",
     "translation": "படித்தவுடன் அழிபடும் பதிவுகள் இயக்கப்படவில்லை. அம்சக் குறியீட்டையும் (feature flag) சேவை அமைப்பையும் (service setting) இயக்கவும்."
+  },
+  {
+    "id": "api.post.fill_in_post_props.burn_on_read.duration.app_error",
+    "translation": "படித்தவுடன் அழிக்கும் கால அளவு நேர்மறை மில்லிவினாட்களாக இருக்க வேண்டும்."
   },
   {
     "id": "api.post.fill_in_post_props.burn_on_read.self_dm.app_error",
@@ -5200,6 +5244,134 @@
     "translation": "பிரிட்ஜ் அழைப்பு தோல்வியடைந்தது."
   },
   {
+    "id": "app.agents.status.no_agents",
+    "translation": "உங்களுக்குக் கிடைக்கக்கூடிய ஏஜென்ட் எதுவும் இல்லை."
+  },
+  {
+    "id": "app.ai.agent.access.app_error",
+    "translation": "இந்த ஏஜென்ட்டுடன் இங்கு பேச முடியாது."
+  },
+  {
+    "id": "app.ai.agent.activity.get.app_error",
+    "translation": "ஏஜென்ட்களின் செயல்பாட்டைப் படிக்க முடியவில்லை."
+  },
+  {
+    "id": "app.ai.agent.activity.save.app_error",
+    "translation": "ஏஜென்ட்டின் செயல்பாட்டைச் சேமிக்க முடியவில்லை."
+  },
+  {
+    "id": "app.ai.agent.connection.app_error",
+    "translation": "இங்குள்ள ஏஜென்ட் இந்த மாதிரி இணைப்பைப் பயன்படுத்த முடியாது: சர்வர் அளவிலான ஏஜென்ட்டுக்கு சர்வர் அளவிலான இணைப்பு தேவை, மேலும் ஒரு சமூகத்தின் ஏஜென்ட்டுக்கு அதன் சொந்த இணைப்பு அல்லது அதனுடன் பகிரப்பட்ட இணைப்பு தேவை."
+  },
+  {
+    "id": "app.ai.agent.conversations.app_error",
+    "translation": "ஏஜென்ட்டுகளுடன் உங்கள் உரையாடல்களை ஏற்ற முடியவில்லை."
+  },
+  {
+    "id": "app.ai.agent.get.app_error",
+    "translation": "ஏஜென்ட்களைப் படிக்க முடியவில்லை."
+  },
+  {
+    "id": "app.ai.agent.manage_permission.app_error",
+    "translation": "இங்கு ஏஜென்ட்களை நிர்வகிக்க முடியாது."
+  },
+  {
+    "id": "app.ai.agent.not_found.app_error",
+    "translation": "இந்த ஏஜென்ட் இல்லை அல்லது நீக்கப்பட்டது."
+  },
+  {
+    "id": "app.ai.agent.references.app_error",
+    "translation": "ஏஜென்ட் ஒரு சமூகம், சேனல் அல்லது நபரைக் குறிப்பிடுகிறது, அவை இல்லை அல்லது வேறு சமூகத்தின் சேனல் ஆகும்."
+  },
+  {
+    "id": "app.ai.agent.save.app_error",
+    "translation": "ஏஜென்ட்டைச் சேமிக்க முடியவில்லை."
+  },
+  {
+    "id": "app.ai.agent.task.agent_disabled.app_error",
+    "translation": "இந்த ஏஜென்ட் முடக்கப்பட்டுள்ளது."
+  },
+  {
+    "id": "app.ai.agent.task.channel.app_error",
+    "translation": "சேனல் இல்லை அல்லது அதை நீங்கள் படிக்க முடியாது."
+  },
+  {
+    "id": "app.ai.agent.task.external.app_error",
+    "translation": "ஒரு வெளிப்புற ஏஜென்ட் இங்கு பணிகளை ஏற்காது: அதற்கு ஒரு செய்தியை அனுப்பவும்."
+  },
+  {
+    "id": "app.ai.agent.task.not_transcription.app_error",
+    "translation": "இந்த செய்தி அழைப்பின் எழுத்துப்பதிவு அல்ல."
+  },
+  {
+    "id": "app.ai.agent.task.post.app_error",
+    "translation": "செய்தி இல்லை அல்லது அதை நீங்கள் படிக்க முடியாது."
+  },
+  {
+    "id": "app.ai.agent.task.request.ask_channel",
+    "translation": "{{.Channel}} பற்றி: {{.Question}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items",
+    "translation": "இந்தத் த்ரெட்டில் உள்ள செயல்பாட்டுப் பணிகளைக் கண்டறியவும்: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items_channel",
+    "translation": "{{.Channel}} இன் சமீபத்திய செய்திகளில் உள்ள செயல்பாட்டுப் பணிகளைக் கண்டறியவும்"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items_channel_since",
+    "translation": "{{.Since}} முதல் {{.Channel}} சேனலில் உள்ள செயல்பாட்டுப் பணிகளைக் கண்டறியவும்"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions",
+    "translation": "இந்தத் த்ரெட்டில் உள்ள திறந்த கேள்விகளைக் கண்டறியவும்: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions_channel",
+    "translation": "{{.Channel}} இன் சமீபத்திய செய்திகளில் உள்ள திறந்த கேள்விகளைக் கண்டறியவும்"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions_channel_since",
+    "translation": "{{.Since}} முதல் {{.Channel}} இல் உள்ள திறந்த கேள்விகளைக் கண்டறியவும்"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_channel",
+    "translation": "{{.Channel}} இல் உள்ள சமீபத்திய செய்திகளைச் சுருக்குக"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_channel_since",
+    "translation": "{{.Since}} முதல் {{.Channel}} இல் உள்ள செய்திகளை சுருக்கமாகக் கூறு"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_thread",
+    "translation": "இந்தத் த்ரெட்டைச் சுருக்குக: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_transcription",
+    "translation": "இந்த அழைப்பின் எழுத்துப்பதிவை சுருக்குக: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.this_conversation",
+    "translation": "இந்த உரையாடல்"
+  },
+  {
+    "id": "app.ai.agent.turn.empty",
+    "translation": "மன்னிக்கவும், அதற்கு என்னிடம் பதில் இல்லை."
+  },
+  {
+    "id": "app.ai.agent.turn.failed",
+    "translation": "மன்னிக்கவும், நால் பதிலளிக்க இயலவில்லை: {{.Reason}}"
+  },
+  {
+    "id": "app.ai.agent.turn.interrupted",
+    "translation": "மன்னிக்கவும், என் பதில் இடையே தடைப்பட்டது. சற்று நேரத்தில் மீண்டும் கேளுங்கள்."
+  },
+  {
+    "id": "app.ai.agent.turn.not_allowed",
+    "translation": "{{.Agent}} இங்கு உங்களுக்குக் கிடைக்கவில்லை."
+  },
+  {
     "id": "app.ai.call.audience.app_error",
     "translation": "இந்த மாதல் இணைப்பை நீங்கள் பயன்படுத்த முடியாது."
   },
@@ -6104,6 +6276,38 @@
     "translation": "இந்த மதிப்பு {{.Name}} பண்புக்கு பொருந்தவில்லை."
   },
   {
+    "id": "app.community_rules.accept.app_error",
+    "translation": "சமூக விதிகளுக்கான உங்கள் ஒப்புதலைச் சேமிக்க முடியவில்லை."
+  },
+  {
+    "id": "app.community_rules.accept.changed.app_error",
+    "translation": "நீங்கள் படித்த பிறகு சமூக விதிகள் மாற்றப்பட்டுள்ளன. ஒப்புதல் அளிக்கும் முன் அவற்றை மீண்டும் படிக்கவும்."
+  },
+  {
+    "id": "app.community_rules.accept.not_member.app_error",
+    "translation": "சமூகத்தின் உறுப்பினர்கள் மட்டுமே அதன் விதிகளுக்கு ஒப்புதல் அளிக்க முடியும்."
+  },
+  {
+    "id": "app.community_rules.accept.off.app_error",
+    "translation": "இந்த சமூகத்தில் ஒப்புக்கொள்ள விதிகள் எதுவும் இல்லை."
+  },
+  {
+    "id": "app.community_rules.delete.app_error",
+    "translation": "சமூகத்தின் விதிகளை நீக்க முடியவில்லை."
+  },
+  {
+    "id": "app.community_rules.get.app_error",
+    "translation": "சமூகத்தின் விதிகளைப் பெற முடியவில்லை."
+  },
+  {
+    "id": "app.community_rules.save.app_error",
+    "translation": "சமூகத்தின் விதிகளைச் சேமிக்க முடியவில்லை."
+  },
+  {
+    "id": "app.community_rules.stats.app_error",
+    "translation": "சமூக விதிகளுக்கு ஒப்புதல் அளித்தவர்களை எண்ண முடியவில்லை."
+  },
+  {
     "id": "app.compile_csv_chunks.header_error",
     "translation": "CSV தலைப்புகளை எழுத முடியவில்லை."
   },
@@ -6866,6 +7070,34 @@
   {
     "id": "app.file_info.undelete_for_post_ids.app_error",
     "translation": "பதிவு கோப்பு இணைப்புகளை மீட்டெடுக்க முடியவில்லை."
+  },
+  {
+    "id": "app.focus.bot.app_error",
+    "translation": "பாட்டுகள் ஃபோகஸ் பயன்முறையைப் பயன்படுத்த முடியாது."
+  },
+  {
+    "id": "app.focus.delete.app_error",
+    "translation": "கணக்கின் கவனம் பயன்முறையை நீக்க முடியவில்லை."
+  },
+  {
+    "id": "app.focus.get.app_error",
+    "translation": "உங்கள் கவனம் மோடைப் பெற முடியவில்லை."
+  },
+  {
+    "id": "app.focus.mark_read.app_error",
+    "translation": "நீங்கள் தவறவிட்டவற்றைப் படித்ததாகக் குறிக்க முடியவில்லை."
+  },
+  {
+    "id": "app.focus.save.app_error",
+    "translation": "கவனம் பயன்முறையைத் தொடங்க இயலவில்லை."
+  },
+  {
+    "id": "app.focus.statuses_disabled.app_error",
+    "translation": "கவனம் பயன்முறைக்குப் பயனர் நிலைகள் தேவை, ஆனால் இந்த சேவையகத்தில் அவை முடக்கப்பட்டுள்ளன."
+  },
+  {
+    "id": "app.focus.summary.app_error",
+    "translation": "கவனம் செலுத்தியபோது நீங்கள் தவறவிட்டவை எவை என்பதைப் பெற முடியவில்லை."
   },
   {
     "id": "app.get_user_team_scheduled_posts.error",
@@ -11604,6 +11836,90 @@
     "translation": "தவறான பயனர் ID."
   },
   {
+    "id": "model.agent_activity.expires.app_error",
+    "translation": "ஒரு ஏஜென்ட்டின் செயல்பாடு 1 வினாடி முதல் 24 மணி நேரம் வரை இருக்கும்."
+  },
+  {
+    "id": "model.agent_activity.state.app_error",
+    "translation": "ஒரு ஏஜென்ட்டின் நிலை செயலற்றது, சிந்தனையில், பணியில், காத்திருப்பில், தடைசெய்யப்பட்டது அல்லது இணைப்பில் இல்லை ஆகியவற்றில் ஒன்றாக இருக்கும்."
+  },
+  {
+    "id": "model.agent_activity.text.app_error",
+    "translation": "ஏஜென்ட் செய்வதை 200 எழுத்துக்களுக்கு மேல் இல்லாத ஒரே வரியில் குறிப்பிடவும்."
+  },
+  {
+    "id": "model.agent_activity.thread_post_id.app_error",
+    "translation": "ஏஜென்ட் செயல்பாட்டின் த்ரெட் ஒரு செய்தி ID ஆக இருக்க வேண்டும்."
+  },
+  {
+    "id": "model.ai_agent.access.app_error",
+    "translation": "ஏஜென்ட்டுடன் யார் பேசலாம் என்பதில் தவறான சமூகங்கள், சேனல்கள், பங்குகள் அல்லது நபர்கள் உள்ளன அல்லது மிக அதிகமாக உள்ளன."
+  },
+  {
+    "id": "model.ai_agent.access_community.app_error",
+    "translation": "ஒரு சமூகத்தின் ஏஜென்ட் அந்தச் சமூகத்திற்கு மட்டுமே உரியது."
+  },
+  {
+    "id": "model.ai_agent.connection_id.app_error",
+    "translation": "ஏஜென்ட் பயன்படுத்தும் மாதிரி இணைப்பைத் தேர்ந்தெடுக்கவும்."
+  },
+  {
+    "id": "model.ai_agent.external.app_error",
+    "translation": "ஒரு வெளிப்புற ஏஜென்ட்டிற்கு மாதிரி, இணைப்பு அல்லது அமைப்பு தூண்டுகை இல்லை: அதன் நிரல் பதிலளிக்கிறது."
+  },
+  {
+    "id": "model.ai_agent.max_tool_turns.app_error",
+    "translation": "ஒரு ஏஜென்ட் 0 (இயல்புநிலை) முதல் 250 கருவி சுழற்சிகள் வரை எடுக்கும்."
+  },
+  {
+    "id": "model.ai_agent.model.app_error",
+    "translation": "மாதிரி பெயர் மிக நீளமாக உள்ளது அல்லது ஒன்றுக்கு மேற்பட்ட வரிகளைக் கொண்டுள்ளது."
+  },
+  {
+    "id": "model.ai_agent.needs_attention.app_error",
+    "translation": "கவனம் தேவையானவை குறித்த குறிப்பு மிக நீளமாக உள்ளது."
+  },
+  {
+    "id": "model.ai_agent.reasoning.app_error",
+    "translation": "வழிமுறை முயற்சி குறைந்தது, மிதம் அல்லது அதிகமாக இருக்க வேண்டும், மேலும் அதன் பட்ஜெட் 0 முதல் 128,000 டோக்கன்களுக்கு இடையே இருக்க வேண்டும்."
+  },
+  {
+    "id": "model.ai_agent.scope.app_error",
+    "translation": "ஒரு ஏஜென்ட் சர்வரையோ அல்லது ஒரு சமூகத்தையோ சார்ந்திருக்க வேண்டும்."
+  },
+  {
+    "id": "model.ai_agent.system_prompt.app_error",
+    "translation": "கணினி வரையறை மிக நீளமாக உள்ளது (அதிகபட்சம் 32,000 எழுத்துகள்)."
+  },
+  {
+    "id": "model.ai_agent.times.app_error",
+    "translation": "ஏஜென்ட் உருவாக்கம் மற்றும் புதுப்பிப்பு நேரங்கள் காணவில்லை."
+  },
+  {
+    "id": "model.ai_agent.tools.app_error",
+    "translation": "கருவி பெயர் தவறானது அல்லது மிக அதிகமாக உள்ளது (அதிகபட்சம் 256)."
+  },
+  {
+    "id": "model.ai_agent.user_id.app_error",
+    "translation": "ஒரு ஏஜென்ட்டுக்கு செல்லுபடியாகும் கணக்கு தேவை."
+  },
+  {
+    "id": "model.ai_agent_task.channel_id.app_error",
+    "translation": "இந்தப் பணிக்கு ஒரு சேனல் தேவை."
+  },
+  {
+    "id": "model.ai_agent_task.post_id.app_error",
+    "translation": "இந்தப் பணிக்கு ஒரு செய்தி தேவை."
+  },
+  {
+    "id": "model.ai_agent_task.question.app_error",
+    "translation": "2,000 எழுத்துக்கள் வரை கொண்ட கேள்வியைக் கேட்கவும்."
+  },
+  {
+    "id": "model.ai_agent_task.task.app_error",
+    "translation": "இந்தப் பணி ஏஜென்ட்டுக்குத் தெரியவில்லை."
+  },
+  {
     "id": "model.ai_connection.api_key.app_error",
     "translation": "API விசை மிக நீளமானது அல்லது வரி இடைவெளியைக் கொண்டுள்ளது."
   },
@@ -11766,6 +12082,10 @@
   {
     "id": "model.bot.is_valid.description.app_error",
     "translation": "தவறான விளக்கம்."
+  },
+  {
+    "id": "model.bot.is_valid.kind.app_error",
+    "translation": "ஒரு பாட் கணக்கு என்பது பாட் அல்லது ஏஜென்ட் ஆகும்."
   },
   {
     "id": "model.bot.is_valid.update_at.app_error",
@@ -12154,6 +12474,14 @@
   {
     "id": "model.command_response.is_valid.response_type.app_error",
     "translation": "தவறான பதில் வகை."
+  },
+  {
+    "id": "model.community_rules.empty.app_error",
+    "translation": "விதிகளை இயக்குவதற்கு முன், அவற்றை எழுதவும்."
+  },
+  {
+    "id": "model.community_rules.text.app_error",
+    "translation": "விதிகள் அதிகபட்சம் {{.Max}} எழுத்துகள் மட்டுமே இருக்க வேண்டும்."
   },
   {
     "id": "model.compliance.is_valid.create_at.app_error",
@@ -12932,6 +13260,10 @@
     "translation": "BurnOnReadDurationSeconds நேர்மறை எண்ணாக இருக்க வேண்டும்."
   },
   {
+    "id": "model.config.is_valid.service_settings.burn_on_read_maximum_duration_seconds.app_error",
+    "translation": "BurnOnReadMaximumDurationSeconds ஒரு நேர்மறை எண்ணாக இருக்க வேண்டும்."
+  },
+  {
     "id": "model.config.is_valid.service_settings.burn_on_read_maximum_time_to_live_seconds.app_error",
     "translation": "BurnOnReadMaximumTimeToLiveSeconds நேர்மறை எண்ணாக இருக்க வேண்டும்."
   },
@@ -13190,6 +13522,22 @@
   {
     "id": "model.file_info.is_valid.user_id.app_error",
     "translation": "user_id-க்கு தவறான மதிப்பு."
+  },
+  {
+    "id": "model.focus.duration.app_error",
+    "translation": "கவனம் மோடு ஒரு நிமிடம் முதல் ஒரு வாரம் வரை இருக்கும்."
+  },
+  {
+    "id": "model.focus.duration_or_end.app_error",
+    "translation": "கவனம் செலுத்தும் நேரத்தைத் தேர்ந்தெடுக்கவும்: ஒரு கால அளவு அல்லது முடிவு நேரம்."
+  },
+  {
+    "id": "model.focus.reason.app_error",
+    "translation": "காரணம் மிக நீளமாக உள்ளது: இது உங்கள் தனிப்பயன் நிலையாக மாறும், அதிகபட்சம் 100 எழுத்துகள் மட்டுமே."
+  },
+  {
+    "id": "model.focus.window.app_error",
+    "translation": "சுருக்கத்தின் நேர வரம்பு தவறானது: இது கடந்த காலத்தில் இருக்க வேண்டும், வரிசையில் இருக்க வேண்டும், மற்றும் அதிகபட்சமாக எட்டு நாட்கள் மட்டுமே இருக்க வேண்டும்."
   },
   {
     "id": "model.group.channel_id.app_error",

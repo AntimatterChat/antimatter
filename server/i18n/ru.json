@@ -1774,6 +1774,38 @@
     "translation": "{{.Username}} не является участником этого канала."
   },
   {
+    "id": "api.command_rules.agree_hint",
+    "translation": "Введите `/rules agree`, чтобы принять правила, после чего вы сможете публиковать сообщения."
+  },
+  {
+    "id": "api.command_rules.agreed",
+    "translation": "Спасибо! Вы приняли правила сообщества {{.Community}}. Теперь вы можете публиковать сообщения."
+  },
+  {
+    "id": "api.command_rules.already_agreed",
+    "translation": "Вы уже согласились с этими правилами."
+  },
+  {
+    "id": "api.command_rules.desc",
+    "translation": "Просмотреть правила сообщества или согласиться с ними"
+  },
+  {
+    "id": "api.command_rules.hint",
+    "translation": "[согласен]"
+  },
+  {
+    "id": "api.command_rules.name",
+    "translation": "rules"
+  },
+  {
+    "id": "api.command_rules.none",
+    "translation": "В этом сообществе нет правил для принятия."
+  },
+  {
+    "id": "api.command_rules.title",
+    "translation": "**Правила сообщества {{.Community}}**"
+  },
+  {
     "id": "api.command_search.desc",
     "translation": "Искать текст в сообщениях"
   },
@@ -3119,6 +3151,14 @@
     "translation": "@{{.Username}} не получил уведомления об этом упоминании, потому что он не является участником этой команды."
   },
   {
+    "id": "api.post.community_rules_not_accepted",
+    "translation": "Чтобы оставить сообщение в этом сообществе, примите его правила."
+  },
+  {
+    "id": "api.post.community_rules_not_accepted.reminder",
+    "translation": "Чтобы публиковать сообщения в этом сообществе, необходимо принять его правила. Введите `/rules`, чтобы прочитать их, затем `/rules agree`, чтобы принять."
+  },
+  {
     "id": "api.post.create_post.burn_on_read.abac_denied.app_error",
     "translation": "У вас нет прав на отправку сообщений, исчезающих после прочтения, в этом канале."
   },
@@ -3221,6 +3261,10 @@
   {
     "id": "api.post.fill_in_post_props.burn_on_read.config.app_error",
     "translation": "Функция сжигания сообщений при прочтении не включена. Пожалуйста, включите флаг функции и настройки службы."
+  },
+  {
+    "id": "api.post.fill_in_post_props.burn_on_read.duration.app_error",
+    "translation": "Время самоуничтожения должно быть положительным числом миллисекунд."
   },
   {
     "id": "api.post.fill_in_post_props.burn_on_read.license.app_error",
@@ -5585,6 +5629,130 @@
     "translation": "Вызов моста не удался."
   },
   {
+    "id": "app.agents.status.no_agents",
+    "translation": "Нет доступных агентов."
+  },
+  {
+    "id": "app.ai.agent.access.app_error",
+    "translation": "Здесь нельзя общаться с этим агентом."
+  },
+  {
+    "id": "app.ai.agent.activity.get.app_error",
+    "translation": "Не удалось прочитать активность агентов."
+  },
+  {
+    "id": "app.ai.agent.activity.save.app_error",
+    "translation": "Не удалось сохранить активность агента."
+  },
+  {
+    "id": "app.ai.agent.connection.app_error",
+    "translation": "Агент здесь не может использовать это подключение к модели: агенту уровня сервера требуется подключение уровня сервера, а агенту сообщества — собственное подключение сообщества или подключение, общее с ним."
+  },
+  {
+    "id": "app.ai.agent.conversations.app_error",
+    "translation": "Не удалось загрузить ваши диалоги с агентами."
+  },
+  {
+    "id": "app.ai.agent.get.app_error",
+    "translation": "Не удалось получить список агентов."
+  },
+  {
+    "id": "app.ai.agent.manage_permission.app_error",
+    "translation": "Здесь нельзя управлять агентами."
+  },
+  {
+    "id": "app.ai.agent.not_found.app_error",
+    "translation": "Этот агент не существует или был удалён."
+  },
+  {
+    "id": "app.ai.agent.references.app_error",
+    "translation": "Агент указывает на несуществующее сообщество, канал или пользователя либо на канал из другого сообщества."
+  },
+  {
+    "id": "app.ai.agent.save.app_error",
+    "translation": "Не удалось сохранить агента."
+  },
+  {
+    "id": "app.ai.agent.task.agent_disabled.app_error",
+    "translation": "Этот агент отключён."
+  },
+  {
+    "id": "app.ai.agent.task.channel.app_error",
+    "translation": "Канал не найден или у вас нет прав на его просмотр."
+  },
+  {
+    "id": "app.ai.agent.task.external.app_error",
+    "translation": "Внешний агент не берёт задачи здесь: отправьте ему сообщение."
+  },
+  {
+    "id": "app.ai.agent.task.not_transcription.app_error",
+    "translation": "Это сообщение не является транскрипцией звонка."
+  },
+  {
+    "id": "app.ai.agent.task.request.ask_channel",
+    "translation": "О канале {{.Channel}}: {{.Question}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items",
+    "translation": "Найдите пункты действий в этом обсуждении: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items_channel",
+    "translation": "Найдите пункты действий в последних сообщениях канала {{.Channel}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items_channel_since",
+    "translation": "Найди пункты действий в {{.Channel}} с {{.Since}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions",
+    "translation": "Найдите открытые вопросы в этом обсуждении: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions_channel",
+    "translation": "Найдите открытые вопросы в последних сообщениях канала {{.Channel}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions_channel_since",
+    "translation": "Найти открытые вопросы в {{.Channel}} с {{.Since}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_channel",
+    "translation": "Сократите последние сообщения в {{.Channel}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_channel_since",
+    "translation": "Сделай краткое содержание сообщений в канале {{.Channel}} с {{.Since}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_thread",
+    "translation": "Собери краткое содержание этого обсуждения: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_transcription",
+    "translation": "Сделайте резюме транскрипции этого звонка: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.this_conversation",
+    "translation": "этот диалог"
+  },
+  {
+    "id": "app.ai.agent.turn.empty",
+    "translation": "К сожалению, у меня нет ответа на это."
+  },
+  {
+    "id": "app.ai.agent.turn.failed",
+    "translation": "К сожалению, я не смог ответить: {{.Reason}}"
+  },
+  {
+    "id": "app.ai.agent.turn.interrupted",
+    "translation": "Извините, мой ответ был прерван. Попробуйте ещё раз через мгновение."
+  },
+  {
+    "id": "app.ai.agent.turn.not_allowed",
+    "translation": "{{.Agent}} недоступен вам здесь."
+  },
+  {
     "id": "app.ai.call.audience.app_error",
     "translation": "Невозможно использовать это подключение к модели."
   },
@@ -6505,6 +6673,38 @@
     "translation": "Это значение не подходит для атрибута {{.Name}}."
   },
   {
+    "id": "app.community_rules.accept.app_error",
+    "translation": "Не удалось сохранить согласие с правилами сообщества."
+  },
+  {
+    "id": "app.community_rules.accept.changed.app_error",
+    "translation": "Правила сообщества изменились с момента последнего прочтения. Ознакомьтесь с ними снова, прежде чем принять."
+  },
+  {
+    "id": "app.community_rules.accept.not_member.app_error",
+    "translation": "Принять правила сообщества могут только его участники."
+  },
+  {
+    "id": "app.community_rules.accept.off.app_error",
+    "translation": "В этом сообществе нет правил для принятия."
+  },
+  {
+    "id": "app.community_rules.delete.app_error",
+    "translation": "Не удалось удалить правила сообщества."
+  },
+  {
+    "id": "app.community_rules.get.app_error",
+    "translation": "Не удалось получить правила сообщества."
+  },
+  {
+    "id": "app.community_rules.save.app_error",
+    "translation": "Не удалось сохранить правила сообщества."
+  },
+  {
+    "id": "app.community_rules.stats.app_error",
+    "translation": "Не удалось подсчитать, кто согласился с правилами сообщества."
+  },
+  {
     "id": "app.compile_csv_chunks.header_error",
     "translation": "Не удалось записать заголовки CSV."
   },
@@ -7293,6 +7493,34 @@
   {
     "id": "app.file_info.undelete_for_post_ids.app_error",
     "translation": "Не удалось восстановить вложения файлов в сообщении."
+  },
+  {
+    "id": "app.focus.bot.app_error",
+    "translation": "Боты не могут использовать режим фокусировки."
+  },
+  {
+    "id": "app.focus.delete.app_error",
+    "translation": "Не удалось удалить режим фокусировки учётной записи."
+  },
+  {
+    "id": "app.focus.get.app_error",
+    "translation": "Не удалось получить режим фокусировки."
+  },
+  {
+    "id": "app.focus.mark_read.app_error",
+    "translation": "Не удалось отметить пропущенные сообщения как прочитанные."
+  },
+  {
+    "id": "app.focus.save.app_error",
+    "translation": "Не удалось включить режим фокусировки."
+  },
+  {
+    "id": "app.focus.statuses_disabled.app_error",
+    "translation": "Для работы режима фокуса необходимы статусы пользователей, которые на этом сервере отключены."
+  },
+  {
+    "id": "app.focus.summary.app_error",
+    "translation": "Не удалось получить сводку пропущенных сообщений."
   },
   {
     "id": "app.get_user_team_scheduled_posts.error",
@@ -12345,6 +12573,90 @@
     "translation": "Некорректный user id."
   },
   {
+    "id": "model.agent_activity.expires.app_error",
+    "translation": "Активность агента может длиться от 1 секунды до 24 часов."
+  },
+  {
+    "id": "model.agent_activity.state.app_error",
+    "translation": "Состояние агента: ожидание, размышление, работа, ожидание ответа, блокировка или не в сети."
+  },
+  {
+    "id": "model.agent_activity.text.app_error",
+    "translation": "Действия агента помещаются в одну строку длиной не более 200 символов."
+  },
+  {
+    "id": "model.agent_activity.thread_post_id.app_error",
+    "translation": "ID сообщения обсуждения активности агента некорректен."
+  },
+  {
+    "id": "model.ai_agent.access.app_error",
+    "translation": "Список разрешённых для общения с агентом сообществ, каналов, ролей или пользователей содержит некорректные значения или слишком велик."
+  },
+  {
+    "id": "model.ai_agent.access_community.app_error",
+    "translation": "Агент сообщества доступен только участникам этого сообщества."
+  },
+  {
+    "id": "model.ai_agent.connection_id.app_error",
+    "translation": "Выберите подключение к модели, которое использует агент."
+  },
+  {
+    "id": "model.ai_agent.external.app_error",
+    "translation": "У внешнего агента нет модели, подключения или системного запроса: на него отвечает его программа."
+  },
+  {
+    "id": "model.ai_agent.max_tool_turns.app_error",
+    "translation": "Агент может выполнить от 0 (по умолчанию) до 250 вызовов инструментов."
+  },
+  {
+    "id": "model.ai_agent.model.app_error",
+    "translation": "Слишком длинное название модели или оно содержит несколько строк."
+  },
+  {
+    "id": "model.ai_agent.needs_attention.app_error",
+    "translation": "Заметка о том, что требует внимания, слишком длинная."
+  },
+  {
+    "id": "model.ai_agent.reasoning.app_error",
+    "translation": "Уровень усилий для логических вычислений должен быть минимальным, низким, средним или высоким, а его лимит — от 0 до 128 000 токенов."
+  },
+  {
+    "id": "model.ai_agent.scope.app_error",
+    "translation": "Агент относится к серверу или к одному сообществу."
+  },
+  {
+    "id": "model.ai_agent.system_prompt.app_error",
+    "translation": "Системный запрос слишком длинный (не более 32 000 символов)."
+  },
+  {
+    "id": "model.ai_agent.times.app_error",
+    "translation": "Отсутствуют время создания и обновления агента."
+  },
+  {
+    "id": "model.ai_agent.tools.app_error",
+    "translation": "Недопустимое имя инструмента или их слишком много (не более 256)."
+  },
+  {
+    "id": "model.ai_agent.user_id.app_error",
+    "translation": "Для агента требуется действительная учётная запись."
+  },
+  {
+    "id": "model.ai_agent_task.channel_id.app_error",
+    "translation": "Для этой задачи требуется канал."
+  },
+  {
+    "id": "model.ai_agent_task.post_id.app_error",
+    "translation": "Для этой задачи необходимо сообщение."
+  },
+  {
+    "id": "model.ai_agent_task.question.app_error",
+    "translation": "Задайте вопрос длиной не более 2000 символов."
+  },
+  {
+    "id": "model.ai_agent_task.task.app_error",
+    "translation": "Агент не знает об этой задаче."
+  },
+  {
     "id": "model.ai_connection.api_key.app_error",
     "translation": "API-ключ слишком длинный или содержит перенос строки."
   },
@@ -12507,6 +12819,10 @@
   {
     "id": "model.bot.is_valid.description.app_error",
     "translation": "Недопустимое описание."
+  },
+  {
+    "id": "model.bot.is_valid.kind.app_error",
+    "translation": "Учётная запись бота — это бот или агент."
   },
   {
     "id": "model.bot.is_valid.update_at.app_error",
@@ -12895,6 +13211,14 @@
   {
     "id": "model.command_response.is_valid.response_type.app_error",
     "translation": "Недопустимый тип ответа."
+  },
+  {
+    "id": "model.community_rules.empty.app_error",
+    "translation": "Сначала напишите правила, а затем включите их."
+  },
+  {
+    "id": "model.community_rules.text.app_error",
+    "translation": "Правила не могут превышать {{.Max}} символов."
   },
   {
     "id": "model.compliance.is_valid.create_at.app_error",
@@ -13673,6 +13997,10 @@
     "translation": "Значение BurnOnReadDurationSeconds должно быть положительным числом."
   },
   {
+    "id": "model.config.is_valid.service_settings.burn_on_read_maximum_duration_seconds.app_error",
+    "translation": "Значение BurnOnReadMaximumDurationSeconds должно быть положительным числом."
+  },
+  {
     "id": "model.config.is_valid.service_settings.burn_on_read_maximum_time_to_live_seconds.app_error",
     "translation": "Значение BurnOnReadMaximumTimeToLiveSeconds должно быть положительным числом."
   },
@@ -13931,6 +14259,22 @@
   {
     "id": "model.file_info.is_valid.user_id.app_error",
     "translation": "Недопустимое значение для времени ожидания чтения."
+  },
+  {
+    "id": "model.focus.duration.app_error",
+    "translation": "Режим фокусировки длится от одной минуты до одной недели."
+  },
+  {
+    "id": "model.focus.duration_or_end.app_error",
+    "translation": "Выберите длительность фокусировки или время окончания."
+  },
+  {
+    "id": "model.focus.reason.app_error",
+    "translation": "Причина слишком длинная: она станет вашим пользовательским статусом, который может содержать не более 100 символов."
+  },
+  {
+    "id": "model.focus.window.app_error",
+    "translation": "Недопустимый диапазон времени для сводки: он должен быть в прошлом, в правильном порядке и не превышать восьми дней."
   },
   {
     "id": "model.group.channel_id.app_error",

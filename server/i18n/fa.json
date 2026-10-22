@@ -1770,6 +1770,38 @@
     "translation": "{{.Username}} عضو این کانال نیست."
   },
   {
+    "id": "api.command_rules.agree_hint",
+    "translation": "برای پذیرش قوانین، `/rules agree` را تایپ کنید؛ سپس می‌توانید پست بگذارید."
+  },
+  {
+    "id": "api.command_rules.agreed",
+    "translation": "ممنون! شما قوانین {{.Community}} را پذیرفتید. اکنون می‌توانید در آن پست بگذارید."
+  },
+  {
+    "id": "api.command_rules.already_agreed",
+    "translation": "شما این قوانین را پذیرفته‌اید."
+  },
+  {
+    "id": "api.command_rules.desc",
+    "translation": "قوانین این جامعه را بخوانید یا آن‌ها را بپذیرید"
+  },
+  {
+    "id": "api.command_rules.hint",
+    "translation": "[agree]"
+  },
+  {
+    "id": "api.command_rules.name",
+    "translation": "rules"
+  },
+  {
+    "id": "api.command_rules.none",
+    "translation": "این جامعه قوانینی برای پذیرش ندارد."
+  },
+  {
+    "id": "api.command_rules.title",
+    "translation": "**قوانین {{.Community}}**"
+  },
+  {
     "id": "api.command_search.desc",
     "translation": "متن را در پیام ها جستجو کنید"
   },
@@ -3113,6 +3145,14 @@
     "translation": "@{{.Username}} از این اشاره مطلع نشد زیرا عضو این تیم نیست."
   },
   {
+    "id": "api.post.community_rules_not_accepted",
+    "translation": "پیش از پست گذاشتن، قوانین این جامعه را بپذیرید."
+  },
+  {
+    "id": "api.post.community_rules_not_accepted.reminder",
+    "translation": "این جامعه از همه می‌خواهد پیش از پست گذاشتن، قوانینش را بپذیرند. برای خواندن آن‌ها `/rules` و برای پذیرش `/rules agree` را تایپ کنید."
+  },
+  {
     "id": "api.post.create_post.burn_on_read.abac_denied.app_error",
     "translation": "شما مجوز ارسال پیام‌های سوزان‌شده پس از خواندن در این کانال را ندارید."
   },
@@ -3215,6 +3255,10 @@
   {
     "id": "api.post.fill_in_post_props.burn_on_read.config.app_error",
     "translation": "پست‌های «حذف پس از خواندن» فعال نیستند. لطفاً feature flag و تنظیم سرویس مربوطه را فعال کنید."
+  },
+  {
+    "id": "api.post.fill_in_post_props.burn_on_read.duration.app_error",
+    "translation": "مدت زمان «محو پس از خواندن» باید عددی مثبت به میلی‌ثانیه باشد."
   },
   {
     "id": "api.post.fill_in_post_props.burn_on_read.license.app_error",
@@ -5575,6 +5619,134 @@
     "translation": "فراخوانی Bridge ناموفق بود."
   },
   {
+    "id": "app.agents.status.no_agents",
+    "translation": "هیچ عاملی برای شما در دسترس نیست."
+  },
+  {
+    "id": "app.ai.agent.access.app_error",
+    "translation": "شما نمی‌توانید در اینجا با این عامل گفتگو کنید."
+  },
+  {
+    "id": "app.ai.agent.activity.get.app_error",
+    "translation": "فعالیت عامل‌ها خوانده نشد."
+  },
+  {
+    "id": "app.ai.agent.activity.save.app_error",
+    "translation": "فعالیت عامل ذخیره نشد."
+  },
+  {
+    "id": "app.ai.agent.connection.app_error",
+    "translation": "یک عامل در اینجا نمی‌تواند از این اتصال مدل استفاده کند: عامل‌های سطح سرور به اتصالات سطح سرور نیاز دارند و عامل‌های یک جامعه به اتصالات خود جامعه یا اتصالاتی که با آن به اشتراک گذاشته شده‌اند."
+  },
+  {
+    "id": "app.ai.agent.conversations.app_error",
+    "translation": "گفتگوهای شما با عامل‌ها بارگذاری نشد."
+  },
+  {
+    "id": "app.ai.agent.get.app_error",
+    "translation": "عامل‌ها خوانده نشد."
+  },
+  {
+    "id": "app.ai.agent.manage_permission.app_error",
+    "translation": "شما اجازه مدیریت عامل‌ها را در اینجا ندارید."
+  },
+  {
+    "id": "app.ai.agent.not_found.app_error",
+    "translation": "این عامل وجود ندارد یا حذف شده است."
+  },
+  {
+    "id": "app.ai.agent.references.app_error",
+    "translation": "نام عامل به جامعه، کانال یا فردی اشاره دارد که وجود ندارد، یا به کانالی از جامعه‌ای دیگر."
+  },
+  {
+    "id": "app.ai.agent.save.app_error",
+    "translation": "عامل ذخیره نشد."
+  },
+  {
+    "id": "app.ai.agent.task.agent_disabled.app_error",
+    "translation": "این عامل غیرفعال است."
+  },
+  {
+    "id": "app.ai.agent.task.channel.app_error",
+    "translation": "کانال وجود ندارد یا شما اجازه خواندن آن را ندارید."
+  },
+  {
+    "id": "app.ai.agent.task.external.app_error",
+    "translation": "یک عامل خارجی در اینجا وظیفه‌ای نمی‌پذیرد: به جای آن، برای او پیام بفرستید."
+  },
+  {
+    "id": "app.ai.agent.task.not_transcription.app_error",
+    "translation": "این پیام متن‌نویسی یک مکالمه نیست."
+  },
+  {
+    "id": "app.ai.agent.task.post.app_error",
+    "translation": "پیام وجود ندارد یا شما اجازه خواندن آن را ندارید."
+  },
+  {
+    "id": "app.ai.agent.task.request.ask_channel",
+    "translation": "درباره {{.Channel}}: {{.Question}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items",
+    "translation": "موارد اقدام را در این رشته پیدا کن: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items_channel",
+    "translation": "موارد اقدام را در آخرین پیام‌های {{.Channel}} پیدا کن"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items_channel_since",
+    "translation": "موارد اقدام را در {{.Channel}} از {{.Since}} به این سو پیدا کن"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions",
+    "translation": "پرسش‌های بی‌پاسخ را در این رشته پیدا کن: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions_channel",
+    "translation": "پرسش‌های بی‌پاسخ را در آخرین پیام‌های {{.Channel}} پیدا کن"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions_channel_since",
+    "translation": "پرسش‌های بی‌پاسخ را در {{.Channel}} از {{.Since}} به این سو پیدا کن"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_channel",
+    "translation": "آخرین پیام‌های {{.Channel}} را خلاصه کن"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_channel_since",
+    "translation": "پیام‌های {{.Channel}} از {{.Since}} به این سو را خلاصه کن"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_thread",
+    "translation": "این رشته را خلاصه کن: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_transcription",
+    "translation": "متن‌نویسی این مکالمه را خلاصه کن: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.this_conversation",
+    "translation": "این گفتگو"
+  },
+  {
+    "id": "app.ai.agent.turn.empty",
+    "translation": "متأسفم، پاسخی برای این ندارم."
+  },
+  {
+    "id": "app.ai.agent.turn.failed",
+    "translation": "متأسفم، نتوانستم پاسخ دهم: {{.Reason}}"
+  },
+  {
+    "id": "app.ai.agent.turn.interrupted",
+    "translation": "متأسفم، پاسخ من قطع شد. لطفاً لحظاتی دیگر دوباره بپرسید."
+  },
+  {
+    "id": "app.ai.agent.turn.not_allowed",
+    "translation": "{{.Agent}} در اینجا برای شما در دسترس نیست."
+  },
+  {
     "id": "app.ai.call.audience.app_error",
     "translation": "شما نمی‌توانید از این اتصال مدل استفاده کنید."
   },
@@ -6495,6 +6667,38 @@
     "translation": "این مقدار با ویژگی {{.Name}} سازگار نیست."
   },
   {
+    "id": "app.community_rules.accept.app_error",
+    "translation": "ذخیره موافقت شما با قوانین جامعه ممکن نیست."
+  },
+  {
+    "id": "app.community_rules.accept.changed.app_error",
+    "translation": "قوانین جامعه پس از مطالعه شما تغییر کرده‌اند. قبل از موافقت، دوباره آن‌ها را بخوانید."
+  },
+  {
+    "id": "app.community_rules.accept.not_member.app_error",
+    "translation": "فقط اعضای جامعه می‌توانند با قوانین آن موافقت کنند."
+  },
+  {
+    "id": "app.community_rules.accept.off.app_error",
+    "translation": "این جامعه قوانینی برای موافقت ندارد."
+  },
+  {
+    "id": "app.community_rules.delete.app_error",
+    "translation": "حذف قوانین جامعه ممکن نیست."
+  },
+  {
+    "id": "app.community_rules.get.app_error",
+    "translation": "دریافت قوانین جامعه ممکن نیست."
+  },
+  {
+    "id": "app.community_rules.save.app_error",
+    "translation": "ذخیره قوانین جامعه ممکن نیست."
+  },
+  {
+    "id": "app.community_rules.stats.app_error",
+    "translation": "امکان شمارش افرادی که با قوانین انجمن موافقت کرده‌اند وجود ندارد."
+  },
+  {
     "id": "app.compile_csv_chunks.header_error",
     "translation": "نوشتن سرستون‌های CSV ناموفق بود."
   },
@@ -7279,6 +7483,34 @@
   {
     "id": "app.file_info.undelete_for_post_ids.app_error",
     "translation": "بازگرداندن پیوست‌های فایل پست‌ها ناموفق بود."
+  },
+  {
+    "id": "app.focus.bot.app_error",
+    "translation": "ربات‌ها نمی‌توانند از حالت تمرکز استفاده کنند."
+  },
+  {
+    "id": "app.focus.delete.app_error",
+    "translation": "حالت تمرکز حساب کاربری حذف نشد."
+  },
+  {
+    "id": "app.focus.get.app_error",
+    "translation": "دریافت حالت تمرکز شما ممکن نیست."
+  },
+  {
+    "id": "app.focus.mark_read.app_error",
+    "translation": "نمی‌توان موارد از دست رفته را به‌عنوان خوانده‌شده علامت‌گذاری کرد."
+  },
+  {
+    "id": "app.focus.save.app_error",
+    "translation": "شروع حالت تمرکز ممکن نیست."
+  },
+  {
+    "id": "app.focus.statuses_disabled.app_error",
+    "translation": "حالت تمرکز به وضعیت کاربران نیاز دارد که در این سرور غیرفعال است."
+  },
+  {
+    "id": "app.focus.summary.app_error",
+    "translation": "در حالت تمرکز، دریافت خلاصه‌ی موارد از دست‌رفته ناموفق بود."
   },
   {
     "id": "app.get_user_team_scheduled_posts.error",
@@ -12327,6 +12559,90 @@
     "translation": "شناسه کاربر نامعتبر است."
   },
   {
+    "id": "model.agent_activity.expires.app_error",
+    "translation": "فعالیت یک عامل باید بین ۱ ثانیه تا ۲۴ ساعت باشد."
+  },
+  {
+    "id": "model.agent_activity.state.app_error",
+    "translation": "وضعیت یک عامل می‌تواند بیکار، در حال تفکر، در حال کار، در انتظار، مسدود یا آفلاین باشد."
+  },
+  {
+    "id": "model.agent_activity.text.app_error",
+    "translation": "فعالیت عامل باید در یک خط با حداکثر ۲۰۰ نویسه جا شود."
+  },
+  {
+    "id": "model.agent_activity.thread_post_id.app_error",
+    "translation": "شناسهٔ پیام رشتهٔ فعالیت عامل باید معتبر باشد."
+  },
+  {
+    "id": "model.ai_agent.access.app_error",
+    "translation": "مخاطبانی که اجازه گفتگو با عامل را دارند، شامل جوامع، کانال‌ها، نقش‌ها یا افراد نامعتبر هستند یا تعداد آن‌ها بیش از حد مجاز است."
+  },
+  {
+    "id": "model.ai_agent.access_community.app_error",
+    "translation": "عامل یک جامعهٔ کاربری فقط مختص همان جامعه است."
+  },
+  {
+    "id": "model.ai_agent.connection_id.app_error",
+    "translation": "اتصال مدل مورد استفادهٔ عامل را انتخاب کنید."
+  },
+  {
+    "id": "model.ai_agent.external.app_error",
+    "translation": "یک عامل خارجی فاقد مدل، اتصال یا دستور سیستم است: برنامهٔ آن پاسخ می‌دهد."
+  },
+  {
+    "id": "model.ai_agent.max_tool_turns.app_error",
+    "translation": "یک عامل باید بین ۰ (پیش‌فرض) تا ۲۵۰ نوبت ابزار داشته باشد."
+  },
+  {
+    "id": "model.ai_agent.model.app_error",
+    "translation": "نام مدل بیش از حد طولانی است یا شامل بیش از یک خط است."
+  },
+  {
+    "id": "model.ai_agent.needs_attention.app_error",
+    "translation": "یادداشت مربوط به موارد نیازمند توجه بیش از حد طولانی است."
+  },
+  {
+    "id": "model.ai_agent.reasoning.app_error",
+    "translation": "میزان تلاش استدلال باید حداقل، کم، متوسط یا زیاد باشد و بودجه آن باید بین ۰ تا ۱۲۸,۰۰۰ توکن باشد."
+  },
+  {
+    "id": "model.ai_agent.scope.app_error",
+    "translation": "یک عامل متعلق به سرور یا به یک انجمن است."
+  },
+  {
+    "id": "model.ai_agent.system_prompt.app_error",
+    "translation": "دستور سیستمی بیش از حد طولانی است (حداکثر ۳۲۰۰۰ نویسه)."
+  },
+  {
+    "id": "model.ai_agent.times.app_error",
+    "translation": "زمان‌های ایجاد و به‌روزرسانی عامل وجود ندارد."
+  },
+  {
+    "id": "model.ai_agent.tools.app_error",
+    "translation": "نام ابزار نامعتبر است یا تعداد آن بیش از حد مجاز است (حداکثر ۲۵۶)."
+  },
+  {
+    "id": "model.ai_agent.user_id.app_error",
+    "translation": "یک عامل به حساب معتبر نیاز دارد."
+  },
+  {
+    "id": "model.ai_agent_task.channel_id.app_error",
+    "translation": "این وظیفه به یک کانال نیاز دارد."
+  },
+  {
+    "id": "model.ai_agent_task.post_id.app_error",
+    "translation": "این وظیفه به یک پیام نیاز دارد."
+  },
+  {
+    "id": "model.ai_agent_task.question.app_error",
+    "translation": "سؤالی با حداکثر ۲۰۰۰ نویسه بپرسید."
+  },
+  {
+    "id": "model.ai_agent_task.task.app_error",
+    "translation": "این وظیفه برای عامل شناخته‌شده نیست."
+  },
+  {
     "id": "model.ai_connection.api_key.app_error",
     "translation": "کلید API بسیار طولانی است یا شامل خط جدید است."
   },
@@ -12489,6 +12805,10 @@
   {
     "id": "model.bot.is_valid.description.app_error",
     "translation": "توضیحات نامعتبر است."
+  },
+  {
+    "id": "model.bot.is_valid.kind.app_error",
+    "translation": "حساب ربات باید یک ربات یا یک عامل باشد."
   },
   {
     "id": "model.bot.is_valid.update_at.app_error",
@@ -12877,6 +13197,14 @@
   {
     "id": "model.command_response.is_valid.response_type.app_error",
     "translation": "نوع پاسخ نامعتبر است."
+  },
+  {
+    "id": "model.community_rules.empty.app_error",
+    "translation": "پیش از فعال کردن، قوانین را بنویسید."
+  },
+  {
+    "id": "model.community_rules.text.app_error",
+    "translation": "قوانین حداکثر می‌توانند {{.Max}} نویسه باشند."
   },
   {
     "id": "model.compliance.is_valid.create_at.app_error",
@@ -13655,6 +13983,10 @@
     "translation": "BurnOnReadDurationSeconds باید یک عدد مثبت باشد."
   },
   {
+    "id": "model.config.is_valid.service_settings.burn_on_read_maximum_duration_seconds.app_error",
+    "translation": "BurnOnReadMaximumDurationSeconds باید عددی مثبت باشد."
+  },
+  {
     "id": "model.config.is_valid.service_settings.burn_on_read_maximum_time_to_live_seconds.app_error",
     "translation": "BurnOnReadMaximumTimeToLiveSeconds باید یک عدد مثبت باشد."
   },
@@ -13913,6 +14245,22 @@
   {
     "id": "model.file_info.is_valid.user_id.app_error",
     "translation": "مقدار user_id نامعتبر است."
+  },
+  {
+    "id": "model.focus.duration.app_error",
+    "translation": "حالت تمرکز از یک دقیقه تا یک هفته طول می‌کشد."
+  },
+  {
+    "id": "model.focus.duration_or_end.app_error",
+    "translation": "مدت تمرکز را انتخاب کنید: بازه زمانی یا زمان پایان."
+  },
+  {
+    "id": "model.focus.reason.app_error",
+    "translation": "متن دلیل بسیار طولانی است؛ این متن به‌عنوان وضعیت سفارشی شما نمایش داده می‌شود و حداکثر می‌تواند ۱۰۰ نویسه باشد."
+  },
+  {
+    "id": "model.focus.window.app_error",
+    "translation": "محدودهٔ زمانی خلاصه معتبر نیست: باید مربوط به گذشته باشد، به ترتیب باشد و حداکثر هشت روز طول بکشد."
   },
   {
     "id": "model.group.channel_id.app_error",

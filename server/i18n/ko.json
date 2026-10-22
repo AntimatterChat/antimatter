@@ -1768,6 +1768,38 @@
     "translation": "{{.Username}}은 이 채널에 가입되어 있지 않습니다."
   },
   {
+    "id": "api.command_rules.agree_hint",
+    "translation": "`/rules agree`를 입력하여 규칙에 동의하면 게시할 수 있습니다."
+  },
+  {
+    "id": "api.command_rules.agreed",
+    "translation": "감사합니다. {{.Community}}의 규칙에 동의하셨습니다. 이제 게시글을 올릴 수 있습니다."
+  },
+  {
+    "id": "api.command_rules.already_agreed",
+    "translation": "이미 이 규칙에 동의했습니다."
+  },
+  {
+    "id": "api.command_rules.desc",
+    "translation": "커뮤니티 규칙을 읽거나 동의합니다"
+  },
+  {
+    "id": "api.command_rules.hint",
+    "translation": "[동의]"
+  },
+  {
+    "id": "api.command_rules.name",
+    "translation": "rules"
+  },
+  {
+    "id": "api.command_rules.none",
+    "translation": "이 커뮤니티에는 동의해야 할 규칙이 없습니다."
+  },
+  {
+    "id": "api.command_rules.title",
+    "translation": "**{{.Community}} 규칙**"
+  },
+  {
     "id": "api.command_search.desc",
     "translation": "메시지의 문자열 찾기"
   },
@@ -3098,6 +3130,14 @@
     "translation": "@{{.Username}}(이)는 이 팀의 멤버가 아니기 때문에 이 멘션에 대한 알림을 받지 못했습니다."
   },
   {
+    "id": "api.post.community_rules_not_accepted",
+    "translation": "해당 커뮤니티에 게시글을 작성하기 전에 커뮤니티 규칙에 동의해 주세요."
+  },
+  {
+    "id": "api.post.community_rules_not_accepted.reminder",
+    "translation": "이 커뮤니티는 모든 사용자가 게시글을 작성하기 전에 규칙에 동의해야 합니다. `/rules`를 입력하여 규칙을 읽고, `/rules agree`를 입력하여 동의하세요."
+  },
+  {
     "id": "api.post.create_post.burn_on_read.abac_denied.app_error",
     "translation": "이 채널에서 읽은 후 소멸하는 메시지를 보내는 권한이 없습니다."
   },
@@ -3200,6 +3240,10 @@
   {
     "id": "api.post.fill_in_post_props.burn_on_read.config.app_error",
     "translation": "읽은 후 삭제 게시물이 활성화되어 있지 않습니다. 기능 플래그와 서비스 설정을 활성화해 주십시오."
+  },
+  {
+    "id": "api.post.fill_in_post_props.burn_on_read.duration.app_error",
+    "translation": "읽은 후 삭제 기간은 양수 밀리초 값이어야 합니다."
   },
   {
     "id": "api.post.fill_in_post_props.burn_on_read.self_dm.app_error",
@@ -5506,6 +5550,134 @@
     "translation": "브리지 호출에 실패했습니다."
   },
   {
+    "id": "app.agents.status.no_agents",
+    "translation": "사용할 수 있는 에이전트가 없습니다."
+  },
+  {
+    "id": "app.ai.agent.access.app_error",
+    "translation": "여기서는 이 에이전트와 대화할 수 없습니다."
+  },
+  {
+    "id": "app.ai.agent.activity.get.app_error",
+    "translation": "에이전트 활동 내역을 불러올 수 없습니다."
+  },
+  {
+    "id": "app.ai.agent.activity.save.app_error",
+    "translation": "에이전트 활동 정보를 저장할 수 없습니다."
+  },
+  {
+    "id": "app.ai.agent.connection.app_error",
+    "translation": "여기의 에이전트는 이 모델 연결을 사용할 수 없습니다. 서버 전체 에이전트는 서버 전체 연결이 필요하며, 커뮤니티 에이전트는 해당 커뮤니티 자체 연결 또는 커뮤니티와 공유된 연결이 필요합니다."
+  },
+  {
+    "id": "app.ai.agent.conversations.app_error",
+    "translation": "에이전트와의 대화를 불러올 수 없습니다."
+  },
+  {
+    "id": "app.ai.agent.get.app_error",
+    "translation": "에이전트를 불러올 수 없습니다."
+  },
+  {
+    "id": "app.ai.agent.manage_permission.app_error",
+    "translation": "여기서는 에이전트를 관리할 수 없습니다."
+  },
+  {
+    "id": "app.ai.agent.not_found.app_error",
+    "translation": "이 에이전트가 존재하지 않거나 삭제되었습니다."
+  },
+  {
+    "id": "app.ai.agent.references.app_error",
+    "translation": "에이전트가 존재하지 않는 커뮤니티, 채널 또는 사람을 언급하거나 다른 커뮤니티의 채널을 언급했습니다."
+  },
+  {
+    "id": "app.ai.agent.save.app_error",
+    "translation": "에이전트를 저장할 수 없습니다."
+  },
+  {
+    "id": "app.ai.agent.task.agent_disabled.app_error",
+    "translation": "이 에이전트는 비활성화되었습니다."
+  },
+  {
+    "id": "app.ai.agent.task.channel.app_error",
+    "translation": "채널이 없거나 읽을 수 없습니다."
+  },
+  {
+    "id": "app.ai.agent.task.external.app_error",
+    "translation": "외부 에이전트는 이 채널에서 작업을 수행하지 않습니다. 대신 메시지를 보내세요."
+  },
+  {
+    "id": "app.ai.agent.task.not_transcription.app_error",
+    "translation": "이 메시지는 통화 녹취록이 아닙니다."
+  },
+  {
+    "id": "app.ai.agent.task.post.app_error",
+    "translation": "메시지가 없거나 읽을 수 없습니다."
+  },
+  {
+    "id": "app.ai.agent.task.request.ask_channel",
+    "translation": "{{.Channel}} 관련 질문: {{.Question}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items",
+    "translation": "이 글타래의 할 일 찾기: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items_channel",
+    "translation": "{{.Channel}}의 최신 메시지 중 할 일을 찾아주세요"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items_channel_since",
+    "translation": "{{.Since}} 이후 {{.Channel}}의 할 일 찾기"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions",
+    "translation": "이 글타래의 미해결 질문을 찾아주세요: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions_channel",
+    "translation": "{{.Channel}}의 최신 메시지 중 미해결 질문 찾기"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions_channel_since",
+    "translation": "{{.Since}} 이후 {{.Channel}}의 미해결 질문 찾기"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_channel",
+    "translation": "{{.Channel}}의 최신 메시지 요약"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_channel_since",
+    "translation": "{{.Since}} 이후 {{.Channel}}의 메시지 요약"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_thread",
+    "translation": "이 글타래 요약: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_transcription",
+    "translation": "이 통화의 녹취록 요약: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.this_conversation",
+    "translation": "이 대화"
+  },
+  {
+    "id": "app.ai.agent.turn.empty",
+    "translation": "죄송합니다. 이에 대한 답변이 없습니다."
+  },
+  {
+    "id": "app.ai.agent.turn.failed",
+    "translation": "죄송합니다. 답변할 수 없습니다: {{.Reason}}"
+  },
+  {
+    "id": "app.ai.agent.turn.interrupted",
+    "translation": "죄송합니다. 답변이 중단되었습니다. 잠시 후 다시 시도해 주세요."
+  },
+  {
+    "id": "app.ai.agent.turn.not_allowed",
+    "translation": "{{.Agent}}을(를) 여기서는 사용할 수 없습니다."
+  },
+  {
     "id": "app.ai.call.audience.app_error",
     "translation": "이 모델 연결을 사용할 수 없습니다."
   },
@@ -6426,6 +6598,38 @@
     "translation": "이 값은 {{.Name}} 속성에 적합하지 않습니다."
   },
   {
+    "id": "app.community_rules.accept.app_error",
+    "translation": "커뮤니티 규칙 수락 내용을 저장할 수 없습니다."
+  },
+  {
+    "id": "app.community_rules.accept.changed.app_error",
+    "translation": "규칙을 확인한 이후 커뮤니티 규칙이 변경되었습니다. 동의하기 전에 다시 읽어 주세요."
+  },
+  {
+    "id": "app.community_rules.accept.not_member.app_error",
+    "translation": "커뮤니티 멤버만 규칙에 동의할 수 있습니다."
+  },
+  {
+    "id": "app.community_rules.accept.off.app_error",
+    "translation": "동의할 커뮤니티 규칙이 없습니다."
+  },
+  {
+    "id": "app.community_rules.delete.app_error",
+    "translation": "커뮤니티 규칙을 삭제할 수 없습니다."
+  },
+  {
+    "id": "app.community_rules.get.app_error",
+    "translation": "커뮤니티 규칙을 가져올 수 없습니다."
+  },
+  {
+    "id": "app.community_rules.save.app_error",
+    "translation": "커뮤니티 규칙을 저장할 수 없습니다."
+  },
+  {
+    "id": "app.community_rules.stats.app_error",
+    "translation": "커뮤니티 규칙에 동의한 사용자를 집계할 수 없습니다."
+  },
+  {
     "id": "app.compile_csv_chunks.header_error",
     "translation": "CSV 헤더를 작성하지 못했습니다."
   },
@@ -7204,6 +7408,34 @@
   {
     "id": "app.file_info.undelete_for_post_ids.app_error",
     "translation": "게시물 첨부 파일을 복원하지 못했습니다."
+  },
+  {
+    "id": "app.focus.bot.app_error",
+    "translation": "봇은 포커스 모드를 사용할 수 없습니다."
+  },
+  {
+    "id": "app.focus.delete.app_error",
+    "translation": "계정의 포커스 모드를 삭제할 수 없습니다."
+  },
+  {
+    "id": "app.focus.get.app_error",
+    "translation": "포커스 모드 정보를 가져올 수 없습니다."
+  },
+  {
+    "id": "app.focus.mark_read.app_error",
+    "translation": "놓친 메시지를 읽음 처리할 수 없습니다."
+  },
+  {
+    "id": "app.focus.save.app_error",
+    "translation": "포커스 모드를 시작할 수 없습니다."
+  },
+  {
+    "id": "app.focus.statuses_disabled.app_error",
+    "translation": "포커스 모드를 사용하려면 사용자 상태 기능이 켜져 있어야 합니다. 이 서버에서는 사용자 상태 기능이 꺼져 있습니다."
+  },
+  {
+    "id": "app.focus.summary.app_error",
+    "translation": "포커스 모드 동안 놓친 내용을 가져올 수 없습니다."
   },
   {
     "id": "app.get_user_team_scheduled_posts.error",
@@ -12134,6 +12366,90 @@
     "translation": "잘못된 사용자 ID"
   },
   {
+    "id": "model.agent_activity.expires.app_error",
+    "translation": "에이전트 활동 기간은 1초에서 24시간 사이여야 합니다."
+  },
+  {
+    "id": "model.agent_activity.state.app_error",
+    "translation": "에이전트 상태는 대기, 생각 중, 작업 중, 대기 중, 차단됨 또는 오프라인 중 하나여야 합니다."
+  },
+  {
+    "id": "model.agent_activity.text.app_error",
+    "translation": "에이전트 활동 설명은 최대 200자 이내의 한 줄이어야 합니다."
+  },
+  {
+    "id": "model.agent_activity.thread_post_id.app_error",
+    "translation": "에이전트 활동의 글타래는 메시지 ID여야 합니다."
+  },
+  {
+    "id": "model.ai_agent.access.app_error",
+    "translation": "에이전트와 대화할 수 있는 대상을 지정할 때 유효하지 않은 커뮤니티, 채널, 역할 또는 사람을 포함했거나 너무 많이 지정했습니다."
+  },
+  {
+    "id": "model.ai_agent.access_community.app_error",
+    "translation": "커뮤니티 에이전트는 해당 커뮤니티 내에서만 사용할 수 있습니다."
+  },
+  {
+    "id": "model.ai_agent.connection_id.app_error",
+    "translation": "에이전트가 사용할 모델 연결을 선택하세요."
+  },
+  {
+    "id": "model.ai_agent.external.app_error",
+    "translation": "외부 에이전트는 모델, 연결 또는 시스템 프롬프트가 없으며, 프로그램이 응답합니다."
+  },
+  {
+    "id": "model.ai_agent.max_tool_turns.app_error",
+    "translation": "에이전트의 도구 호출 횟수는 0(기본값)에서 250 사이여야 합니다."
+  },
+  {
+    "id": "model.ai_agent.model.app_error",
+    "translation": "모델 이름이 너무 길거나 여러 줄로 되어 있습니다."
+  },
+  {
+    "id": "model.ai_agent.needs_attention.app_error",
+    "translation": "주의가 필요한 사항에 대한 메모가 너무 깁니다."
+  },
+  {
+    "id": "model.ai_agent.reasoning.app_error",
+    "translation": "추론 노력도는 최소, 낮음, 중간 또는 높음이어야 하며, 토큰 예산은 0에서 128,000 사이여야 합니다."
+  },
+  {
+    "id": "model.ai_agent.scope.app_error",
+    "translation": "에이전트는 서버 전체 또는 하나의 커뮤니티에 속해야 합니다."
+  },
+  {
+    "id": "model.ai_agent.system_prompt.app_error",
+    "translation": "시스템 프롬프트가 너무 깁니다(최대 32,000자)."
+  },
+  {
+    "id": "model.ai_agent.times.app_error",
+    "translation": "에이전트의 생성 및 업데이트 시간이 누락되었습니다."
+  },
+  {
+    "id": "model.ai_agent.tools.app_error",
+    "translation": "도구 이름이 유효하지 않거나 너무 많습니다(최대 256개)."
+  },
+  {
+    "id": "model.ai_agent.user_id.app_error",
+    "translation": "에이전트는 유효한 계정에 연결되어야 합니다."
+  },
+  {
+    "id": "model.ai_agent_task.channel_id.app_error",
+    "translation": "이 작업에는 채널이 필요합니다."
+  },
+  {
+    "id": "model.ai_agent_task.post_id.app_error",
+    "translation": "이 작업에는 메시지가 필요합니다."
+  },
+  {
+    "id": "model.ai_agent_task.question.app_error",
+    "translation": "질문은 최대 2,000자까지 입력할 수 있습니다."
+  },
+  {
+    "id": "model.ai_agent_task.task.app_error",
+    "translation": "이 작업은 에이전트가 인식하지 못하는 작업입니다."
+  },
+  {
     "id": "model.ai_connection.api_key.app_error",
     "translation": "API 키가 너무 길거나 줄바꿈을 포함하고 있습니다."
   },
@@ -12296,6 +12612,10 @@
   {
     "id": "model.bot.is_valid.description.app_error",
     "translation": "잘못된 설명"
+  },
+  {
+    "id": "model.bot.is_valid.kind.app_error",
+    "translation": "봇 계정은 봇 또는 에이전트여야 합니다."
   },
   {
     "id": "model.bot.is_valid.update_at.app_error",
@@ -12684,6 +13004,14 @@
   {
     "id": "model.command_response.is_valid.response_type.app_error",
     "translation": "잘못된 응답 유형입니다."
+  },
+  {
+    "id": "model.community_rules.empty.app_error",
+    "translation": "규칙을 작성한 후 활성화하세요."
+  },
+  {
+    "id": "model.community_rules.text.app_error",
+    "translation": "규칙은 최대 {{.Max}}자까지 입력할 수 있습니다."
   },
   {
     "id": "model.compliance.is_valid.create_at.app_error",
@@ -13462,6 +13790,10 @@
     "translation": "BurnOnReadDurationSeconds 값은 양수여야 합니다."
   },
   {
+    "id": "model.config.is_valid.service_settings.burn_on_read_maximum_duration_seconds.app_error",
+    "translation": "BurnOnReadMaximumDurationSeconds는 양수여야 합니다."
+  },
+  {
     "id": "model.config.is_valid.service_settings.burn_on_read_maximum_time_to_live_seconds.app_error",
     "translation": "BurnOnReadMaximumTimeToLiveSeconds 값은 양수여야 합니다."
   },
@@ -13720,6 +14052,22 @@
   {
     "id": "model.file_info.is_valid.user_id.app_error",
     "translation": "read timeout 항목의 허용되지 않는 값입니다."
+  },
+  {
+    "id": "model.focus.duration.app_error",
+    "translation": "집중 모드 기간은 1분부터 1주까지 설정할 수 있습니다."
+  },
+  {
+    "id": "model.focus.duration_or_end.app_error",
+    "translation": "집중 시간 설정: 기간 또는 종료 시간을 선택하세요."
+  },
+  {
+    "id": "model.focus.reason.app_error",
+    "translation": "사유가 너무 깁니다. 사용자 지정 상태는 최대 100자까지 입력할 수 있습니다."
+  },
+  {
+    "id": "model.focus.window.app_error",
+    "translation": "요약의 기간이 올바르지 않습니다: 과거의 기간이어야 하며, 순서대로 정렬되어 있고 최대 8일 이내여야 합니다."
   },
   {
     "id": "model.group.channel_id.app_error",

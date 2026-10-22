@@ -1720,6 +1720,38 @@
     "translation": "{{.Username}} bukan ahli saluran ini."
   },
   {
+    "id": "api.command_rules.agree_hint",
+    "translation": "Taip `/rules agree` untuk bersetuju, kemudian anda boleh hantar mesej."
+  },
+  {
+    "id": "api.command_rules.agreed",
+    "translation": "Terima kasih: anda telah bersetuju dengan peraturan {{.Community}}. Anda kini boleh menghantar hantaran di sana."
+  },
+  {
+    "id": "api.command_rules.already_agreed",
+    "translation": "Anda telah bersetuju dengan peraturan ini."
+  },
+  {
+    "id": "api.command_rules.desc",
+    "translation": "Baca peraturan komuniti ini, atau setujui peraturan tersebut"
+  },
+  {
+    "id": "api.command_rules.hint",
+    "translation": "[setuju]"
+  },
+  {
+    "id": "api.command_rules.name",
+    "translation": "peraturan"
+  },
+  {
+    "id": "api.command_rules.none",
+    "translation": "Komuniti ini tiada peraturan untuk dipersetujui."
+  },
+  {
+    "id": "api.command_rules.title",
+    "translation": "**Peraturan {{.Community}}**"
+  },
+  {
     "id": "api.command_search.desc",
     "translation": "Cari teks dalam mesej"
   },
@@ -2932,6 +2964,14 @@
     "translation": "@{{.Username}} tidak dimaklumkan oleh sebutan ini kerana mereka bukan ahli pasukan ini."
   },
   {
+    "id": "api.post.community_rules_not_accepted",
+    "translation": "Setuju dengan peraturan komuniti ini sebelum anda menyiarkan di dalamnya."
+  },
+  {
+    "id": "api.post.community_rules_not_accepted.reminder",
+    "translation": "Komuniti ini meminta semua orang bersetuju dengan peraturannya sebelum membuat hantaran. Taip `/rules` untuk membacanya, kemudian `/rules agree` untuk bersetuju."
+  },
+  {
     "id": "api.post.create_post.burn_on_read.abac_denied.app_error",
     "translation": "Anda tidak mempunyai kebenaran untuk menghantar mesej bakar-selepas-dibaca dalam saluran ini."
   },
@@ -3034,6 +3074,10 @@
   {
     "id": "api.post.fill_in_post_props.burn_on_read.config.app_error",
     "translation": "Mesej bakar-selepas-dibaca tidak didayakan. Sila dayakan penanda ciri dan tetapan perkhidmatan."
+  },
+  {
+    "id": "api.post.fill_in_post_props.burn_on_read.duration.app_error",
+    "translation": "Tempoh hangus-baca mestilah bilangan milisaat yang positif."
   },
   {
     "id": "api.post.fill_in_post_props.burn_on_read.self_dm.app_error",
@@ -5200,6 +5244,134 @@
     "translation": "Panggilan jambatan gagal."
   },
   {
+    "id": "app.agents.status.no_agents",
+    "translation": "Tiada ejen tersedia untuk anda."
+  },
+  {
+    "id": "app.ai.agent.access.app_error",
+    "translation": "Anda tidak boleh bercakap dengan ejen ini di sini."
+  },
+  {
+    "id": "app.ai.agent.activity.get.app_error",
+    "translation": "Aktiviti ejen tidak dapat dibaca."
+  },
+  {
+    "id": "app.ai.agent.activity.save.app_error",
+    "translation": "Aktiviti ejen tidak dapat disimpan."
+  },
+  {
+    "id": "app.ai.agent.connection.app_error",
+    "translation": "Ejen di sini tidak boleh menggunakan sambungan model ini: ejen peringkat pelayan memerlukan sambungan peringkat pelayan, dan ejen komuniti memerlukan sambungan miliknya sendiri atau yang dikongsi dengannya."
+  },
+  {
+    "id": "app.ai.agent.conversations.app_error",
+    "translation": "Gagal memuatkan perbualan anda dengan ejen."
+  },
+  {
+    "id": "app.ai.agent.get.app_error",
+    "translation": "Ejen tidak dapat dibaca."
+  },
+  {
+    "id": "app.ai.agent.manage_permission.app_error",
+    "translation": "Anda tidak boleh menguruskan ejen di sini."
+  },
+  {
+    "id": "app.ai.agent.not_found.app_error",
+    "translation": "Ejen ini tidak wujud, atau telah dipadamkan."
+  },
+  {
+    "id": "app.ai.agent.references.app_error",
+    "translation": "Ejen menyebut komuniti, saluran atau orang yang tidak wujud, atau saluran dalam komuniti lain."
+  },
+  {
+    "id": "app.ai.agent.save.app_error",
+    "translation": "Ejen tidak dapat disimpan."
+  },
+  {
+    "id": "app.ai.agent.task.agent_disabled.app_error",
+    "translation": "Ejen ini telah dimatikan."
+  },
+  {
+    "id": "app.ai.agent.task.channel.app_error",
+    "translation": "Saluran tidak wujud, atau anda tidak boleh membacanya."
+  },
+  {
+    "id": "app.ai.agent.task.external.app_error",
+    "translation": "Ejen luaran tidak menerima tugasan di sini: hantarkan mesej kepadanya."
+  },
+  {
+    "id": "app.ai.agent.task.not_transcription.app_error",
+    "translation": "Mesej ini bukan transkripsi panggilan."
+  },
+  {
+    "id": "app.ai.agent.task.post.app_error",
+    "translation": "Mesej itu tidak wujud, atau anda tidak boleh membacanya."
+  },
+  {
+    "id": "app.ai.agent.task.request.ask_channel",
+    "translation": "Tentang {{.Channel}}: {{.Question}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items",
+    "translation": "Cari item tindakan dalam bebenang ini: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items_channel",
+    "translation": "Cari item tindakan dalam mesej terkini {{.Channel}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items_channel_since",
+    "translation": "Cari item tindakan dalam {{.Channel}} sejak {{.Since}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions",
+    "translation": "Cari soalan terbuka dalam bebenang ini: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions_channel",
+    "translation": "Cari soalan terbuka dalam mesej terkini {{.Channel}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions_channel_since",
+    "translation": "Cari soalan terbuka dalam {{.Channel}} sejak {{.Since}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_channel",
+    "translation": "Ringkaskan mesej terkini dalam {{.Channel}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_channel_since",
+    "translation": "Ringkaskan mesej dalam {{.Channel}} sejak {{.Since}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_thread",
+    "translation": "Ringkaskan benenang ini: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_transcription",
+    "translation": "Ringkaskan transkripsi panggilan ini: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.this_conversation",
+    "translation": "perbualan ini"
+  },
+  {
+    "id": "app.ai.agent.turn.empty",
+    "translation": "Maaf, saya tiada jawapan untuk itu."
+  },
+  {
+    "id": "app.ai.agent.turn.failed",
+    "translation": "Maaf, saya tidak dapat menjawab: {{.Reason}}"
+  },
+  {
+    "id": "app.ai.agent.turn.interrupted",
+    "translation": "Maaf, jawapan saya telah terganggu. Sila tanya saya lagi sebentar lagi."
+  },
+  {
+    "id": "app.ai.agent.turn.not_allowed",
+    "translation": "{{.Agent}} tidak tersedia untuk anda di sini."
+  },
+  {
     "id": "app.ai.call.audience.app_error",
     "translation": "Anda tidak boleh menggunakan sambungan model ini."
   },
@@ -6104,6 +6276,38 @@
     "translation": "Nilai ini tidak sesuai untuk atribut {{.Name}}."
   },
   {
+    "id": "app.community_rules.accept.app_error",
+    "translation": "Tidak dapat menyimpan persetujuan anda terhadap peraturan komuniti."
+  },
+  {
+    "id": "app.community_rules.accept.changed.app_error",
+    "translation": "Peraturan komuniti telah berubah sejak anda membacanya. Sila baca semula sebelum anda bersetuju."
+  },
+  {
+    "id": "app.community_rules.accept.not_member.app_error",
+    "translation": "Hanya ahli komuniti boleh bersetuju dengan peraturannya."
+  },
+  {
+    "id": "app.community_rules.accept.off.app_error",
+    "translation": "Komuniti ini tiada peraturan untuk dipersetujui."
+  },
+  {
+    "id": "app.community_rules.delete.app_error",
+    "translation": "Tidak dapat memadamkan peraturan komuniti."
+  },
+  {
+    "id": "app.community_rules.get.app_error",
+    "translation": "Tidak dapat mendapatkan peraturan komuniti."
+  },
+  {
+    "id": "app.community_rules.save.app_error",
+    "translation": "Tidak dapat menyimpan peraturan komuniti."
+  },
+  {
+    "id": "app.community_rules.stats.app_error",
+    "translation": "Tidak dapat mengira siapa yang bersetuju dengan peraturan komuniti."
+  },
+  {
     "id": "app.compile_csv_chunks.header_error",
     "translation": "Gagal menulis pengepala CSV."
   },
@@ -6866,6 +7070,34 @@
   {
     "id": "app.file_info.undelete_for_post_ids.app_error",
     "translation": "Gagal memulihkan lampiran fail hantaran."
+  },
+  {
+    "id": "app.focus.bot.app_error",
+    "translation": "Bot tidak boleh menggunakan mod fokus."
+  },
+  {
+    "id": "app.focus.delete.app_error",
+    "translation": "Tidak dapat memadamkan mod fokus akaun tersebut."
+  },
+  {
+    "id": "app.focus.get.app_error",
+    "translation": "Tidak dapat mendapatkan mod fokus anda."
+  },
+  {
+    "id": "app.focus.mark_read.app_error",
+    "translation": "Tidak dapat menandakan apa yang anda terlepas sebagai telah dibaca."
+  },
+  {
+    "id": "app.focus.save.app_error",
+    "translation": "Tidak dapat memulakan mod fokus."
+  },
+  {
+    "id": "app.focus.statuses_disabled.app_error",
+    "translation": "Mod fokus memerlukan status pengguna, yang dimatikan pada pelayan ini."
+  },
+  {
+    "id": "app.focus.summary.app_error",
+    "translation": "Tidak dapat mendapatkan apa yang anda terlepas semasa fokus."
   },
   {
     "id": "app.get_user_team_scheduled_posts.error",
@@ -11604,6 +11836,90 @@
     "translation": "ID pengguna tidak sah."
   },
   {
+    "id": "model.agent_activity.expires.app_error",
+    "translation": "Aktiviti ejen berlangsung antara 1 saat dan 24 jam."
+  },
+  {
+    "id": "model.agent_activity.state.app_error",
+    "translation": "Status ejen ialah idle, berfikir, bekerja, menunggu, disekat atau luar talian."
+  },
+  {
+    "id": "model.agent_activity.text.app_error",
+    "translation": "Aktiviti ejen mestilah dalam satu baris dengan maksimum 200 aksara."
+  },
+  {
+    "id": "model.agent_activity.thread_post_id.app_error",
+    "translation": "Bebenang aktiviti ejen mestilah ID mesej."
+  },
+  {
+    "id": "model.ai_agent.access.app_error",
+    "translation": "Kebenaran akses ejen merujuk kepada komuniti, saluran, peranan atau orang yang tidak sah, atau terlalu ramai."
+  },
+  {
+    "id": "model.ai_agent.access_community.app_error",
+    "translation": "Ejen komuniti hanya untuk komuniti itu sendiri."
+  },
+  {
+    "id": "model.ai_agent.connection_id.app_error",
+    "translation": "Pilih sambungan model yang digunakan oleh ejen."
+  },
+  {
+    "id": "model.ai_agent.external.app_error",
+    "translation": "Ejen luaran tidak mempunyai model, sambungan atau prompt sistem: programnya menjawab."
+  },
+  {
+    "id": "model.ai_agent.max_tool_turns.app_error",
+    "translation": "Ejen mengambil antara 0 (lalai) dan 250 giliran alat."
+  },
+  {
+    "id": "model.ai_agent.model.app_error",
+    "translation": "Nama model terlalu panjang, atau mempunyai lebih daripada satu baris."
+  },
+  {
+    "id": "model.ai_agent.needs_attention.app_error",
+    "translation": "Nota mengenai perkara yang memerlukan perhatian terlalu panjang."
+  },
+  {
+    "id": "model.ai_agent.reasoning.app_error",
+    "translation": "Usaha penaakulan ialah minimum, rendah, sederhana atau tinggi, dan anggarannya antara 0 dan 128,000 token."
+  },
+  {
+    "id": "model.ai_agent.scope.app_error",
+    "translation": "Ejen milik pelayan atau milik satu komuniti."
+  },
+  {
+    "id": "model.ai_agent.system_prompt.app_error",
+    "translation": "Prompt sistem terlalu panjang (maksimum 32,000 aksara)."
+  },
+  {
+    "id": "model.ai_agent.times.app_error",
+    "translation": "Masa penciptaan dan kemas kini ejen tiada."
+  },
+  {
+    "id": "model.ai_agent.tools.app_error",
+    "translation": "Nama alat tidak sah, atau terlalu banyak (maksimum 256)."
+  },
+  {
+    "id": "model.ai_agent.user_id.app_error",
+    "translation": "Ejen memerlukan akaun yang sah."
+  },
+  {
+    "id": "model.ai_agent_task.channel_id.app_error",
+    "translation": "Tugasan ini memerlukan saluran."
+  },
+  {
+    "id": "model.ai_agent_task.post_id.app_error",
+    "translation": "Tugasan ini memerlukan mesej."
+  },
+  {
+    "id": "model.ai_agent_task.question.app_error",
+    "translation": "Tanyakan soalan sehingga 2,000 aksara."
+  },
+  {
+    "id": "model.ai_agent_task.task.app_error",
+    "translation": "Tugasan ini bukan tugasan yang diketahui oleh ejen."
+  },
+  {
     "id": "model.ai_connection.api_key.app_error",
     "translation": "Kunci API terlalu panjang atau mengandungi baris baru."
   },
@@ -11766,6 +12082,10 @@
   {
     "id": "model.bot.is_valid.description.app_error",
     "translation": "Penerangan tidak sah."
+  },
+  {
+    "id": "model.bot.is_valid.kind.app_error",
+    "translation": "Akaun bot ialah bot atau ejen."
   },
   {
     "id": "model.bot.is_valid.update_at.app_error",
@@ -12154,6 +12474,14 @@
   {
     "id": "model.command_response.is_valid.response_type.app_error",
     "translation": "Jenis respons tidak sah."
+  },
+  {
+    "id": "model.community_rules.empty.app_error",
+    "translation": "Tulis peraturan sebelum mengaktifkannya."
+  },
+  {
+    "id": "model.community_rules.text.app_error",
+    "translation": "Peraturan mestilah tidak melebihi {{.Max}} aksara."
   },
   {
     "id": "model.compliance.is_valid.create_at.app_error",
@@ -12932,6 +13260,10 @@
     "translation": "BurnOnReadDurationSeconds mesti menjadi nombor positif."
   },
   {
+    "id": "model.config.is_valid.service_settings.burn_on_read_maximum_duration_seconds.app_error",
+    "translation": "BurnOnReadMaximumDurationSeconds mestilah nombor positif."
+  },
+  {
     "id": "model.config.is_valid.service_settings.burn_on_read_maximum_time_to_live_seconds.app_error",
     "translation": "BurnOnReadMaximumTimeToLiveSeconds mesti menjadi nombor positif."
   },
@@ -13190,6 +13522,22 @@
   {
     "id": "model.file_info.is_valid.user_id.app_error",
     "translation": "Nilai untuk user_id tidak sah."
+  },
+  {
+    "id": "model.focus.duration.app_error",
+    "translation": "Mod Fokus berlangsung dari satu minit hingga satu minggu."
+  },
+  {
+    "id": "model.focus.duration_or_end.app_error",
+    "translation": "Pilih tempoh fokus: tempoh masa atau masa tamat."
+  },
+  {
+    "id": "model.focus.reason.app_error",
+    "translation": "Sebab terlalu panjang: ia menjadi status suai anda, dengan maksimum 100 aksara."
+  },
+  {
+    "id": "model.focus.window.app_error",
+    "translation": "Julat masa ringkasan tidak sah: ia mesti dalam masa lalu, mengikut turutan, dan tidak melebihi lapan hari."
   },
   {
     "id": "model.group.channel_id.app_error",

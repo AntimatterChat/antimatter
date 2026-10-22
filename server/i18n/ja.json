@@ -1768,6 +1768,38 @@
     "translation": "{{.Username}} はこのチャンネルのメンバーではありません。"
   },
   {
+    "id": "api.command_rules.agree_hint",
+    "translation": "`/rules agree` と入力して同意すると、投稿できるようになります。"
+  },
+  {
+    "id": "api.command_rules.agreed",
+    "translation": "ありがとうございます。{{.Community}}のルールに同意しました。これから投稿できます。"
+  },
+  {
+    "id": "api.command_rules.already_agreed",
+    "translation": "このルールにはすでに同意済みです。"
+  },
+  {
+    "id": "api.command_rules.desc",
+    "translation": "このコミュニティのルールを表示、または同意します"
+  },
+  {
+    "id": "api.command_rules.hint",
+    "translation": "[agree]"
+  },
+  {
+    "id": "api.command_rules.name",
+    "translation": "rules"
+  },
+  {
+    "id": "api.command_rules.none",
+    "translation": "このコミュニティには同意すべきルールはありません。"
+  },
+  {
+    "id": "api.command_rules.title",
+    "translation": "**{{.Community}}のルール**"
+  },
+  {
     "id": "api.command_search.desc",
     "translation": "メッセージ内のテキストを検索する"
   },
@@ -3098,6 +3130,14 @@
     "translation": "@{{.Username}} はこのチームのメンバーではないため、このメンションによる通知は行われませんでした。"
   },
   {
+    "id": "api.post.community_rules_not_accepted",
+    "translation": "このコミュニティに投稿する前に、ルールに同意してください。"
+  },
+  {
+    "id": "api.post.community_rules_not_accepted.reminder",
+    "translation": "このコミュニティでは、投稿前にルールへの同意が必要です。`/rules` と入力してルールを確認し、`/rules agree` と入力して同意してください。"
+  },
+  {
     "id": "api.post.create_post.burn_on_read.abac_denied.app_error",
     "translation": "このチャンネルでバーンオンリードメッセージを送信する権限がありません。"
   },
@@ -3200,6 +3240,10 @@
   {
     "id": "api.post.fill_in_post_props.burn_on_read.config.app_error",
     "translation": "閲覧後消去の投稿は有効になっていません。フィーチャーフラグとサービス設定を有効にしてください。"
+  },
+  {
+    "id": "api.post.fill_in_post_props.burn_on_read.duration.app_error",
+    "translation": "閲覧後削除の期間は、正のミリ秒数で指定してください。"
   },
   {
     "id": "api.post.fill_in_post_props.burn_on_read.self_dm.app_error",
@@ -5518,6 +5562,134 @@
     "translation": "ブリッジ呼び出しに失敗しました。"
   },
   {
+    "id": "app.agents.status.no_agents",
+    "translation": "利用可能なエージェントはありません。"
+  },
+  {
+    "id": "app.ai.agent.access.app_error",
+    "translation": "このエージェントにはここで話しかけられません。"
+  },
+  {
+    "id": "app.ai.agent.activity.get.app_error",
+    "translation": "エージェントのアクティビティを読み込めませんでした。"
+  },
+  {
+    "id": "app.ai.agent.activity.save.app_error",
+    "translation": "エージェントのアクティビティを保存できませんでした。"
+  },
+  {
+    "id": "app.ai.agent.connection.app_error",
+    "translation": "このエージェントはモデル接続を使用できません。サーバー全体のエージェントにはサーバー全体の接続が必要であり、コミュニティのエージェントにはそのコミュニティ固有の接続、またはコミュニティと共有されている接続が必要です。"
+  },
+  {
+    "id": "app.ai.agent.conversations.app_error",
+    "translation": "エージェントとの会話を読み込めませんでした。"
+  },
+  {
+    "id": "app.ai.agent.get.app_error",
+    "translation": "エージェントを読み込めませんでした。"
+  },
+  {
+    "id": "app.ai.agent.manage_permission.app_error",
+    "translation": "ここではエージェントを管理できません。"
+  },
+  {
+    "id": "app.ai.agent.not_found.app_error",
+    "translation": "このエージェントは存在しないか、削除されました。"
+  },
+  {
+    "id": "app.ai.agent.references.app_error",
+    "translation": "エージェントが、存在しないコミュニティ、チャンネル、または人物、あるいは他のコミュニティのチャンネルを参照しています。"
+  },
+  {
+    "id": "app.ai.agent.save.app_error",
+    "translation": "エージェントを保存できませんでした。"
+  },
+  {
+    "id": "app.ai.agent.task.agent_disabled.app_error",
+    "translation": "このエージェントは無効になっています。"
+  },
+  {
+    "id": "app.ai.agent.task.channel.app_error",
+    "translation": "チャンネルが存在しないか、閲覧できません。"
+  },
+  {
+    "id": "app.ai.agent.task.external.app_error",
+    "translation": "外部エージェントはここでタスクを受け付けません。代わりにメッセージを送信してください。"
+  },
+  {
+    "id": "app.ai.agent.task.not_transcription.app_error",
+    "translation": "このメッセージは通話の文字起こしではありません。"
+  },
+  {
+    "id": "app.ai.agent.task.post.app_error",
+    "translation": "メッセージが存在しないか、閲覧できません。"
+  },
+  {
+    "id": "app.ai.agent.task.request.ask_channel",
+    "translation": "{{.Channel}} について: {{.Question}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items",
+    "translation": "このスレッド内のアクションアイテムを検索: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items_channel",
+    "translation": "{{.Channel}} の最新メッセージ内のアクションアイテムを検索"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items_channel_since",
+    "translation": "{{.Since}} 以降の {{.Channel}} 内のアクションアイテムを検索"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions",
+    "translation": "このスレッド内の未解決の質問を検索: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions_channel",
+    "translation": "{{.Channel}} の最新メッセージ内の未解決の質問を検索"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions_channel_since",
+    "translation": "{{.Since}} 以降の {{.Channel}} 内の未解決の質問を検索"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_channel",
+    "translation": "{{.Channel}} の最新メッセージを要約"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_channel_since",
+    "translation": "{{.Since}} 以降の {{.Channel}} のメッセージを要約"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_thread",
+    "translation": "このスレッドを要約: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_transcription",
+    "translation": "この通話の文字起こしを要約: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.this_conversation",
+    "translation": "この会話"
+  },
+  {
+    "id": "app.ai.agent.turn.empty",
+    "translation": "申し訳ありませんが、回答が見つかりませんでした。"
+  },
+  {
+    "id": "app.ai.agent.turn.failed",
+    "translation": "申し訳ありませんが、回答できませんでした: {{.Reason}}"
+  },
+  {
+    "id": "app.ai.agent.turn.interrupted",
+    "translation": "申し訳ありませんが、回答が中断されました。しばらくしてからもう一度お試しください。"
+  },
+  {
+    "id": "app.ai.agent.turn.not_allowed",
+    "translation": "{{.Agent}} はここで利用できません。"
+  },
+  {
     "id": "app.ai.call.audience.app_error",
     "translation": "このモデル接続を使用できません。"
   },
@@ -6438,6 +6610,38 @@
     "translation": "この値は属性 {{.Name}} に適合しません。"
   },
   {
+    "id": "app.community_rules.accept.app_error",
+    "translation": "コミュニティのルールへの同意を保存できませんでした。"
+  },
+  {
+    "id": "app.community_rules.accept.changed.app_error",
+    "translation": "閲覧後、コミュニティのルールが変更されました。同意する前に再度お読みください。"
+  },
+  {
+    "id": "app.community_rules.accept.not_member.app_error",
+    "translation": "コミュニティのメンバーのみがルールに同意できます。"
+  },
+  {
+    "id": "app.community_rules.accept.off.app_error",
+    "translation": "このコミュニティには同意すべきルールがありません。"
+  },
+  {
+    "id": "app.community_rules.delete.app_error",
+    "translation": "コミュニティのルールを削除できませんでした。"
+  },
+  {
+    "id": "app.community_rules.get.app_error",
+    "translation": "コミュニティのルールを取得できませんでした。"
+  },
+  {
+    "id": "app.community_rules.save.app_error",
+    "translation": "コミュニティのルールを保存できませんでした。"
+  },
+  {
+    "id": "app.community_rules.stats.app_error",
+    "translation": "コミュニティのルールに同意したユーザー数をカウントできません。"
+  },
+  {
     "id": "app.compile_csv_chunks.header_error",
     "translation": "CSVヘッダーを書き込めませんでした。"
   },
@@ -7216,6 +7420,34 @@
   {
     "id": "app.file_info.undelete_for_post_ids.app_error",
     "translation": "投稿の添付ファイルを復元できませんでした。"
+  },
+  {
+    "id": "app.focus.bot.app_error",
+    "translation": "ボットはフォーカスモードを使用できません。"
+  },
+  {
+    "id": "app.focus.delete.app_error",
+    "translation": "アカウントのフォーカスモードを削除できません。"
+  },
+  {
+    "id": "app.focus.get.app_error",
+    "translation": "フォーカスモードを取得できません。"
+  },
+  {
+    "id": "app.focus.mark_read.app_error",
+    "translation": "見逃したメッセージを既読にできません。"
+  },
+  {
+    "id": "app.focus.save.app_error",
+    "translation": "フォーカスモードを開始できません。"
+  },
+  {
+    "id": "app.focus.statuses_disabled.app_error",
+    "translation": "フォーカスモードにはユーザーステータスが必要ですが、このサーバーでは無効になっています。"
+  },
+  {
+    "id": "app.focus.summary.app_error",
+    "translation": "フォーカス中に見逃した内容を取得できません。"
   },
   {
     "id": "app.get_user_team_scheduled_posts.error",
@@ -12142,6 +12374,90 @@
     "translation": "不正なuser idです。"
   },
   {
+    "id": "model.agent_activity.expires.app_error",
+    "translation": "エージェントのアクティビティは1秒から24時間以内でなければなりません。"
+  },
+  {
+    "id": "model.agent_activity.state.app_error",
+    "translation": "エージェントの状態は、アイドル、思考中、作業中、待機中、ブロック中、オフラインのいずれかでなければなりません。"
+  },
+  {
+    "id": "model.agent_activity.text.app_error",
+    "translation": "エージェントの現在の動作は、最大200文字の1行以内で記述する必要があります。"
+  },
+  {
+    "id": "model.agent_activity.thread_post_id.app_error",
+    "translation": "エージェントのアクティビティのスレッドはメッセージIDである必要があります。"
+  },
+  {
+    "id": "model.ai_agent.access.app_error",
+    "translation": "エージェントと会話できるユーザーの設定に、無効なコミュニティ、チャンネル、ロール、またはユーザーが含まれているか、数が多すぎます。"
+  },
+  {
+    "id": "model.ai_agent.access_community.app_error",
+    "translation": "コミュニティのエージェントはそのコミュニティ専用です。"
+  },
+  {
+    "id": "model.ai_agent.connection_id.app_error",
+    "translation": "エージェントが使用するモデル接続を選択してください。"
+  },
+  {
+    "id": "model.ai_agent.external.app_error",
+    "translation": "外部エージェントにはモデル、接続、システムプロンプトがありません。プログラムが応答します。"
+  },
+  {
+    "id": "model.ai_agent.max_tool_turns.app_error",
+    "translation": "エージェントのツールターン数は0（デフォルト）から250の間でなければなりません。"
+  },
+  {
+    "id": "model.ai_agent.model.app_error",
+    "translation": "モデル名が長すぎるか、複数行になっています。"
+  },
+  {
+    "id": "model.ai_agent.needs_attention.app_error",
+    "translation": "注意が必要な事項に関するメモが長すぎます。"
+  },
+  {
+    "id": "model.ai_agent.reasoning.app_error",
+    "translation": "推論の努力度は最小、低、中、高のいずれかであり、その予算は0から128,000トークンの間でなければなりません。"
+  },
+  {
+    "id": "model.ai_agent.scope.app_error",
+    "translation": "エージェントはサーバー全体または1つのコミュニティに属する必要があります。"
+  },
+  {
+    "id": "model.ai_agent.system_prompt.app_error",
+    "translation": "システムプロンプトが長すぎます（最大32,000文字）。"
+  },
+  {
+    "id": "model.ai_agent.times.app_error",
+    "translation": "エージェントの作成日時と更新日時がありません。"
+  },
+  {
+    "id": "model.ai_agent.tools.app_error",
+    "translation": "ツール名が無効か、数が多すぎます（最大256）。"
+  },
+  {
+    "id": "model.ai_agent.user_id.app_error",
+    "translation": "エージェントには有効なアカウントが必要です。"
+  },
+  {
+    "id": "model.ai_agent_task.channel_id.app_error",
+    "translation": "このタスクにはチャンネルが必要です。"
+  },
+  {
+    "id": "model.ai_agent_task.post_id.app_error",
+    "translation": "このタスクにはメッセージが必要です。"
+  },
+  {
+    "id": "model.ai_agent_task.question.app_error",
+    "translation": "2,000文字以内で質問を入力してください。"
+  },
+  {
+    "id": "model.ai_agent_task.task.app_error",
+    "translation": "このタスクはエージェントが認識していません。"
+  },
+  {
     "id": "model.ai_connection.api_key.app_error",
     "translation": "APIキーが長すぎるか、改行文字が含まれています。"
   },
@@ -12304,6 +12620,10 @@
   {
     "id": "model.bot.is_valid.description.app_error",
     "translation": "不正な説明です。"
+  },
+  {
+    "id": "model.bot.is_valid.kind.app_error",
+    "translation": "ボットアカウントは、ボットまたはエージェントのいずれかです。"
   },
   {
     "id": "model.bot.is_valid.update_at.app_error",
@@ -12692,6 +13012,14 @@
   {
     "id": "model.command_response.is_valid.response_type.app_error",
     "translation": "不正なレスポンス形式です。"
+  },
+  {
+    "id": "model.community_rules.empty.app_error",
+    "translation": "有効にする前にルールを入力してください。"
+  },
+  {
+    "id": "model.community_rules.text.app_error",
+    "translation": "ルールは最大{{.Max}}文字です。"
   },
   {
     "id": "model.compliance.is_valid.create_at.app_error",
@@ -13470,6 +13798,10 @@
     "translation": "BurnOnReadDurationSeconds は正の数である必要があります。"
   },
   {
+    "id": "model.config.is_valid.service_settings.burn_on_read_maximum_duration_seconds.app_error",
+    "translation": "BurnOnReadMaximumDurationSeconds は正の数である必要があります。"
+  },
+  {
     "id": "model.config.is_valid.service_settings.burn_on_read_maximum_time_to_live_seconds.app_error",
     "translation": "BurnOnReadMaximumTimeToLiveSeconds は正の数である必要があります。"
   },
@@ -13728,6 +14060,22 @@
   {
     "id": "model.file_info.is_valid.user_id.app_error",
     "translation": "user_idが不正な値です。"
+  },
+  {
+    "id": "model.focus.duration.app_error",
+    "translation": "フォーカスモードは1分から1週間の間で設定できます。"
+  },
+  {
+    "id": "model.focus.duration_or_end.app_error",
+    "translation": "フォーカスの長さを指定してください。期間または終了時間のいずれかを選択します。"
+  },
+  {
+    "id": "model.focus.reason.app_error",
+    "translation": "理由が長すぎます。これは最大100文字のステータスとして表示されます。"
+  },
+  {
+    "id": "model.focus.window.app_error",
+    "translation": "サマリーの対象期間が無効です。過去の日時順で、最大8日間の範囲である必要があります。"
   },
   {
     "id": "model.group.channel_id.app_error",
