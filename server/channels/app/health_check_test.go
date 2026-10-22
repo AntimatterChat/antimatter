@@ -16,7 +16,7 @@ import (
 	"github.com/mattermost/mattermost/server/v8/platform/shared/healthcheck"
 )
 
-// Tests in this file are not parallel: they toggle the license and use the process-wide
+// Tests in this file are not parallel: they use the process-wide
 // latest-version cache that BuildHealthSnapshot reads.
 
 // setupHealthCheck returns a service over test rules, since no built-in rules exist yet.
@@ -28,8 +28,7 @@ func setupHealthCheck(t *testing.T, flagEnabled bool) (*TestHelper, *HealthCheck
 		cfg.FeatureFlags.HealthDashboard = flagEnabled
 	})
 
-	registry := healthcheck.NewRegistry()
-	registry.Register(
+	svc := newTestHealthCheckService(th,
 		healthcheck.Rule{
 			Code:       "TEST_LATEST_VERSION",
 			Area:       model.AreaCluster,
@@ -55,14 +54,6 @@ func setupHealthCheck(t *testing.T, flagEnabled bool) (*TestHelper, *HealthCheck
 			},
 		},
 	)
-	svc := &HealthCheckService{
-		engine: healthcheck.NewEngine(healthcheck.EngineOpts{Registry: registry, Logger: th.TestLogger}),
-		reconciler: healthcheck.NewReconciler(healthcheck.ReconcilerOpts{
-			Store:    th.App.Srv().Store().HealthFinding(),
-			Logger:   th.TestLogger,
-			Registry: registry,
-		}),
-	}
 
 	require.NoError(t, th.App.clearLatestVersionCache())
 	t.Cleanup(func() {
@@ -72,6 +63,20 @@ func setupHealthCheck(t *testing.T, flagEnabled bool) (*TestHelper, *HealthCheck
 	require.Nil(t, appErr)
 
 	return th, svc
+}
+
+func newTestHealthCheckService(th *TestHelper, rules ...healthcheck.Rule) *HealthCheckService {
+	registry := healthcheck.NewRegistry()
+	registry.Register(rules...)
+
+	return &HealthCheckService{
+		engine: healthcheck.NewEngine(healthcheck.EngineOpts{Registry: registry, Logger: th.TestLogger}),
+		reconciler: healthcheck.NewReconciler(healthcheck.ReconcilerOpts{
+			Store:    th.App.Srv().Store().HealthFinding(),
+			Logger:   th.TestLogger,
+			Registry: registry,
+		}),
+	}
 }
 
 func listHealthFindings(t *testing.T, th *TestHelper) []*model.HealthFinding {
@@ -96,6 +101,45 @@ func TestRunHealthCheckGating(t *testing.T) {
 		require.NoError(t, th.App.runHealthCheck(th.Context, svc))
 		assert.NotEmpty(t, listHealthFindings(t, th))
 	})
+}
+
+// TestRunHealthCheckRunsCloudScopedRules: Antimatter is never a Cloud deployment, so a live health
+// check runs every rule, including the ones upstream skips on Cloud, whatever the license shim says.
+func TestRunHealthCheckRunsCloudScopedRules(t *testing.T) {
+	th, _ := setupHealthCheck(t, true)
+	firing := func(*healthcheck.Snapshot) []healthcheck.Result {
+		return []healthcheck.Result{healthcheck.Firing("test.message.firing")}
+	}
+	svc := newTestHealthCheckService(th,
+		healthcheck.Rule{
+			Code:       "TEST_SELF_HOSTED_ONLY",
+			Area:       model.AreaCluster,
+			Severity:   healthcheck.SeverityWarning,
+			Surface:    healthcheck.SurfaceProduct,
+			Volatility: healthcheck.VolatilityStable,
+			Eval:       firing,
+		},
+		healthcheck.Rule{
+			Code:           "TEST_CLOUD",
+			Area:           model.AreaCluster,
+			Severity:       healthcheck.SeverityWarning,
+			Surface:        healthcheck.SurfaceProduct,
+			Volatility:     healthcheck.VolatilityStable,
+			AppliesToCloud: true,
+			Eval:           firing,
+		},
+	)
+
+	snapshot, err := th.App.BuildHealthSnapshot(th.Context)
+	require.NoError(t, err)
+	assert.False(t, snapshot.Deployment.IsCloud)
+
+	require.NoError(t, th.App.runHealthCheck(th.Context, svc))
+	codes := []string{}
+	for _, finding := range listHealthFindings(t, th) {
+		codes = append(codes, finding.Code)
+	}
+	assert.ElementsMatch(t, []string{"TEST_CLOUD", "TEST_SELF_HOSTED_ONLY"}, codes)
 }
 
 func TestRunHealthCheckStableAcrossCycles(t *testing.T) {

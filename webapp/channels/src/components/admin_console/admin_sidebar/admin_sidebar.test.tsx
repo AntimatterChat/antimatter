@@ -121,6 +121,38 @@ describe('components/AdminSidebar', () => {
         expect(container).toMatchSnapshot();
     });
 
+    describe('Site health and Workspace Optimization', () => {
+        const renderSidebar = (healthDashboard: boolean, isCurrentUserSystemAdmin = true) => {
+            const props = {
+                ...defaultProps,
+                isCurrentUserSystemAdmin,
+                config: {
+                    ...defaultProps.config,
+                    FeatureFlags: {HealthDashboard: healthDashboard},
+                },
+            };
+            renderWithContext(<AdminSidebar {...props}/>);
+        };
+
+        test('shows Site health and not Workspace Optimization to a system admin with the flag on', () => {
+            renderSidebar(true);
+            expect(screen.getByText('Site health')).toBeInTheDocument();
+            expect(screen.queryByText('Workspace Optimization')).not.toBeInTheDocument();
+        });
+
+        test('shows Workspace Optimization and not Site health with the flag off', () => {
+            renderSidebar(false);
+            expect(screen.getByText('Workspace Optimization')).toBeInTheDocument();
+            expect(screen.queryByText('Site health')).not.toBeInTheDocument();
+        });
+
+        test('shows Workspace Optimization and not Site health to a delegated admin with the flag on', () => {
+            renderSidebar(true, false);
+            expect(screen.getByText('Workspace Optimization')).toBeInTheDocument();
+            expect(screen.queryByText('Site health')).not.toBeInTheDocument();
+        });
+    });
+
     test('should match snapshot, no access', () => {
         const props = {
             ...defaultProps,
