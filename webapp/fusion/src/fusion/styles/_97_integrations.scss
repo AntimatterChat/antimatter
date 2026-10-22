@@ -120,4 +120,11 @@
   // Bot accounts: their picture beside their card's text.
   :is(.bot-list-img, .bot-img) { border-radius: 50%; }
   .bot-details__description, .light { color: var(--am-muted); }
+
+  // Bot attributes (Add/Edit Bot): the shared attribute fields on the Fusion lines, as wide as the form's others.
+  .BotAttributesSection__description { margin: 0 0 10px; color: var(--am-muted); font-size: 13px; }
+  .BotAttributesSection__error, .UserAttributeField .field-error { color: var(--am-danger); }
+  .UserAttributeField.cpa-field > label:first-child { color: var(--am-text-2); }
+  .UserAttributeField.cpa-field :is(.form-control, .hierarchical-value-menu, .cpa-rank-select__button) { max-width: none; }
+  .UserAttributeField .user-property-field-values__sync-indicator { color: var(--am-muted); }
 }

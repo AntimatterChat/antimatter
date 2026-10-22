@@ -6,8 +6,10 @@ import {useIntl} from 'react-intl';
 import {useDispatch, useSelector} from 'react-redux';
 
 import type {UserAttributeValue, UserPropertyField} from '@mattermost/types/properties_user';
+import type {UserProfile} from '@mattermost/types/users';
 
 import {UserTypes} from 'mattermost-redux/action_types';
+import {loadBot} from 'mattermost-redux/actions/bots';
 import {getCustomProfileAttributeValues} from 'mattermost-redux/actions/users';
 import {Client4} from 'mattermost-redux/client';
 import {Permissions} from 'mattermost-redux/constants';
@@ -15,6 +17,9 @@ import {getCustomProfileAttributes} from 'mattermost-redux/selectors/entities/ge
 import {haveISystemPermission, haveITeamPermission} from 'mattermost-redux/selectors/entities/roles';
 import {getTeam} from 'mattermost-redux/selectors/entities/teams';
 import {getCurrentUserId} from 'mattermost-redux/selectors/entities/users';
+import {isSystemAdmin} from 'mattermost-redux/utils/user_utils';
+
+import {canEditUserAttribute} from 'components/property_fields/user_attribute_fields/user_attribute_utils';
 
 import {Dialog} from 'fusion/components/layer';
 import {useDisplayName, useUser} from 'fusion/hooks/users';
@@ -39,9 +44,45 @@ export function useCanEditServerAttributes(): boolean {
     return useSelector((state: GlobalState) => haveISystemPermission(state, {permission: Permissions.EDIT_OTHER_USERS}) || haveISystemPermission(state, {permission: Permissions.MANAGE_SYSTEM}));
 }
 
-// serverAttributeLock tells why an admin can't set a server attribute here, or '' when they can: those a login
-// provider or an integration sets, and those whose kind the dialog doesn't edit.
-function serverAttributeLock(field: UserPropertyField, authService: string, formatMessage: ReturnType<typeof useIntl>['formatMessage']): string {
+// canManageBotAccount tells whether the current user manages a bot account, as the server decides: its owner with
+// manage_bots, anyone with manage_others_bots. An agent's bot belongs to no one, so only manage_others_bots reaches
+// it. The bot's owner is known once the bot is loaded (see useCanEditServerAttributesOf).
+export function canManageBotAccount(state: GlobalState, botUserId: string): boolean {
+    if (haveISystemPermission(state, {permission: Permissions.MANAGE_OTHERS_BOTS})) {
+        return true;
+    }
+    const ownerId = state.entities.bots?.accounts?.[botUserId]?.owner_id;
+    return ownerId === getCurrentUserId(state) && haveISystemPermission(state, {permission: Permissions.MANAGE_BOTS});
+}
+
+// useCanEditServerAttributesOf tells whether the current user sets someone's server attributes, as the server
+// decides: those who administer users, and for a bot those who manage it. Only a system admin sets a system admin's.
+export function useCanEditServerAttributesOf(user: UserProfile | undefined): boolean {
+    const dispatch = useDispatch();
+    const usersAdmin = useCanEditServerAttributes();
+    const botId = user?.is_bot ? user.id : '';
+
+    // Someone who may manage only their own bots needs the bot's owner.
+    const needsOwner = useSelector((state: GlobalState) => Boolean(botId) && !usersAdmin && !state.entities.bots?.accounts?.[botId] &&
+        haveISystemPermission(state, {permission: Permissions.MANAGE_BOTS}) && !haveISystemPermission(state, {permission: Permissions.MANAGE_OTHERS_BOTS}));
+    useEffect(() => {
+        if (needsOwner) {
+            dispatch(loadBot(botId));
+        }
+    }, [needsOwner, botId, dispatch]);
+
+    return useSelector((state: GlobalState) => {
+        if (!user || (isSystemAdmin(user.roles) && !haveISystemPermission(state, {permission: Permissions.MANAGE_SYSTEM}))) {
+            return false;
+        }
+        return usersAdmin || (Boolean(user.is_bot) && canManageBotAccount(state, user.id));
+    });
+}
+
+// serverAttributeLock tells why someone can't set a server attribute here, or '' when they can: those a login
+// provider or an integration sets, those whose kind the dialog doesn't edit, and, but for system admins, those the
+// server's admins manage.
+function serverAttributeLock(field: UserPropertyField, authService: string, manageSystem: boolean, formatMessage: ReturnType<typeof useIntl>['formatMessage']): string {
     const attrs = field.attrs || {};
     if ((authService === Constants.LDAP_SERVICE && attrs.ldap) || (authService === Constants.SAML_SERVICE && attrs.saml)) {
         return formatMessage({id: 'fusion.attributes.lockedByProvider', defaultMessage: 'Set by their login provider.'});
@@ -51,6 +92,9 @@ function serverAttributeLock(field: UserPropertyField, authService: string, form
     }
     if (attrs.options_omitted || !['text', 'select', 'multiselect', 'date', 'user', 'multiuser'].includes(field.type)) {
         return formatMessage({id: 'fusion.attributes.lockedConsole', defaultMessage: 'Set it in the System Console.'});
+    }
+    if (!canEditUserAttribute(field, {canEditAdminManaged: manageSystem})) {
+        return formatMessage({id: 'fusion.attributes.lockedAdmin', defaultMessage: 'Set by the server\'s admins.'});
     }
     return '';
 }
@@ -62,8 +106,9 @@ type Props = {
     onHide?: () => void;
 };
 
-// UserAttributesDialog sets someone's attributes: the server's, for those who administer users, and the
-// community's, for its admins (and for the person themselves, those the admins don't manage).
+// UserAttributesDialog sets someone's attributes: the server's, for those who administer users (and a bot's for those
+// who manage it), and the community's, for its admins (and for the person themselves, those the admins don't manage).
+// Bots have no community attributes.
 export default function UserAttributesDialog({userId, teamId, toast, onHide}: Props) {
     const {formatMessage} = useIntl();
     const dispatch = useDispatch();
@@ -71,11 +116,13 @@ export default function UserAttributesDialog({userId, teamId, toast, onHide}: Pr
     const name = useDisplayName(user);
     const me = useSelector(getCurrentUserId);
     const team = useSelector((state: GlobalState) => getTeam(state, teamId));
-    const serverAdmin = useCanEditServerAttributes();
+    const bot = Boolean(user?.is_bot);
+    const serverAdmin = useCanEditServerAttributesOf(user);
+    const manageSystem = useSelector((state: GlobalState) => haveISystemPermission(state, {permission: Permissions.MANAGE_SYSTEM}));
     const communityAdmin = useSelector((state: GlobalState) => haveITeamPermission(state, teamId, Permissions.MANAGE_TEAM));
     const serverFields = shownServerAttributes(useSelector(getCustomProfileAttributes));
-    const communityFields = useCommunityAttributes(teamId) || [];
-    const communityValues = useMemberAttributeValues(teamId, userId) || {};
+    const communityFields = useCommunityAttributes(bot ? undefined : teamId) || [];
+    const communityValues = useMemberAttributeValues(bot ? undefined : teamId, userId) || {};
     const serverValues = user?.custom_profile_attributes || {};
     const [draft, setDraft] = useState<Record<string, UserAttributeValue>>({});
     const [busy, setBusy] = useState(false);
@@ -124,7 +171,7 @@ export default function UserAttributesDialog({userId, teamId, toast, onHide}: Pr
         const visibility = field.attrs?.visibility;
         let note = lock;
         if (!note && visibility === 'admin') {
-            note = formatMessage({id: 'fusion.attributes.adminOnlyNote', defaultMessage: 'Only admins and {name} see it.'}, {name});
+            note = bot ? formatMessage({id: 'fusion.attributes.adminOnlyNoteBot', defaultMessage: 'Only admins and those who manage {name} see it.'}, {name}) : formatMessage({id: 'fusion.attributes.adminOnlyNote', defaultMessage: 'Only admins and {name} see it.'}, {name});
         } else if (!note && visibility === 'hidden') {
             note = formatMessage({id: 'fusion.attributes.hiddenNote', defaultMessage: 'Not shown on profiles.'});
         }
@@ -173,11 +220,11 @@ export default function UserAttributesDialog({userId, teamId, toast, onHide}: Pr
         >
             <div className={am('pane', 'attr-pane')}>
                 <h2>{title}</h2>
-                <p className={am('lead')}>{formatMessage({id: 'fusion.attributes.dialogLead', defaultMessage: 'Details about them that admins keep up to date, such as where they work or for whom. They show on their profile.'})}</p>
+                <p className={am('lead')}>{bot ? formatMessage({id: 'fusion.attributes.dialogLeadBot', defaultMessage: 'Details about this bot that its managers keep up to date, such as what it\'s for or whom it works for. They show on its profile.'}) : formatMessage({id: 'fusion.attributes.dialogLead', defaultMessage: 'Details about them that admins keep up to date, such as where they work or for whom. They show on their profile.'})}</p>
                 {showServer && (
                     <>
                         <Section title={formatMessage({id: 'fusion.attributes.serverSection', defaultMessage: 'Everywhere on the server'})}/>
-                        {serverFields.map((field) => row(field, serverValues, serverAttributeLock(field, user?.auth_service || '', formatMessage)))}
+                        {serverFields.map((field) => row(field, serverValues, serverAttributeLock(field, user?.auth_service || '', manageSystem, formatMessage)))}
                     </>
                 )}
                 {communityFields.length > 0 && (

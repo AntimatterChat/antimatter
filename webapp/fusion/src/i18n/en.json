@@ -16935,6 +16935,58 @@
     "defaultMessage": "Username",
     "description": "Form field label on the bot create/edit form; the bot's @username."
   },
+  "bots.attributes.add": {
+    "defaultMessage": "Add attribute",
+    "description": "Button in the Attributes section of the Add/Edit Bot form that opens a menu of attributes to add to the bot."
+  },
+  "bots.attributes.description": {
+    "defaultMessage": "Configure attributes and values for this bot",
+    "description": "Help text under the Attributes section heading on the Add/Edit Bot form."
+  },
+  "bots.attributes.invalid": {
+    "defaultMessage": "Fix the highlighted attributes before saving.",
+    "description": "Error shown on the Add/Edit Bot form when one or more bot attribute values fail validation and must be corrected before saving."
+  },
+  "bots.attributes.load_failed": {
+    "defaultMessage": "Attributes could not be loaded.",
+    "description": "Error shown in the Attributes section of the Add/Edit Bot form when the bot's attributes fail to load."
+  },
+  "bots.attributes.manage": {
+    "defaultMessage": "Manage attributes",
+    "description": "Item at the bottom of the add-attribute menu on the Add/Edit Bot form, shown to administrators, that opens the System Console page for managing attribute definitions."
+  },
+  "bots.attributes.none_available": {
+    "defaultMessage": "No attributes available",
+    "description": "Item in the add-attribute menu on the Add/Edit Bot form when there are no more attributes that can be added to the bot."
+  },
+  "bots.attributes.retry": {
+    "defaultMessage": "Try again",
+    "description": "Button next to the attribute load error on the Add/Edit Bot form that retries loading the bot's attributes."
+  },
+  "bots.attributes.title": {
+    "defaultMessage": "Attributes",
+    "description": "Section heading for the bot's attributes on the Add/Edit Bot form."
+  },
+  "bots.create_warnings.attributes_failed": {
+    "defaultMessage": "Attributes could not be saved. Edit the bot to add them again.",
+    "description": "Line in the warning banner shown after a bot is created, when the bot's attribute values could not be saved."
+  },
+  "bots.create_warnings.image_failed": {
+    "defaultMessage": "The bot icon could not be saved. Edit the bot to upload it again.",
+    "description": "Line in the warning banner shown after a bot is created, when the bot's profile icon could not be saved."
+  },
+  "bots.create_warnings.roles_failed": {
+    "defaultMessage": "The role and post permissions could not be saved. Edit the bot to set them again.",
+    "description": "Line in the warning banner shown after a bot is created, when the bot's role and posting permissions could not be saved."
+  },
+  "bots.create_warnings.title": {
+    "defaultMessage": "Bot account created, but some settings were not saved",
+    "description": "Title of the warning banner shown on the bot confirmation page or Bot Accounts list when a bot was created but some of its settings failed to save."
+  },
+  "bots.create_warnings.token_failed": {
+    "defaultMessage": "An access token could not be created. Create one from this bot's Create New Token option, or ask a System Admin if you don't have permission.",
+    "description": "Line in the warning banner shown after a bot is created, when its default access token could not be created; \"Create New Token\" is the name of the option on the bot's entry in the Bot Accounts list."
+  },
   "bots.disabled": {
     "defaultMessage": "Disabled",
     "description": "Section heading separating disabled bots from active ones in the Bot Accounts list; 'Disabled' describes the bots below it."
@@ -16995,9 +17047,21 @@
     "defaultMessage": "Edit",
     "description": "Link (verb) on a bot row and breadcrumb segment on the bot edit page."
   },
+  "bots.manage.edit.attributes_failed": {
+    "defaultMessage": "The bot was updated, but its attributes could not be saved. {error}",
+    "description": "Error on the Edit Bot form when the bot was saved but its attribute values were not. {error} is the server error message."
+  },
   "bots.manage.edit.editing": {
     "defaultMessage": "Updating...",
     "description": "Submit button label while saving changes to an existing bot account; ellipsis indicates ongoing action."
+  },
+  "bots.manage.edit.image_failed": {
+    "defaultMessage": "The bot was updated, but its profile image could not be saved. {error}",
+    "description": "Error on the Edit Bot form when the bot was saved but its profile image was not. {error} is the server error message."
+  },
+  "bots.manage.edit.roles_failed": {
+    "defaultMessage": "The bot was updated, but its role and post permissions could not be saved. {error}",
+    "description": "Error on the Edit Bot form when the bot was saved but its role and posting permissions were not. {error} is the server error message."
   },
   "bots.manage.edit.title": {
     "defaultMessage": "Update",
@@ -22127,6 +22191,10 @@
     "defaultMessage": "Only admins and {name} see it.",
     "description": ""
   },
+  "fusion.attributes.adminOnlyNoteBot": {
+    "defaultMessage": "Only admins and those who manage {name} see it.",
+    "description": "Note under a bot's admin-only attribute in the attributes dialog: who can read its value. {name} is the bot's name."
+  },
   "fusion.attributes.cancel": {
     "defaultMessage": "Cancel",
     "description": ""
@@ -22138,6 +22206,10 @@
   "fusion.attributes.dialogLead": {
     "defaultMessage": "Details about them that admins keep up to date, such as where they work or for whom. They show on their profile.",
     "description": ""
+  },
+  "fusion.attributes.dialogLeadBot": {
+    "defaultMessage": "Details about this bot that its managers keep up to date, such as what it's for or whom it works for. They show on its profile.",
+    "description": "Introduction at the top of the attributes dialog when it edits a bot account's attributes."
   },
   "fusion.attributes.dialogTitle": {
     "defaultMessage": "{name}'s attributes",
@@ -22154,6 +22226,10 @@
   "fusion.attributes.hiddenNote": {
     "defaultMessage": "Not shown on profiles.",
     "description": ""
+  },
+  "fusion.attributes.lockedAdmin": {
+    "defaultMessage": "Set by the server's admins.",
+    "description": "Note under a server attribute in the attributes dialog that only system admins may set, shown to someone who isn't one (for example a bot's owner)."
   },
   "fusion.attributes.lockedByIntegration": {
     "defaultMessage": "Managed by an integration.",
@@ -26642,6 +26718,10 @@
   "fusion.profile.adminOnly": {
     "defaultMessage": "Only admins and this person see this",
     "description": ""
+  },
+  "fusion.profile.adminOnlyBot": {
+    "defaultMessage": "Only admins and those who manage this bot see this",
+    "description": "Tooltip label on a bot's profile card next to an admin-only attribute: who can read its value."
   },
   "fusion.profile.agent": {
     "defaultMessage": "Agent · mention it or message it, like a coworker",
@@ -33934,6 +34014,14 @@
   "property_fields.hierarchical_value_menu.withheld": {
     "defaultMessage": "The values for this attribute are not available to you here.",
     "description": "Status line inside the hierarchical value picker when the server does not send this attribute's values to the current user, for example because the user lacks permission."
+  },
+  "property_fields.user_attribute_fields.remove": {
+    "defaultMessage": "Remove {name}",
+    "description": "Accessible label for the trash-can button that removes an attribute row from a bot's attributes. {name} is the attribute's display name."
+  },
+  "property_fields.user_attribute_fields.required": {
+    "defaultMessage": "This attribute is required.",
+    "description": "Inline validation error under a user or bot attribute input when a required attribute is left empty."
   },
   "property_option.color.blue": {
     "defaultMessage": "Blue",

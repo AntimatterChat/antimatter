@@ -7,6 +7,7 @@ import {Client4} from 'mattermost-redux/client';
 
 import {openDialog} from 'fusion/utils/modals';
 import {act, renderWithContext, screen, userEvent} from 'tests/react_testing_utils';
+import {TestHelper} from 'utils/test_helper';
 
 import {attributesState, field} from './attributes_test_utils';
 import EditAttributesItem, {USER_ATTRIBUTES_DIALOG} from './edit_attributes_item';
@@ -36,7 +37,7 @@ describe('fusion/attributes/EditAttributesItem', () => {
         team++;
     });
 
-    const render = (userId: string, fields: Array<ReturnType<typeof field>>, serverFields: Record<string, unknown> = {}) => {
+    const render = (userId: string, fields: Array<ReturnType<typeof field>>, serverFields: Record<string, unknown> = {}, users: Record<string, unknown> = {}, bots: Record<string, unknown> = {}) => {
         jest.spyOn(Client4, 'getCommunityAttributes').mockResolvedValue(fields);
         jest.spyOn(Client4, 'getCommunityAttributeValues').mockResolvedValue({});
         const onDone = jest.fn();
@@ -45,10 +46,11 @@ describe('fusion/attributes/EditAttributesItem', () => {
                 userId={userId}
                 onDone={onDone}
             />,
-            attributesState(`team${team}`, serverFields) as never,
+            attributesState(`team${team}`, serverFields, users, bots) as never,
         );
         return onDone;
     };
+    const department = {f1: {id: 'f1', name: 'Department', type: 'text', attrs: {}}};
 
     test('a member can\'t edit someone else\'s attributes', async () => {
         render('sofia', [field('company')]);
@@ -95,10 +97,50 @@ describe('fusion/attributes/EditAttributesItem', () => {
         expect(await screen.findByRole('menuitem', {name: ITEM})).toBeInTheDocument();
     });
 
-    test('bots have no attributes to edit', async () => {
+    test('a user administrator doesn\'t edit a system admin\'s server attributes', async () => {
+        mockSystemPerms = new Set(['edit_other_users']);
+        render('sofia', [], department, {sofia: TestHelper.getUserMock({id: 'sofia', username: 'sofia', roles: 'system_user system_admin'})});
+        await settle();
+        expect(screen.queryByRole('menuitem', {name: ITEM})).not.toBeInTheDocument();
+    });
+
+    test('a bot\'s owner who may manage their bots edits its server attributes', async () => {
+        mockSystemPerms = new Set(['manage_bots']);
+        render('bot', [], department, {}, {bot: {user_id: 'bot', owner_id: 'me'}});
+        expect(await screen.findByRole('menuitem', {name: ITEM})).toBeInTheDocument();
+    });
+
+    test('a bot\'s owner without manage_bots doesn\'t', async () => {
+        mockSystemPerms = new Set(['read_bots']);
+        render('bot', [], department, {}, {bot: {user_id: 'bot', owner_id: 'me'}});
+        await settle();
+        expect(screen.queryByRole('menuitem', {name: ITEM})).not.toBeInTheDocument();
+    });
+
+    test('manage_bots doesn\'t reach someone else\'s bot', async () => {
+        mockSystemPerms = new Set(['manage_bots']);
+        render('bot', [], department, {}, {bot: {user_id: 'bot', owner_id: 'sofia'}});
+        await settle();
+        expect(screen.queryByRole('menuitem', {name: ITEM})).not.toBeInTheDocument();
+    });
+
+    test('manage_others_bots reaches any bot, an agent\'s included', async () => {
+        mockSystemPerms = new Set(['manage_others_bots']);
+        render('bot', [], department, {}, {bot: {user_id: 'bot', owner_id: 'antimatter-agents'}});
+        expect(await screen.findByRole('menuitem', {name: ITEM})).toBeInTheDocument();
+    });
+
+    test('the bot is loaded to learn its owner', async () => {
+        mockSystemPerms = new Set(['manage_bots']);
+        jest.spyOn(Client4, 'getBot').mockResolvedValue({user_id: 'bot', owner_id: 'me'} as never);
+        render('bot', [], department);
+        expect(await screen.findByRole('menuitem', {name: ITEM})).toBeInTheDocument();
+        expect(Client4.getBot).toHaveBeenCalledWith('bot');
+    });
+
+    test('bots have no community attributes to edit', async () => {
         mockTeamPerms = new Set(['manage_team']);
-        mockSystemPerms = new Set(['manage_system']);
-        render('bot', [field('company')], {f1: {id: 'f1', name: 'Department', type: 'text', attrs: {}}});
+        render('bot', [field('company')], department);
         await settle();
         expect(screen.queryByRole('menuitem', {name: ITEM})).not.toBeInTheDocument();
     });
