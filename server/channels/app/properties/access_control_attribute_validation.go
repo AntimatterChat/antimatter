@@ -917,7 +917,9 @@ func (h *AccessControlAttributeValidationHook) validateValueAgainstField(field *
 		if err := json.Unmarshal(value.Value, &str); err != nil {
 			return nil, fmt.Errorf("expected string value: %w", err)
 		}
-		if len(strings.TrimSpace(str)) > model.PropertyFieldValueTypeTextMaxLength {
+		// Characters, not bytes, as for community attributes: a value in
+		// Cyrillic or CJK fits as many characters as one in Latin script.
+		if utf8.RuneCountInString(strings.TrimSpace(str)) > model.PropertyFieldValueTypeTextMaxLength {
 			return nil, fmt.Errorf("text value exceeds maximum length of %d characters", model.PropertyFieldValueTypeTextMaxLength)
 		}
 

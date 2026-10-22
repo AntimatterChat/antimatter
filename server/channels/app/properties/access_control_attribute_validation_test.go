@@ -1338,6 +1338,37 @@ func TestAccessControlAttributeValidationHook(t *testing.T) {
 		assert.Contains(t, upsertErr.Error(), "maximum length")
 	})
 
+	t.Run("text — counts characters, not bytes", func(t *testing.T) {
+		field := th.CreatePropertyFieldDirect(t, &model.PropertyField{
+			GroupID:    group.ID,
+			Name:       "text_field_" + model.NewId(),
+			Type:       model.PropertyFieldTypeText,
+			TargetType: "system",
+			ObjectType: "user",
+		})
+		upsert := func(text string) error {
+			raw, err := json.Marshal(text)
+			require.NoError(t, err)
+			_, upsertErr := th.service.UpsertPropertyValue(th.Context, &model.PropertyValue{
+				GroupID:    group.ID,
+				FieldID:    field.ID,
+				TargetID:   model.NewId(),
+				TargetType: "user",
+				Value:      raw,
+			})
+			return upsertErr
+		}
+
+		cyrillic := strings.Repeat("д", 40) // 80 bytes
+		require.Greater(t, len(cyrillic), model.PropertyFieldValueTypeTextMaxLength)
+		require.NoError(t, upsert(cyrillic))
+		require.NoError(t, upsert(strings.Repeat("漢", model.PropertyFieldValueTypeTextMaxLength)))
+
+		upsertErr := upsert(strings.Repeat("漢", model.PropertyFieldValueTypeTextMaxLength+1))
+		require.Error(t, upsertErr)
+		assert.Contains(t, upsertErr.Error(), "maximum length")
+	})
+
 	t.Run("sanitizeAndValidateOptions writes back canonical []any of map[string]any", func(t *testing.T) {
 		// Downstream readers (asOptionSlice, EnsureOptionIDs, store-layer
 		// serialization) expect the canonical loose-typed shape. Writing back

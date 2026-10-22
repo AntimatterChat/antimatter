@@ -388,6 +388,20 @@ func TestPropertySyncer_SyncUser_Text(t *testing.T) {
 		assert.Equal(t, "", h.valueString(user, field.ID), "the stored value is no longer what the source reports")
 	})
 
+	t.Run("counts the text limit in characters, not bytes", func(t *testing.T) {
+		cyrillic := strings.Repeat("д", 40) // 80 bytes
+		result := h.sync(s, user, map[string][]string{"department": {cyrillic}, "mail": {"a@b.com"}}, false)
+		assert.Equal(t, model.PropertySyncFieldUpdated, outcomeFor(t, result, field.ID).Status)
+		assert.Equal(t, cyrillic, h.valueString(user, field.ID))
+
+		tooLong := strings.Repeat("漢", model.PropertyFieldValueTypeTextMaxLength+1)
+		result = h.sync(s, user, map[string][]string{"department": {tooLong}, "mail": {"a@b.com"}}, false)
+		outcome := outcomeFor(t, result, field.ID)
+		assert.Equal(t, model.PropertySyncFieldSkipped, outcome.Status)
+		assert.Equal(t, []string{tooLong}, outcome.DroppedValues)
+		assert.Equal(t, "", h.valueString(user, field.ID), "a value that can't be stored clears the stored one")
+	})
+
 	t.Run("skips a value that violates the field's value_type without quoting it, and clears the stored one", func(t *testing.T) {
 		result := h.sync(s, user, map[string][]string{"department": {"Engineering"}, "mail": {"not-an-email"}}, false)
 		outcome := outcomeFor(t, result, email.ID)
@@ -438,15 +452,18 @@ func TestPropertySyncer_SyncUser_Select(t *testing.T) {
 		assert.Equal(t, h.valueString(user1, field.ID), h.valueString(user2, field.ID))
 	})
 
-	t.Run("preserves case, so differently cased values are distinct options", func(t *testing.T) {
-		h.sync(s, user2, map[string][]string{"department": {"engineering"}}, true)
-		assert.Equal(t, []string{"Engineering", "engineering"}, h.optionNames(template.ID))
-		assert.NotEqual(t, h.valueString(user1, field.ID), h.valueString(user2, field.ID))
+	t.Run("ignores case: a differently cased value reuses the option, which keeps its name", func(t *testing.T) {
+		result := h.sync(s, user2, map[string][]string{"department": {"engineering"}}, true)
+		assert.Equal(t, 0, result.OptionsCreated)
+		assert.Equal(t, 0, result.OptionsPruned)
+		assert.Equal(t, []string{"Engineering"}, h.optionNames(template.ID))
+		assert.Equal(t, h.valueString(user1, field.ID), h.valueString(user2, field.ID))
 	})
 
-	t.Run("moving a user prunes the option nobody holds any more", func(t *testing.T) {
+	t.Run("moving a user creates the new option and keeps one another user holds", func(t *testing.T) {
 		result := h.sync(s, user2, map[string][]string{"department": {"Sales"}}, true)
-		assert.Equal(t, 1, result.OptionsPruned)
+		assert.Equal(t, 1, result.OptionsCreated)
+		assert.Equal(t, 0, result.OptionsPruned, "user1 still holds Engineering")
 		assert.Equal(t, []string{"Engineering", "Sales"}, h.optionNames(template.ID))
 	})
 
@@ -554,6 +571,53 @@ func TestPropertySyncer_SyncUser_Multiselect(t *testing.T) {
 // TestPropertySyncer_SharedWithChannels covers the reason options live on the
 // template: a channel field linked to the same attribute serves them, and a
 // channel's value keeps an option as surely as a user's does.
+// Antimatter matches synced option names whatever their case, from every
+// source: "engineering" reuses an existing "Engineering" and creates nothing.
+func TestPropertySyncer_CaseInsensitiveOptions(t *testing.T) {
+	mainHelper.Parallel(t)
+
+	for _, source := range model.PropertySyncSources() {
+		t.Run(source, func(t *testing.T) {
+			h := setupPropertySyncTest(t)
+			attr := model.PropertySyncSourceAttr(source)
+
+			template, field := h.createAttribute(model.PropertyFieldTypeSelect, model.StringInterface{
+				model.PropertyFieldAttributeOptions: []*model.CustomProfileAttributesSelectOption{{Name: "Engineering"}},
+			})
+			h.updateAttrs(template, model.StringInterface{attr: "department"})
+			multiTemplate, multi := h.createAttribute(model.PropertyFieldTypeMultiselect, model.StringInterface{
+				model.PropertyFieldAttributeOptions: []*model.CustomProfileAttributesSelectOption{{Name: "Engineering"}},
+			})
+			h.updateAttrs(multiTemplate, model.StringInterface{attr: "groups"})
+			engineering := h.optionID(template.ID, "Engineering")
+			multiEngineering := h.optionID(multiTemplate.ID, "Engineering")
+
+			s := h.syncer(source)
+			result := h.sync(s, h.BasicUser.Id, map[string][]string{
+				"department": {"engineering"},
+				"groups":     {"ENGINEERING", "engineering", "Sales", "sales"},
+			}, true)
+
+			assert.Equal(t, 1, result.OptionsCreated, "only Sales is new")
+			assert.Equal(t, engineering, h.valueString(h.BasicUser.Id, field.ID))
+			assert.Equal(t, []string{"Engineering"}, h.optionNames(template.ID), "the option keeps its name")
+			assert.Equal(t, []string{multiEngineering, h.optionID(multiTemplate.ID, "Sales")}, h.valueStrings(h.BasicUser.Id, multi.ID), "case variants name one option once")
+			assert.Equal(t, []string{"Engineering", "Sales"}, h.optionNames(multiTemplate.ID))
+
+			// Switching between case variants changes nothing and prunes nothing.
+			result = h.sync(s, h.BasicUser.Id, map[string][]string{
+				"department": {"ENGINEERING"},
+				"groups":     {"engineering", "SALES"},
+			}, true)
+			assert.Equal(t, 0, result.OptionsCreated)
+			assert.Equal(t, 0, result.OptionsPruned)
+			assert.Equal(t, model.PropertySyncFieldUnchanged, outcomeFor(t, result, field.ID).Status)
+			assert.Equal(t, model.PropertySyncFieldUnchanged, outcomeFor(t, result, multi.ID).Status)
+			assert.Equal(t, []string{"Engineering", "Sales"}, h.optionNames(multiTemplate.ID))
+		})
+	}
+}
+
 func TestPropertySyncer_SharedWithChannels(t *testing.T) {
 	mainHelper.Parallel(t)
 	h := setupPropertySyncTest(t)

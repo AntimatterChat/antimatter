@@ -12,6 +12,7 @@ import (
 	"slices"
 	"strings"
 	"sync"
+	"unicode/utf8"
 
 	"github.com/mattermost/mattermost/server/public/model"
 	"github.com/mattermost/mattermost/server/public/shared/mlog"
@@ -56,8 +57,9 @@ const propertyFieldSyncSourceUnlinkedErrorID = "app.property_field.sync_source_u
 // Per field type:
 //   - text: the first value is stored verbatim (subject to the text length
 //     and value_type rules).
-//   - select: the first value is matched, by exact name, to an option of the
-//     definition. A missing option is created. The stored value is the option ID.
+//   - select: the first value is matched, by name and whatever its case, to an
+//     option of the definition, which keeps its name. A missing option is
+//     created. The stored value is the option ID.
 //   - multiselect: every value is matched or created the same way. The stored
 //     value is the list of option IDs.
 //
@@ -106,8 +108,42 @@ type syncedField struct {
 // user field links to, or the user field itself.
 type syncDefinition struct {
 	field *model.PropertyField
-	// optionIDs maps option name to ID. Loaded only for select and multiselect.
+	// options is the definition's option list, in its order. Loaded only for
+	// select and multiselect.
+	options []syncOption
+	// optionIDs maps the case-insensitive key of an option name to the ID of
+	// the first option with that name: a source value reuses an existing
+	// option whatever its case, and the option keeps its name. Nil until the
+	// options are loaded.
 	optionIDs map[string]string
+}
+
+// syncOption is an option of a synced definition.
+type syncOption struct {
+	id, name string
+}
+
+// optionKey is the key option names are matched by: names that differ only in
+// case are the same option.
+func optionKey(name string) string {
+	return strings.ToLower(name)
+}
+
+// setOptions replaces def's cached option list and its name index.
+func (def *syncDefinition) setOptions(options []syncOption) {
+	def.options = options
+	def.optionIDs = make(map[string]string, len(options))
+	for _, option := range options {
+		if key := optionKey(option.name); def.optionIDs[key] == "" {
+			def.optionIDs[key] = option.id
+		}
+	}
+}
+
+// optionID returns the ID of the option matching name case-insensitively.
+func (def *syncDefinition) optionID(name string) (string, bool) {
+	id, ok := def.optionIDs[optionKey(name)]
+	return id, ok
 }
 
 // propertySyncLogLevels are the levels the syncer logs at. The AD/LDAP source
@@ -396,10 +432,12 @@ func (s *PropertySyncer) pruneDefinition(rctx request.CTX, def *syncDefinition) 
 		for _, id := range referenced {
 			inUse[id] = true
 		}
+		// Every option is checked, case variants an admin created before the
+		// link included: only the one the sync matches is ever referenced.
 		var orphaned []string
-		for _, id := range def.optionIDs {
-			if !inUse[id] {
-				orphaned = append(orphaned, id)
+		for _, option := range def.options {
+			if !inUse[option.id] {
+				orphaned = append(orphaned, option.id)
 			}
 		}
 		if len(orphaned) == 0 {
@@ -425,9 +463,11 @@ func (s *PropertySyncer) deleteOptions(rctx request.CTX, def *syncDefinition, op
 		if appErr != nil {
 			return appErr
 		}
+		gone := make(map[string]bool, len(deleted))
 		for _, option := range deleted {
-			delete(def.optionIDs, option.Name)
+			gone[option.ID] = true
 		}
+		def.setOptions(slices.DeleteFunc(slices.Clone(def.options), func(option syncOption) bool { return gone[option.id] }))
 	}
 	return nil
 }
@@ -443,7 +483,7 @@ func (s *PropertySyncer) desiredValue(rctx request.CTX, sf *syncedField, values 
 			return emptySyncedValue(sf.field.Type), nil
 		}
 		value := values[0]
-		if len(value) > model.PropertyFieldValueTypeTextMaxLength {
+		if utf8.RuneCountInString(value) > model.PropertyFieldValueTypeTextMaxLength {
 			return skipValue(outcome, value, fmt.Sprintf("value exceeds the %d character limit for text attributes", model.PropertyFieldValueTypeTextMaxLength))
 		}
 		raw, err := json.Marshal(value)
@@ -472,7 +512,8 @@ func (s *PropertySyncer) desiredValue(rctx request.CTX, sf *syncedField, values 
 		if len(dropped) > 0 {
 			return skipValue(outcome, value, fmt.Sprintf("the attribute already has the maximum of %d options", model.PropertySyncMaxOptionsPerField))
 		}
-		return json.Marshal(sf.definition.optionIDs[value])
+		id, _ := sf.definition.optionID(value)
+		return json.Marshal(id)
 
 	case model.PropertyFieldTypeMultiselect:
 		var reasons []string
@@ -499,9 +540,10 @@ func (s *PropertySyncer) desiredValue(rctx request.CTX, sf *syncedField, values 
 		}
 		outcome.Reason = strings.Join(reasons, "; ")
 
+		// Values differing only in case name the same option, once.
 		optionIDs := make([]string, 0, len(eligible))
 		for _, value := range eligible {
-			if id, ok := sf.definition.optionIDs[value]; ok {
+			if id, ok := sf.definition.optionID(value); ok && !slices.Contains(optionIDs, id) {
 				optionIDs = append(optionIDs, id)
 			}
 		}
@@ -528,20 +570,27 @@ func skipValue(outcome *model.PropertySyncFieldOutcome, value, reason string) (j
 }
 
 // ensureOptions makes sure def has an option for every name, creating the ones
-// it lacks. Matching is exact and case-preserving, like option name uniqueness.
+// it lacks. Matching ignores case (Antimatter's rule): "engineering" reuses an
+// existing "Engineering", which keeps its name.
 // Names that do not fit under PropertySyncMaxOptionsPerField are returned as
 // dropped. When another writer changes the option list first -- another node
 // creating the same name, or a prune -- the list is re-read and the names still
 // missing are created against it, so racing syncs converge on one option.
 func (s *PropertySyncer) ensureOptions(rctx request.CTX, def *syncDefinition, names []string) (created int, dropped []string, appErr *model.AppError) {
 	for attempt := 0; ; attempt++ {
+		// A name matching an option case-insensitively reuses it; of names
+		// differing only in case, the first one is created.
 		var missing []string
+		seen := map[string]bool{}
 		for _, name := range names {
-			if _, ok := def.optionIDs[name]; !ok {
-				missing = append(missing, name)
+			key := optionKey(name)
+			if _, ok := def.optionIDs[key]; ok || seen[key] {
+				continue
 			}
+			seen[key] = true
+			missing = append(missing, name)
 		}
-		room := max(model.PropertySyncMaxOptionsPerField-len(def.optionIDs), 0)
+		room := max(model.PropertySyncMaxOptionsPerField-len(def.options), 0)
 		dropped = nil
 		if len(missing) > room {
 			dropped = missing[room:]
@@ -578,9 +627,11 @@ func (s *PropertySyncer) createOptions(rctx request.CTX, def *syncDefinition, na
 		if appErr != nil {
 			return created, appErr
 		}
+		cached := slices.Clone(def.options)
 		for _, option := range saved {
-			def.optionIDs[option.Name] = option.ID
+			cached = append(cached, syncOption{id: option.ID, name: option.Name})
 		}
+		def.setOptions(cached)
 		created += len(saved)
 	}
 	return created, nil
@@ -658,7 +709,7 @@ func (s *PropertySyncer) loadFields(rctx request.CTX) *model.AppError {
 // with. Past PropertyFieldMaxHydratedOptions a field is read without them, and
 // the list is paged through instead.
 func (s *PropertySyncer) loadOptions(rctx request.CTX, def *syncDefinition) *model.AppError {
-	optionIDs := map[string]string{}
+	var loaded []syncOption
 	if !model.PropertyFieldOptionsOmitted(def.field.Attrs) {
 		if raw := def.field.Attrs[model.PropertyFieldAttributeOptions]; raw != nil {
 			options, err := model.NewPropertyOptionsFromFieldAttrs[*model.CustomProfileAttributesSelectOption](raw)
@@ -666,10 +717,10 @@ func (s *PropertySyncer) loadOptions(rctx request.CTX, def *syncDefinition) *mod
 				return model.NewAppError("PropertySyncer.loadOptions", "app.property_sync.invalid_options.app_error", nil, "field_id="+def.field.ID, http.StatusInternalServerError).Wrap(err)
 			}
 			for _, option := range options {
-				optionIDs[option.Name] = option.ID
+				loaded = append(loaded, syncOption{id: option.ID, name: option.Name})
 			}
 		}
-		def.optionIDs = optionIDs
+		def.setOptions(loaded)
 		return nil
 	}
 
@@ -681,14 +732,14 @@ func (s *PropertySyncer) loadOptions(rctx request.CTX, def *syncDefinition) *mod
 			return appErr
 		}
 		for _, option := range page.Options {
-			optionIDs[option.Name] = option.ID
+			loaded = append(loaded, syncOption{id: option.ID, name: option.Name})
 		}
 		if !page.HasMore {
 			break
 		}
 		cursorCreateAt, cursorID = page.NextCursorCreateAt, page.NextCursorID
 	}
-	def.optionIDs = optionIDs
+	def.setOptions(loaded)
 	return nil
 }
 
@@ -791,9 +842,8 @@ func (s *PropertySyncer) withCaller(rctx request.CTX) request.CTX {
 }
 
 // normalizeSourceValues trims, drops empty entries and removes duplicates
-// while preserving source order. Case is preserved: an identity source that
-// distinguishes "Sales" from "sales" gets two options, as it does everywhere
-// else on the server.
+// while preserving source order. Case is preserved here (a text value is
+// stored as sent); option matching ignores it (see ensureOptions).
 func normalizeSourceValues(raw []string) []string {
 	out := make([]string, 0, len(raw))
 	seen := make(map[string]bool, len(raw))

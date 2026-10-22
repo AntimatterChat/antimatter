@@ -14,9 +14,9 @@ import (
 // AttributeSyncer applies the attribute values the directory reports for a
 // user to the user attributes (custom profile attributes) synced from AD/LDAP.
 // The app layer's PropertySyncer implements it: it matches select and
-// multiselect values to options by name, creates the missing ones, clears what
-// the directory no longer reports and prunes the options nobody holds any
-// more. This package only reads the directory entry.
+// multiselect values to options by name whatever its case, creates the missing
+// ones, clears what the directory no longer reports and prunes the options
+// nobody holds any more. This package only reads the directory entry.
 type AttributeSyncer interface {
 	// HasMappings reports whether any user attribute is synced from AD/LDAP.
 	HasMappings() bool

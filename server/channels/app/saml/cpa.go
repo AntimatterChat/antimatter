@@ -16,8 +16,8 @@ import (
 // user attributes (custom profile attributes) synced from SAML. The app
 // layer's PropertySyncer implements it: text, select and multiselect
 // attributes are synced, select and multiselect values are matched to options
-// by name and missing options are created, and an attribute also synced from
-// AD/LDAP is left to the AD/LDAP synchronization.
+// by name whatever its case and missing options are created, and an attribute
+// also synced from AD/LDAP is left to the AD/LDAP synchronization.
 type AttributeSyncer interface {
 	// HasMappings reports whether any user attribute is synced from SAML.
 	HasMappings() bool
