@@ -440,7 +440,7 @@ describe('pasteHandler with formatted html', () => {
 });
 
 describe('pasteHandler with a message copied out of the channel', () => {
-    const townSquare = TestHelper.getChannelMock({id: 'channel_id', team_id: 'team_id', name: 'town-square', display_name: 'Town Square'});
+    const general = TestHelper.getChannelMock({id: 'channel_id', team_id: 'team_id', name: 'general', display_name: 'General'});
 
     const initialState = {
         entities: {
@@ -449,7 +449,7 @@ describe('pasteHandler with a message copied out of the channel', () => {
                 teams: {team_id: TestHelper.getTeamMock({id: 'team_id', name: 'myteam'})},
             },
             channels: {
-                channels: {channel_id: townSquare},
+                channels: {channel_id: general},
                 channelsInTeam: {team_id: new Set(['channel_id'])},
             },
         },
@@ -523,8 +523,8 @@ describe('pasteHandler with a message copied out of the channel', () => {
         },
         {
             testName: 'links',
-            message: 'Go to [Mattermost](https://mattermost.com)',
-            expectedMarkdown: 'Go to [Mattermost](https://mattermost.com)',
+            message: 'Go to [Antimatter](https://antimatter.chat)',
+            expectedMarkdown: 'Go to [Antimatter](https://antimatter.chat)',
         },
     ];
 
@@ -567,9 +567,9 @@ describe('pasteHandler with a message copied out of the channel', () => {
     });
 
     it('should keep channel mentions out of a link', () => {
-        pasteRenderedMessage('A **bold** ~town-square');
+        pasteRenderedMessage('A **bold** ~general');
 
-        expect(execCommandInsertText).toHaveBeenCalledWith('A **bold** ~town-square');
+        expect(execCommandInsertText).toHaveBeenCalledWith('A **bold** ~general');
     });
 
     it('should escape markdown characters that are part of the text', () => {
