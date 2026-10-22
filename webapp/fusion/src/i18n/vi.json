@@ -8376,8 +8376,6 @@
   "onboarding_wizard.plugins.jira": "Jira",
   "onboarding_wizard.plugins.jira.tooltip": "Tạo vé Jira từ tin nhắn trong Antimatter, nhận thông báo về các cập nhật quan trọng trong Jira",
   "onboarding_wizard.plugins.marketplace": "Có thể thêm nhiều ứng dụng hơn sau khi cộng đồng của bạn được thiết lập. <a>Xem các ứng dụng đi kèm với Antimatter.</a>",
-  "onboarding_wizard.plugins.servicenow": "ServiceNow",
-  "onboarding_wizard.plugins.servicenow.tooltip": "Plugin này đóng vai trò là tích hợp giữa Antimatter và ServiceNow.",
   "onboarding_wizard.plugins.zoom": "Zoom",
   "onboarding_wizard.plugins.zoom.tooltip": "Bắt đầu cuộc gọi hội nghị truyền hình và âm thanh Thu phóng trong Antimatter chỉ bằng một cú nhấp chuột",
   "onboarding_wizard.previous": "Trước",

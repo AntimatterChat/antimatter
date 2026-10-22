@@ -8067,8 +8067,6 @@
   "onboarding_wizard.plugins.jira": "Jira",
   "onboarding_wizard.plugins.jira.tooltip": "Vytvářejte lístky v Jira ze zpráv v Antimatter a dostávejte oznámení o důležitých aktualizacích v Jira",
   "onboarding_wizard.plugins.marketplace": "Další aplikace lze přidat, jakmile je vaše komunita nastavena. <a>Podívejte se na aplikace dodávané s Antimatter.</a>",
-  "onboarding_wizard.plugins.servicenow": "ServiceNow",
-  "onboarding_wizard.plugins.servicenow.tooltip": "Tento plugin slouží jako integrace mezi Antimatter a ServiceNow.",
   "onboarding_wizard.plugins.zoom": "Zoom",
   "onboarding_wizard.plugins.zoom.tooltip": "Spouštějte zvukové a videohovory přes Zoom v Antimatter jedním klepnutím",
   "onboarding_wizard.previous": "Zpět",

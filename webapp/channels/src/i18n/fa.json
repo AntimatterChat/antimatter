@@ -6263,8 +6263,6 @@
   "onboarding_wizard.plugins.jira": "Jira",
   "onboarding_wizard.plugins.jira.tooltip": "از پیام‌های Antimatter تیکت‌های Jira بسازید و از به‌روزرسانی‌های مهم در Jira باخبر شوید",
   "onboarding_wizard.plugins.marketplace": "پس از تنظیم جامعهٔ شما، برنامه‌های بیشتری می‌توانند اضافه شوند. <a>برنامه‌هایی که همراه با Antimatter ارائه می‌شوند را ببینید.</a>",
-  "onboarding_wizard.plugins.servicenow": "ServiceNow",
-  "onboarding_wizard.plugins.servicenow.tooltip": "این افزونه به‌عنوان ادغامی میان Antimatter و ServiceNow عمل می‌کند.",
   "onboarding_wizard.plugins.zoom": "Zoom",
   "onboarding_wizard.plugins.zoom.tooltip": "تماس‌های صوتی و تصویری Zoom را با یک کلیک در Antimatter آغاز کنید",
   "onboarding_wizard.previous": "قبلی",

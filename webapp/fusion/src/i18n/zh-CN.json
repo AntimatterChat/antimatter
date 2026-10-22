@@ -8648,8 +8648,6 @@
   "onboarding_wizard.plugins.jira": "Jira",
   "onboarding_wizard.plugins.jira.tooltip": "从 Antimatter 中的消息创建 Jira 工单，获取 Jira 的重要更新通知",
   "onboarding_wizard.plugins.marketplace": "社区设置完成后，可以添加更多应用。<a>查看随 Antimatter 附带的应用。</a>",
-  "onboarding_wizard.plugins.servicenow": "ServiceNow",
-  "onboarding_wizard.plugins.servicenow.tooltip": "此插件用于将 Antimatter 与 ServiceNow 集成。",
   "onboarding_wizard.plugins.zoom": "Zoom",
   "onboarding_wizard.plugins.zoom.tooltip": "通过单击一次，在 Antimatter 中开始 Zoom 音频和视频会议通话",
   "onboarding_wizard.previous": "上一页",

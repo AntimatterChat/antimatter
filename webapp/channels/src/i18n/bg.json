@@ -6327,8 +6327,6 @@
   "onboarding_wizard.plugins.jira": "Jira",
   "onboarding_wizard.plugins.jira.tooltip": "Създавайте Jira тикети от съобщения в Antimatter, получавайте известия за важни промени в Jira",
   "onboarding_wizard.plugins.marketplace": "Още приложения могат да бъдат добавени, след като общността ви е настроена. <a>Вижте приложенията, които идват с Antimatter.</a>",
-  "onboarding_wizard.plugins.servicenow": "ServiceNow",
-  "onboarding_wizard.plugins.servicenow.tooltip": "Тази приставка служи като интеграция между Antimatter и ServiceNow.",
   "onboarding_wizard.plugins.zoom": "Zoom",
   "onboarding_wizard.plugins.zoom.tooltip": "Започвайте аудио и видео разговори в Zoom от Antimatter с едно натискане",
   "onboarding_wizard.previous": "Назад",

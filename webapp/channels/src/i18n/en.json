@@ -24615,14 +24615,6 @@
     "defaultMessage": "More apps can be added once your community is set up. <a>See the apps that come with Antimatter.</a>",
     "description": "Footnote on the app selection step of the setup wizard; the <a> tags wrap a link to the documentation page listing the apps bundled with Antimatter."
   },
-  "onboarding_wizard.plugins.servicenow": {
-    "defaultMessage": "ServiceNow",
-    "description": "Product name on a selectable tool card in the setup wizard's plugin selection step; usually left untranslated."
-  },
-  "onboarding_wizard.plugins.servicenow.tooltip": {
-    "defaultMessage": "This plugin serves as an integration between Antimatter and ServiceNow.",
-    "description": "Tooltip describing the ServiceNow plugin on the onboarding wizard's plugins step."
-  },
   "onboarding_wizard.plugins.zoom": {
     "defaultMessage": "Zoom",
     "description": "Product name on a selectable tool card in the setup wizard's plugin selection step; usually left untranslated."

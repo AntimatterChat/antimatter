@@ -8067,8 +8067,6 @@
   "onboarding_wizard.plugins.jira": "Jira",
   "onboarding_wizard.plugins.jira.tooltip": "Antimatter के संदेशों से Jira टिकट बनाएं, Jira में महत्वपूर्ण अपडेट के बारे में सूचना पाएं",
   "onboarding_wizard.plugins.marketplace": "आपके समुदाय की स्थापना होने के बाद और ऐप्स जोड़े जा सकते हैं। <a>Antimatter के साथ आने वाले ऐप्स देखें।</a>",
-  "onboarding_wizard.plugins.servicenow": "ServiceNow",
-  "onboarding_wizard.plugins.servicenow.tooltip": "यह प्लगइन Antimatter और ServiceNow के बीच एक इंटीग्रेशन के रूप में कार्य करता है।",
   "onboarding_wizard.plugins.zoom": "Zoom",
   "onboarding_wizard.plugins.zoom.tooltip": "एक क्लिक में Antimatter में Zoom ऑडियो और वीडियो कॉन्फ्रेंस कॉल शुरू करें",
   "onboarding_wizard.previous": "पिछला",

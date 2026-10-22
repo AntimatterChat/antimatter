@@ -5220,8 +5220,6 @@
   "onboarding_wizard.plugins.gitlab.tooltip": "Subscribe to repositories, stay up-to-date with reviews, assignments and more",
   "onboarding_wizard.plugins.jira": "Jira",
   "onboarding_wizard.plugins.jira.tooltip": "Create Jira tickets from messages in Antimatter, get notified of important updates in Jira",
-  "onboarding_wizard.plugins.servicenow": "ServiceNow",
-  "onboarding_wizard.plugins.servicenow.tooltip": "This plugin serves as an integration between Antimatter and ServiceNow.",
   "onboarding_wizard.plugins.zoom": "Zoom",
   "onboarding_wizard.plugins.zoom.tooltip": "Start Zoom audio and video conferencing calls in Antimatter with a single click",
   "onboarding_wizard.previous": "Previous",

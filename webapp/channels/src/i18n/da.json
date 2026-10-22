@@ -6675,8 +6675,6 @@
   "onboarding_wizard.plugins.jira": "Jira",
   "onboarding_wizard.plugins.jira.tooltip": "Opret Jira-sager fra beskeder i Antimatter, og få besked om vigtige opdateringer i Jira",
   "onboarding_wizard.plugins.marketplace": "Flere apps kan tilføjes, når dit fællesskab er opsat. <a>Se de apps, der leveres med Antimatter.</a>",
-  "onboarding_wizard.plugins.servicenow": "ServiceNow",
-  "onboarding_wizard.plugins.servicenow.tooltip": "Dette plugin fungerer som en integration mellem Antimatter og ServiceNow.",
   "onboarding_wizard.plugins.zoom": "Zoom",
   "onboarding_wizard.plugins.zoom.tooltip": "Start Zoom lyd- og videokonferenceopkald i Antimatter med et enkelt klik",
   "onboarding_wizard.previous": "Forrige",

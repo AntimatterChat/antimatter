@@ -6596,8 +6596,6 @@
   "onboarding_wizard.plugins.gitlab.tooltip": "Prenumeruokite saugyklas, gaukite naujausią informaciją apie apžvalgas, užduotis ir dar daugiau",
   "onboarding_wizard.plugins.jira": "Jira",
   "onboarding_wizard.plugins.jira.tooltip": "Kurkite Jira bilietus iš pranešimų Antimatter, gaukite pranešimus apie svarbius Jira naujinius",
-  "onboarding_wizard.plugins.servicenow": "ServiceNow",
-  "onboarding_wizard.plugins.servicenow.tooltip": "Šis papildinys yra Antimatter ir ServiceNow integracija.",
   "onboarding_wizard.plugins.zoom": "Didinimas",
   "onboarding_wizard.plugins.zoom.tooltip": "Pradėkite mastelio keitimo garso ir vaizdo konferencijų skambučius Antimatter vienu spustelėjimu",
   "onboarding_wizard.previous": "Ankstesnis",

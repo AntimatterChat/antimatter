@@ -8182,8 +8182,6 @@
   "onboarding_wizard.plugins.jira": "Jira",
   "onboarding_wizard.plugins.jira.tooltip": "Creați bilete Jira din mesaje în Antimatter și primiți notificări despre actualizările importante din Jira",
   "onboarding_wizard.plugins.marketplace": "Mai multe aplicații pot fi adăugate după ce comunitatea este configurată. <a>Consultați aplicațiile incluse în Antimatter.</a>",
-  "onboarding_wizard.plugins.servicenow": "ServiceNow",
-  "onboarding_wizard.plugins.servicenow.tooltip": "Acest plugin servește ca integrare între Antimatter și ServiceNow.",
   "onboarding_wizard.plugins.zoom": "Zoom",
   "onboarding_wizard.plugins.zoom.tooltip": "Începeți apeluri de conferință audio și video Zoom în Antimatter cu un singur clic",
   "onboarding_wizard.previous": "Înapoi",

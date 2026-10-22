@@ -8324,8 +8324,6 @@
   "onboarding_wizard.plugins.jira": "Jira",
   "onboarding_wizard.plugins.jira.tooltip": "Jira jegyek létrehozása az Antimatter üzenetekből, értesüljön a fontos frissítésekről a Jira-ban",
   "onboarding_wizard.plugins.marketplace": "További alkalmazásokat a közösség beállítása után adhat hozzá. <a>Ismerje meg az Antimatterrel együtt szállító alkalmazásokat.</a>",
-  "onboarding_wizard.plugins.servicenow": "ServiceNow",
-  "onboarding_wizard.plugins.servicenow.tooltip": "Ez a bővítmény összeköti az Antimattert a ServiceNow-val.",
   "onboarding_wizard.plugins.zoom": "Zoom",
   "onboarding_wizard.plugins.zoom.tooltip": "Zoom hang- és videokonferencia-hívások indítása az Antimatterben egyetlen kattintással",
   "onboarding_wizard.previous": "Vissza",

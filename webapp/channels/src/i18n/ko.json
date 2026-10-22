@@ -6555,8 +6555,6 @@
   "onboarding_wizard.plugins.jira": "Jira",
   "onboarding_wizard.plugins.jira.tooltip": "Antimatter의 메시지에서 Jira 티켓을 만들고, Jira에서 중요한 업데이트에 대한 알림을 받습니다.",
   "onboarding_wizard.plugins.marketplace": "커뮤니티가 설정된 후 더 많은 앱을 추가할 수 있습니다. <a>Antimatter에 포함된 앱을 확인하세요.</a>",
-  "onboarding_wizard.plugins.servicenow": "ServiceNow",
-  "onboarding_wizard.plugins.servicenow.tooltip": "이 플러그인은 Antimatter와 ServiceNow를 통합하는 역할을 합니다.",
   "onboarding_wizard.plugins.zoom": "비율",
   "onboarding_wizard.plugins.zoom.tooltip": "클릭 한 번으로 Antimatter에서 Zoom 오디오 및 화상 회의 통화를 시작하세요.",
   "onboarding_wizard.previous": "이전",

@@ -8595,8 +8595,6 @@
   "onboarding_wizard.plugins.jira": "Jira",
   "onboarding_wizard.plugins.jira.tooltip": "Antimatter üzerindeki iletilerden Jira destek kayıtları oluşturun, önemli Jira güncellemeleri ile ilgili bildirim alın",
   "onboarding_wizard.plugins.marketplace": "Topluluğunuzun kurulumu tamamlandığında daha fazla uygulama eklenebilir. <a>Antimatter ile gelen uygulamaları görüntüleyin.</a>",
-  "onboarding_wizard.plugins.servicenow": "ServiceNow",
-  "onboarding_wizard.plugins.servicenow.tooltip": "Bu uygulama eki, Antimatter ve ServiceNow arasında bütünleştirme sağlar.",
   "onboarding_wizard.plugins.zoom": "Zoom",
   "onboarding_wizard.plugins.zoom.tooltip": "Antimatter üzerinde tek tıkla sesli ve görüntülü Zoom görüşmeleri başlatın",
   "onboarding_wizard.previous": "Önceki",
