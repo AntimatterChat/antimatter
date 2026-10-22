@@ -123,7 +123,7 @@ describe('archiveFilename', () => {
     const createAt = new Date(2026, 8, 29, 12).getTime();
 
     it('uses the channel name and post date', () => {
-        expect(archiveFilename('Town Square', createAt)).toBe('Town-Square-2026-09-29.zip');
+        expect(archiveFilename('General', createAt)).toBe('General-2026-09-29.zip');
         expect(archiveFilename('日本語 チャンネル', createAt)).toBe('日本語-チャンネル-2026-09-29.zip');
     });
 

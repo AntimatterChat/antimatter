@@ -239,7 +239,7 @@ describe('MediaGallery', () => {
         const state = {
             entities: {
                 ...baseState.entities,
-                channels: {channels: {c1: {id: 'c1', display_name: 'Town Square'}}},
+                channels: {channels: {c1: {id: 'c1', display_name: 'General'}}},
                 posts: {posts: {p1: {id: 'p1', create_at: new Date(2026, 8, 29, 12).getTime()}}},
             },
         };
@@ -286,7 +286,7 @@ describe('MediaGallery', () => {
 
             await waitFor(() => expect(button).toBeEnabled());
             expect(URL.createObjectURL).toHaveBeenCalledWith(blob);
-            expect(downloadedAs).toEqual(['Town-Square-2026-09-29.zip']);
+            expect(downloadedAs).toEqual(['General-2026-09-29.zip']);
             expect(URL.revokeObjectURL).toHaveBeenCalledWith('blob:archive');
         });
 
