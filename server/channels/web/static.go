@@ -59,7 +59,7 @@ func (w *Web) InitStatic() {
 			fusionHandler = staticFilesHandler(http.StripPrefix(path.Join(subpath, "static", "fusion"), http.FileServer(http.Dir(fusionDir))))
 		}
 
-		if *w.srv.Config().ServiceSettings.WebserverMode == "gzip" {
+		if w.srv.Config().ServiceSettings.CompressResponses() {
 			staticHandler = gzhttp.GzipHandler(staticHandler)
 			pluginHandler = gzhttp.GzipHandler(pluginHandler)
 			fusionHandler = gzhttp.GzipHandler(fusionHandler)

@@ -34,6 +34,8 @@ type TestHelper struct {
 	Server  *app.Server
 	Web     *Web
 
+	ConfigStore *config.Store
+
 	BasicUser    *model.User
 	BasicChannel *model.Channel
 	BasicTeam    *model.Team
@@ -136,6 +138,7 @@ func setupTestHelper(tb testing.TB, includeCacheLayer bool, options []app.Option
 		Context:           request.EmptyContext(testLogger),
 		Server:            s,
 		Web:               web,
+		ConfigStore:       memoryStore,
 		IncludeCacheLayer: includeCacheLayer,
 		TestLogger:        testLogger,
 	}
