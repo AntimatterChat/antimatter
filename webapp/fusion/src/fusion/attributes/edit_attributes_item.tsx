@@ -19,12 +19,13 @@ import {openDialog} from 'fusion/utils/modals';
 import type {GlobalState} from 'types/store';
 
 import {useCommunityAttributes} from './community_attributes';
-import UserAttributesDialog, {shownServerAttributes, useCanEditServerAttributes} from './user_attributes_dialog';
+import UserAttributesDialog, {shownServerAttributes, useCanEditServerAttributesOf} from './user_attributes_dialog';
 
 export const USER_ATTRIBUTES_DIALOG = 'fusion_user_attributes';
 
 // EditAttributesItem is "Edit attributes…" in a person's menu, for those who may set some of their attributes: the
-// server's admins, the community's, and the person themselves when the community has attributes they set.
+// server's admins, the community's, and the person themselves when the community has attributes they set. A bot's
+// menu has it for those who may set its server attributes: the server's admins and those who manage the bot.
 export default function EditAttributesItem({userId, onDone}: {userId: string; onDone: () => void}) {
     const {formatMessage} = useIntl();
     const dispatch = useDispatch();
@@ -32,14 +33,14 @@ export default function EditAttributesItem({userId, onDone}: {userId: string; on
     const user = useUser(userId);
     const me = useSelector(getCurrentUserId);
     const teamId = useSelector(getCurrentTeamId);
-    const serverAdmin = useCanEditServerAttributes();
+    const serverAdmin = useCanEditServerAttributesOf(user);
     const communityAdmin = useSelector((state: GlobalState) => haveITeamPermission(state, teamId, Permissions.MANAGE_TEAM));
     const serverFields = shownServerAttributes(useSelector(getCustomProfileAttributes));
-    const communityFields = useCommunityAttributes(teamId) || [];
+    const communityFields = useCommunityAttributes(user?.is_bot ? undefined : teamId) || [];
 
     const server = serverAdmin && serverFields.length > 0;
     const community = communityFields.length > 0 && (communityAdmin || (userId === me && communityFields.some((f) => f.attrs?.managed !== 'admin')));
-    if (!user || user.is_bot || !(server || community)) {
+    if (!user || !(server || community)) {
         return null;
     }
     return (

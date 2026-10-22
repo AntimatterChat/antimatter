@@ -47,7 +47,8 @@ function attributeHref(field: {attrs?: {value_type?: string}}, text: string): st
 
 // ProfileFacts are the extra lines of someone's profile card: their email when the server shares it, the custom
 // profile fields the admins defined (the server's, then the current community's), and when they were last online.
-// The server only sends admin-only values to the admins and the person themselves; those lines show a lock.
+// The server only sends admin-only values to the admins and the person themselves; those lines show a lock. A bot's
+// card has only the server's attributes (and the server sends its admin-only ones to those who manage it too).
 export default function ProfileFacts({user}: {user: UserProfile}) {
     const intl = useIntl();
     const dispatch = useDispatch();
@@ -60,18 +61,18 @@ export default function ProfileFacts({user}: {user: UserProfile}) {
     const communityValues = useMemberAttributeValues(user.is_bot ? undefined : teamId, user.id);
 
     useEffect(() => {
-        if (!user.is_bot && fields.length && !values) {
+        if (fields.length && !values) {
             dispatch(getCustomProfileAttributeValues(user.id));
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user.id, fields.length, Boolean(values)]);
 
     const lines: Array<{key: string; icon: IconName; label?: string; text: string; href?: string; node?: React.ReactNode}> = [];
-    const adminOnly = intl.formatMessage({id: 'fusion.profile.adminOnly', defaultMessage: 'Only admins and this person see this'});
+    const adminOnly = user.is_bot ? intl.formatMessage({id: 'fusion.profile.adminOnlyBot', defaultMessage: 'Only admins and those who manage this bot see this'}) : intl.formatMessage({id: 'fusion.profile.adminOnly', defaultMessage: 'Only admins and this person see this'});
     if (user.email && !user.is_bot && !streamer) {
         lines.push({key: 'email', icon: 'mail', text: user.email, href: `mailto:${user.email}`});
     }
-    if (values && !user.is_bot && !streamer) {
+    if (values && !streamer) {
         for (const field of fields) {
             const visibility = field.attrs?.visibility || 'when_set';
             if (visibility === 'hidden' || field.attrs?.access_mode === 'source_only') {
@@ -110,7 +111,7 @@ export default function ProfileFacts({user}: {user: UserProfile}) {
             });
         }
     }
-    if (lastOnline) {
+    if (lastOnline && !user.is_bot) {
         lines.push({key: 'last', icon: 'history', text: intl.formatMessage({id: 'fusion.header.lastOnline', defaultMessage: 'Last online {when}'}, {when: lastOnlineAgo(intl, lastOnline)})});
     }
     if (!lines.length) {

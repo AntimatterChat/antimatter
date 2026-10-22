@@ -22247,6 +22247,10 @@
     "defaultMessage": "Only admins and {name} see it.",
     "description": ""
   },
+  "fusion.attributes.adminOnlyNoteBot": {
+    "defaultMessage": "Only admins and those who manage {name} see it.",
+    "description": "Note under a bot's admin-only attribute in the attributes dialog: who can read its value. {name} is the bot's name."
+  },
   "fusion.attributes.cancel": {
     "defaultMessage": "Cancel",
     "description": ""
@@ -22258,6 +22262,10 @@
   "fusion.attributes.dialogLead": {
     "defaultMessage": "Details about them that admins keep up to date, such as where they work or for whom. They show on their profile.",
     "description": ""
+  },
+  "fusion.attributes.dialogLeadBot": {
+    "defaultMessage": "Details about this bot that its managers keep up to date, such as what it's for or whom it works for. They show on its profile.",
+    "description": "Introduction at the top of the attributes dialog when it edits a bot account's attributes."
   },
   "fusion.attributes.dialogTitle": {
     "defaultMessage": "{name}'s attributes",
@@ -22274,6 +22282,10 @@
   "fusion.attributes.hiddenNote": {
     "defaultMessage": "Not shown on profiles.",
     "description": ""
+  },
+  "fusion.attributes.lockedAdmin": {
+    "defaultMessage": "Set by the server's admins.",
+    "description": "Note under a server attribute in the attributes dialog that only system admins may set, shown to someone who isn't one (for example a bot's owner)."
   },
   "fusion.attributes.lockedByIntegration": {
     "defaultMessage": "Managed by an integration.",
@@ -26762,6 +26774,10 @@
   "fusion.profile.adminOnly": {
     "defaultMessage": "Only admins and this person see this",
     "description": ""
+  },
+  "fusion.profile.adminOnlyBot": {
+    "defaultMessage": "Only admins and those who manage this bot see this",
+    "description": "Tooltip label on a bot's profile card next to an admin-only attribute: who can read its value."
   },
   "fusion.profile.agent": {
     "defaultMessage": "Agent · mention it or message it, like a coworker",

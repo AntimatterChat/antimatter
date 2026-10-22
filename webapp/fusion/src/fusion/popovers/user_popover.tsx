@@ -215,6 +215,7 @@ export default function UserPopover({userId, anchor, onClose, toggles}: Props) {
                             <Icon name='plug'/>
                             {user.bot_description || (agent ? formatMessage({id: 'fusion.profile.agent', defaultMessage: 'Agent · mention it or message it, like a coworker'}) : formatMessage({id: 'fusion.profile.bot', defaultMessage: 'Integration · posts on behalf of an app'}))}
                         </span>
+                        <ProfileFacts user={user}/>
                     </div>
                 )}
                 {timeout && (

@@ -22,10 +22,12 @@ export const field = (id: string, attrs: Partial<CommunityAttributeField['attrs'
     updated_by: '',
 } as unknown as CommunityAttributeField);
 
-export function attributesState(teamId: string, serverFields: Record<string, unknown> = {}, users: Record<string, unknown> = {}) {
+// bots are the loaded bot accounts, by user ID (their owner_id says whose they are).
+export function attributesState(teamId: string, serverFields: Record<string, unknown> = {}, users: Record<string, unknown> = {}, bots: Record<string, unknown> = {}) {
     return {
         entities: {
             general: {config: {}, customProfileAttributes: serverFields},
+            bots: {accounts: bots},
             users: {
                 currentUserId: 'me',
                 profiles: {
