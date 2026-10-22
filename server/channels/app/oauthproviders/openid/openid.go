@@ -16,6 +16,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"maps"
 	"slices"
 	"strings"
 	"sync"
@@ -297,9 +298,7 @@ func (p *Provider) GetClaimValues(rctx request.CTX, in einterfaces.OAuthClaimsIn
 		if err != nil {
 			return nil, err
 		}
-		for name, value := range tokenClaims {
-			claims[name] = value
-		}
+		maps.Copy(claims, tokenClaims)
 		if sub := oidc.String(tokenClaims, "sub"); sub != "" {
 			subjects = append(subjects, sub)
 		}
@@ -319,9 +318,7 @@ func (p *Provider) GetClaimValues(rctx request.CTX, in einterfaces.OAuthClaimsIn
 		if infoSubject := oidc.String(userInfo, "sub"); infoSubject != "" && len(subjects) > 0 && !slices.Contains(subjects, infoSubject) {
 			return nil, errors.New("the userinfo subject does not match the id_token subject")
 		}
-		for name, value := range userInfo {
-			claims[name] = value
-		}
+		maps.Copy(claims, userInfo)
 	}
 
 	values := make(map[string][]string, len(claimPaths))

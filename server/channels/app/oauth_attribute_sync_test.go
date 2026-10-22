@@ -60,7 +60,6 @@ func TestOAuthAttributeSyncEnabled(t *testing.T) {
 		defer setFlag(true)
 		assert.False(t, th.App.oauthAttributeSyncEnabled(model.ServiceOpenid))
 	})
-
 }
 
 func TestSyncUserAttributesFromClaims(t *testing.T) {

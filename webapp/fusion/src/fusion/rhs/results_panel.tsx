@@ -10,8 +10,8 @@ import type {Post} from '@mattermost/types/posts';
 
 import {getMorePostsForSearch} from 'mattermost-redux/actions/search';
 import {getAllChannels} from 'mattermost-redux/selectors/entities/channels';
-import {getConfig} from 'mattermost-redux/selectors/entities/general';
 import {getSearchFilesResults} from 'mattermost-redux/selectors/entities/files';
+import {getConfig} from 'mattermost-redux/selectors/entities/general';
 import {isPostFlagged} from 'mattermost-redux/selectors/entities/posts';
 import {getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
 import {getFormattedFileSize} from 'mattermost-redux/utils/file_utils';
