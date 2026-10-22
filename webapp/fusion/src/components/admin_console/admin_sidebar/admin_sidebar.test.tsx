@@ -43,6 +43,7 @@ describe('components/AdminSidebar', () => {
         adminDefinition: AdminDefinition,
         navigationBlocked: false,
         siteName: 'test snap',
+        isCurrentUserSystemAdmin: true,
         plugins: {
             plugin_0: {
                 active: false,
@@ -143,6 +144,7 @@ describe('components/AdminSidebar', () => {
             },
             adminDefinition: AdminDefinition,
             siteName: 'test snap',
+            isCurrentUserSystemAdmin: true,
             navigationBlocked: false,
             plugins: {
                 plugin_0: {
@@ -185,6 +187,7 @@ describe('components/AdminSidebar', () => {
             },
             adminDefinition: AdminDefinition,
             siteName: 'test snap',
+            isCurrentUserSystemAdmin: true,
             navigationBlocked: false,
             plugins: {
                 plugin_0: {
@@ -243,6 +246,7 @@ describe('components/AdminSidebar', () => {
             adminDefinition: AdminDefinition,
             navigationBlocked: false,
             siteName: 'test snap',
+            isCurrentUserSystemAdmin: true,
             plugins: {
                 plugin_0: {
                     active: false,
@@ -307,6 +311,7 @@ describe('components/AdminSidebar', () => {
             adminDefinition: AdminDefinition,
             navigationBlocked: false,
             siteName: 'test snap',
+            isCurrentUserSystemAdmin: true,
             plugins: {
                 'mattermost-autolink': samplePlugin1,
             },
@@ -443,6 +448,7 @@ describe('components/AdminSidebar', () => {
             adminDefinition: AdminDefinition,
             navigationBlocked: false,
             siteName: 'test snap',
+            isCurrentUserSystemAdmin: true,
             plugins: {
                 'mattermost-autolink': samplePlugin1,
             },

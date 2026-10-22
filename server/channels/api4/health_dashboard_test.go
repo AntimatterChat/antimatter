@@ -187,6 +187,8 @@ func TestGetHealthFindingsRendering(t *testing.T) {
 			assert.Empty(t, f.Title)
 			assert.Empty(t, f.Remediation)
 			assert.Empty(t, f.Message)
+			assert.Empty(t, f.DocsURL)
+			assert.Empty(t, f.ConsolePath)
 		}
 	})
 
@@ -202,6 +204,8 @@ func TestGetHealthFindingsRendering(t *testing.T) {
 		assert.Equal(t, "Serve Antimatter over HTTPS and update SiteURL to the https:// address.", rendered.Remediation)
 		assert.Equal(t, "SiteURL is http://example.com. Session cookies and auth tokens travel over the network unencrypted.", rendered.Message)
 		assert.Equal(t, finding.MessageID, rendered.MessageID)
+		assert.Equal(t, "https://antimatter.chat/docs/admins/https.html#site-url", rendered.DocsURL)
+		assert.Equal(t, "/admin_console/environment/web_server", rendered.ConsolePath)
 	})
 
 	findingsIn := func(t *testing.T, locale string) *model.HealthFindingList {
