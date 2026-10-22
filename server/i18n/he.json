@@ -7052,10 +7052,6 @@
     "translation": "בוטים לא יכולים להשתמש במצב התמקדות."
   },
   {
-    "id": "app.focus.delete.app_error",
-    "translation": "לא ניתן למחוק את מצב המיקוד של החשבון."
-  },
-  {
     "id": "app.focus.get.app_error",
     "translation": "לא ניתן לקבל את מצב המיקוד שלך."
   },

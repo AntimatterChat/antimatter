@@ -7052,10 +7052,6 @@
     "translation": "Els bots no poden utilitzar el mode de concentració."
   },
   {
-    "id": "app.focus.delete.app_error",
-    "translation": "No s'ha pogut eliminar el mode de concentració del compte."
-  },
-  {
     "id": "app.focus.get.app_error",
     "translation": "No s'ha pogut obtenir el teu mode de concentració."
   },

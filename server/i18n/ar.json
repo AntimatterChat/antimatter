@@ -7052,10 +7052,6 @@
     "translation": "لا يمكن للبوتات استخدام وضع التركيز."
   },
   {
-    "id": "app.focus.delete.app_error",
-    "translation": "تعذّر حذف وضع التركيز للحساب."
-  },
-  {
     "id": "app.focus.get.app_error",
     "translation": "تعذّر الحصول على وضع التركيز الخاص بك."
   },

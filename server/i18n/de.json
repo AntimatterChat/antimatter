@@ -7465,10 +7465,6 @@
     "translation": "Bots können den Fokusmodus nicht verwenden."
   },
   {
-    "id": "app.focus.delete.app_error",
-    "translation": "Der Fokusmodus des Kontos konnte nicht gelöscht werden."
-  },
-  {
     "id": "app.focus.get.app_error",
     "translation": "Ihr Fokusmodus konnte nicht abgerufen werden."
   },

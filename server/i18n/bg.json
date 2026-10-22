@@ -7465,10 +7465,6 @@
     "translation": "Ботовете не могат да използват режим на фокус."
   },
   {
-    "id": "app.focus.delete.app_error",
-    "translation": "Не може да се изтрие режимът на фокус на акаунта."
-  },
-  {
     "id": "app.focus.get.app_error",
     "translation": "Не може да се получи режимът ви за фокус."
   },

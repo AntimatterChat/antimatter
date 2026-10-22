@@ -7052,10 +7052,6 @@
     "translation": "বটরা ফোকাস মোড ব্যবহার করতে পারে না।"
   },
   {
-    "id": "app.focus.delete.app_error",
-    "translation": "অ্যাকাউন্টের ফোকাস মোড মুছে ফেলা যায়নি।"
-  },
-  {
     "id": "app.focus.get.app_error",
     "translation": "আপনার ফোকাস মোড পাওয়া যায়নি।"
   },

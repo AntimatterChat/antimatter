@@ -7479,10 +7479,6 @@
     "translation": "Boté nemohou používat režim soustředění."
   },
   {
-    "id": "app.focus.delete.app_error",
-    "translation": "Režim soustředění účtu se nepodařilo smazat."
-  },
-  {
     "id": "app.focus.get.app_error",
     "translation": "Nepodařilo se získat režim soustředění."
   },

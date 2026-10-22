@@ -7465,10 +7465,6 @@
     "translation": "Bots kan ikke bruge fokustilstand."
   },
   {
-    "id": "app.focus.delete.app_error",
-    "translation": "Kan ikke slette fokustilstanden for kontoen."
-  },
-  {
     "id": "app.focus.get.app_error",
     "translation": "Kunne ikke hente din fokustilstand."
   },

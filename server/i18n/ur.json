@@ -7052,10 +7052,6 @@
     "translation": "بوٹس فوکس موڈ استعمال نہیں کر سکتے۔"
   },
   {
-    "id": "app.focus.delete.app_error",
-    "translation": "اکاؤنٹ کا فوکس موڈ حذف نہیں کیا جا سکا۔"
-  },
-  {
     "id": "app.focus.get.app_error",
     "translation": "آپ کا فوکس موڈ حاصل نہیں کیا جا سکا۔"
   },
