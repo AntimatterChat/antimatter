@@ -181,7 +181,10 @@ func IsAuditLevelActive(auditSettings model.ExperimentalAuditSettings, level mlo
 
 func GetLogFileLocation(fileLocation string) string {
 	if fileLocation == "" {
-		fileLocation, _ = fileutils.FindDir("logs")
+		// Match GetLogRootPath's precedence (AM_LOG_PATH/MM_LOG_PATH, then the default logs
+		// directory): otherwise, with the env var set but FileLocation left at its default, the
+		// log file would resolve outside the validated logging root (EnforceLogPathRoot).
+		fileLocation = GetLogRootPath()
 	}
 
 	return filepath.Join(fileLocation, LogFilename)

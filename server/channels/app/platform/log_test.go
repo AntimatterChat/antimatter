@@ -262,6 +262,9 @@ func TestGetAdvancedLogs(t *testing.T) {
 
 		th.Service.UpdateConfig(func(c *model.Config) {
 			c.LogSettings.AdvancedLoggingJSON = logCfgData
+			// EnforceLogPathRoot validates the default _defFile target too, even though this
+			// test doesn't use it: keep it inside the overridden root (dir).
+			*c.LogSettings.FileLocation = dir
 			// Audit logs are not testable as they are part of the server, not the platform
 		})
 
