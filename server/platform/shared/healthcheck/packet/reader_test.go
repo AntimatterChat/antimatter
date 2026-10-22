@@ -131,10 +131,14 @@ func TestReadGoldenPackets(t *testing.T) {
 			expected: []finding{
 				{Code: "COMPLIANCE_NO_DIR", State: healthcheck.StateFiring, Subject: complianceDirSubject},
 				{Code: "JOB_FAILED", State: healthcheck.StateFiring, Subject: model.JobTypeLdapSync},
+				{Code: "LDAP_PROBE_FAILED", State: healthcheck.StateUnknown, Subject: "LdapSettings.LdapServer"},
+				{Code: "LDAP_RECOMMENDED_AT_SCALE", State: healthcheck.StateFiring, Subject: "LdapSettings.Enable"},
+				{Code: "LDAP_SYNC_NO_BASEDN", State: healthcheck.StateFiring, Subject: "LdapSettings.BaseDN"},
 				{Code: "METRICS_OFF", State: healthcheck.StateFiring, Subject: "MetricsSettings.Enable"},
 				{Code: "PLUGIN_NOT_RUNNING", State: healthcheck.StateFiring, Subject: "PluginSettings.PluginStates"},
 				{Code: "PUSH_ID_ONLY", State: healthcheck.StateFiring, Subject: "EmailSettings.PushNotificationContents"},
 				{Code: "PUSH_TEST_PROXY", State: healthcheck.StateFiring, Subject: pushSubject},
+				{Code: "SESSION_EXTEND_OFF", State: healthcheck.StateFiring, Subject: "ServiceSettings.ExtendSessionLengthWithActivity"},
 				{Code: "SITE_URL_HTTP", State: healthcheck.StateFiring, Subject: siteURLSubject},
 			},
 		},
@@ -149,6 +153,7 @@ func TestReadGoldenPackets(t *testing.T) {
 				{Code: "JOB_WEDGED_AT_ZERO", State: healthcheck.StateFiring, Subject: model.JobTypeMessageExport},
 				{Code: "PUSH_BAD_SCHEME", State: healthcheck.StateFiring, Subject: pushSubject},
 				{Code: "PUSH_ID_ONLY", State: healthcheck.StateFiring, Subject: "EmailSettings.PushNotificationContents"},
+				{Code: "SAML_ENCRYPT_OFF", State: healthcheck.StateFiring, Subject: "SamlSettings.Encrypt"},
 			},
 		},
 	}
@@ -305,6 +310,9 @@ func TestReadCloud(t *testing.T) {
 		codes = append(codes, f.Code)
 	}
 	assert.ElementsMatch(t, []string{
+		"LDAP_PROBE_FAILED",
+		"LDAP_RECOMMENDED_AT_SCALE",
+		"LDAP_SYNC_NO_BASEDN",
 		"PLUGIN_NOT_RUNNING",
 		"PUSH_ID_ONLY",
 		"PUSH_TEST_PROXY",
