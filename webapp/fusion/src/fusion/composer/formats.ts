@@ -3,6 +3,8 @@
 
 import type {Editor} from '@tiptap/react';
 
+import {applyWysiwygFormatting} from 'components/advanced_text_editor/wysiwyg_editor/apply_wysiwyg_formatting';
+
 import type {IconName} from 'fusion/components/icon';
 
 // The mockup's formatting buttons: markdown inserted around the selection, or at the start of the selected lines.
@@ -42,36 +44,29 @@ export function applyFormat(value: string, start: number, end: number, format: F
     return {value: next, start: selStart, end: selStart + selected.length};
 }
 
-// formatRich applies the same formats in the rich text editor, where they show as they will look.
+// formatRich applies the same formats in the rich text editor, where they show as they will look. Those the editor
+// shares with the classic composer go through its formatting (bold, italic or strikethrough with the caret in a word
+// takes the whole word, and the caret stays where it was); inline code and links are Fusion's.
 export function formatRich(editor: Editor, id: string) {
-    const chain = editor.chain().focus();
     switch (id) {
     case 'bold':
-        chain.toggleBold().run();
-        break;
     case 'italic':
-        chain.toggleItalic().run();
-        break;
     case 'strike':
-        chain.toggleStrike().run();
-        break;
     case 'heading':
-        chain.toggleHeading({level: 3}).run();
-        break;
+    case 'quote':
+    case 'ul':
+    case 'ol':
+        applyWysiwygFormatting(editor, id);
+        return;
+    case 'codeblock':
+        applyWysiwygFormatting(editor, 'code');
+        return;
+    }
+
+    const chain = editor.chain().focus();
+    switch (id) {
     case 'code':
         chain.toggleCode().run();
-        break;
-    case 'codeblock':
-        chain.toggleCodeBlock().run();
-        break;
-    case 'quote':
-        chain.toggleBlockquote().run();
-        break;
-    case 'ul':
-        chain.toggleBulletList().run();
-        break;
-    case 'ol':
-        chain.toggleOrderedList().run();
         break;
     case 'link': {
         // The selection becomes the link when it's an address, else the link's text, to fill in.
