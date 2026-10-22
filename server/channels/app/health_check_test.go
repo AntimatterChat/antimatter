@@ -16,9 +16,6 @@ import (
 	"github.com/mattermost/mattermost/server/v8/platform/shared/healthcheck"
 )
 
-// Tests in this file are not parallel: they use the process-wide
-// latest-version cache that BuildHealthSnapshot reads.
-
 // setupHealthCheck returns a service over test rules, since no built-in rules exist yet.
 // Feature flags cannot be changed after setup, so the flag is set here.
 func setupHealthCheck(t *testing.T, flagEnabled bool) (*TestHelper, *HealthCheckService) {
@@ -30,17 +27,17 @@ func setupHealthCheck(t *testing.T, flagEnabled bool) (*TestHelper, *HealthCheck
 
 	svc := newTestHealthCheckService(th,
 		healthcheck.Rule{
-			Code:       "TEST_LATEST_VERSION",
+			Code:       "TEST_CURRENT_VERSION",
 			Area:       model.AreaCluster,
 			Severity:   healthcheck.SeverityWarning,
 			Surface:    healthcheck.SurfaceProduct,
 			Volatility: healthcheck.VolatilityStable,
 			Subject:    "version",
 			Eval: func(s *healthcheck.Snapshot) []healthcheck.Result {
-				if s.Version.Latest == "" {
-					return []healthcheck.Result{healthcheck.Unknown("test.reason.no_latest_version")}
+				if s.Version.Current == "" {
+					return []healthcheck.Result{healthcheck.Unknown("test.reason.no_current_version")}
 				}
-				return []healthcheck.Result{healthcheck.Firing("test.message.latest_version")}
+				return []healthcheck.Result{healthcheck.Firing("test.message.current_version")}
 			},
 		},
 		healthcheck.Rule{
@@ -54,13 +51,6 @@ func setupHealthCheck(t *testing.T, flagEnabled bool) (*TestHelper, *HealthCheck
 			},
 		},
 	)
-
-	require.NoError(t, th.App.clearLatestVersionCache())
-	t.Cleanup(func() {
-		assert.NoError(t, th.App.clearLatestVersionCache())
-	})
-	_, appErr := th.App.GetLatestVersion(th.Context, latestVersionServer(t).URL)
-	require.Nil(t, appErr)
 
 	return th, svc
 }
@@ -148,7 +138,7 @@ func TestRunHealthCheckStableAcrossCycles(t *testing.T) {
 	require.NoError(t, th.App.runHealthCheck(th.Context, svc))
 	first := listHealthFindings(t, th)
 	require.Len(t, first, 1)
-	assert.Equal(t, "TEST_LATEST_VERSION", first[0].Code)
+	assert.Equal(t, "TEST_CURRENT_VERSION", first[0].Code)
 	assert.Equal(t, string(healthcheck.StateFiring), first[0].State)
 
 	require.NoError(t, th.TestLogger.Flush())

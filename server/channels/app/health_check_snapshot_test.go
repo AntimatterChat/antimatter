@@ -5,11 +5,7 @@ package app
 
 import (
 	"bytes"
-	"context"
-	"encoding/json"
 	"errors"
-	"net/http"
-	"net/http/httptest"
 	"os"
 	"testing"
 	"time"
@@ -25,14 +21,10 @@ import (
 	"github.com/mattermost/mattermost/server/v8/platform/shared/healthcheck/packet"
 )
 
-// Not parallel: it clears the latest-version cache that TestGetLatestVersion also uses.
 func TestBuildHealthSnapshotStandaloneLeaderDiagnostics(t *testing.T) {
 	th := Setup(t)
 
-	err := th.App.clearLatestVersionCache()
-	require.NoError(t, err)
-
-	snapshot, buildErr := th.App.buildHealthSnapshotWithLatestVersionURL(th.Context, latestVersionServer(t).URL)
+	snapshot, buildErr := th.App.BuildHealthSnapshot(th.Context)
 	require.NoError(t, buildErr)
 	require.NotNil(t, snapshot)
 
@@ -66,17 +58,13 @@ func (c *threeNodeCluster) GetClusterInfos() ([]*model.ClusterInfo, error) {
 	}, nil
 }
 
-// Not parallel: it clears the latest-version cache that TestGetLatestVersion also uses.
 func TestBuildHealthSnapshotOnlyLeaderHasDiagnostics(t *testing.T) {
 	th := SetupWithClusterMock(t, &threeNodeCluster{})
 	th.App.UpdateConfig(func(cfg *model.Config) {
 		*cfg.ClusterSettings.Enable = true
 	})
 
-	err := th.App.clearLatestVersionCache()
-	require.NoError(t, err)
-
-	snapshot, buildErr := th.App.buildHealthSnapshotWithLatestVersionURL(th.Context, latestVersionServer(t).URL)
+	snapshot, buildErr := th.App.BuildHealthSnapshot(th.Context)
 	require.NoError(t, buildErr)
 	require.NotNil(t, snapshot)
 
@@ -97,12 +85,8 @@ func TestBuildHealthSnapshotOnlyLeaderHasDiagnostics(t *testing.T) {
 	assert.Equal(t, "id-2", leader.ClusterInfo.Id)
 }
 
-// Not parallel: it clears the latest-version cache that TestGetLatestVersion also uses.
 func TestBuildHealthSnapshotSectionFailureIsolationWithPartialStats(t *testing.T) {
 	th := Setup(t)
-
-	err := th.App.clearLatestVersionCache()
-	require.NoError(t, err)
 
 	storeMock := mocks.Store{}
 	channelStore := &mocks.ChannelStore{}
@@ -132,7 +116,7 @@ func TestBuildHealthSnapshotSectionFailureIsolationWithPartialStats(t *testing.T
 
 	th.App.Srv().SetStore(&storeMock)
 
-	snapshot, buildErr := th.App.buildHealthSnapshotWithLatestVersionURL(th.Context, latestVersionServer(t).URL)
+	snapshot, buildErr := th.App.BuildHealthSnapshot(th.Context)
 	require.NoError(t, buildErr)
 	require.NotNil(t, snapshot)
 
@@ -158,36 +142,22 @@ func TestBuildHealthSnapshotSectionFailureIsolationWithPartialStats(t *testing.T
 	require.NoError(t, sectionErr)
 }
 
-// Not parallel: it clears the latest-version cache that TestGetLatestVersion also uses.
-func TestBuildHealthSnapshotLatestVersionTimeout(t *testing.T) {
+// TestBuildHealthSnapshotFetchesNoLatestRelease: the snapshot carries the running version only and
+// records exactly the workspace sections it collects; there is no latest-release lookup.
+func TestBuildHealthSnapshotFetchesNoLatestRelease(t *testing.T) {
 	th := Setup(t)
 
-	err := th.App.clearLatestVersionCache()
+	snapshot, err := th.App.BuildHealthSnapshot(th.Context)
 	require.NoError(t, err)
 
-	stalled := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		<-r.Context().Done()
-	}))
-	t.Cleanup(stalled.Close)
-
-	ctx, cancel := context.WithTimeout(th.Context.Context(), 150*time.Millisecond)
-	t.Cleanup(cancel)
-
-	start := time.Now()
-	snapshot, buildErr := th.App.buildHealthSnapshotWithLatestVersionURL(th.Context.WithContext(ctx), stalled.URL)
-	elapsed := time.Since(start)
-
-	require.NoError(t, buildErr)
-	require.NotNil(t, snapshot)
-	assert.Less(t, elapsed, 2*time.Second)
-	assert.Empty(t, snapshot.Version.Latest)
-
-	ok, sectionErr := snapshot.SectionErr(model.SectionVersion)
-	require.True(t, ok)
-	require.Error(t, sectionErr)
+	assert.Equal(t, model.CurrentVersion, snapshot.Version.Current)
+	sections := make([]model.WorkspaceSection, 0, len(snapshot.Sections))
+	for section := range snapshot.Sections {
+		sections = append(sections, section)
+	}
+	assert.ElementsMatch(t, model.AllWorkspaceSections(), sections)
 }
 
-// Not parallel: it clears the latest-version cache that TestGetLatestVersion also uses.
 func TestHealthSnapshotLiveOfflineParity(t *testing.T) {
 	th := Setup(t)
 	th.App.UpdateConfig(func(cfg *model.Config) {
@@ -226,10 +196,7 @@ func TestHealthSnapshotLiveOfflineParity(t *testing.T) {
 		})
 	}
 
-	err = th.App.clearLatestVersionCache()
-	require.NoError(t, err)
-
-	live, err := th.App.buildHealthSnapshotWithLatestVersionURL(th.Context, latestVersionServer(t).URL)
+	live, err := th.App.BuildHealthSnapshot(th.Context)
 	require.NoError(t, err)
 
 	var zipped bytes.Buffer
@@ -343,29 +310,4 @@ func TestClusterNodes(t *testing.T) {
 		require.Error(t, err)
 		require.Nil(t, nodes)
 	})
-}
-
-func latestVersionServer(t *testing.T) *httptest.Server {
-	t.Helper()
-
-	release := &model.GithubReleaseInfo{
-		Id:          1,
-		TagName:     "v11.0.0",
-		Name:        "v11.0.0",
-		CreatedAt:   "2022-01-13T14:19:44Z",
-		PublishedAt: "2022-01-14T13:45:09Z",
-		Body:        "Mattermost Platform Release",
-		Url:         "https://github.com/mattermost/mattermost-server/releases/tag/v11.0.0",
-	}
-
-	body, err := json.Marshal(release)
-	require.NoError(t, err)
-
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		_, writeErr := w.Write(body)
-		assert.NoError(t, writeErr)
-	}))
-	t.Cleanup(server.Close)
-
-	return server
 }

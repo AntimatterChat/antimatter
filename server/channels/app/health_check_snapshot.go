@@ -18,11 +18,9 @@ import (
 //
 // It must only be called on the cluster leader: the local node is reported as the leader and
 // is the only node that carries diagnostics.
+//
+// It makes no outbound request: Antimatter's health check does not look up the latest release.
 func (a *App) BuildHealthSnapshot(rctx request.CTX) (*healthcheck.Snapshot, error) {
-	return a.buildHealthSnapshotWithLatestVersionURL(rctx, LatestVersionURL)
-}
-
-func (a *App) buildHealthSnapshotWithLatestVersionURL(rctx request.CTX, latestVersionURL string) (*healthcheck.Snapshot, error) {
 	nodes, err := clusterNodes(a.Cluster())
 	if err != nil {
 		return nil, err
@@ -60,14 +58,6 @@ func (a *App) buildHealthSnapshotWithLatestVersionURL(rctx request.CTX, latestVe
 	snapshot.Version.Current = model.CurrentVersion
 	// The Makefile stamps BuildDate with `date -u`; dev builds leave the zero time.
 	snapshot.Version.BuildDate, _ = time.Parse(time.UnixDate, model.BuildDate)
-
-	release, appErr := a.GetLatestVersion(rctx, latestVersionURL)
-	if appErr != nil {
-		sections[model.SectionVersion] = appErr
-	} else {
-		sections[model.SectionVersion] = nil
-		snapshot.Version.Latest = release.TagName
-	}
 
 	return snapshot, nil
 }

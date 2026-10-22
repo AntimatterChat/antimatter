@@ -177,14 +177,11 @@ func TestReadSnapshotFields(t *testing.T) {
 	assert.Empty(t, p.Warnings)
 	assert.Equal(t, time.Date(2026, time.September, 25, 10, 0, 0, 0, time.UTC), s.CollectedAt)
 	assert.Equal(t, "11.0.4", s.Version.Current)
-	assert.Empty(t, s.Version.Latest)
 	assert.False(t, s.Deployment.IsCloud)
 
 	for _, section := range []model.WorkspaceSection{model.SectionConfig, model.SectionStats, model.SectionJobs, model.SectionPlugins} {
 		assert.True(t, s.Has(section), "section %q", section)
 	}
-	present, _ := s.SectionErr(model.SectionVersion)
-	assert.False(t, present)
 
 	dsn, ok := s.DataSource()
 	require.True(t, ok)

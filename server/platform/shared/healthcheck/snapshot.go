@@ -31,7 +31,6 @@ type Deployment struct {
 
 type VersionInfo struct {
 	Current   string
-	Latest    string
 	BuildDate time.Time
 }
 

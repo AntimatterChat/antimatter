@@ -32,7 +32,6 @@ const (
 	SectionJobs    WorkspaceSection = "jobs"
 	SectionPlugins WorkspaceSection = "plugins"
 	SectionConfig  WorkspaceSection = "config"
-	SectionVersion WorkspaceSection = "version"
 )
 
 func AllNodeSections() []NodeSection {
@@ -65,6 +64,5 @@ func AllWorkspaceSections() []WorkspaceSection {
 		SectionJobs,
 		SectionPlugins,
 		SectionConfig,
-		SectionVersion,
 	}
 }
