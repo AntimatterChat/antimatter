@@ -18,6 +18,7 @@ import (
 
 	"github.com/mattermost/mattermost/server/public/model"
 	smocks "github.com/mattermost/mattermost/server/v8/channels/store/storetest/mocks"
+	"github.com/mattermost/mattermost/server/v8/channels/testlib"
 	"github.com/mattermost/mattermost/server/v8/config"
 	"github.com/mattermost/mattermost/server/v8/einterfaces/mocks"
 )
@@ -218,7 +219,8 @@ func TestSaveConfigLogPathEnforcement(t *testing.T) {
 		// feature flag writes are dropped by the store unless read-only FF mode is disabled
 		configStore.SetReadOnlyFF(false)
 
-		ps := &PlatformService{configStore: configStore}
+		// Antimatter: the cluster service always exists, so SaveConfig tells it about the change.
+		ps := &PlatformService{configStore: configStore, clusterIFace: &testlib.FakeClusterInterface{}}
 		ps.SetLogRootPathOverride(root)
 
 		cfg := configStore.Get().Clone()
