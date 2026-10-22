@@ -5897,6 +5897,20 @@ export default class Client4 {
         );
     };
 
+    muteHealthFinding = (fingerprint: string) => {
+        return this.doFetch<StatusOK>(
+            `${this.getHealthFindingsRoute()}/${fingerprint}/mute`,
+            {method: 'post'},
+        );
+    };
+
+    unmuteHealthFinding = (fingerprint: string) => {
+        return this.doFetch<StatusOK>(
+            `${this.getHealthFindingsRoute()}/${fingerprint}/mute`,
+            {method: 'delete'},
+        );
+    };
+
     getFlaggedPostReportUrl = (postId: string) => {
         return `${this.getContentFlaggingRoute()}/post/${postId}/report`;
     };
