@@ -14,7 +14,6 @@ import {
     ServerOutlineIcon,
     SitemapIcon,
     SyncIcon,
-    UpdateIcon,
 } from '@mattermost/compass-icons/components';
 import type {HealthFinding} from '@mattermost/types/health';
 
@@ -29,7 +28,6 @@ const areaMessages = defineMessages({
     notifications: {id: 'admin.health_dashboard.area.notifications', defaultMessage: 'Notifications'},
     compliance: {id: 'admin.health_dashboard.area.compliance', defaultMessage: 'Compliance'},
     platform: {id: 'admin.health_dashboard.area.platform', defaultMessage: 'Platform'},
-    version: {id: 'admin.health_dashboard.area.version', defaultMessage: 'Updates'},
 });
 
 type KnownArea = keyof typeof areaMessages;
@@ -43,7 +41,6 @@ const areaIcons: Record<KnownArea, typeof CogOutlineIcon> = {
     notifications: BellOutlineIcon,
     compliance: FileTextOutlineIcon,
     platform: ServerOutlineIcon,
-    version: UpdateIcon,
 };
 
 const areaOrder = Object.keys(areaMessages);

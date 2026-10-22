@@ -319,10 +319,6 @@ func healthAreaHeading(area model.HealthArea) string {
 		return "Compliance"
 	case model.AreaPlatform:
 		return "Platform"
-	case model.AreaLicense:
-		return "License"
-	case model.AreaVersion:
-		return "Version"
 	default:
 		return string(area)
 	}

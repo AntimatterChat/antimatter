@@ -6731,10 +6731,6 @@
     "defaultMessage": "Search",
     "description": "Section heading on the System Console Site health page grouping health findings in the \"search\" area; noun, compact space."
   },
-  "admin.health_dashboard.area.version": {
-    "defaultMessage": "Updates",
-    "description": "Section heading on the System Console Site health page grouping health findings in the \"server version and updates\" area; noun, compact space."
-  },
   "admin.health_dashboard.detail.details": {
     "defaultMessage": "Details",
     "description": "Heading of the key/value details list in an expanded finding on the System Console Site health page."
