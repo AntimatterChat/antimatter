@@ -80,6 +80,7 @@ const Login = ({onCustomizeHeader}: LoginProps) => {
     const {
         EnableLdap,
         EnableSaml,
+        EnableGuestAccounts,
         EnableGuestMagicLink,
         EnableSignInWithEmail,
         EnableSignInWithUsername,
@@ -127,7 +128,9 @@ const Login = ({onCustomizeHeader}: LoginProps) => {
     const [requiresPassword, setRequiresPassword] = useState(false);
 
     const enableCustomBrand = EnableCustomBrand === 'true';
-    const enableGuestMagicLink = EnableGuestMagicLink === 'true';
+
+    // The server only answers the login type pre-check while guest accounts are enabled
+    const enableGuestMagicLink = EnableGuestAccounts === 'true' && EnableGuestMagicLink === 'true';
     const enableLdap = EnableLdap === 'true';
     const enableOpenServer = EnableOpenServer === 'true';
     const enableUserCreation = EnableUserCreation === 'true';

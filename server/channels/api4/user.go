@@ -2338,7 +2338,7 @@ func getLoginType(c *Context, w http.ResponseWriter, r *http.Request) {
 	// login methods in the future, and this check may be removed.
 	if !*c.App.Config().GuestAccountsSettings.EnableGuestMagicLink ||
 		!*c.App.Config().GuestAccountsSettings.Enable {
-		w.WriteHeader(http.StatusNotFound)
+		c.Err = model.NewAppError("getLoginType", "api.user.login.guest_magic_link.disabled.error", nil, "", http.StatusNotFound)
 		return
 	}
 
