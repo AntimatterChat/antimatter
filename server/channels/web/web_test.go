@@ -85,7 +85,13 @@ func setupTestHelper(tb testing.TB, includeCacheLayer bool, options []app.Option
 	}
 	*newConfig.LogSettings.ConsoleLevel = consoleLevel
 
-	_, _, err := memoryStore.Set(newConfig)
+	// Log files go under the logging root (MM_LOG_PATH, set by testlib), which
+	// the server enforces by default: a log file anywhere else stops it.
+	testLogsDir, err := os.MkdirTemp(config.GetLogRootPath(), "web")
+	require.NoError(tb, err)
+	*newConfig.LogSettings.FileLocation = testLogsDir
+
+	_, _, err = memoryStore.Set(newConfig)
 	require.NoError(tb, err)
 	options = append(options, app.ConfigStore(memoryStore))
 	if includeCacheLayer {
