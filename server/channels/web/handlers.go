@@ -544,7 +544,7 @@ func (w *Web) APIHandler(h func(*Context, http.ResponseWriter, *http.Request)) h
 		IsStatic:       false,
 		IsLocal:        false,
 	}
-	if *w.srv.Config().ServiceSettings.WebserverMode == "gzip" {
+	if w.srv.Config().ServiceSettings.CompressResponses() {
 		return gzhttp.GzipHandler(handler)
 	}
 	return handler
@@ -564,7 +564,7 @@ func (w *Web) APIHandlerTrustRequester(h func(*Context, http.ResponseWriter, *ht
 		IsStatic:       false,
 		IsLocal:        false,
 	}
-	if *w.srv.Config().ServiceSettings.WebserverMode == "gzip" {
+	if w.srv.Config().ServiceSettings.CompressResponses() {
 		return gzhttp.GzipHandler(handler)
 	}
 	return handler
@@ -583,7 +583,7 @@ func (w *Web) APISessionRequired(h func(*Context, http.ResponseWriter, *http.Req
 		IsStatic:       false,
 		IsLocal:        false,
 	}
-	if *w.srv.Config().ServiceSettings.WebserverMode == "gzip" {
+	if w.srv.Config().ServiceSettings.CompressResponses() {
 		return gzhttp.GzipHandler(handler)
 	}
 	return handler

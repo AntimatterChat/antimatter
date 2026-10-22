@@ -4,12 +4,18 @@
 package web
 
 import (
+	"bytes"
+	"compress/gzip"
+	"fmt"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
+	"github.com/gorilla/mux"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -144,5 +150,70 @@ func TestStaticMissingClientDirectory(t *testing.T) {
 		res := httptest.NewRecorder()
 		th.Web.MainRouter.ServeHTTP(res, req)
 		assert.Equal(t, http.StatusNotFound, res.Code, name)
+	}
+}
+
+func TestStaticCompression(t *testing.T) {
+	th := Setup(t)
+	th.ConfigStore.SetReadOnlyFF(false)
+
+	// The same compressible asset in each web UI's client directory: the classic web app's under /static/,
+	// Fusion's under /static/fusion/.
+	asset := []byte(strings.Repeat("console.log('Antimatter');\n", 200))
+	classicAsset := filepath.Join(model.ClientDir, "compression_test.js")
+	require.NoError(t, os.WriteFile(classicAsset, asset, 0600))
+	t.Cleanup(func() { os.Remove(classicAsset) })
+	require.NoError(t, os.MkdirAll(model.FusionClientDir, 0700))
+	t.Cleanup(func() { os.RemoveAll(model.FusionClientDir) })
+	require.NoError(t, os.WriteFile(filepath.Join(model.FusionClientDir, "root.html"), []byte(model.WebUIFusion), 0600))
+	require.NoError(t, os.WriteFile(filepath.Join(model.FusionClientDir, "compression_test.js"), asset, 0600))
+
+	serve := func(t *testing.T, webserverMode string, brotli bool, path, acceptEncoding string) *httptest.ResponseRecorder {
+		t.Helper()
+		th.App.UpdateConfig(func(cfg *model.Config) {
+			*cfg.ServiceSettings.WebserverMode = webserverMode
+			cfg.FeatureFlags.EnableBrotliCompression = brotli
+		})
+		// The static handlers read the config when they're set up, as they do when the server starts.
+		w := &Web{srv: th.Server, MainRouter: mux.NewRouter()}
+		w.InitStatic()
+
+		req := httptest.NewRequest(http.MethodGet, path, nil)
+		req.Header.Set("Accept-Encoding", acceptEncoding)
+		res := httptest.NewRecorder()
+		w.MainRouter.ServeHTTP(res, req)
+		require.Equal(t, http.StatusOK, res.Code)
+		return res
+	}
+
+	gunzip := func(t *testing.T, data []byte) []byte {
+		t.Helper()
+		r, err := gzip.NewReader(bytes.NewReader(data))
+		require.NoError(t, err)
+		decompressed, err := io.ReadAll(r)
+		require.NoError(t, err)
+		return decompressed
+	}
+
+	for name, path := range map[string]string{
+		"classic": "/static/compression_test.js",
+		"Fusion":  "/static/fusion/compression_test.js",
+	} {
+		t.Run(name, func(t *testing.T) {
+			// Static files stay on gzip like upstream: Brotli only applies to API responses.
+			for _, brotli := range []bool{false, true} {
+				t.Run(fmt.Sprintf("serves gzip, not Brotli, with EnableBrotliCompression=%v", brotli), func(t *testing.T) {
+					res := serve(t, "gzip", brotli, path, "br, gzip")
+					assert.Equal(t, "gzip", res.Header().Get("Content-Encoding"))
+					assert.Equal(t, asset, gunzip(t, res.Body.Bytes()))
+				})
+			}
+
+			t.Run("doesn't compress when WebserverMode is uncompressed, even with EnableBrotliCompression on", func(t *testing.T) {
+				res := serve(t, "uncompressed", true, path, "br, gzip")
+				assert.Empty(t, res.Header().Get("Content-Encoding"))
+				assert.Equal(t, asset, res.Body.Bytes())
+			})
+		})
 	}
 }
