@@ -67,7 +67,7 @@ func (e *testEnv) login(o *responseOptions, relay map[string]string) (*model.Use
 	if relay == nil {
 		relay = map[string]string{}
 	}
-	u, _, appErr := e.s.DoLogin(e.rctx(), buildResponse(e.t, o), relay)
+	u, _, _, appErr := e.s.DoLogin(e.rctx(), buildResponse(e.t, o), relay)
 	return u, appErr
 }
 
@@ -255,7 +255,7 @@ func TestGetMetadata(t *testing.T) {
 
 func TestDoLoginCreatesUser(t *testing.T) {
 	e := newTestEnv(t)
-	user, info, appErr := e.s.DoLogin(e.rctx(), buildResponse(t, defaultResponseOptions(e.idp, defaultAttrs())), map[string]string{})
+	user, info, created, appErr := e.s.DoLogin(e.rctx(), buildResponse(t, defaultResponseOptions(e.idp, defaultAttrs())), map[string]string{})
 	require.Nil(t, appErr)
 	require.NotNil(t, info)
 	assert.Equal(t, "nameid-123", info.NameID)
@@ -273,6 +273,27 @@ func TestDoLoginCreatesUser(t *testing.T) {
 	assert.False(t, user.IsGuest())
 	assert.False(t, user.IsSystemAdmin())
 	assert.Len(t, e.b.users, 1)
+	assert.True(t, created, "the first sign-in creates the account")
+
+	// The next sign-in finds the account.
+	again, _, created, appErr := e.s.DoLogin(e.rctx(), buildResponse(t, defaultResponseOptions(e.idp, defaultAttrs())), map[string]string{})
+	require.Nil(t, appErr)
+	assert.Equal(t, user.Id, again.Id)
+	assert.False(t, created)
+}
+
+func TestDoLoginReportsNoUserCreatedOnFailure(t *testing.T) {
+	e := newTestEnv(t)
+	*e.b.cfg.GuestAccountsSettings.Enable = false
+	*e.b.cfg.SamlSettings.GuestAttribute = "role=guest"
+	attrs := defaultAttrs()
+	attrs["role"] = []string{"guest"}
+
+	user, _, created, appErr := e.s.DoLogin(e.rctx(), buildResponse(t, defaultResponseOptions(e.idp, attrs)), map[string]string{})
+	require.NotNil(t, appErr)
+	assert.Nil(t, user)
+	assert.False(t, created)
+	assert.Empty(t, e.b.users, "a refused guest gets no account")
 }
 
 func TestDoLoginUpdatesUser(t *testing.T) {
@@ -375,7 +396,7 @@ func TestDoLoginValidation(t *testing.T) {
 			e := newTestEnv(t)
 			o := defaultResponseOptions(e.idp, defaultAttrs())
 			if tc.modify == nil {
-				_, _, appErr := e.s.DoLogin(e.rctx(), "  ", map[string]string{})
+				_, _, _, appErr := e.s.DoLogin(e.rctx(), "  ", map[string]string{})
 				require.NotNil(t, appErr)
 				assert.Equal(t, tc.errID, appErr.Id)
 				return
@@ -438,9 +459,9 @@ func TestDoLoginEncrypted(t *testing.T) {
 func TestDoLoginReplay(t *testing.T) {
 	e := newTestEnv(t)
 	encoded := buildResponse(t, defaultResponseOptions(e.idp, defaultAttrs()))
-	_, _, appErr := e.s.DoLogin(e.rctx(), encoded, map[string]string{})
+	_, _, _, appErr := e.s.DoLogin(e.rctx(), encoded, map[string]string{})
 	require.Nil(t, appErr)
-	_, _, appErr = e.s.DoLogin(e.rctx(), encoded, map[string]string{})
+	_, _, _, appErr = e.s.DoLogin(e.rctx(), encoded, map[string]string{})
 	require.NotNil(t, appErr)
 	assert.Equal(t, "ent.saml.do_login.parse.app_error", appErr.Id)
 }

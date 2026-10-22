@@ -41,62 +41,63 @@ type samlProfile struct {
 // DoLogin validates the SAMLResponse posted by the Identity Provider and
 // returns the matching Mattermost user, creating or updating it as needed.
 // relayState holds the (already verified) relay state properties set by the
-// web layer when the login started.
-func (s *Service) DoLogin(rctx request.CTX, encodedXML string, relayState map[string]string) (*model.User, *saml2.AssertionInfo, *model.AppError) {
+// web layer when the login started. userWasCreated reports whether this
+// sign-in created the account (recorded in the audit log).
+func (s *Service) DoLogin(rctx request.CTX, encodedXML string, relayState map[string]string) (user *model.User, assertion *saml2.AssertionInfo, userWasCreated bool, err *model.AppError) {
 	encodedXML = strings.TrimSpace(encodedXML)
 	if encodedXML == "" {
-		return nil, nil, model.NewAppError("DoLogin", "ent.saml.do_login.empty_response.app_error", nil, "", http.StatusBadRequest)
+		return nil, nil, false, model.NewAppError("DoLogin", "ent.saml.do_login.empty_response.app_error", nil, "", http.StatusBadRequest)
 	}
-	if _, err := base64.StdEncoding.DecodeString(encodedXML); err != nil {
-		return nil, nil, model.NewAppError("DoLogin", "ent.saml.do_login.parse.app_error", nil, "SAMLResponse is not valid base64", http.StatusBadRequest).Wrap(err)
+	if _, decodeErr := base64.StdEncoding.DecodeString(encodedXML); decodeErr != nil {
+		return nil, nil, false, model.NewAppError("DoLogin", "ent.saml.do_login.parse.app_error", nil, "SAMLResponse is not valid base64", http.StatusBadRequest).Wrap(decodeErr)
 	}
 
 	sp, appErr := s.serviceProvider(rctx, false)
 	if appErr != nil {
-		return nil, nil, appErr
+		return nil, nil, false, appErr
 	}
 
-	info, err := sp.RetrieveAssertionInfo(encodedXML)
-	if err != nil {
-		return nil, nil, classifyAssertionError(err)
+	info, retrieveErr := sp.RetrieveAssertionInfo(encodedXML)
+	if retrieveErr != nil {
+		return nil, nil, false, classifyAssertionError(retrieveErr)
 	}
 
 	if info.WarningInfo != nil {
 		if info.WarningInfo.InvalidTime {
-			return nil, nil, model.NewAppError("DoLogin", "ent.saml.do_login.invalid_time.app_error", nil, "assertion is outside of its validity period", http.StatusBadRequest)
+			return nil, nil, false, model.NewAppError("DoLogin", "ent.saml.do_login.invalid_time.app_error", nil, "assertion is outside of its validity period", http.StatusBadRequest)
 		}
 		if info.WarningInfo.NotInAudience {
-			return nil, nil, model.NewAppError("DoLogin", "ent.saml.do_login.parse.app_error", nil,
+			return nil, nil, false, model.NewAppError("DoLogin", "ent.saml.do_login.parse.app_error", nil,
 				fmt.Sprintf("assertion audience does not include the service provider identifier %q", sp.AudienceURI), http.StatusBadRequest)
 		}
 	}
 
 	if len(info.Assertions) > 0 {
-		assertion := info.Assertions[0]
+		first := info.Assertions[0]
 		now := time.Now()
 		expiry := now.Add(replayFallbackTTL)
-		if assertion.Conditions != nil {
-			if t, perr := time.Parse(time.RFC3339, assertion.Conditions.NotOnOrAfter); perr == nil {
+		if first.Conditions != nil {
+			if t, perr := time.Parse(time.RFC3339, first.Conditions.NotOnOrAfter); perr == nil {
 				expiry = t
 			}
 		}
-		if s.replay.markUsed(assertion.ID, expiry, now) {
-			return nil, nil, model.NewAppError("DoLogin", "ent.saml.do_login.parse.app_error", nil, "assertion has already been used", http.StatusBadRequest)
+		if s.replay.markUsed(first.ID, expiry, now) {
+			return nil, nil, false, model.NewAppError("DoLogin", "ent.saml.do_login.parse.app_error", nil, "assertion has already been used", http.StatusBadRequest)
 		}
 	}
 
 	settings := s.b.Config().SamlSettings
 	profile, appErr := extractProfile(rctx, &settings, info)
 	if appErr != nil {
-		return nil, nil, appErr
+		return nil, nil, false, appErr
 	}
 
-	user, appErr := s.loginUser(rctx, &settings, profile, info, relayState)
+	user, created, appErr := s.loginUser(rctx, &settings, profile, info, relayState)
 	if appErr != nil {
-		return nil, nil, appErr
+		return nil, nil, false, appErr
 	}
 
-	return user, info, nil
+	return user, info, created, nil
 }
 
 // classifyAssertionError maps gosaml2/goxmldsig validation errors to the error
@@ -272,12 +273,13 @@ func (p *samlProfile) primaryAuthData() string {
 }
 
 // loginUser finds (or creates) and updates the Mattermost user for the profile.
-func (s *Service) loginUser(rctx request.CTX, ss *model.SamlSettings, p *samlProfile, info *saml2.AssertionInfo, relayState map[string]string) (*model.User, *model.AppError) {
+// created reports whether the account was created by this sign-in.
+func (s *Service) loginUser(rctx request.CTX, ss *model.SamlSettings, p *samlProfile, info *saml2.AssertionInfo, relayState map[string]string) (*model.User, bool, *model.AppError) {
 	cfg := s.b.Config()
 	guestAccountsEnabled := model.SafeDereference(cfg.GuestAccountsSettings.Enable)
 
 	if p.isGuest && !guestAccountsEnabled {
-		return nil, model.NewAppError("DoLogin", "api.user.login.guest_accounts.disabled.error", nil, "the SAML guest attribute matches but guest accounts are disabled", http.StatusUnauthorized)
+		return nil, false, model.NewAppError("DoLogin", "api.user.login.guest_accounts.disabled.error", nil, "the SAML guest attribute matches but guest accounts are disabled", http.StatusUnauthorized)
 	}
 
 	// Candidate AuthData values, most preferred first. A user found through a
@@ -302,7 +304,7 @@ func (s *Service) loginUser(rctx request.CTX, ss *model.SamlSettings, p *samlPro
 			if ldapErr != nil {
 				appErr = appErr.Wrap(ldapErr)
 			}
-			return nil, appErr
+			return nil, false, appErr
 		}
 
 		if model.SafeDereference(ss.EnableSyncWithLdapIncludeAuth) {
@@ -326,14 +328,14 @@ func (s *Service) loginUser(rctx request.CTX, ss *model.SamlSettings, p *samlPro
 			if appErr.Id == MissingAuthAccountErrorID {
 				continue
 			}
-			return nil, appErr
+			return nil, false, appErr
 		}
 		user = found
 		if i > 0 {
 			rctx.Logger().Info("Migrating SAML user binding",
 				mlog.String("user_id", user.Id), mlog.Int("from_candidate", i))
 			if appErr := s.b.UpdateAuthData(user.Id, primary, "", false); appErr != nil {
-				return nil, appErr
+				return nil, false, appErr
 			}
 			user.AuthData = model.NewPointer(primary)
 		}
@@ -343,7 +345,7 @@ func (s *Service) loginUser(rctx request.CTX, ss *model.SamlSettings, p *samlPro
 	if relayState[relayStateAction] == model.OAuthActionEmailToSSO {
 		switched, appErr := s.switchEmailToSaml(rctx, user, primary, p, relayState[relayStateEmailToken])
 		if appErr != nil {
-			return nil, appErr
+			return nil, false, appErr
 		}
 		user = switched
 	}
@@ -352,20 +354,20 @@ func (s *Service) loginUser(rctx request.CTX, ss *model.SamlSettings, p *samlPro
 	if user == nil {
 		newUser, appErr := s.createUser(rctx, primary, p)
 		if appErr != nil {
-			return nil, appErr
+			return nil, false, appErr
 		}
 		user = newUser
 		created = true
 	} else if !syncWithLdap {
 		updated, appErr := s.updateUserProfile(rctx, user, p)
 		if appErr != nil {
-			return nil, appErr
+			return nil, false, appErr
 		}
 		user = updated
 	}
 
 	if user.IsGuest() && !guestAccountsEnabled {
-		return nil, model.NewAppError("DoLogin", "api.user.login.guest_accounts.disabled.error", nil, "", http.StatusUnauthorized)
+		return nil, false, model.NewAppError("DoLogin", "api.user.login.guest_accounts.disabled.error", nil, "", http.StatusUnauthorized)
 	}
 
 	user = s.applyRoles(rctx, user, p, created)
@@ -379,7 +381,7 @@ func (s *Service) loginUser(rctx request.CTX, ss *model.SamlSettings, p *samlPro
 	if fresh, appErr := s.b.GetUserByAuth(primary); appErr == nil {
 		user = fresh
 	}
-	return user, nil
+	return user, created, nil
 }
 
 const (
