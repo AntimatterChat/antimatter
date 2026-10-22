@@ -5,7 +5,7 @@ import {createColumnHelper, getCoreRowModel, useReactTable, type ColumnDef} from
 import type {ComponentType} from 'react';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import type {MessageDescriptor} from 'react-intl';
-import {FormattedMessage, defineMessages, useIntl} from 'react-intl';
+import {FormattedList, FormattedMessage, defineMessages, useIntl} from 'react-intl';
 import {useDispatch, useSelector} from 'react-redux';
 import {Link} from 'react-router-dom';
 
@@ -20,7 +20,7 @@ import PropertyTypes from 'mattermost-redux/action_types/properties';
 import {fetchPropertyFields} from 'mattermost-redux/actions/properties';
 import {getConfig as getAdminConfig} from 'mattermost-redux/selectors/entities/admin';
 import {getPropertyGroupByName, getUnlinkedSystemFieldsForGroup, makeGetPropertyFieldsForObjectTypeAndGroup} from 'mattermost-redux/selectors/entities/properties';
-import {getPropertyFieldLabel} from 'mattermost-redux/utils/property_utils';
+import {getPropertyFieldLabel, getPropertyFieldSyncSources, isPropertyFieldSynced} from 'mattermost-redux/utils/property_utils';
 
 import {getPluginDisplayName} from 'selectors/plugins';
 import {getIsMobileView} from 'selectors/views/browser';
@@ -43,6 +43,7 @@ import type {GlobalState} from 'types/store';
 
 import {ALL_RESOURCE_TYPES, resourceTypeLabels} from './attribute_details/attribute_applies_to_constants';
 import type {ResourceObjectType} from './attribute_details/attribute_applies_to_constants';
+import {externalSourceMessages} from './attribute_details/external_source';
 import type {AttributeTypeId} from './attribute_type';
 import {ATTRIBUTE_TYPE_DESCRIPTOR, ATTRIBUTE_TYPE_FALLBACK_LABEL, getAttributeTypeDescriptor, getTypeLabelForField} from './attribute_type';
 import {CLASSIFICATION_ATTRIBUTE_ROUTE} from './classification_attribute';
@@ -122,30 +123,24 @@ export function fieldMatchesSearch(field: PropertyField, query: string, typeLabe
         typeLabel.toLowerCase().includes(q);
 }
 
-type SourceKind = 'plugin' | 'ldap_and_saml' | 'ldap' | 'saml' | 'managed';
+type SourceKind = 'plugin' | 'external' | 'managed';
 
+// 'external' covers every identity source sync; getPropertyFieldSyncSources
+// names which.
 export function getSourceKind(field: PropertyField): SourceKind {
     const attrs = field.attrs ?? {};
     if (attrs.source_plugin_id && attrs.protected) {
         return 'plugin';
     }
-    if (attrs.ldap && attrs.saml) {
-        return 'ldap_and_saml';
-    }
-    if (attrs.ldap) {
-        return 'ldap';
-    }
-    if (attrs.saml) {
-        return 'saml';
+    if (isPropertyFieldSynced(field)) {
+        return 'external';
     }
     return 'managed';
 }
 
 const SOURCE_ICONS: Partial<Record<SourceKind, ComponentType<IconProps>>> = {
     plugin: PowerPlugOutlineIcon,
-    ldap_and_saml: SyncIcon,
-    ldap: SyncIcon,
-    saml: SyncIcon,
+    external: SyncIcon,
 };
 
 export function getSourceIcon(kind: SourceKind): ComponentType<IconProps> | undefined {
@@ -158,22 +153,25 @@ type ClassificationAwareCellProps = {
 };
 
 function SourceCell({field, isClassificationRow}: ClassificationAwareCellProps) {
+    const {formatMessage} = useIntl();
     const pluginId = field.attrs?.source_plugin_id as string | undefined;
     const pluginDisplayName = useSelector((state: GlobalState) => getPluginDisplayName(state, pluginId));
 
     const kind = getSourceKind(field);
+    const syncSources = getPropertyFieldSyncSources(field);
 
     let content: React.ReactNode;
     if (isClassificationRow) {
         content = <FormattedMessage {...sourceLabels.classificationMarkings}/>;
     } else if (kind === 'plugin') {
         content = pluginDisplayName;
-    } else if (kind === 'ldap_and_saml') {
-        content = <FormattedMessage {...sourceLabels.ldapAndSaml}/>;
-    } else if (kind === 'ldap') {
-        content = <FormattedMessage {...sourceLabels.ldap}/>;
-    } else if (kind === 'saml') {
-        content = <FormattedMessage {...sourceLabels.saml}/>;
+    } else if (syncSources.length > 0) {
+        content = (
+            <FormattedList
+                type='unit'
+                value={syncSources.map((source) => formatMessage(externalSourceMessages[source].title))}
+            />
+        );
     } else {
         content = <FormattedMessage {...sourceLabels.managed}/>;
     }
@@ -814,9 +812,6 @@ export const typeLabels = {
 };
 
 const sourceLabels = defineMessages({
-    ldapAndSaml: {id: 'admin.global_attributes.table.source.ldap_and_saml', defaultMessage: 'AD/LDAP, SAML'},
-    ldap: {id: 'admin.global_attributes.table.source.ldap', defaultMessage: 'AD/LDAP'},
-    saml: {id: 'admin.global_attributes.table.source.saml', defaultMessage: 'SAML'},
     managed: {id: 'admin.global_attributes.table.source.managed', defaultMessage: 'Managed here'},
     classificationMarkings: {
         id: 'admin.global_attributes.table.source.classification_markings',

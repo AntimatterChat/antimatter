@@ -15,12 +15,12 @@ import {getCustomProfileAttributes} from 'mattermost-redux/selectors/entities/ge
 import {haveISystemPermission, haveITeamPermission} from 'mattermost-redux/selectors/entities/roles';
 import {getTeam} from 'mattermost-redux/selectors/entities/teams';
 import {getCurrentUserId} from 'mattermost-redux/selectors/entities/users';
+import {isPropertyFieldSyncedForAuthService} from 'mattermost-redux/utils/property_utils';
 
 import {Dialog} from 'fusion/components/layer';
 import {useDisplayName, useUser} from 'fusion/hooks/users';
 import {Section} from 'fusion/modals/settings_controls';
 import {am} from 'fusion/utils/class_names';
-import Constants from 'utils/constants';
 
 import type {GlobalState} from 'types/store';
 
@@ -43,7 +43,7 @@ export function useCanEditServerAttributes(): boolean {
 // provider or an integration sets, and those whose kind the dialog doesn't edit.
 function serverAttributeLock(field: UserPropertyField, authService: string, formatMessage: ReturnType<typeof useIntl>['formatMessage']): string {
     const attrs = field.attrs || {};
-    if ((authService === Constants.LDAP_SERVICE && attrs.ldap) || (authService === Constants.SAML_SERVICE && attrs.saml)) {
+    if (isPropertyFieldSyncedForAuthService(field, authService)) {
         return formatMessage({id: 'fusion.attributes.lockedByProvider', defaultMessage: 'Set by their login provider.'});
     }
     if (attrs.owners?.length || attrs.protected) {

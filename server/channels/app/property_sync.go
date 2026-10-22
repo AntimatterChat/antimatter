@@ -39,10 +39,11 @@ const propertyValueFieldNotFoundErrorID = "app.property_value.upsert.field_not_f
 // loaded it.
 const propertyFieldSyncSourceUnlinkedErrorID = "app.property_field.sync_source_unlinked.app_error"
 
-// PropertySyncer applies the attribute values an identity source (AD/LDAP or
-// SAML) reports for a user to the custom profile attributes synced from that
-// source. It is the single implementation of sync semantics; the AD/LDAP and
-// SAML services (channels/app/ldap, channels/app/saml) only translate their
+// PropertySyncer applies the attribute values an identity source (AD/LDAP,
+// SAML or OpenID Connect) reports for a user to the custom profile attributes
+// synced from that source. It is the single implementation of sync semantics;
+// the AD/LDAP and SAML services (channels/app/ldap, channels/app/saml) and the
+// OpenID Connect sign-in (oauth_attribute_sync.go) only translate their
 // protocol payloads into the attrs map SyncUser consumes.
 //
 // An attribute is defined by a template -- a Global Attribute that user,
@@ -129,8 +130,7 @@ func propertySyncLogLevelsFor(source string) propertySyncLogLevels {
 }
 
 // NewPropertySyncer loads the user fields synced from source (one of
-// model.PropertySyncSourceLDAP / model.PropertySyncSourceSAML) and returns a
-// syncer for them.
+// model.PropertySyncSources) and returns a syncer for them.
 //
 // A field is synced from the source its definition names. A definition naming
 // both is synced from AD/LDAP only, which is also the only sync the value lock

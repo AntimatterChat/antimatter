@@ -53,7 +53,10 @@ type Provider struct {
 	registrations map[string]*registration
 }
 
-var _ einterfaces.OAuthProvider = (*Provider)(nil)
+var (
+	_ einterfaces.OAuthProvider       = (*Provider)(nil)
+	_ einterfaces.OAuthClaimsProvider = (*Provider)(nil)
+)
 
 // New creates a provider. client may be nil to use a default HTTP client.
 func New(client oidc.HTTPClientFunc) *Provider {
@@ -209,14 +212,30 @@ func (p *Provider) hasManualRegistration(claims oidc.Claims) bool {
 // GetUserFromIdToken verifies the ID token returned by the token endpoint and
 // returns the identity it asserts.
 func (p *Provider) GetUserFromIdToken(rctx request.CTX, idToken string) (*model.User, error) {
+	claims, err := p.verifyIDToken(rctx, idToken)
+	if err != nil || claims == nil {
+		return nil, err
+	}
+
+	identity := oidc.IdentityFromClaims(claims)
+	if identity.Subject == "" {
+		return nil, errors.New("id_token has no subject")
+	}
+	return identity.ToUser(rctx.Logger(), authDataFor(identity), false), nil
+}
+
+// verifyIDToken verifies an ID token against the configured service it was
+// issued for and returns its claims. It returns no claims and no error for
+// the token of a service configured without a discovery document, whose
+// issuer and keys are unknown: such a token cannot be verified, so it is
+// ignored and only the userinfo response is used.
+func (p *Provider) verifyIDToken(rctx request.CTX, idToken string) (oidc.Claims, error) {
 	unverified, err := oidc.UnverifiedClaims(idToken)
 	if err != nil {
 		return nil, fmt.Errorf("malformed id_token: %w", err)
 	}
 	reg := p.findRegistration(unverified)
 	if reg == nil && p.hasManualRegistration(unverified) {
-		// Without a discovery document the issuer and its keys are unknown:
-		// ignore the ID token and rely on the userinfo response only.
 		rctx.Logger().Debug("Ignoring the id_token of an OpenID Connect provider configured without a discovery endpoint")
 		return nil, nil
 	}
@@ -250,12 +269,68 @@ func (p *Provider) GetUserFromIdToken(rctx request.CTX, idToken string) (*model.
 	if err != nil {
 		return nil, fmt.Errorf("invalid id_token: %w", err)
 	}
+	return claims, nil
+}
 
-	identity := oidc.IdentityFromClaims(claims)
-	if identity.Subject == "" {
-		return nil, errors.New("id_token has no subject")
+// GetClaimValues returns the values of the given claim paths for a sign-in,
+// read from the verified ID token merged with the userinfo response, the
+// latter winning on conflict. A path names a top-level claim, or uses dots
+// for nested claims (address.country); a top-level claim whose name contains
+// dots (a namespaced claim such as https://example.com/roles) is matched
+// first. A path that resolves to no value is left out of the result. An ID
+// token that fails verification, or a userinfo response for another subject,
+// is an error: nothing may be synced from such claims.
+func (p *Provider) GetClaimValues(rctx request.CTX, in einterfaces.OAuthClaimsInput, claimPaths []string) (map[string][]string, error) {
+	claims := oidc.Claims{}
+	// The identifiers the verified token gives the user, which a userinfo
+	// response must match.
+	var subjects []string
+	if in.IDToken != "" {
+		// Resolve the service first: the registration that verifies its
+		// tokens is recorded when its settings are resolved.
+		if in.Config != nil && in.Service != "" {
+			if _, err := p.GetSSOSettings(rctx, in.Config, in.Service); err != nil {
+				return nil, fmt.Errorf("unable to resolve the OpenID Connect settings: %w", err)
+			}
+		}
+		tokenClaims, err := p.verifyIDToken(rctx, in.IDToken)
+		if err != nil {
+			return nil, err
+		}
+		for name, value := range tokenClaims {
+			claims[name] = value
+		}
+		if sub := oidc.String(tokenClaims, "sub"); sub != "" {
+			subjects = append(subjects, sub)
+		}
+		if oid := oidc.String(tokenClaims, "oid"); oid != "" && oidc.String(tokenClaims, "tid") != "" {
+			// Entra ID's userinfo may name the user by object id.
+			subjects = append(subjects, oid)
+		}
 	}
-	return identity.ToUser(rctx.Logger(), authDataFor(identity), false), nil
+
+	if len(bytes.TrimSpace(in.UserInfo)) > 0 {
+		userInfo := oidc.Claims{}
+		decoder := json.NewDecoder(io.LimitReader(bytes.NewReader(in.UserInfo), 1<<20))
+		decoder.UseNumber()
+		if err := decoder.Decode(&userInfo); err != nil {
+			return nil, fmt.Errorf("invalid userinfo response: %w", err)
+		}
+		if infoSubject := oidc.String(userInfo, "sub"); infoSubject != "" && len(subjects) > 0 && !slices.Contains(subjects, infoSubject) {
+			return nil, errors.New("the userinfo subject does not match the id_token subject")
+		}
+		for name, value := range userInfo {
+			claims[name] = value
+		}
+	}
+
+	values := make(map[string][]string, len(claimPaths))
+	for _, path := range claimPaths {
+		if v := oidc.ClaimValues(claims, path); len(v) > 0 {
+			values[path] = v
+		}
+	}
+	return values, nil
 }
 
 // authDataFor returns the stable identifier stored as the user's AuthData.
