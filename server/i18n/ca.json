@@ -14561,7 +14561,7 @@
   },
   {
     "id": "web.error.unsupported_browser.min_browser_version.firefox",
-    "translation": "Versió 140 o superior"
+    "translation": "Versió 153 o superior"
   },
   {
     "id": "web.error.unsupported_browser.min_browser_version.safari",
