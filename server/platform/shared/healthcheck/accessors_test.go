@@ -5,6 +5,7 @@ package healthcheck
 
 import (
 	"testing"
+	"time"
 
 	"github.com/mattermost/mattermost/server/public/model"
 	"github.com/stretchr/testify/assert"
@@ -91,6 +92,48 @@ func TestAccessorsReturnFalseWhenSectionAbsent(t *testing.T) {
 	require.False(t, ok)
 }
 
+func TestConfigInt64(t *testing.T) {
+	t.Parallel()
+
+	maxNotifications := func(cfg *model.Config) *int64 { return cfg.TeamSettings.MaxNotificationsPerChannel }
+	newSnapshot := func(value *int64) *Snapshot {
+		cfg := &model.Config{}
+		cfg.TeamSettings.MaxNotificationsPerChannel = value
+		return &Snapshot{
+			Config:   &model.SupportPacketConfig{Config: cfg},
+			Sections: map[model.WorkspaceSection]error{model.SectionConfig: nil},
+		}
+	}
+
+	t.Run("config absent", func(t *testing.T) {
+		_, ok := (&Snapshot{}).ConfigInt64(maxNotifications)
+		require.False(t, ok)
+	})
+
+	t.Run("config section failed", func(t *testing.T) {
+		s := newSnapshot(new(int64(1000)))
+		s.Sections[model.SectionConfig] = assert.AnError
+		_, ok := s.ConfigInt64(maxNotifications)
+		require.False(t, ok)
+	})
+
+	t.Run("nil field", func(t *testing.T) {
+		_, ok := newSnapshot(nil).ConfigInt64(maxNotifications)
+		require.False(t, ok)
+	})
+
+	t.Run("nil getter", func(t *testing.T) {
+		_, ok := newSnapshot(new(int64(1000))).ConfigInt64(nil)
+		require.False(t, ok)
+	})
+
+	t.Run("set", func(t *testing.T) {
+		value, ok := newSnapshot(new(int64(1000))).ConfigInt64(maxNotifications)
+		require.True(t, ok)
+		assert.Equal(t, int64(1000), value)
+	})
+}
+
 func TestPluginEnabled(t *testing.T) {
 	t.Parallel()
 
@@ -167,4 +210,71 @@ func TestStat(t *testing.T) {
 		require.True(t, ok)
 		require.Equal(t, int64(9), value)
 	})
+}
+
+func TestConfigRoot(t *testing.T) {
+	t.Parallel()
+
+	t.Run("section absent", func(t *testing.T) {
+		s := &Snapshot{Config: &model.SupportPacketConfig{Config: &model.Config{}}}
+		_, ok := s.ConfigRoot()
+		require.False(t, ok)
+	})
+
+	t.Run("redacted values are kept", func(t *testing.T) {
+		cfg := &model.Config{}
+		cfg.SqlSettings.DataSourceReplicas = []string{model.FakeSetting}
+		s := &Snapshot{
+			Config:   &model.SupportPacketConfig{Config: cfg},
+			Sections: map[model.WorkspaceSection]error{model.SectionConfig: nil},
+		}
+
+		got, ok := s.ConfigRoot()
+		require.True(t, ok)
+		assert.Equal(t, []string{model.FakeSetting}, got.SqlSettings.DataSourceReplicas)
+	})
+}
+
+// leaderSnapshot returns a snapshot whose only node is the leader, with empty diagnostics.
+func leaderSnapshot() *Snapshot {
+	return NewSnapshot([]*NodeSnapshot{{
+		Hostname:    "app-1",
+		IsLeader:    true,
+		Diagnostics: &model.NodeDiagnostics{Diagnostics: &model.SupportPacketDiagnostics{}},
+	}})
+}
+
+func TestLeaderDiag(t *testing.T) {
+	t.Parallel()
+
+	t.Run("nil snapshot", func(t *testing.T) {
+		var s *Snapshot
+		_, ok := s.LeaderDiag(model.SectionSMTPProbe)
+		require.False(t, ok)
+	})
+
+	t.Run("section absent counts as clean", func(t *testing.T) {
+		s := leaderSnapshot()
+		_, ok := s.LeaderDiag(model.SectionSMTPProbe)
+		require.True(t, ok)
+	})
+
+	t.Run("section errored", func(t *testing.T) {
+		s := leaderSnapshot()
+		s.nodes[0].Diagnostics.Errors = model.SectionErrors{model.SectionSMTPProbe: assert.AnError}
+		_, ok := s.LeaderDiag(model.SectionSMTPProbe)
+		require.False(t, ok)
+	})
+}
+
+func TestSince(t *testing.T) {
+	t.Parallel()
+
+	_, ok := (&Snapshot{}).Since(time.Now())
+	require.False(t, ok)
+
+	collectedAt := time.Date(2026, 1, 2, 0, 0, 0, 0, time.UTC)
+	elapsed, ok := (&Snapshot{CollectedAt: collectedAt}).Since(collectedAt.Add(-time.Hour))
+	require.True(t, ok)
+	assert.Equal(t, time.Hour, elapsed)
 }

@@ -14,8 +14,6 @@ const (
 	AreaNotifications HealthArea = "notifications"
 	AreaCompliance    HealthArea = "compliance"
 	AreaPlatform      HealthArea = "platform"
-	AreaLicense       HealthArea = "license"
-	AreaVersion       HealthArea = "version"
 )
 
 func AllHealthAreas() []HealthArea {
@@ -28,8 +26,6 @@ func AllHealthAreas() []HealthArea {
 		AreaNotifications,
 		AreaCompliance,
 		AreaPlatform,
-		AreaLicense,
-		AreaVersion,
 	}
 }
 

@@ -1,7 +1,7 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-package cluster
+package platform
 
 import (
 	"strings"
@@ -22,7 +22,7 @@ const (
 
 var siteURLEmpty = healthcheck.Rule{
 	Code:     "SITE_URL_EMPTY",
-	Area:     model.AreaCluster,
+	Area:     model.AreaPlatform,
 	Severity: healthcheck.SeverityCritical,
 	RuleText: model.RuleText{
 		TitleID:       healthcheck.TranslationId("health.rule.site_url_empty.title"),
@@ -33,12 +33,12 @@ var siteURLEmpty = healthcheck.Rule{
 	Surface:    healthcheck.SurfaceProduct,
 	Volatility: healthcheck.VolatilityStable,
 	Subject:    siteURLSubject,
-	Eval:       evalSiteURLEmpty,
+	Eval:       healthcheck.Single(evalSiteURLEmpty),
 }
 
 var siteURLHTTP = healthcheck.Rule{
 	Code:     "SITE_URL_HTTP",
-	Area:     model.AreaCluster,
+	Area:     model.AreaPlatform,
 	Severity: healthcheck.SeverityWarning,
 	RuleText: model.RuleText{
 		TitleID:       healthcheck.TranslationId("health.rule.site_url_http.title"),
@@ -49,33 +49,33 @@ var siteURLHTTP = healthcheck.Rule{
 	Surface:    healthcheck.SurfaceProduct,
 	Volatility: healthcheck.VolatilityStable,
 	Subject:    siteURLSubject,
-	Eval:       evalSiteURLHTTP,
+	Eval:       healthcheck.Single(evalSiteURLHTTP),
 }
 
 func siteURL(s *healthcheck.Snapshot) (string, bool) {
 	return s.ConfigString(func(cfg *model.Config) *string { return cfg.ServiceSettings.SiteURL })
 }
 
-func evalSiteURLEmpty(s *healthcheck.Snapshot) []healthcheck.Result {
+func evalSiteURLEmpty(s *healthcheck.Snapshot) healthcheck.Result {
 	url, ok := siteURL(s)
 	switch {
 	case !ok:
-		return []healthcheck.Result{healthcheck.Unknown(healthcheck.ReasonConfigUnavailable)}
+		return healthcheck.Unknown(healthcheck.ReasonConfigUnavailable)
 	case url == "":
-		return []healthcheck.Result{healthcheck.Firing(healthcheck.TranslationId("health.rule.site_url_empty.message"))}
+		return healthcheck.Firing(healthcheck.TranslationId("health.rule.site_url_empty.message"))
 	default:
-		return []healthcheck.Result{healthcheck.Resolved()}
+		return healthcheck.Resolved()
 	}
 }
 
-func evalSiteURLHTTP(s *healthcheck.Snapshot) []healthcheck.Result {
+func evalSiteURLHTTP(s *healthcheck.Snapshot) healthcheck.Result {
 	url, ok := siteURL(s)
 	switch {
 	case !ok:
-		return []healthcheck.Result{healthcheck.Unknown(healthcheck.ReasonConfigUnavailable)}
+		return healthcheck.Unknown(healthcheck.ReasonConfigUnavailable)
 	case strings.HasPrefix(strings.ToLower(url), "http://"):
-		return []healthcheck.Result{healthcheck.Firing(healthcheck.TranslationId("health.rule.site_url_http.message")).WithDetail("url", url)}
+		return healthcheck.Firing(healthcheck.TranslationId("health.rule.site_url_http.message")).WithDetail("url", url)
 	default:
-		return []healthcheck.Result{healthcheck.Resolved()}
+		return healthcheck.Resolved()
 	}
 }

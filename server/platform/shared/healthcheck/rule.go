@@ -64,3 +64,50 @@ func (r Rule) AppliesTo(d Deployment) bool {
 
 	return true
 }
+
+// Single adapts a check that yields exactly one result to Rule.Eval.
+func Single(check func(*Snapshot) Result) func(*Snapshot) []Result {
+	return func(s *Snapshot) []Result {
+		return []Result{check(s)}
+	}
+}
+
+// SingleNode adapts a node check that yields exactly one result to Rule.EvalNode.
+func SingleNode(check func(*Snapshot, *NodeSnapshot) Result) func(*Snapshot, *NodeSnapshot) []Result {
+	return func(s *Snapshot, n *NodeSnapshot) []Result {
+		return []Result{check(s, n)}
+	}
+}
+
+// Gate resolves the rule while gate reports its feature off, so settings that cannot take effect never fire.
+// unknownReason is reported when gate cannot tell.
+func Gate(gate func(*Snapshot) (enabled, ok bool), unknownReason string, check func(*Snapshot) Result) func(*Snapshot) []Result {
+	return func(s *Snapshot) []Result {
+		if r, closed := gateClosed(s, gate, unknownReason); closed {
+			return []Result{r}
+		}
+		return []Result{check(s)}
+	}
+}
+
+// GateNode is Gate for node-scoped rules.
+func GateNode(gate func(*Snapshot) (enabled, ok bool), unknownReason string, check func(*Snapshot, *NodeSnapshot) Result) func(*Snapshot, *NodeSnapshot) []Result {
+	return func(s *Snapshot, n *NodeSnapshot) []Result {
+		if r, closed := gateClosed(s, gate, unknownReason); closed {
+			return []Result{r}
+		}
+		return []Result{check(s, n)}
+	}
+}
+
+func gateClosed(s *Snapshot, gate func(*Snapshot) (bool, bool), unknownReason string) (Result, bool) {
+	enabled, ok := gate(s)
+	switch {
+	case !ok:
+		return Unknown(unknownReason), true
+	case !enabled:
+		return Resolved(), true
+	default:
+		return Result{}, false
+	}
+}

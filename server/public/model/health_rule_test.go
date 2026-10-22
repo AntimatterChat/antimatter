@@ -17,7 +17,7 @@ func TestAllHealthAreasCovered(t *testing.T) {
 
 	declared := []HealthArea{
 		AreaAuth, AreaDatabase, AreaSearch, AreaJobs, AreaCluster,
-		AreaNotifications, AreaCompliance, AreaPlatform, AreaLicense, AreaVersion,
+		AreaNotifications, AreaCompliance, AreaPlatform,
 	}
 	for _, area := range declared {
 		require.Contains(t, inAll, area, "constant %q missing from AllHealthAreas", area)

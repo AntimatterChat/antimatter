@@ -5,6 +5,7 @@ package healthcheck
 
 import (
 	"slices"
+	"time"
 
 	"github.com/mattermost/mattermost/server/public/model"
 )
@@ -19,39 +20,48 @@ var collectedJobTypes = []string{
 }
 
 func (s *Snapshot) ConfigString(get func(*model.Config) *string) (string, bool) {
-	if get == nil || !s.Has(model.SectionConfig) || s.Config == nil || s.Config.Config == nil {
+	value, ok := configValue(s, get)
+	if !ok || value == model.FakeSetting {
 		return "", false
 	}
 
-	value := get(s.Config.Config)
-	if value == nil || *value == model.FakeSetting {
-		return "", false
-	}
-
-	return *value, true
+	return value, true
 }
 
 func (s *Snapshot) ConfigBool(get func(*model.Config) *bool) (bool, bool) {
-	if get == nil || !s.Has(model.SectionConfig) || s.Config == nil || s.Config.Config == nil {
-		return false, false
-	}
-
-	value := get(s.Config.Config)
-	if value == nil {
-		return false, false
-	}
-
-	return *value, true
+	return configValue(s, get)
 }
 
 func (s *Snapshot) ConfigInt(get func(*model.Config) *int) (int, bool) {
-	if get == nil || !s.Has(model.SectionConfig) || s.Config == nil || s.Config.Config == nil {
-		return 0, false
+	return configValue(s, get)
+}
+
+func (s *Snapshot) ConfigInt64(get func(*model.Config) *int64) (int64, bool) {
+	return configValue(s, get)
+}
+
+// ConfigRoot returns the whole config for fields the scalar accessors don't cover; unlike ConfigString it
+// does not hide redacted values.
+func (s *Snapshot) ConfigRoot() (*model.Config, bool) {
+	if !s.Has(model.SectionConfig) || s.Config == nil || s.Config.Config == nil {
+		return nil, false
 	}
 
-	value := get(s.Config.Config)
+	return s.Config.Config, true
+}
+
+// configValue returns ok=false when the config section is absent or the field is nil.
+// TODO: make this a generic method on Snapshot once the module targets Go 1.27.
+func configValue[T any](s *Snapshot, get func(*model.Config) *T) (T, bool) {
+	var zero T
+	cfg, ok := s.ConfigRoot()
+	if get == nil || !ok {
+		return zero, false
+	}
+
+	value := get(cfg)
 	if value == nil {
-		return 0, false
+		return zero, false
 	}
 
 	return *value, true
@@ -69,6 +79,24 @@ func (s *Snapshot) Stat(get func(*model.SupportPacketStats) *int64) (int64, bool
 	}
 
 	return *value, true
+}
+
+func (s *Snapshot) ClusterEnabled() (bool, bool) {
+	return s.ConfigBool(func(cfg *model.Config) *bool { return cfg.ClusterSettings.Enable })
+}
+
+func (s *Snapshot) RegisteredUsers() (int64, bool) {
+	return s.Stat(func(stats *model.SupportPacketStats) *int64 { return stats.RegisteredUsers })
+}
+
+// Since measures from CollectedAt, not now, so a packet read later reports what was true then.
+// ok is false when the collection time is unknown.
+func (s *Snapshot) Since(t time.Time) (time.Duration, bool) {
+	if s.CollectedAt.IsZero() {
+		return 0, false
+	}
+
+	return s.CollectedAt.Sub(t), true
 }
 
 func (s *Snapshot) DataSource() (string, bool) {
@@ -98,6 +126,16 @@ func (s *Snapshot) JobsFor(jobType string) ([]*model.Job, bool) {
 	default:
 		return nil, false
 	}
+}
+
+// LeaderDiag returns the leader's diagnostics, or ok=false when they were not collected or section recorded an error.
+func (s *Snapshot) LeaderDiag(section model.NodeSection) (*model.SupportPacketDiagnostics, bool) {
+	leader, ok := s.Leader()
+	if !ok || !leader.sectionOK(section) {
+		return nil, false
+	}
+
+	return leader.Diag()
 }
 
 func (s *Snapshot) PluginEnabled(id string) (bool, bool) {
