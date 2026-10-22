@@ -199,6 +199,8 @@ func TestHealthSnapshotLiveOfflineParity(t *testing.T) {
 		cfg.EmailSettings.EnableSignInWithEmail = model.NewPointer(false)
 		cfg.EmailSettings.EnableSignInWithUsername = model.NewPointer(false)
 		cfg.SqlSettings.QueryTimeout = model.NewPointer(60)
+		cfg.ComplianceSettings.Enable = model.NewPointer(true)
+		cfg.ComplianceSettings.Directory = model.NewPointer("")
 		cfg.MetricsSettings.Enable = model.NewPointer(true)
 	})
 
@@ -266,6 +268,7 @@ func TestHealthSnapshotLiveOfflineParity(t *testing.T) {
 		}
 	}
 	assert.Equal(t, map[string]bool{
+		"COMPLIANCE_NO_DIR":     true,
 		"DB_QUERY_TIMEOUT_HIGH": true,
 		"JOB_FAILED":            true,
 		"JOB_STUCK":             true,

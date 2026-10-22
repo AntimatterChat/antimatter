@@ -32,6 +32,9 @@ import (
 const (
 	pushSubject    = "EmailSettings.PushNotificationServer"
 	siteURLSubject = "ServiceSettings.SiteURL"
+
+	complianceDirSubject      = "ComplianceSettings.Directory"
+	globalRelayTimeoutSubject = "MessageExportSettings.GlobalRelaySettings.SMTPServerTimeout"
 )
 
 type finding struct {
@@ -126,6 +129,7 @@ func TestReadGoldenPackets(t *testing.T) {
 		{
 			name: "standalone",
 			expected: []finding{
+				{Code: "COMPLIANCE_NO_DIR", State: healthcheck.StateFiring, Subject: complianceDirSubject},
 				{Code: "JOB_FAILED", State: healthcheck.StateFiring, Subject: model.JobTypeLdapSync},
 				{Code: "METRICS_OFF", State: healthcheck.StateFiring, Subject: "MetricsSettings.Enable"},
 				{Code: "PLUGIN_NOT_RUNNING", State: healthcheck.StateFiring, Subject: "PluginSettings.PluginStates"},
@@ -139,6 +143,7 @@ func TestReadGoldenPackets(t *testing.T) {
 			expected: []finding{
 				{Code: "DB_HA_FAILOVER_STORM_RISK", State: healthcheck.StateFiring, Subject: "SqlSettings.MaxOpenConns"},
 				{Code: "ES_LIVE_BATCH_SYNC", State: healthcheck.StateFiring, Subject: "ElasticsearchSettings.LiveIndexingBatchSize"},
+				{Code: "EXPORT_GR_TIMEOUT_LOW", State: healthcheck.StateFiring, Subject: globalRelayTimeoutSubject},
 				{Code: "FILESTORE_LOCAL_IN_CLUSTER", State: healthcheck.StateFiring, Subject: "FileSettings.Directory"},
 				{Code: "JOB_STUCK", State: healthcheck.StateFiring, Subject: model.JobTypeMessageExport},
 				{Code: "JOB_WEDGED_AT_ZERO", State: healthcheck.StateFiring, Subject: model.JobTypeMessageExport},
