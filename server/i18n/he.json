@@ -11124,10 +11124,6 @@
     "translation": "התחברות SAML נכשלה מכיוון שהתגובה מספק הזהות אינה מוצפנת. יש לפנות למנהל המערכת."
   },
   {
-    "id": "ent.saml.cpa_field_mapping.list_error",
-    "translation": "השגת שדות CPA נכשלה"
-  },
-  {
     "id": "ent.saml.do_login.empty_response.app_error",
     "translation": "קיבלנו תגובה ריקה מספק הזהות."
   },

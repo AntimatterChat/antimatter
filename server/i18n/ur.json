@@ -11124,10 +11124,6 @@
     "translation": "SAML لاگ ان کامیاب نہیں ہوا کیونکہ Identity Provider کا جواب encrypted نہیں ہے۔ براہ کرم اپنے System Administrator سے رابطہ کریں۔"
   },
   {
-    "id": "ent.saml.cpa_field_mapping.list_error",
-    "translation": "CPA فیلڈ(ز) حاصل کرنے میں ناکامی"
-  },
-  {
     "id": "ent.saml.do_login.empty_response.app_error",
     "translation": "ہمیں Identity Provider سے خالی جواب ملا ہے۔"
   },

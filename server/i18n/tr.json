@@ -11503,10 +11503,6 @@
     "translation": "LDAP bağlantı sınaması başarısız oldu. Sunucu: {{.Server}}:{{.Port}}, Bağlantı güvenliği: {{.ConnectionType}}, Birincil anahtar dosyası adı: {{.PrivateKeyFilename}}, Herkese açık sertifika dosyası adı: {{.PublicCertFilename}}, Bing kullanıcı adı: {{.BindUsername}}. Hata: {{.Error}}"
   },
   {
-    "id": "ent.ldap.cpa_field_mapping.list_error",
-    "translation": "CPA alanları alınamadı"
-  },
-  {
     "id": "ent.ldap.create_fail",
     "translation": "LDAP kullanıcısı eklenemedi."
   },
@@ -11601,10 +11597,6 @@
   {
     "id": "ent.ldap.syncronize.search_failure_size_exceeded.app_error",
     "translation": "Boyut sınırı aşıldı. Sistem Konsolu > Kimlik Doğrulama > AD/LDAP bölümünde Maksimum Sayfa Boyutu ayarını artırmayı deneyin."
-  },
-  {
-    "id": "ent.ldap.update_cpa.empty_attribute",
-    "translation": "LDAP özniteliği değeri alınamadı"
   },
   {
     "id": "ent.ldap.validate_admin_filter.app_error",
@@ -11829,10 +11821,6 @@
   {
     "id": "ent.saml.configure.not_encrypted_response.app_error",
     "translation": "Kimlik hizmeti sağlayıcının yanıtı şifrelenmemiş olduğundan SAML oturumu açılamadı. Lütfen sistem yöneticiniz ile görüşün."
-  },
-  {
-    "id": "ent.saml.cpa_field_mapping.list_error",
-    "translation": "CPA alanları alınamadı"
   },
   {
     "id": "ent.saml.do_login.empty_response.app_error",

@@ -11124,10 +11124,6 @@
     "translation": "Identity Provider-এর রেসপন্স এনক্রিপ্ট করা না থাকায় SAML লগইন ব্যর্থ হয়েছে। অনুগ্রহ করে আপনার System Administrator-এর সাথে যোগাযোগ করুন।"
   },
   {
-    "id": "ent.saml.cpa_field_mapping.list_error",
-    "translation": "CPA ফিল্ড(সমূহ) পুনরুদ্ধার করা যায়নি"
-  },
-  {
     "id": "ent.saml.do_login.empty_response.app_error",
     "translation": "Identity Provider-এর থেকে একটি খালি রেসপন্স পাওয়া গেছে।"
   },

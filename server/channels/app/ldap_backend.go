@@ -5,7 +5,6 @@ package app
 
 import (
 	"bytes"
-	"encoding/json"
 	"errors"
 	"net/http"
 
@@ -280,91 +279,15 @@ func (b *ldapBackend) SyncGroupConstrainedRoles(rctx request.CTX, groupIDs []str
 	return errors.Join(errs...)
 }
 
-// withLdapSyncCaller identifies the AD/LDAP synchronization as the caller of
-// property operations, which is required to write synced attribute values.
-func withLdapSyncCaller(rctx request.CTX) request.CTX {
-	return RequestContextWithCallerID(rctx, model.CallerIDLDAPSync)
-}
-
-func (b *ldapBackend) GetCPAGroupID(rctx request.CTX) (string, error) {
-	rctx = withLdapSyncCaller(rctx)
-	group, appErr := b.a.GetPropertyGroup(rctx, model.AccessControlPropertyGroupName)
-	if appErr != nil {
-		return "", appErr
-	}
-	return group.ID, nil
-}
-
-func (b *ldapBackend) GetCPAFields(rctx request.CTX, groupID string) ([]*model.PropertyField, error) {
-	rctx = withLdapSyncCaller(rctx)
-	fields, appErr := b.a.SearchPropertyFields(rctx, groupID, model.PropertyFieldSearchOpts{
-		GroupID:    groupID,
-		ObjectType: model.PropertyFieldObjectTypeUser,
-		PerPage:    model.AccessControlGroupFieldLimit + 5,
-	})
+// NewAttributeSyncer returns the PropertySyncer of the user attributes synced
+// from AD/LDAP. It writes under the AD/LDAP sync's caller ID, the only caller
+// the sync lock lets write those values.
+func (b *ldapBackend) NewAttributeSyncer(rctx request.CTX) (ldap.AttributeSyncer, *model.AppError) {
+	syncer, appErr := b.a.NewPropertySyncer(rctx, model.PropertySyncSourceLDAP)
 	if appErr != nil {
 		return nil, appErr
 	}
-	return fields, nil
-}
-
-func (b *ldapBackend) GetCPAValues(rctx request.CTX, groupID string, userID string) ([]*model.PropertyValue, error) {
-	rctx = withLdapSyncCaller(rctx)
-	values, appErr := b.a.SearchPropertyValues(rctx, groupID, model.PropertyValueSearchOpts{
-		GroupID:    groupID,
-		TargetType: model.PropertyFieldObjectTypeUser,
-		TargetIDs:  []string{userID},
-		PerPage:    model.AccessControlGroupFieldLimit + 5,
-	})
-	if appErr != nil {
-		return nil, appErr
-	}
-	return values, nil
-}
-
-func (b *ldapBackend) UpsertCPAValues(rctx request.CTX, userID string, values []*model.PropertyValue) error {
-	rctx = withLdapSyncCaller(rctx)
-	upserted, appErr := b.a.UpsertPropertyValues(rctx, values, model.PropertyFieldObjectTypeUser, userID, "")
-	if appErr != nil {
-		return appErr
-	}
-	b.publishCPAValues(rctx, userID, upserted)
-	return nil
-}
-
-// publishCPAValues sends the legacy custom profile attributes websocket
-// event, withholding the values of the fields that are not public.
-func (b *ldapBackend) publishCPAValues(rctx request.CTX, userID string, values []*model.PropertyValue) {
-	if len(values) == 0 {
-		return
-	}
-	fieldIDs := make([]string, 0, len(values))
-	for _, v := range values {
-		fieldIDs = append(fieldIDs, v.FieldID)
-	}
-	fieldByID := map[string]*model.PropertyField{}
-	if fields, appErr := b.a.GetPropertyFields(rctx, values[0].GroupID, fieldIDs); appErr == nil {
-		for _, f := range fields {
-			fieldByID[f.ID] = f
-		}
-	}
-
-	res := make(map[string]json.RawMessage, len(values))
-	for _, v := range values {
-		res[v.FieldID] = model.BroadcastValue(fieldByID[v.FieldID], v.Value)
-	}
-	message := model.NewWebSocketEvent(model.WebsocketEventCPAValuesUpdated, "", "", "", nil, "")
-	message.Add("user_id", userID)
-	message.Add("values", res)
-	b.a.Publish(message)
-}
-
-func (b *ldapBackend) DeleteCPAValue(rctx request.CTX, groupID string, valueID string) error {
-	rctx = withLdapSyncCaller(rctx)
-	if appErr := b.a.DeletePropertyValue(rctx, groupID, valueID); appErr != nil {
-		return appErr
-	}
-	return nil
+	return syncer, nil
 }
 
 func (b *ldapBackend) CreateSyncJob(rctx request.CTX, data map[string]string) (*model.Job, *model.AppError) {

@@ -11124,10 +11124,6 @@
     "translation": "Hindi matagumpay ang SAML login dahil hindi naka-encrypt ang response ng Identity Provider. Paki-ugnayan ang inyong System Administrator."
   },
   {
-    "id": "ent.saml.cpa_field_mapping.list_error",
-    "translation": "Hindi nakukuha ang mga CPA field"
-  },
-  {
     "id": "ent.saml.do_login.empty_response.app_error",
     "translation": "Nakatanggap kami ng blangko na response mula sa Identity Provider."
   },

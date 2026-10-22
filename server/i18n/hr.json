@@ -10948,10 +10948,6 @@
     "translation": "Test LDAP veze nije uspio. Server: {{.Server}}:{{.Port}}, ConnectionSecurity: {{.ConnectionType}}, PrivateKeyFilename: {{.PrivateKeyFilename}}, PublicCertificateFilename: {{.PublicCertFilename}}, BindUsername: {{.BindUsername}}. Greška: {{.Error}}"
   },
   {
-    "id": "ent.ldap.cpa_field_mapping.list_error",
-    "translation": "Dohvaćanje CPA polja nije uspjelo"
-  },
-  {
     "id": "ent.ldap.create_fail",
     "translation": "Nije moguće stvoriti LDAP korisnika."
   },
@@ -11038,10 +11034,6 @@
   {
     "id": "ent.ldap.syncronize.search_failure.app_error",
     "translation": "Pretraživanje korisnika u AD/LDAP-u nije uspjelo. Provjeri može li se Mattermost server povezati s tvojim AD/LDAP serverom i pokušaj ponovno."
-  },
-  {
-    "id": "ent.ldap.update_cpa.empty_attribute",
-    "translation": "Prazna vrijednost LDAP atributa"
   },
   {
     "id": "ent.ldap.validate_admin_filter.app_error",
@@ -11262,10 +11254,6 @@
   {
     "id": "ent.saml.configure.not_encrypted_response.app_error",
     "translation": "SAML prijava nije uspjela jer odgovor pružatelja usluge identifikacije nije šifriran. Obrati se administratoru sustava."
-  },
-  {
-    "id": "ent.saml.cpa_field_mapping.list_error",
-    "translation": "Dohvaćanje CPA polja nije uspjelo"
   },
   {
     "id": "ent.saml.do_login.empty_response.app_error",

@@ -107,22 +107,13 @@ func (b *samlBackend) DeleteToken(token string) error {
 	return b.a.Srv().Store().Token().Delete(token)
 }
 
-func (b *samlBackend) GetPropertyGroup(rctx request.CTX, name string) (*model.PropertyGroup, *model.AppError) {
-	return b.a.GetPropertyGroup(rctx, name)
-}
-
-func (b *samlBackend) SearchPropertyFields(rctx request.CTX, groupID string, opts model.PropertyFieldSearchOpts) ([]*model.PropertyField, *model.AppError) {
-	return b.a.SearchPropertyFields(rctx, groupID, opts)
-}
-
-func (b *samlBackend) SearchPropertyValues(rctx request.CTX, groupID string, opts model.PropertyValueSearchOpts) ([]*model.PropertyValue, *model.AppError) {
-	return b.a.SearchPropertyValues(rctx, groupID, opts)
-}
-
-func (b *samlBackend) UpsertPropertyValues(rctx request.CTX, values []*model.PropertyValue, objectType, targetID string) ([]*model.PropertyValue, *model.AppError) {
-	return b.a.UpsertPropertyValues(rctx, values, objectType, targetID, "")
-}
-
-func (b *samlBackend) DeletePropertyValue(rctx request.CTX, groupID, valueID string) *model.AppError {
-	return b.a.DeletePropertyValue(rctx, groupID, valueID)
+// NewAttributeSyncer returns the PropertySyncer of the user attributes synced
+// from SAML. It writes under the SAML sync's caller ID, the only caller the
+// sync lock lets write those values.
+func (b *samlBackend) NewAttributeSyncer(rctx request.CTX) (saml.AttributeSyncer, *model.AppError) {
+	syncer, appErr := b.a.NewPropertySyncer(rctx, model.PropertySyncSourceSAML)
+	if appErr != nil {
+		return nil, appErr
+	}
+	return syncer, nil
 }

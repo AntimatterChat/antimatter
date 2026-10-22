@@ -765,7 +765,6 @@
   "admin.customProfileAttribDesc.saml": "(Optional) The attribute in the SAML Assertion that will be used to populate the {name} of users in Antimatter.",
   "admin.customProfileAttribWarning": "(Warning) This attribute will be converted to a TEXT attribute, if the field is set to synchronise.",
   "admin.customProfileAttributes.managedByPlugin": "This field is managed by the {pluginId} plugin and cannot be edited.",
-  "admin.customProfileAttributes.subtitle": "You can add or remove custom profile attributes by going to the <link>user attributes page</link>.",
   "admin.customProfileAttributes.title": "Custom profile attributes sync",
   "admin.custom_terms_of_service_feature_discovery.copy": "Create your own terms of service that new users must accept before accessing your Mattermost instance on desktop, web, or mobile.",
   "admin.custom_terms_of_service_feature_discovery.title": "Create custom terms of service with Mattermost Enterprise",

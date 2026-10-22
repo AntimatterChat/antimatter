@@ -11521,10 +11521,6 @@
     "translation": "Test połączenia LDAP nie powiódł się. Serwer: {{.Server}}:{{.Port}}, ConnectionSecurity: {{.ConnectionType}}, PrivateKeyFilename: {{.PrivateKeyFilename}}, PublicCertificateFilename: {{.PublicCertFilename}}, BindUsername: {{.BindUsername}}. Błąd: {{.Error}}"
   },
   {
-    "id": "ent.ldap.cpa_field_mapping.list_error",
-    "translation": "Nie udało się pobrać pól CPA"
-  },
-  {
     "id": "ent.ldap.create_fail",
     "translation": "Nie można utworzyć użytkownika LDAP."
   },
@@ -11619,10 +11615,6 @@
   {
     "id": "ent.ldap.syncronize.search_failure_size_exceeded.app_error",
     "translation": "Przekroczono limit rozmiaru. Spróbuj zwiększyć ustawienie Maksymalny rozmiar strony w Konsola systemu > Uwierzytelnianie > AD/LDAP."
-  },
-  {
-    "id": "ent.ldap.update_cpa.empty_attribute",
-    "translation": "Pusta wartość atrybutu LDAP"
   },
   {
     "id": "ent.ldap.validate_admin_filter.app_error",
@@ -11847,10 +11839,6 @@
   {
     "id": "ent.saml.configure.not_encrypted_response.app_error",
     "translation": "Logowanie przez SAML nie powiodło się, ponieważ odpowiedź Identity Providera nie została zaszyfrowana. Skontaktuj się z administratorem systemu."
-  },
-  {
-    "id": "ent.saml.cpa_field_mapping.list_error",
-    "translation": "Nie udało się pobrać pól CPA"
   },
   {
     "id": "ent.saml.do_login.empty_response.app_error",

@@ -27,9 +27,8 @@ type fakeBackend struct {
 	members      map[string]map[string]bool // group ID -> user IDs
 	hasSyncables map[string]bool
 
-	cpaGroupID string
-	cpaFields  []*model.PropertyField
-	cpaValues  map[string]map[string]*model.PropertyValue // user ID -> field ID -> value
+	attrSyncer    *fakeAttributeSyncer
+	attrSyncerErr *model.AppError
 
 	pictures       map[string][]byte
 	defaultPicture map[string]int
@@ -73,8 +72,6 @@ func newFakeBackend() *fakeBackend {
 		groups:         map[string]*model.Group{},
 		members:        map[string]map[string]bool{},
 		hasSyncables:   map[string]bool{},
-		cpaGroupID:     model.NewId(),
-		cpaValues:      map[string]map[string]*model.PropertyValue{},
 		pictures:       map[string][]byte{},
 		defaultPicture: map[string]int{},
 		jobs:           map[string]*model.Job{},
@@ -373,52 +370,55 @@ func (b *fakeBackend) SyncGroupConstrainedRoles(_ request.CTX, groupIDs []string
 	return nil
 }
 
-func (b *fakeBackend) GetCPAGroupID(_ request.CTX) (string, error) { return b.cpaGroupID, nil }
-
-func (b *fakeBackend) GetCPAFields(_ request.CTX, _ string) ([]*model.PropertyField, error) {
-	return b.cpaFields, nil
+func (b *fakeBackend) NewAttributeSyncer(_ request.CTX) (AttributeSyncer, *model.AppError) {
+	if b.attrSyncerErr != nil {
+		return nil, b.attrSyncerErr
+	}
+	if b.attrSyncer == nil {
+		return nil, nil
+	}
+	b.attrSyncer.loads++
+	return b.attrSyncer, nil
 }
 
-func (b *fakeBackend) GetCPAValues(_ request.CTX, _ string, userID string) ([]*model.PropertyValue, error) {
-	b.mu.Lock()
-	defer b.mu.Unlock()
-	var res []*model.PropertyValue
-	for _, v := range b.cpaValues[userID] {
-		c := *v
-		res = append(res, &c)
-	}
-	return res, nil
+// fakeAttributeSyncer records what the AD/LDAP service hands to the
+// PropertySyncer; the syncer itself is tested in the app package.
+type fakeAttributeSyncer struct {
+	mu         sync.Mutex
+	attributes []string
+	loads      int
+	synced     map[string]map[string][]string // user ID -> attrs of the last sync
+	syncOpts   map[string]model.PropertySyncOptions
+	syncCalls  int
+	prunes     int
 }
 
-func (b *fakeBackend) UpsertCPAValues(_ request.CTX, userID string, values []*model.PropertyValue) error {
-	b.mu.Lock()
-	defer b.mu.Unlock()
-	if b.cpaValues[userID] == nil {
-		b.cpaValues[userID] = map[string]*model.PropertyValue{}
+func newFakeAttributeSyncer(attributes ...string) *fakeAttributeSyncer {
+	return &fakeAttributeSyncer{
+		attributes: attributes,
+		synced:     map[string]map[string][]string{},
+		syncOpts:   map[string]model.PropertySyncOptions{},
 	}
-	for _, v := range values {
-		c := *v
-		if existing, ok := b.cpaValues[userID][v.FieldID]; ok {
-			c.ID = existing.ID
-		} else {
-			c.ID = model.NewId()
-		}
-		b.cpaValues[userID][v.FieldID] = &c
-	}
-	return nil
 }
 
-func (b *fakeBackend) DeleteCPAValue(_ request.CTX, _ string, valueID string) error {
-	b.mu.Lock()
-	defer b.mu.Unlock()
-	for _, values := range b.cpaValues {
-		for fieldID, v := range values {
-			if v.ID == valueID {
-				delete(values, fieldID)
-			}
-		}
-	}
-	return nil
+func (f *fakeAttributeSyncer) HasMappings() bool { return len(f.attributes) > 0 }
+
+func (f *fakeAttributeSyncer) ExternalAttributes() []string { return slices.Clone(f.attributes) }
+
+func (f *fakeAttributeSyncer) SyncUser(_ request.CTX, userID string, attrs map[string][]string, opts model.PropertySyncOptions) (*model.PropertySyncResult, *model.AppError) {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	f.syncCalls++
+	f.synced[userID] = attrs
+	f.syncOpts[userID] = opts
+	return &model.PropertySyncResult{UserID: userID}, nil
+}
+
+func (f *fakeAttributeSyncer) PruneOrphanedOptions(_ request.CTX) (*model.PropertySyncPruneResult, *model.AppError) {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	f.prunes++
+	return &model.PropertySyncPruneResult{}, nil
 }
 
 func (b *fakeBackend) CreateSyncJob(_ request.CTX, data map[string]string) (*model.Job, *model.AppError) {

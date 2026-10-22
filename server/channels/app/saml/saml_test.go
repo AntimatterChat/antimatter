@@ -12,11 +12,13 @@ import (
 	"encoding/base64"
 	"encoding/xml"
 	"io"
+	"net/http"
 	"net/url"
 	"strings"
 	"testing"
 	"time"
 
+	saml2 "github.com/mattermost/gosaml2"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
@@ -590,46 +592,71 @@ func TestDoLoginSyncWithLdap(t *testing.T) {
 }
 
 func TestDoLoginCustomProfileAttributes(t *testing.T) {
-	e := newTestEnv(t)
-	dept := &model.PropertyField{ID: model.NewId(), GroupID: e.b.group.ID, Name: "department", Type: model.PropertyFieldTypeText,
-		ObjectType: model.PropertyFieldObjectTypeUser, Attrs: model.StringInterface{model.PropertyFieldAttrSAML: "department"}}
-	office := &model.PropertyField{ID: model.NewId(), GroupID: e.b.group.ID, Name: "office", Type: model.PropertyFieldTypeText,
-		ObjectType: model.PropertyFieldObjectTypeUser, Attrs: model.StringInterface{model.PropertyFieldAttrSAML: "office"}}
-	ldapOwned := &model.PropertyField{ID: model.NewId(), GroupID: e.b.group.ID, Name: "cost", Type: model.PropertyFieldTypeText,
-		ObjectType: model.PropertyFieldObjectTypeUser, Attrs: model.StringInterface{model.PropertyFieldAttrSAML: "cost", model.PropertyFieldAttrLDAP: "costCenter"}}
-	plain := &model.PropertyField{ID: model.NewId(), GroupID: e.b.group.ID, Name: "plain", Type: model.PropertyFieldTypeText,
-		ObjectType: model.PropertyFieldObjectTypeUser}
-	e.b.fields = []*model.PropertyField{dept, office, ldapOwned, plain}
+	t.Run("hands every value of the synced attributes to the syncer and prunes", func(t *testing.T) {
+		e := newTestEnv(t)
+		syncer := newFakeAttributeSyncer("department", "office", "groups")
+		e.b.attrSyncer = syncer
 
-	attrs := defaultAttrs()
-	attrs["department"] = []string{"R&D"}
-	attrs["office"] = []string{"Paris"}
-	attrs["cost"] = []string{"42"}
-	user, appErr := e.login(defaultResponseOptions(e.idp, attrs), nil)
-	require.Nil(t, appErr)
+		attrs := defaultAttrs()
+		attrs["department"] = []string{"R&D"}
+		attrs["office"] = []string{"Paris"}
+		attrs["groups"] = []string{"Sales", "Support"}
+		attrs["unmapped"] = []string{"ignored"}
+		user, appErr := e.login(defaultResponseOptions(e.idp, attrs), nil)
+		require.Nil(t, appErr)
 
-	v, ok := e.b.valueFor(user.Id, dept.ID)
-	require.True(t, ok)
-	assert.Equal(t, "R&D", v)
-	v, ok = e.b.valueFor(user.Id, office.ID)
-	require.True(t, ok)
-	assert.Equal(t, "Paris", v)
-	_, ok = e.b.valueFor(user.Id, ldapOwned.ID)
-	assert.False(t, ok, "fields also synced from LDAP are left to LDAP")
+		assert.Equal(t, map[string][]string{
+			"department": {"R&D"},
+			"office":     {"Paris"},
+			"groups":     {"Sales", "Support"},
+		}, syncer.synced[user.Id], "select and multiselect attributes get every value, not only the first")
+		assert.True(t, syncer.syncOpts[user.Id].PruneOrphanedOptions)
 
-	for _, id := range e.b.cpaCallerIDs {
-		assert.Equal(t, model.CallerIDSAMLSync, id)
-	}
+		// Office removed from the assertion, department changed: the missing
+		// attribute is left out, which clears the user's value.
+		attrs["department"] = []string{"Sales"}
+		delete(attrs, "office")
+		user, appErr = e.login(defaultResponseOptions(e.idp, attrs), nil)
+		require.Nil(t, appErr)
+		assert.Equal(t, map[string][]string{
+			"department": {"Sales"},
+			"groups":     {"Sales", "Support"},
+		}, syncer.synced[user.Id])
+	})
 
-	// Office removed from the assertion, department changed.
-	attrs["department"] = []string{"Sales"}
-	delete(attrs, "office")
-	user, appErr = e.login(defaultResponseOptions(e.idp, attrs), nil)
-	require.Nil(t, appErr)
-	v, _ = e.b.valueFor(user.Id, dept.ID)
-	assert.Equal(t, "Sales", v)
-	_, ok = e.b.valueFor(user.Id, office.ID)
-	assert.False(t, ok)
+	t.Run("nothing is synced when no attribute is synced from SAML", func(t *testing.T) {
+		e := newTestEnv(t)
+		syncer := newFakeAttributeSyncer()
+		e.b.attrSyncer = syncer
+		_, appErr := e.login(defaultResponseOptions(e.idp, defaultAttrs()), nil)
+		require.Nil(t, appErr)
+		assert.Zero(t, syncer.syncCalls)
+	})
+
+	t.Run("a sync failure does not fail the sign-in", func(t *testing.T) {
+		e := newTestEnv(t)
+		syncer := newFakeAttributeSyncer("department")
+		syncer.syncErr = model.NewAppError("test", "app.property_value.search.app_error", nil, "", http.StatusInternalServerError)
+		e.b.attrSyncer = syncer
+		user, appErr := e.login(defaultResponseOptions(e.idp, defaultAttrs()), nil)
+		require.Nil(t, appErr)
+		assert.Equal(t, "alice", user.Username)
+		assert.Equal(t, 1, syncer.syncCalls)
+
+		e.b.attrSyncerErr = model.NewAppError("test", "app.property_group.get.app_error", nil, "", http.StatusInternalServerError)
+		_, appErr = e.login(defaultResponseOptions(e.idp, defaultAttrs()), nil)
+		require.Nil(t, appErr)
+	})
+
+	t.Run("an assertion without attribute statement leaves the values alone", func(t *testing.T) {
+		e := newTestEnv(t)
+		syncer := newFakeAttributeSyncer("department")
+		e.b.attrSyncer = syncer
+		appErr := e.s.syncCustomProfileAttributes(e.rctx(), &model.User{Id: model.NewId()}, &saml2.AssertionInfo{})
+		require.NotNil(t, appErr)
+		assert.Equal(t, "ent.saml.update_cpa.empty_attribute_statement", appErr.Id)
+		assert.Zero(t, syncer.syncCalls, "no attribute statement must not clear every synced value")
+	})
 }
 
 func TestCheckProviderAttributes(t *testing.T) {

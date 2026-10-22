@@ -10881,10 +10881,6 @@
     "translation": "LDAP ryšio patikra nepavyko. Serveris: {{.Server}}:{{.Port}}, ConnectionSecurity: {{.ConnectionType}}, PrivateKeyFilename: {{.PrivateKeyFilename}}, PublicCertificateFilename: {{.PublicCertFilename}}, BindUsername: {{.BindUsername}}. Klaida: {{.Error}}"
   },
   {
-    "id": "ent.ldap.cpa_field_mapping.list_error",
-    "translation": "Nepavyko gauti CPA laukų"
-  },
-  {
     "id": "ent.ldap.create_fail",
     "translation": "Nepavyksta sukurti LDAP naudotojo."
   },
@@ -10971,10 +10967,6 @@
   {
     "id": "ent.ldap.syncronize.search_failure.app_error",
     "translation": "Nepavyko atlikti naudotojų paieškos AD/LDAP. Patikrinkite, ar Mattermost serveris gali prisijungti prie jūsų AD/LDAP serverio, ir bandykite dar kartą."
-  },
-  {
-    "id": "ent.ldap.update_cpa.empty_attribute",
-    "translation": "Tuščia LDAP atributo reikšmė"
   },
   {
     "id": "ent.ldap.validate_admin_filter.app_error",
@@ -11199,10 +11191,6 @@
   {
     "id": "ent.saml.configure.not_encrypted_response.app_error",
     "translation": "SAML prisijungimas nepavyko, nes tapatybės teikėjo atsakymas neužšifruotas. Kreipkitės į sistemos administratorių."
-  },
-  {
-    "id": "ent.saml.cpa_field_mapping.list_error",
-    "translation": "Nepavyko gauti CPA lauko (-ų)"
   },
   {
     "id": "ent.saml.do_login.empty_response.app_error",

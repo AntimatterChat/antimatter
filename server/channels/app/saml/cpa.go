@@ -4,9 +4,7 @@
 package saml
 
 import (
-	"encoding/json"
 	"net/http"
-	"strings"
 
 	saml2 "github.com/mattermost/gosaml2"
 
@@ -14,116 +12,59 @@ import (
 	"github.com/mattermost/mattermost/server/public/shared/request"
 )
 
-// syncCustomProfileAttributes copies the SAML attributes mapped on custom
-// profile attribute fields (field attrs "saml": "<attribute name>") into the
-// user's attribute values. Only text fields can be SAML synced; a field that
-// is also LDAP synced is left to the LDAP synchronization. A mapped attribute
-// absent from the assertion clears the value, so that revoked attributes do not
-// linger (they may drive access control policies).
+// AttributeSyncer applies the attribute values a SAML assertion carries to the
+// user attributes (custom profile attributes) synced from SAML. The app
+// layer's PropertySyncer implements it: text, select and multiselect
+// attributes are synced, select and multiselect values are matched to options
+// by name and missing options are created, and an attribute also synced from
+// AD/LDAP is left to the AD/LDAP synchronization.
+type AttributeSyncer interface {
+	// HasMappings reports whether any user attribute is synced from SAML.
+	HasMappings() bool
+	// ExternalAttributes returns the SAML attributes the synced user
+	// attributes read from.
+	ExternalAttributes() []string
+	// SyncUser writes the values in attrs (SAML attribute name -> values) to
+	// the user's synced attributes.
+	SyncUser(rctx request.CTX, userID string, attrs map[string][]string, opts model.PropertySyncOptions) (*model.PropertySyncResult, *model.AppError)
+}
+
+// syncCustomProfileAttributes copies the SAML attributes mapped on user
+// attributes (attrs "saml": "<attribute name>") into the user's values. A
+// mapped attribute absent from the assertion clears the value, so that revoked
+// attributes do not linger (they may drive access control policies), and the
+// options the user was the last to hold are removed.
 func (s *Service) syncCustomProfileAttributes(rctx request.CTX, user *model.User, info *saml2.AssertionInfo) *model.AppError {
-	rctx = rctx.WithContext(model.WithCallerID(rctx.Context(), model.CallerIDSAMLSync))
-
-	group, appErr := s.b.GetPropertyGroup(rctx, model.AccessControlPropertyGroupName)
+	syncer, appErr := s.b.NewAttributeSyncer(rctx)
 	if appErr != nil {
-		return model.NewAppError("syncCustomProfileAttributes", "ent.saml.cpa_field_mapping.list_error", nil, "", http.StatusInternalServerError).Wrap(appErr)
+		return appErr
 	}
-
-	fields, appErr := s.b.SearchPropertyFields(rctx, group.ID, model.PropertyFieldSearchOpts{
-		GroupID:    group.ID,
-		ObjectType: model.PropertyFieldObjectTypeUser,
-		PerPage:    model.AccessControlGroupFieldLimit + 5,
-	})
-	if appErr != nil {
-		return model.NewAppError("syncCustomProfileAttributes", "ent.saml.cpa_field_mapping.list_error", nil, "", http.StatusInternalServerError).Wrap(appErr)
-	}
-
-	type mapping struct {
-		field     *model.PropertyField
-		attribute string
-	}
-	var mappings []mapping
-	for _, f := range fields {
-		if f == nil || f.DeleteAt != 0 || f.Type != model.PropertyFieldTypeText {
-			continue
-		}
-		if model.GetPropertyFieldSyncSource(f) != model.PropertyFieldAttrSAML {
-			continue
-		}
-		attr, _ := f.Attrs[model.PropertyFieldAttrSAML].(string)
-		if attr = strings.TrimSpace(attr); attr != "" {
-			mappings = append(mappings, mapping{field: f, attribute: attr})
-		}
-	}
-	if len(mappings) == 0 {
+	if syncer == nil || !syncer.HasMappings() {
 		return nil
 	}
 
+	// An assertion without any attribute statement says nothing about the
+	// user's attributes (usually an Identity Provider misconfiguration):
+	// rather than clearing every synced value, leave them as they are.
 	if !hasAttributeStatement(info) {
 		return model.NewAppError("syncCustomProfileAttributes", "ent.saml.update_cpa.empty_attribute_statement", nil, "", http.StatusBadRequest)
 	}
 
-	existing, appErr := s.b.SearchPropertyValues(rctx, group.ID, model.PropertyValueSearchOpts{
-		TargetIDs:  []string{user.Id},
-		TargetType: model.PropertyValueTargetTypeUser,
-		PerPage:    model.AccessControlGroupFieldLimit + 5,
-	})
-	if appErr != nil {
-		return appErr
-	}
-	existingByField := make(map[string]*model.PropertyValue, len(existing))
-	for _, v := range existing {
-		if v != nil && v.DeleteAt == 0 {
-			existingByField[v.FieldID] = v
-		}
-	}
+	_, appErr = syncer.SyncUser(rctx, user.Id, assertionAttributes(syncer, info), model.PropertySyncOptions{PruneOrphanedOptions: true})
+	return appErr
+}
 
-	var upserts []*model.PropertyValue
-	var deletes []*model.PropertyValue
-	for _, m := range mappings {
-		value, ok := getAttribute(info, m.attribute)
-		value = truncateRunes(strings.TrimSpace(value), model.CPAValueTypeTextMaxLength)
-		current := existingByField[m.field.ID]
-
-		if !ok || value == "" {
-			if current != nil {
-				deletes = append(deletes, current)
-			}
-			continue
-		}
-
-		if current != nil {
-			var currentValue string
-			if err := json.Unmarshal(current.Value, &currentValue); err == nil && currentValue == value {
-				continue
-			}
-		}
-
-		raw, err := json.Marshal(value)
-		if err != nil {
-			continue
-		}
-		upserts = append(upserts, &model.PropertyValue{
-			GroupID:    group.ID,
-			FieldID:    m.field.ID,
-			TargetID:   user.Id,
-			TargetType: model.PropertyValueTargetTypeUser,
-			Value:      raw,
-			CreatedBy:  user.Id,
-			UpdatedBy:  user.Id,
-		})
-	}
-
-	if len(upserts) > 0 {
-		if _, appErr := s.b.UpsertPropertyValues(rctx, upserts, model.PropertyFieldObjectTypeUser, user.Id); appErr != nil {
-			return appErr
+// assertionAttributes reads every value of the synced SAML attributes from the
+// assertion, in assertion order. An attribute the assertion lacks is left out,
+// which clears the user's value.
+func assertionAttributes(syncer AttributeSyncer, info *saml2.AssertionInfo) map[string][]string {
+	attrs := map[string][]string{}
+	for _, name := range syncer.ExternalAttributes() {
+		if values, ok := getAttributeValues(info, name); ok && len(values) > 0 {
+			attrs[name] = values
 		}
 	}
-	for _, v := range deletes {
-		if appErr := s.b.DeletePropertyValue(rctx, group.ID, v.ID); appErr != nil {
-			return appErr
-		}
-	}
-	return nil
+	return attrs
 }
 
 func hasAttributeStatement(info *saml2.AssertionInfo) bool {

@@ -31,11 +31,9 @@ type Backend interface {
 	GetSamlEmailToken(token string) (*model.Token, *model.AppError)
 	DeleteToken(token string) error
 
-	GetPropertyGroup(rctx request.CTX, name string) (*model.PropertyGroup, *model.AppError)
-	SearchPropertyFields(rctx request.CTX, groupID string, opts model.PropertyFieldSearchOpts) ([]*model.PropertyField, *model.AppError)
-	SearchPropertyValues(rctx request.CTX, groupID string, opts model.PropertyValueSearchOpts) ([]*model.PropertyValue, *model.AppError)
-	UpsertPropertyValues(rctx request.CTX, values []*model.PropertyValue, objectType, targetID string) ([]*model.PropertyValue, *model.AppError)
-	DeletePropertyValue(rctx request.CTX, groupID, valueID string) *model.AppError
+	// NewAttributeSyncer returns the syncer of the user attributes synced
+	// from SAML, loaded at the time of the call (one per sign-in).
+	NewAttributeSyncer(rctx request.CTX) (AttributeSyncer, *model.AppError)
 }
 
 // The ids of the app layer's errors for a missing account

@@ -11124,10 +11124,6 @@
     "translation": "لم ينجح تسجيل الدخول عبر SAML لأن استجابة مزوّد الهوية غير مشفّرة. يرجى التواصل مع مدير النظام."
   },
   {
-    "id": "ent.saml.cpa_field_mapping.list_error",
-    "translation": "تعذّر استرجاع حقول CPA"
-  },
-  {
     "id": "ent.saml.do_login.empty_response.app_error",
     "translation": "تلقّينا استجابة فارغة من مزوّد الهوية."
   },

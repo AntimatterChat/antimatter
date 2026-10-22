@@ -11124,10 +11124,6 @@
     "translation": "L'inici de sessió amb SAML no ha tingut èxit perquè la resposta del proveïdor d'identitat no està xifrada. Si us plau, contacta amb el teu administrador del sistema."
   },
   {
-    "id": "ent.saml.cpa_field_mapping.list_error",
-    "translation": "No s'han pogut recuperar els camps de CPA"
-  },
-  {
     "id": "ent.saml.do_login.empty_response.app_error",
     "translation": "Hem rebut una resposta buida del proveïdor d'identitat."
   },
