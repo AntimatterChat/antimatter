@@ -84,6 +84,7 @@ func GenerateClientConfig(c *model.Config, telemetryID string) map[string]string
 	props["EnableUserBlocking"] = strconv.FormatBool(*c.PrivacySettings.EnableUserBlocking)
 
 	props["EnableFileAttachments"] = strconv.FormatBool(*c.FileSettings.EnableFileAttachments)
+	props["EnableFileSearch"] = strconv.FormatBool(*c.ServiceSettings.EnableFileSearch)
 	props["EnablePublicLink"] = strconv.FormatBool(*c.FileSettings.EnablePublicLink)
 
 	props["AvailableLocales"] = *c.LocalizationSettings.AvailableLocales

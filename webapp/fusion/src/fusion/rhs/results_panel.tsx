@@ -10,6 +10,7 @@ import type {Post} from '@mattermost/types/posts';
 
 import {getMorePostsForSearch} from 'mattermost-redux/actions/search';
 import {getAllChannels} from 'mattermost-redux/selectors/entities/channels';
+import {getConfig} from 'mattermost-redux/selectors/entities/general';
 import {getSearchFilesResults} from 'mattermost-redux/selectors/entities/files';
 import {isPostFlagged} from 'mattermost-redux/selectors/entities/posts';
 import {getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
@@ -35,6 +36,7 @@ import {permalinkPath} from 'fusion/utils/paths';
 import {plainText} from 'fusion/utils/plain_text';
 import {getHistory} from 'utils/browser_history';
 import {ModalIdentifiers, RHSStates} from 'utils/constants';
+import {canSearchFiles} from 'utils/file_utils';
 import {canPopout, popoutRhsSearch} from 'utils/popouts/popout_windows';
 import {getSiteURL} from 'utils/url';
 import {copyToClipboard} from 'utils/utils';
@@ -185,7 +187,8 @@ export default function ResultsPanel({rhsState}: {rhsState: string}) {
     const channelId = useSelector((state: GlobalState) => state.views.rhs.selectedChannelId || state.entities.channels.currentChannelId);
     const searchActions = useSearchResultsActions();
     const searchType = useSelector(getSearchType);
-    const showFiles = rhsState === RHSStates.SEARCH && searchType === 'files';
+    const filesSearchAvailable = useSelector((state: GlobalState) => canSearchFiles(getConfig(state)));
+    const showFiles = rhsState === RHSStates.SEARCH && searchType === 'files' && filesSearchAvailable;
     const files = useSelector(getSearchFilesResults);
     const filesAtEnd = useSelector((state: GlobalState) => state.entities.search.current[getSearchTeam(state) || 'ALL_TEAMS']?.isFilesEnd ?? true);
     const ids = useSelector((state: GlobalState) => {
@@ -307,16 +310,18 @@ export default function ResultsPanel({rhsState}: {rhsState: string}) {
                             {formatMessage({id: 'fusion.results.messages', defaultMessage: 'Messages'})}
                             <span>{posts.length}</span>
                         </button>
-                        <button
-                            type='button'
-                            role='tab'
-                            aria-selected={showFiles}
-                            className={am({on: showFiles})}
-                            onClick={() => searchActions.setSearchType('files')}
-                        >
-                            {formatMessage({id: 'fusion.results.files', defaultMessage: 'Files'})}
-                            <span>{files.length}</span>
-                        </button>
+                        {filesSearchAvailable && (
+                            <button
+                                type='button'
+                                role='tab'
+                                aria-selected={showFiles}
+                                className={am({on: showFiles})}
+                                onClick={() => searchActions.setSearchType('files')}
+                            >
+                                {formatMessage({id: 'fusion.results.files', defaultMessage: 'Files'})}
+                                <span>{files.length}</span>
+                            </button>
+                        )}
                     </div>
                 )}
                 {showFiles && (

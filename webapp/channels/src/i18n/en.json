@@ -4323,6 +4323,14 @@
     "defaultMessage": "Enable Elasticsearch for autocomplete queries:",
     "description": "Toggle setting name on the Elasticsearch admin page for using Elasticsearch in autocomplete; ends with a colon."
   },
+  "admin.elasticsearch.enableFileIndexingDescription": {
+    "defaultMessage": "When false, new or updated file attachments are not indexed. File search continues to return previously indexed files, but files uploaded while this setting is false are not searchable until a bulk index is run after re-enabling it.",
+    "description": "Help text under the file indexing toggle on the Elasticsearch admin page, explaining that turning it off stops indexing new or updated file attachments while file search keeps returning previously indexed files."
+  },
+  "admin.elasticsearch.enableFileIndexingTitle": {
+    "defaultMessage": "Enable file indexing:",
+    "description": "Toggle setting name on the Elasticsearch admin page for indexing file attachments; ends with a colon."
+  },
   "admin.elasticsearch.enableIndexingDescription": {
     "defaultMessage": "When true, indexing of new posts occurs automatically. Search queries will use database search until \"Enable Elasticsearch for search queries\" is enabled. <link>Learn more about Elasticsearch in our documentation.</link>",
     "description": "Admin console help text for the Enable Elasticsearch Indexing toggle; <link></link> wraps the sentence linking to documentation, the quoted setting name refers to a sibling setting."
@@ -5070,6 +5078,14 @@
   "admin.file.enableFileAttachmentsDesc": {
     "defaultMessage": "When false, disables file sharing on the server. All file and image uploads on messages are forbidden across clients and devices, including mobile.",
     "description": "Help text for the Allow File Sharing setting on the System Console file storage page."
+  },
+  "admin.file.enableFileSearchDesc": {
+    "defaultMessage": "When false, users cannot search for files and the Files tab is hidden from search results.",
+    "description": "Help text under the file search toggle in the System Console File Sharing and Downloads page, explaining that turning it off disables file search for users."
+  },
+  "admin.file.enableFileSearchTitle": {
+    "defaultMessage": "Enable File Search:",
+    "description": "Setting label (toggle) in the System Console controlling whether users can search for files; ends with a colon."
   },
   "admin.file.enableMobileDownloadDesc": {
     "defaultMessage": "When false, disables file downloads on mobile apps. Users can still download files from a mobile web browser.",

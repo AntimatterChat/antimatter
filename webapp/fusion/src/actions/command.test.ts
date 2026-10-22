@@ -124,7 +124,10 @@ const initialState = {
             pluginEnabled: true,
         },
         general: {
-            config: {},
+            config: {
+                EnableFileAttachments: 'true',
+                EnableFileSearch: 'true',
+            },
         },
     },
     views: {
