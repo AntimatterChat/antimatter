@@ -39,8 +39,9 @@ import (
 
 type fixedDBStatsStore struct {
 	store.Store
-	masterStats  sql.DBStats
-	replicaStats sql.DBStats
+	masterStats    sql.DBStats
+	replicaStats   sql.DBStats
+	replicasOnline int
 }
 
 func (s *fixedDBStatsStore) GetDiagnostics(_ request.CTX) (*store.DatabaseDiagnostics, error) {
@@ -57,6 +58,7 @@ func (s *fixedDBStatsStore) GetDiagnostics(_ request.CTX) (*store.DatabaseDiagno
 		ReplicaPoolWaitDurationMs:           s.replicaStats.WaitDuration.Milliseconds(),
 		ReplicaConnectionsClosedMaxIdle:     s.replicaStats.MaxIdleClosed,
 		ReplicaConnectionsClosedMaxLifetime: s.replicaStats.MaxLifetimeClosed,
+		ReplicasOnline:                      s.replicasOnline,
 	}
 
 	return diagnostics, nil
@@ -311,7 +313,7 @@ func TestGetSupportPacketDiagnostics(t *testing.T) {
 		assert.Zero(t, d.Database.SearchConnections)
 		require.NotNil(t, d.Database.MasterConnectionsInUse)
 		assert.GreaterOrEqual(t, *d.Database.MasterConnectionsInUse, 0)
-		for _, v := range []*int{d.Database.MasterConnectionsIdle, d.Database.ReplicaConnectionsInUse, d.Database.ReplicaConnectionsIdle} {
+		for _, v := range []*int{d.Database.MasterConnectionsIdle, d.Database.ReplicaConnectionsInUse, d.Database.ReplicaConnectionsIdle, d.Database.ReplicasOnline} {
 			require.NotNil(t, v)
 			assert.GreaterOrEqual(t, *v, 0)
 		}
@@ -1004,6 +1006,7 @@ func TestGetSupportPacketDiagnostics(t *testing.T) {
 				MaxIdleClosed:     23,
 				MaxLifetimeClosed: 29,
 			},
+			replicasOnline: 2,
 		}
 		th.Service.Store = customStore
 		t.Cleanup(func() {
@@ -1024,6 +1027,7 @@ func TestGetSupportPacketDiagnostics(t *testing.T) {
 		assert.Equal(t, new(int64(4090)), packet.Database.ReplicaPoolWaitDurationMs)
 		assert.Equal(t, new(int64(23)), packet.Database.ReplicaConnectionsClosedMaxIdle)
 		assert.Equal(t, new(int64(29)), packet.Database.ReplicaConnectionsClosedMaxLifetime)
+		assert.Equal(t, new(2), packet.Database.ReplicasOnline)
 	})
 
 	t.Run("OpenID disabled", func(t *testing.T) {
@@ -1287,6 +1291,7 @@ func TestGetSupportPacketDiagnosticsSectionErrors(t *testing.T) {
 		assert.Nil(t, d.Database.ReplicaPoolWaitDurationMs)
 		assert.Nil(t, d.Database.ReplicaConnectionsClosedMaxIdle)
 		assert.Nil(t, d.Database.ReplicaConnectionsClosedMaxLifetime)
+		assert.Nil(t, d.Database.ReplicasOnline)
 	})
 
 	t.Run("disk space fails", func(t *testing.T) {
@@ -1610,6 +1615,7 @@ func TestSupportPacketMarshalGolden(t *testing.T) {
 	diagnostics.Database.ReplicaPoolWaitDurationMs = new(int64(66))
 	diagnostics.Database.ReplicaConnectionsClosedMaxIdle = new(int64(4))
 	diagnostics.Database.ReplicaConnectionsClosedMaxLifetime = new(int64(3))
+	diagnostics.Database.ReplicasOnline = new(1)
 	diagnostics.Database.CacheHitRatio = &cacheHitRatio
 	diagnostics.Database.Deadlocks = &deadlocks
 	diagnostics.Database.TempFiles = &tempFiles
