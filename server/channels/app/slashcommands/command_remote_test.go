@@ -514,7 +514,7 @@ func TestRemoteProviderDoStatusStoreFailure(t *testing.T) {
 	dbStore.MarkSystemRanUnitTests()
 
 	wrapper := &failingGetAllStoreWrapper{Store: dbStore}
-	th := setupTestHelper(wrapper, false, true, t, nil).initBasic(t)
+	th := setupTestHelper(wrapper, true, t, nil).initBasic(t)
 	th.addPermissionToRole(t, model.PermissionManageSecureConnections.Id, th.BasicUser.Roles)
 
 	userT := func(id string, args ...any) string {
@@ -623,7 +623,7 @@ func TestRemoteProviderDoRemove(t *testing.T) {
 
 	// The wrapper is installed before the server starts so the live store is never swapped.
 	wrapper := &failingDeleteStoreWrapper{Store: dbStore, failDeleteID: model.NewId()}
-	th := setupTestHelper(wrapper, false, true, t, nil).initBasic(t)
+	th := setupTestHelper(wrapper, true, t, nil).initBasic(t)
 	th.addPermissionToRole(t, model.PermissionManageSecureConnections.Id, th.BasicUser.Roles)
 
 	runRemove := func(t *testing.T, command string) string {
