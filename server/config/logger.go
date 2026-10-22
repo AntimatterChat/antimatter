@@ -294,7 +294,8 @@ func ValidateLogFilePath(filePath string, loggingRoot string) error {
 // LogPathOutsideRootWarning is the message logged when a log or audit file path resolves
 // outside the logging root and the server is not configured to reject it.
 const LogPathOutsideRootWarning = "Log file path in logging config is outside the logging root directory. " +
-	"Set the EnforceLogPathRoot feature flag to reject this configuration now; enforcement will become the default in a future release. " +
+	"Enforcement is on by default; it was turned off with the EnforceLogPathRoot feature flag (AM_FEATUREFLAGS_ENFORCELOGPATHROOT=false), " +
+	"which lets the server start with this path for now. " +
 	"To fix, set the AM_LOG_PATH environment variable (or the older MM_LOG_PATH) to a parent directory containing all log paths, or move log files into the logging root."
 
 // IsLogPathEnforcementEnabled reports whether a log path outside the logging root should be

@@ -470,9 +470,14 @@ func TestIsLogPathEnforcementEnabled(t *testing.T) {
 		assert.False(t, IsLogPathEnforcementEnabled(&model.Config{}))
 	})
 
-	t.Run("flag off", func(t *testing.T) {
+	t.Run("flag on by default", func(t *testing.T) {
 		cfg := &model.Config{FeatureFlags: &model.FeatureFlags{}}
 		cfg.FeatureFlags.SetDefaults()
+		assert.True(t, IsLogPathEnforcementEnabled(cfg))
+	})
+
+	t.Run("flag off", func(t *testing.T) {
+		cfg := &model.Config{FeatureFlags: &model.FeatureFlags{EnforceLogPathRoot: false}}
 		assert.False(t, IsLogPathEnforcementEnabled(cfg))
 	})
 

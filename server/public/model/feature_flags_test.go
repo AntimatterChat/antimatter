@@ -260,9 +260,9 @@ func TestFeatureFlagsSetDefaults_EnforceLogPathRoot(t *testing.T) {
 	var flags FeatureFlags
 	flags.SetDefaults()
 
-	require.False(t, flags.EnforceLogPathRoot, "EnforceLogPathRoot should default to false")
-	require.Equal(t, "false", flags.ToMap()["EnforceLogPathRoot"])
-
-	flags.EnforceLogPathRoot = true
+	require.True(t, flags.EnforceLogPathRoot, "EnforceLogPathRoot should default to true in Antimatter")
 	require.Equal(t, "true", flags.ToMap()["EnforceLogPathRoot"])
+
+	flags.EnforceLogPathRoot = false
+	require.Equal(t, "false", flags.ToMap()["EnforceLogPathRoot"])
 }

@@ -172,8 +172,10 @@ type FeatureFlags struct {
 	// controls whether the /api/v4/delivery_tracking routes are registered.
 	PostDeliveryTracking bool
 
-	// FEATURE_FLAG_REMOVAL: EnforceLogPathRoot - remove this once every supported
-	// release carries the flag and enforcement becomes unconditional (MM-70595).
+	// FEATURE_FLAG_REMOVAL: EnforceLogPathRoot - Antimatter enforces this by default; the
+	// flag only stays so an admin can turn enforcement off (AM_FEATUREFLAGS_ENFORCELOGPATHROOT=false)
+	// for a server with a path outside its logging root. Remove this once that escape hatch is
+	// no longer needed (MM-70595).
 	// When on, a log or audit file path resolving outside the logging root
 	// (AM_LOG_PATH, or the default logs dir) aborts server startup and is rejected
 	// on config save. When off, the same paths only produce an error log line.
@@ -250,7 +252,7 @@ func (f *FeatureFlags) SetDefaults() {
 
 	f.PostDeliveryTracking = false
 
-	f.EnforceLogPathRoot = false
+	f.EnforceLogPathRoot = true
 
 	f.HealthDashboard = false
 }
