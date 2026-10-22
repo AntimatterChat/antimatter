@@ -16,6 +16,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/mattermost/mattermost/server/public/model"
+	"github.com/mattermost/mattermost/server/v8/config"
 )
 
 // optionTestFields is the shape every subtest below works against: a template
@@ -908,7 +909,9 @@ func TestPropertyFieldOptions(t *testing.T) {
 }
 
 func TestPropertyFieldOptionsAudit(t *testing.T) {
-	logFile, err := os.CreateTemp("", "property_field_options_audit.log")
+	// The audit file target must resolve inside the logging root: EnforceLogPathRoot is on by
+	// default, and config.GetLogRootPath() is the per-test logs directory mainHelper set up.
+	logFile, err := os.CreateTemp(config.GetLogRootPath(), "property_field_options_audit.log")
 	require.NoError(t, err)
 	defer os.Remove(logFile.Name())
 

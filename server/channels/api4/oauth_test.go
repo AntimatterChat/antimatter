@@ -18,6 +18,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/mattermost/mattermost/server/public/model"
+	"github.com/mattermost/mattermost/server/v8/config"
 )
 
 func TestCreateOAuthApp(t *testing.T) {
@@ -1129,7 +1130,9 @@ func TestRegisterOAuthClient_PublicClient_Success(t *testing.T) {
 }
 
 func TestRegisterOAuthClientAudit(t *testing.T) {
-	logFile, err := os.CreateTemp("", "dcr_audit.log")
+	// The audit file target must resolve inside the logging root: EnforceLogPathRoot is on by
+	// default, and config.GetLogRootPath() is the per-test logs directory mainHelper set up.
+	logFile, err := os.CreateTemp(config.GetLogRootPath(), "dcr_audit.log")
 	require.NoError(t, err)
 	defer os.Remove(logFile.Name())
 

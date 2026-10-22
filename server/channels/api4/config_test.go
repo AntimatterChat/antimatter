@@ -541,7 +541,9 @@ func TestUpdateConfigRestrictSystemAdmin(t *testing.T) {
 }
 
 func TestUpdateConfigDiffInAuditRecord(t *testing.T) {
-	logFile, err := os.CreateTemp("", "adv.log")
+	// The audit file target must resolve inside the logging root: EnforceLogPathRoot is on by
+	// default, and config.GetLogRootPath() is the per-test logs directory mainHelper set up.
+	logFile, err := os.CreateTemp(config.GetLogRootPath(), "adv.log")
 	require.NoError(t, err)
 	defer os.Remove(logFile.Name())
 

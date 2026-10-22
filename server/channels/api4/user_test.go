@@ -31,6 +31,7 @@ import (
 	"github.com/mattermost/mattermost/server/public/shared/request"
 	"github.com/mattermost/mattermost/server/v8/channels/app"
 	"github.com/mattermost/mattermost/server/v8/channels/utils/testutils"
+	"github.com/mattermost/mattermost/server/v8/config"
 	"github.com/mattermost/mattermost/server/v8/einterfaces/mocks"
 	"github.com/mattermost/mattermost/server/v8/platform/shared/mail"
 
@@ -301,7 +302,9 @@ func TestCreateUserPasswordValidation(t *testing.T) {
 }
 
 func TestCreateUserAudit(t *testing.T) {
-	logFile, err := os.CreateTemp("", "adv.log")
+	// The audit file target must resolve inside the logging root: EnforceLogPathRoot is on by
+	// default, and config.GetLogRootPath() is the per-test logs directory mainHelper set up.
+	logFile, err := os.CreateTemp(config.GetLogRootPath(), "adv.log")
 	require.NoError(t, err)
 	defer os.Remove(logFile.Name())
 
@@ -335,7 +338,9 @@ func TestCreateUserAudit(t *testing.T) {
 }
 
 func TestUserLoginAudit(t *testing.T) {
-	logFile, err := os.CreateTemp("", "adv.log")
+	// The audit file target must resolve inside the logging root: EnforceLogPathRoot is on by
+	// default, and config.GetLogRootPath() is the per-test logs directory mainHelper set up.
+	logFile, err := os.CreateTemp(config.GetLogRootPath(), "adv.log")
 	require.NoError(t, err)
 	defer os.Remove(logFile.Name())
 
@@ -377,7 +382,9 @@ func TestUserLoginAudit(t *testing.T) {
 }
 
 func TestLogoutAuditAuthStatus(t *testing.T) {
-	logFile, err := os.CreateTemp("", "logout_audit.log")
+	// The audit file target must resolve inside the logging root: EnforceLogPathRoot is on by
+	// default, and config.GetLogRootPath() is the per-test logs directory mainHelper set up.
+	logFile, err := os.CreateTemp(config.GetLogRootPath(), "logout_audit.log")
 	require.NoError(t, err)
 	defer os.Remove(logFile.Name())
 
@@ -8681,7 +8688,9 @@ func TestUpdatePasswordBotPermissions(t *testing.T) {
 }
 
 func TestUpdatePasswordAudit(t *testing.T) {
-	logFile, err := os.CreateTemp("", "adv.log")
+	// The audit file target must resolve inside the logging root: EnforceLogPathRoot is on by
+	// default, and config.GetLogRootPath() is the per-test logs directory mainHelper set up.
+	logFile, err := os.CreateTemp(config.GetLogRootPath(), "adv.log")
 	require.NoError(t, err)
 	defer os.Remove(logFile.Name())
 

@@ -15,6 +15,7 @@ import (
 
 	"github.com/mattermost/mattermost/server/public/model"
 	"github.com/mattermost/mattermost/server/public/shared/i18n"
+	"github.com/mattermost/mattermost/server/v8/config"
 	"github.com/mattermost/mattermost/server/v8/platform/shared/healthcheck"
 )
 
@@ -379,7 +380,9 @@ func TestMuteHealthFinding(t *testing.T) {
 }
 
 func TestMuteHealthFindingAudit(t *testing.T) {
-	logFile, err := os.CreateTemp("", "health_dashboard_audit.log")
+	// The audit file target must resolve inside the logging root: EnforceLogPathRoot is on by
+	// default, and config.GetLogRootPath() is the per-test logs directory mainHelper set up.
+	logFile, err := os.CreateTemp(config.GetLogRootPath(), "health_dashboard_audit.log")
 	require.NoError(t, err)
 	t.Cleanup(func() {
 		require.NoError(t, logFile.Close())

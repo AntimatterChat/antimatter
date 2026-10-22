@@ -18,6 +18,7 @@ import (
 	"github.com/mattermost/mattermost/server/public/model"
 	"github.com/mattermost/mattermost/server/public/plugin/plugintest/mock"
 	"github.com/mattermost/mattermost/server/public/shared/i18n"
+	"github.com/mattermost/mattermost/server/v8/config"
 	"github.com/mattermost/mattermost/server/v8/einterfaces/mocks"
 	"github.com/stretchr/testify/require"
 )
@@ -527,7 +528,10 @@ func TestGenerateFlaggedPostReportFileDownloadPolicy(t *testing.T) {
 }
 
 func TestGenerateFlaggedPostReportAttachmentsOmittedAudit(t *testing.T) {
-	logFile, err := os.CreateTemp(t.TempDir(), "audit.log")
+	// The audit file target must resolve inside the logging root: EnforceLogPathRoot is on by
+	// default, and config.GetLogRootPath() is the per-test logs directory mainHelper set up.
+	// t.TempDir() is outside it, so the file goes there instead.
+	logFile, err := os.CreateTemp(config.GetLogRootPath(), "audit.log")
 	require.NoError(t, err)
 	defer logFile.Close()
 

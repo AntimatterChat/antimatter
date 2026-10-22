@@ -15,6 +15,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/mattermost/mattermost/server/public/model"
+	"github.com/mattermost/mattermost/server/v8/config"
 )
 
 const (
@@ -40,7 +41,9 @@ func signWipePush(t *testing.T, th *TestHelper, userID string) string {
 // setupEphemeralModeAuditTest starts a TestHelper with a file-based audit target so tests can
 // read back the audit entries the ephemeral mode endpoints log.
 func setupEphemeralModeAuditTest(t *testing.T) (*TestHelper, *os.File) {
-	logFile, err := os.CreateTemp("", "ephemeral_mode_audit.log")
+	// The audit file target must resolve inside the logging root: EnforceLogPathRoot is on by
+	// default, and config.GetLogRootPath() is the per-test logs directory mainHelper set up.
+	logFile, err := os.CreateTemp(config.GetLogRootPath(), "ephemeral_mode_audit.log")
 	require.NoError(t, err)
 	t.Cleanup(func() {
 		require.NoError(t, logFile.Close())
