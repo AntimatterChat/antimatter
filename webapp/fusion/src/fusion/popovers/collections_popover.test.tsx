@@ -66,6 +66,6 @@ describe('fusion/popovers/CollectionsPopover: the Files tab', () => {
             } as never,
         );
         expect(screen.queryByText('Files')).not.toBeInTheDocument();
-        expect(screen.getByText('Mentions')).toBeInTheDocument();
+        expect(screen.getByRole('heading', {name: 'Mentions'})).toBeInTheDocument();
     });
 });
