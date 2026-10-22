@@ -9,7 +9,6 @@ import MultiSelectCards from 'components/common/multi_select_cards';
 import GithubSVG from 'components/common/svg_images_components/github_svg';
 import GitlabSVG from 'components/common/svg_images_components/gitlab_svg';
 import JiraSVG from 'components/common/svg_images_components/jira_svg';
-import ZoomSVG from 'components/common/svg_images_components/zoom_svg';
 import ExternalLink from 'components/external_link';
 
 import {AntimatterLinks} from 'utils/constants';
@@ -125,20 +124,6 @@ const Plugins = (props: Props) => {
                                     tooltip: formatMessage({
                                         id: 'onboarding_wizard.plugins.jira.tooltip',
                                         defaultMessage: 'Create Jira tickets from messages in Antimatter, get notified of important updates in Jira',
-                                    }),
-                                },
-                                {
-                                    onClick: () => props.setOption('zoom'),
-                                    icon: <ZoomSVG/>,
-                                    id: 'onboarding_wizard.plugins.zoom',
-                                    buttonText: formatMessage({
-                                        id: 'onboarding_wizard.plugins.zoom',
-                                        defaultMessage: 'Zoom',
-                                    }),
-                                    checked: props.options.zoom,
-                                    tooltip: formatMessage({
-                                        id: 'onboarding_wizard.plugins.zoom.tooltip',
-                                        defaultMessage: 'Start Zoom audio and video conferencing calls in Antimatter with a single click',
                                     }),
                                 },
                             ]}

@@ -6164,8 +6164,6 @@
   "onboarding_wizard.plugins.jira": "Jira",
   "onboarding_wizard.plugins.jira.tooltip": "Crea ticket Jira dai messaggi in Antimatter e ricevi notifiche sugli aggiornamenti importanti in Jira",
   "onboarding_wizard.plugins.marketplace": "Puoi aggiungere altre app una volta configurata la tua community. <a>Consulta le app incluse in Antimatter.</a>",
-  "onboarding_wizard.plugins.zoom": "Zoom",
-  "onboarding_wizard.plugins.zoom.tooltip": "Avvia chiamate audio e videoconferenze Zoom in Antimatter con un solo clic",
   "onboarding_wizard.previous": "Indietro",
   "onboarding_wizard.self_hosted_plugins.description": "Scegli gli strumenti con cui lavori e li aggiungeremo al tuo spazio di lavoro. In seguito potrebbe essere necessaria una configurazione aggiuntiva.",
   "onboarding_wizard.self_hosted_plugins.title": "Quali strumenti usi?",

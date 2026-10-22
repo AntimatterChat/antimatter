@@ -46,7 +46,6 @@ export const PLUGIN_NAME_TO_ID_MAP: PluginNameMap = {
     github: 'github',
     gitlab: 'com.github.manland.mattermost-plugin-gitlab',
     jira: 'jira',
-    zoom: 'zoom',
 } as const;
 
 export type Form = {
@@ -63,7 +62,6 @@ export type Form = {
         github: boolean;
         gitlab: boolean;
         jira: boolean;
-        zoom: boolean;
 
         // set if user clicks skip for now
         skipped: boolean;
@@ -92,7 +90,6 @@ export const emptyForm = deepFreeze({
         github: false,
         gitlab: false,
         jira: false,
-        zoom: false,
 
         // set if user clicks skip for now
         skipped: false,

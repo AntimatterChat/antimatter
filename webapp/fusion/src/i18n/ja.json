@@ -8578,8 +8578,6 @@
   "onboarding_wizard.plugins.jira": "Jira",
   "onboarding_wizard.plugins.jira.tooltip": "Antimatter のメッセージから Jira チケットを作成したろ、Jira の重要なアップデートを通知することができます",
   "onboarding_wizard.plugins.marketplace": "コミュニティがセットアップされると、さらに多くのアプリを追加できます。<a>Antimatterに同梱されているアプリを見る</a>。",
-  "onboarding_wizard.plugins.zoom": "Zoom",
-  "onboarding_wizard.plugins.zoom.tooltip": "Zoom の音声およびビデオ会議通話をAntimatterからワンクリックで開始できます",
   "onboarding_wizard.previous": "前へ",
   "onboarding_wizard.self_hosted_plugins.description": "利用するツールを選択し、ワークスペースに追加してください。後ほど追加の設定が必要な場合があります。",
   "onboarding_wizard.self_hosted_plugins.title": "どんなツールを使っていますか?",

@@ -8067,8 +8067,6 @@
   "onboarding_wizard.plugins.jira": "Jira",
   "onboarding_wizard.plugins.jira.tooltip": "Vytvářejte lístky v Jira ze zpráv v Antimatter a dostávejte oznámení o důležitých aktualizacích v Jira",
   "onboarding_wizard.plugins.marketplace": "Další aplikace lze přidat, jakmile je vaše komunita nastavena. <a>Podívejte se na aplikace dodávané s Antimatter.</a>",
-  "onboarding_wizard.plugins.zoom": "Zoom",
-  "onboarding_wizard.plugins.zoom.tooltip": "Spouštějte zvukové a videohovory přes Zoom v Antimatter jedním klepnutím",
   "onboarding_wizard.previous": "Zpět",
   "onboarding_wizard.self_hosted_plugins.description": "Vyberte nástroje, se kterými pracujete, a my je přidáme do vašeho pracovního prostoru. Později může být potřeba další nastavení.",
   "onboarding_wizard.self_hosted_plugins.title": "Jaké nástroje používáte?",

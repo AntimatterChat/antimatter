@@ -6322,8 +6322,6 @@
   "onboarding_wizard.plugins.jira": "Jira",
   "onboarding_wizard.plugins.jira.tooltip": "Jira jegyek létrehozása az Antimatter üzenetekből, értesüljön a fontos frissítésekről a Jira-ban",
   "onboarding_wizard.plugins.marketplace": "További alkalmazásokat a közösség beállítása után adhat hozzá. <a>Nézze meg az Antimatterrel együtt szállító alkalmazásokat.</a>",
-  "onboarding_wizard.plugins.zoom": "Zoom",
-  "onboarding_wizard.plugins.zoom.tooltip": "Zoom hang- és videokonferencia-hívások indítása az Antimatterben egyetlen kattintással",
   "onboarding_wizard.previous": "Előző",
   "onboarding_wizard.self_hosted_plugins.description": "Válassza ki az eszközöket, amelyekkel dolgozik, és hozzáadjuk őket a munkaterületéhez. Később további beállításokra lehet szükség.",
   "onboarding_wizard.self_hosted_plugins.title": "Milyen eszközöket használ?",

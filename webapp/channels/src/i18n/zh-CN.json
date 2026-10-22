@@ -6637,8 +6637,6 @@
   "onboarding_wizard.plugins.jira": "Jira",
   "onboarding_wizard.plugins.jira.tooltip": "从 Antimatter 中的消息创建 Jira 工单，获取 Jira 的重要更新通知",
   "onboarding_wizard.plugins.marketplace": "社区设置完成后，可以添加更多应用。<a>查看随 Antimatter 附带的应用。</a>",
-  "onboarding_wizard.plugins.zoom": "Zoom",
-  "onboarding_wizard.plugins.zoom.tooltip": "通过单击一次，在 Antimatter 中开始 Zoom 音频和视频会议通话",
   "onboarding_wizard.previous": "上一页",
   "onboarding_wizard.self_hosted_plugins.description": "选择您使用的工具，我们将将它们添加到您的工作空间。稍后可能需要进行其他设置。",
   "onboarding_wizard.self_hosted_plugins.title": "您使用哪些工具？",

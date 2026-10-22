@@ -8067,8 +8067,6 @@
   "onboarding_wizard.plugins.jira": "Jira",
   "onboarding_wizard.plugins.jira.tooltip": "Antimatter-এর ম্যাসেজ থেকে Jira টিকেট তৈরি করুন, Jira-এর গুরুত্বপূর্ণ আপডেটে নোটিফিকেশন পান",
   "onboarding_wizard.plugins.marketplace": "আপনার কমিউনিটি সেটআপ হওয়ার পর আরও অ্যাপস যোগ করা যেতে পারে। <a>Antimatter-এর সাথে যেসব অ্যাপস আসে তা দেখুন।</a>",
-  "onboarding_wizard.plugins.zoom": "Zoom",
-  "onboarding_wizard.plugins.zoom.tooltip": "Antimatter-এ এক ক্লিকে Zoom অডিও এবং ভিডিও কনফারেন্সিং কল শুরু করুন",
   "onboarding_wizard.previous": "পূর্ববর্তী",
   "onboarding_wizard.self_hosted_plugins.description": "আপনার যেসব টুলের সাথে কাজ করেন তা বেছে নিন, আমরা সেগুলো আপনার ওয়ার্কস্পেসে যোগ করব। পরে আরও সেটআপ প্রয়োজন হতে পারে।",
   "onboarding_wizard.self_hosted_plugins.title": "আপনি কোন টুল ব্যবহার করেন?",

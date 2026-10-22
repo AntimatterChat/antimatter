@@ -8067,8 +8067,6 @@
   "onboarding_wizard.plugins.jira": "Jira",
   "onboarding_wizard.plugins.jira.tooltip": "יצירת כרטיסי Jira מהודעות ב-Antimatter, קבלת התראות על עדכונים חשובים ב-Jira",
   "onboarding_wizard.plugins.marketplace": "ניתן להוסיף אפליקציות נוספות לאחר שהקהילה שלך הוגדרה. <a>ראה את האפליקציות שמגיעות עם Antimatter.</a>",
-  "onboarding_wizard.plugins.zoom": "Zoom",
-  "onboarding_wizard.plugins.zoom.tooltip": "התחלת שיחות קול ווידאו ב-Zoom מתוך Antimatter בלחיצה אחת",
   "onboarding_wizard.previous": "הקודם",
   "onboarding_wizard.self_hosted_plugins.description": "בחרו את הכלים שאתם עובדים איתם, ואנו נוסיף אותם למרחב העבודה. ייתכן שיהיה צורך בהגדרות נוספות בהמשך.",
   "onboarding_wizard.self_hosted_plugins.title": "מהם הכלים שאתם משתמשים בהם?",

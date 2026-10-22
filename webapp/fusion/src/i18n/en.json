@@ -32995,14 +32995,6 @@
     "defaultMessage": "More apps can be added once your community is set up. <a>See the apps that come with Antimatter.</a>",
     "description": "Footnote on the app selection step of the setup wizard; the <a> tags wrap a link to the documentation page listing the apps bundled with Antimatter."
   },
-  "onboarding_wizard.plugins.zoom": {
-    "defaultMessage": "Zoom",
-    "description": "Product name on a selectable tool card in the setup wizard's plugin selection step; usually left untranslated."
-  },
-  "onboarding_wizard.plugins.zoom.tooltip": {
-    "defaultMessage": "Start Zoom audio and video conferencing calls in Antimatter with a single click",
-    "description": "Tooltip describing the Zoom plugin on the onboarding wizard's plugins step."
-  },
   "onboarding_wizard.previous": {
     "defaultMessage": "Previous",
     "description": "Back navigation link in the workspace setup wizard returning to the previous step."

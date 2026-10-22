@@ -6263,8 +6263,6 @@
   "onboarding_wizard.plugins.jira": "Jira",
   "onboarding_wizard.plugins.jira.tooltip": "از پیام‌های Antimatter تیکت‌های Jira بسازید و از به‌روزرسانی‌های مهم در Jira باخبر شوید",
   "onboarding_wizard.plugins.marketplace": "پس از تنظیم جامعهٔ شما، برنامه‌های بیشتری می‌توانند اضافه شوند. <a>برنامه‌هایی که همراه با Antimatter ارائه می‌شوند را ببینید.</a>",
-  "onboarding_wizard.plugins.zoom": "Zoom",
-  "onboarding_wizard.plugins.zoom.tooltip": "تماس‌های صوتی و تصویری Zoom را با یک کلیک در Antimatter آغاز کنید",
   "onboarding_wizard.previous": "قبلی",
   "onboarding_wizard.self_hosted_plugins.description": "ابزارهایی را که با آن‌ها کار می‌کنید انتخاب کنید تا آن‌ها را به فضای کاری شما اضافه کنیم. ممکن است بعداً تنظیمات بیشتری لازم باشد.",
   "onboarding_wizard.self_hosted_plugins.title": "از چه ابزارهایی استفاده می‌کنید؟",

@@ -6675,8 +6675,6 @@
   "onboarding_wizard.plugins.jira": "Jira",
   "onboarding_wizard.plugins.jira.tooltip": "Opprett Jira-saker fra meldinger i Antimatter, og bli varslet om viktige oppdateringer i Jira",
   "onboarding_wizard.plugins.marketplace": "Du kan legge til flere apper når samfunnet ditt er satt opp. <a>Se appene som følger med Antimatter.</a>",
-  "onboarding_wizard.plugins.zoom": "Zoom",
-  "onboarding_wizard.plugins.zoom.tooltip": "Start Zoom lyd- og videokonferanser i Antimatter med ett enkelt klikk",
   "onboarding_wizard.previous": "Forrige",
   "onboarding_wizard.self_hosted_plugins.description": "Velg verktøyene du jobber med, så legger vi dem til i arbeidsområdet ditt. Det kan være behov for ytterligere innstillinger senere.",
   "onboarding_wizard.self_hosted_plugins.title": "Hvilke verktøy bruker du?",

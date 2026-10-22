@@ -6675,8 +6675,6 @@
   "onboarding_wizard.plugins.jira": "Jira",
   "onboarding_wizard.plugins.jira.tooltip": "Luo Jira-tikettejä Antimatterin viesteistä ja saa ilmoituksia tärkeistä Jira-päivityksistä",
   "onboarding_wizard.plugins.marketplace": "Lisää sovelluksia voi lisätä, kun yhteisösi on luotu. <a>Näe Antimatterin mukana toimitetut sovellukset.</a>",
-  "onboarding_wizard.plugins.zoom": "Zoom",
-  "onboarding_wizard.plugins.zoom.tooltip": "Aloita Zoom-ääni- ja videoneuvottelupuheluita Antimatterissa yhdellä napsautuksella",
   "onboarding_wizard.previous": "Edellinen",
   "onboarding_wizard.self_hosted_plugins.description": "Valitse työkalut, joita käytät, niin lisäämme ne työtilaasi. Lisämäärityksiä voidaan tarvita myöhemmin.",
   "onboarding_wizard.self_hosted_plugins.title": "Mitä työkaluja käytät?",

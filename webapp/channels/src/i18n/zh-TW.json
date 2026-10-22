@@ -6442,8 +6442,6 @@
   "onboarding_wizard.plugins.jira": "Jira",
   "onboarding_wizard.plugins.jira.tooltip": "在 Antimatter 中建立 Jira 工單，並接收 Jira 的重要通知",
   "onboarding_wizard.plugins.marketplace": "社群設定完成後可新增更多應用程式。<a>查看隨 Antimatter 附帶的應用程式。</a>",
-  "onboarding_wizard.plugins.zoom": "Zoom",
-  "onboarding_wizard.plugins.zoom.tooltip": "只需按一下，即可在 Antimatter 中啟動 Zoom 音訊和視訊會議通話",
   "onboarding_wizard.previous": "上一步",
   "onboarding_wizard.self_hosted_plugins.description": "選擇您使用的工具，我們將它們新增到您的工作區。稍後可能需要進行額外的設定。",
   "onboarding_wizard.self_hosted_plugins.title": "您和團隊使用何種工具？",

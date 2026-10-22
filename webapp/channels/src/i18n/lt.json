@@ -6596,8 +6596,6 @@
   "onboarding_wizard.plugins.gitlab.tooltip": "Prenumeruokite saugyklas, gaukite naujausią informaciją apie apžvalgas, užduotis ir dar daugiau",
   "onboarding_wizard.plugins.jira": "Jira",
   "onboarding_wizard.plugins.jira.tooltip": "Kurkite Jira bilietus iš pranešimų Antimatter, gaukite pranešimus apie svarbius Jira naujinius",
-  "onboarding_wizard.plugins.zoom": "Didinimas",
-  "onboarding_wizard.plugins.zoom.tooltip": "Pradėkite mastelio keitimo garso ir vaizdo konferencijų skambučius Antimatter vienu spustelėjimu",
   "onboarding_wizard.previous": "Ankstesnis",
   "onboarding_wizard.self_hosted_plugins.description": "Pasirinkite įrankius, su kuriais dirbate, ir mes pridėsime juos prie Jūsų darbo srities. Vėliau gali prireikti papildomos sąrankos.",
   "onboarding_wizard.self_hosted_plugins.title": "Kokius įrankius naudojate?",

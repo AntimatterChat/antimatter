@@ -8067,8 +8067,6 @@
   "onboarding_wizard.plugins.jira": "Jira",
   "onboarding_wizard.plugins.jira.tooltip": "Antimatter-ல் உள்ள செய்திகளிலிருந்து Jira டிக்கெட்டுகளை உருவாக்கவும், Jira-ல் முக்கிய புதுப்பிப்புகள் பற்றி அறிவிப்பு பெறுங்கள்",
   "onboarding_wizard.plugins.marketplace": "உங்கள் சமூகம் அமைக்கப்பட்ட பிறகு மேலும் செயல்களைச் சேர்க்கலாம். <a>Antimatter உடன் வரும் செயல்களைப் பார்க்கவும்.</a>",
-  "onboarding_wizard.plugins.zoom": "Zoom",
-  "onboarding_wizard.plugins.zoom.tooltip": "Antimatter-ல் ஒரு கிளிக்கில் Zoom ஒலி மற்றும் வீடியோ அழைப்புகளைத் தொடங்கவும்",
   "onboarding_wizard.previous": "முந்தையது",
   "onboarding_wizard.self_hosted_plugins.description": "நீங்கள் பணியாற்றும் கருவிகளைத் தேர்ந்தெடுங்கள், நாங்கள் அவற்றை உங்கள் பணியிடத்திற்கு சேர்க்கிறோம். பின்னர் கூடுதல் அமைப்பு தேவைப்படலாம்.",
   "onboarding_wizard.self_hosted_plugins.title": "நீங்கள் எந்தக் கருவிகளைப் பயன்படுத்துகிறீர்கள்?",

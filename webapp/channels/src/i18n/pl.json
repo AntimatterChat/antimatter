@@ -6638,8 +6638,6 @@
   "onboarding_wizard.plugins.jira": "Jira",
   "onboarding_wizard.plugins.jira.tooltip": "Tworzenie etykiet Jira z wiadomości w Antimatter, otrzymywanie powiadomień o ważnych aktualizacjach w Jira",
   "onboarding_wizard.plugins.marketplace": "Więcej aplikacji można dodać po skonfigurowaniu społeczności. <a>Zobacz aplikacje dołączone do Antimatter.</a>",
-  "onboarding_wizard.plugins.zoom": "Zoom",
-  "onboarding_wizard.plugins.zoom.tooltip": "Za pomocą jednego kliknięcia rozpocznij połączenia audio i wideokonferencyjne Zoom w programie Antimatter",
   "onboarding_wizard.previous": "Poprzedni",
   "onboarding_wizard.self_hosted_plugins.description": "Wybierz narzędzia, z którymi pracujesz, a my dodamy je do Twojego obszaru roboczego. Później może być konieczna dodatkowa konfiguracja.",
   "onboarding_wizard.self_hosted_plugins.title": "Jakich narzędzi używasz?",

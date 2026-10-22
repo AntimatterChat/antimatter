@@ -8067,8 +8067,6 @@
   "onboarding_wizard.plugins.jira": "Jira",
   "onboarding_wizard.plugins.jira.tooltip": "Luo Jira-liput Antimatterin viesteistä ja vastaanota ilmoituksia tärkeitä päivityksiä varten Jirassa",
   "onboarding_wizard.plugins.marketplace": "Lisää sovelluksia voidaan lisätä, kun yhteisösi on luotu. <a>Näe Antimatterin mukana toimitetut sovellukset.</a>",
-  "onboarding_wizard.plugins.zoom": "Zoom",
-  "onboarding_wizard.plugins.zoom.tooltip": "Aloita Zoomin ääni- ja videopuhelut Antimatterissa yhdellä klikkauksella",
   "onboarding_wizard.previous": "Edellinen",
   "onboarding_wizard.self_hosted_plugins.description": "Valitse työkalut, joita käytät, ja lisäämme ne työtilaasi. Lisäasetukset saattavat olla myöhemmin tarpeen.",
   "onboarding_wizard.self_hosted_plugins.title": "Mitä työkaluja käytät?",

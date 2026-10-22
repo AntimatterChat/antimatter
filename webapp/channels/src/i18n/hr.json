@@ -6601,8 +6601,6 @@
   "onboarding_wizard.plugins.gitlab.tooltip": "Pretplati se na repozitorije, prati recenzije, dodjele i još mnogo toga",
   "onboarding_wizard.plugins.jira": "Jira",
   "onboarding_wizard.plugins.jira.tooltip": "Stvaraj Jira zadatke iz poruka u Antimatteru i primaj obavijesti o važnim promjenama u Jiri",
-  "onboarding_wizard.plugins.zoom": "Zoom",
-  "onboarding_wizard.plugins.zoom.tooltip": "Pokreći Zoom audio i video konferencijske pozive u Antimatteru jednim klikom",
   "onboarding_wizard.previous": "Prethodno",
   "onboarding_wizard.self_hosted_plugins.description": "Odaberi alate s kojima radiš, a mi ćemo ih dodati u tvoj radni prostor. Kasnije će možda biti potrebno dodatno postavljanje.",
   "onboarding_wizard.self_hosted_plugins.title": "Koje alate koristiš?",

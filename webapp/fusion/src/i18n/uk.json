@@ -8472,8 +8472,6 @@
   "onboarding_wizard.plugins.jira": "Jira",
   "onboarding_wizard.plugins.jira.tooltip": "Створюйте тікети Jira з повідомлень в Antimatter, отримуйте сповіщення про важливі оновлення в Jira",
   "onboarding_wizard.plugins.marketplace": "Більше додатків можна додати, коли вашу спільноту буде налаштовано. <a>Перегляньте додатки, що постачаються з Antimatter.</a>",
-  "onboarding_wizard.plugins.zoom": "Zoom",
-  "onboarding_wizard.plugins.zoom.tooltip": "Розпочинайте аудіо- та відеоконференції Zoom у Antimatter одним кліком",
   "onboarding_wizard.previous": "Попередній",
   "onboarding_wizard.self_hosted_plugins.description": "Виберіть інструменти, з якими ви працюєте, і ми додамо їх до вашого робочого простору. Пізніше може знадобитися додаткове налаштування.",
   "onboarding_wizard.self_hosted_plugins.title": "Які інструменти ви використовуєте?",

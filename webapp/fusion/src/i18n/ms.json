@@ -8067,8 +8067,6 @@
   "onboarding_wizard.plugins.jira": "Jira",
   "onboarding_wizard.plugins.jira.tooltip": "Cipta tiket Jira daripada mesej dalam Antimatter, terima pemberitahuan tentang kemas kini penting dalam Jira",
   "onboarding_wizard.plugins.marketplace": "Lagi aplikasi boleh ditambah setelah komuniti anda diset. <a>Lihat aplikasi yang disertakan dengan Antimatter.</a>",
-  "onboarding_wizard.plugins.zoom": "Zoom",
-  "onboarding_wizard.plugins.zoom.tooltip": "Mula panggilan persidangan audio dan video Zoom dalam Antimatter dengan satu klik",
   "onboarding_wizard.previous": "Sebelumnya",
   "onboarding_wizard.self_hosted_plugins.description": "Pilih alat yang anda gunakan, dan kami akan menambahkannya ke ruang kerja anda. Pengaturan tambahan mungkin diperlukan kemudian.",
   "onboarding_wizard.self_hosted_plugins.title": "Apakah alat yang anda gunakan?",
