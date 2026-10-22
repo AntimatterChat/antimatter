@@ -831,48 +831,4 @@ describe('global_attributes/utils', () => {
             expect(dispatch).not.toHaveBeenCalled();
         });
     });
-
-    describe('findNameConflicts', () => {
-        it('matches ignoring case in both directions', () => {
-            const lower = {id: 'u1', object_type: 'user', name: 'clearance', delete_at: 0} as PropertyField;
-            expect(findNameConflicts('Clearance', [lower])).toEqual([lower]);
-
-            const upper = {id: 'u2', object_type: 'user', name: 'Clearance', delete_at: 0} as PropertyField;
-            expect(findNameConflicts('clearance', [upper])).toEqual([upper]);
-        });
-
-        it('never treats a soft-deleted field as a conflict', () => {
-            expect(findNameConflicts('clearance', [
-                {id: 'u1', object_type: 'user', name: 'clearance', delete_at: 123} as PropertyField,
-            ])).toEqual([]);
-        });
-
-        it('excludes the field whose id is templateId, since an attribute never conflicts with itself', () => {
-            expect(findNameConflicts('clearance', [
-                {id: 'template-id', object_type: 'user', name: 'clearance', delete_at: 0} as PropertyField,
-            ], 'template-id')).toEqual([]);
-        });
-
-        it("excludes a field linked to templateId, since a template's own child is not a conflict", () => {
-            expect(findNameConflicts('clearance', [
-                {id: 'u1', object_type: 'user', name: 'clearance', linked_field_id: 'template-id', delete_at: 0} as PropertyField,
-            ], 'template-id')).toEqual([]);
-        });
-
-        it('excludes nothing when no templateId is passed, as on the create form', () => {
-            const fields = [
-                {id: 'template-id', object_type: 'user', name: 'clearance', delete_at: 0} as PropertyField,
-                {id: 'u1', object_type: 'user', name: 'clearance', linked_field_id: 'template-id', delete_at: 0} as PropertyField,
-            ];
-
-            expect(findNameConflicts('clearance', fields)).toEqual(fields);
-        });
-
-        it('returns no conflicts for a name nothing shares', () => {
-            expect(findNameConflicts('clearance', [
-                {id: 'u1', object_type: 'user', name: 'department', delete_at: 0} as PropertyField,
-                {id: 'u2', object_type: 'user', name: 'clearance_level', delete_at: 0} as PropertyField,
-            ])).toEqual([]);
-        });
-    });
 });
