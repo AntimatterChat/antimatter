@@ -104,7 +104,7 @@ func TestRunHealthCheckGating(t *testing.T) {
 }
 
 // TestRunHealthCheckRunsCloudScopedRules: Antimatter is never a Cloud deployment, so a live health
-// check runs every rule, including the ones upstream skips on Cloud, whatever the license shim says.
+// check runs every rule, including the ones upstream skips on Cloud.
 func TestRunHealthCheckRunsCloudScopedRules(t *testing.T) {
 	th, _ := setupHealthCheck(t, true)
 	firing := func(*healthcheck.Snapshot) []healthcheck.Result {

@@ -14381,8 +14381,8 @@
   },
   {
     "id": "health.reason.job_runs_unfinished",
-    "translation": "The most recent runs are still queued or running, or were canceled, so older runs could not be checked.",
-    "description": "Health dashboard reason shown when every collected run of a background job is still queued, running or was canceled, so an older run that may matter was not collected and the check's status is unknown."
+    "translation": "The most recent runs are still queued or running, or were cancelled, so older runs could not be checked.",
+    "description": "Health dashboard reason shown when every collected run of a background job is still queued, running or was cancelled, so an older run that may matter was not collected and the check's status is unknown."
   },
   {
     "id": "health.reason.jobs_unavailable",
@@ -14806,8 +14806,8 @@
   },
   {
     "id": "health.rule.es_version_unsupported.message.unrecognized",
-    "translation": "The search engine backend or version could not be recognized.",
-    "description": "Health dashboard reason shown when the search engine backend or version reported in the server diagnostics is unrecognized, so the check's status is unknown."
+    "translation": "The search engine backend or version could not be recognised.",
+    "description": "Health dashboard reason shown when the search engine backend or version reported in the server diagnostics is unrecognised, so the check's status is unknown."
   },
   {
     "id": "health.rule.es_version_unsupported.remediation",
@@ -15316,7 +15316,7 @@
   },
   {
     "id": "health.rule.saml_encrypt_off.message",
-    "translation": "Assertions travel unencrypted at the SAML layer. TLS still protects the connection, so this is not a baseline security failure, but if your IdP supports assertion encryption, enabling it adds defense in depth.",
+    "translation": "Assertions travel unencrypted at the SAML layer. TLS still protects the connection, so this is not a baseline security failure, but if your IdP supports assertion encryption, enabling it adds defence in depth.",
     "description": "Health dashboard finding detail when SAML assertion encryption is turned off. 'SamlSettings.Encrypt' is a config name and should not be translated."
   },
   {
