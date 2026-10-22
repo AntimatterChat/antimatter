@@ -11,6 +11,7 @@ import type {Post} from '@mattermost/types/posts';
 
 import {Client4} from 'mattermost-redux/client';
 import {getAllChannels} from 'mattermost-redux/selectors/entities/channels';
+import {getConfig} from 'mattermost-redux/selectors/entities/general';
 import {getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
 import {getCurrentUserId, getCurrentUserMentionKeys} from 'mattermost-redux/selectors/entities/users';
 import {getFormattedFileSize} from 'mattermost-redux/utils/file_utils';
@@ -30,6 +31,9 @@ import {openDialog} from 'fusion/utils/modals';
 import {permalinkPath} from 'fusion/utils/paths';
 import {getHistory} from 'utils/browser_history';
 import {ModalIdentifiers} from 'utils/constants';
+import {canSearchFiles} from 'utils/file_utils';
+
+import type {GlobalState} from 'types/store';
 
 export type Tab = 'mentions' | 'saved' | 'pinned' | 'files' | 'threads';
 
@@ -136,14 +140,15 @@ export default function CollectionsPopover({anchor, channel: conversation, initi
     const userId = useSelector(getCurrentUserId);
     const mentionKeys = useSelector(getCurrentUserMentionKeys);
     const channels = useSelector(getAllChannels);
-    const [tab, setTab] = useState<Tab>(initialTab);
+    const filesSearchAvailable = useSelector((state: GlobalState) => canSearchFiles(getConfig(state)));
+    const [tab, setTab] = useState<Tab>(initialTab === 'files' && !filesSearchAvailable ? 'mentions' : initialTab);
     const [items, setItems] = useState<Record<Tab, Item[] | undefined>>(NO_ITEMS);
 
     // Opened from a conversation, the panel lists that conversation's items, or the whole community's on demand.
     // Pinned messages and files only exist within a conversation.
     const [scope, setScope] = useState<'here' | 'all'>('here');
     const channel = scope === 'here' ? conversation : undefined;
-    const tabs = conversation && scope === 'all' ? TABS.filter(([k]) => k !== 'pinned' && k !== 'files') : TABS;
+    const tabs = (conversation && scope === 'all' ? TABS.filter(([k]) => k !== 'pinned' && k !== 'files') : TABS).filter(([k]) => k !== 'files' || filesSearchAvailable);
     const changeScope = (next: 'here' | 'all') => {
         if (next === scope) {
             return;
