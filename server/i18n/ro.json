@@ -1768,6 +1768,38 @@
     "translation": "{{.Username}} nu este un membru al acestui canal."
   },
   {
+    "id": "api.command_rules.agree_hint",
+    "translation": "Tastează `/rules agree` pentru a fi de acord cu regulile, apoi poți posta."
+  },
+  {
+    "id": "api.command_rules.agreed",
+    "translation": "Mulțumim: ai fost de acord cu regulile comunității {{.Community}}. Acum poți posta acolo."
+  },
+  {
+    "id": "api.command_rules.already_agreed",
+    "translation": "Ai fost deja de acord cu aceste reguli."
+  },
+  {
+    "id": "api.command_rules.desc",
+    "translation": "Citește regulile acestei comunități sau acceptă-le"
+  },
+  {
+    "id": "api.command_rules.hint",
+    "translation": "[acceptă]"
+  },
+  {
+    "id": "api.command_rules.name",
+    "translation": "rules"
+  },
+  {
+    "id": "api.command_rules.none",
+    "translation": "Această comunitate nu are reguli care să necesite acceptare."
+  },
+  {
+    "id": "api.command_rules.title",
+    "translation": "**Regulile comunității {{.Community}}**"
+  },
+  {
     "id": "api.command_search.desc",
     "translation": "Căutaţi textul din mesaje"
   },
@@ -3112,6 +3144,14 @@
     "translation": "@{{.Username}} nu a fost notificat prin această mențiune, deoarece nu este membru al acestei echipe."
   },
   {
+    "id": "api.post.community_rules_not_accepted",
+    "translation": "Acceptă regulile acestei comunități înainte de a posta în ea."
+  },
+  {
+    "id": "api.post.community_rules_not_accepted.reminder",
+    "translation": "Această comunitate cere tuturor să accepte regulile înainte de a posta. Tastează `/rules` pentru a le citi, apoi `/rules agree` pentru a le accepta."
+  },
+  {
     "id": "api.post.create_post.burn_on_read.abac_denied.app_error",
     "translation": "Nu aveți permisiunea de a trimite mesaje care se șterg la citire în acest canal."
   },
@@ -3214,6 +3254,10 @@
   {
     "id": "api.post.fill_in_post_props.burn_on_read.config.app_error",
     "translation": "Postările cu autodistrugere la citire nu sunt activate. Vă rugăm să activați feature flag-ul și setarea de serviciu corespunzătoare."
+  },
+  {
+    "id": "api.post.fill_in_post_props.burn_on_read.duration.app_error",
+    "translation": "Durata pentru ștergerea după citire trebuie să fie un număr pozitiv de milisecunde."
   },
   {
     "id": "api.post.fill_in_post_props.burn_on_read.license.app_error",
@@ -5572,6 +5616,134 @@
     "translation": "Apelul bridge a eșuat."
   },
   {
+    "id": "app.agents.status.no_agents",
+    "translation": "Nu există niciun agent disponibil pentru tine."
+  },
+  {
+    "id": "app.ai.agent.access.app_error",
+    "translation": "Nu poți conversa cu acest agent aici."
+  },
+  {
+    "id": "app.ai.agent.activity.get.app_error",
+    "translation": "Activitatea agenților nu a putut fi citită."
+  },
+  {
+    "id": "app.ai.agent.activity.save.app_error",
+    "translation": "Activitatea agentului nu a putut fi salvată."
+  },
+  {
+    "id": "app.ai.agent.connection.app_error",
+    "translation": "Un agent de aici nu poate folosi această conexiune la model: un agent la nivel de server are nevoie de o conexiune la nivel de server, iar un agent al unei comunități are nevoie de propria sa conexiune sau de una partajată cu el."
+  },
+  {
+    "id": "app.ai.agent.conversations.app_error",
+    "translation": "Nu s-au putut încărca conversațiile tale cu agenții."
+  },
+  {
+    "id": "app.ai.agent.get.app_error",
+    "translation": "Agenții nu au putut fi citiți."
+  },
+  {
+    "id": "app.ai.agent.manage_permission.app_error",
+    "translation": "Nu poți gestiona agenții de aici."
+  },
+  {
+    "id": "app.ai.agent.not_found.app_error",
+    "translation": "Acest agent nu există sau a fost șters."
+  },
+  {
+    "id": "app.ai.agent.references.app_error",
+    "translation": "Agentul face referire la o comunitate, un canal sau o persoană care nu există, sau la un canal dintr-o altă comunitate."
+  },
+  {
+    "id": "app.ai.agent.save.app_error",
+    "translation": "Agentul nu a putut fi salvat."
+  },
+  {
+    "id": "app.ai.agent.task.agent_disabled.app_error",
+    "translation": "Acest agent este dezactivat."
+  },
+  {
+    "id": "app.ai.agent.task.channel.app_error",
+    "translation": "Canalul nu există sau nu ai permisiunea să îl citești."
+  },
+  {
+    "id": "app.ai.agent.task.external.app_error",
+    "translation": "Un agent extern nu primește sarcini aici: trimite-i un mesaj în schimb."
+  },
+  {
+    "id": "app.ai.agent.task.not_transcription.app_error",
+    "translation": "Acest mesaj nu este o transcriere a unui apel."
+  },
+  {
+    "id": "app.ai.agent.task.post.app_error",
+    "translation": "Mesajul nu există sau nu îl poți citi."
+  },
+  {
+    "id": "app.ai.agent.task.request.ask_channel",
+    "translation": "Despre {{.Channel}}: {{.Question}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items",
+    "translation": "Găsește sarcinile de acțiune din acest fir de discuție: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items_channel",
+    "translation": "Găsește elementele de acțiune din cele mai recente mesaje din {{.Channel}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items_channel_since",
+    "translation": "Găsește elementele de acțiune din {{.Channel}} de la {{.Since}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions",
+    "translation": "Găsește întrebările deschise din acest fir de discuție: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions_channel",
+    "translation": "Găsește întrebările deschise din cele mai recente mesaje din {{.Channel}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions_channel_since",
+    "translation": "Găsește întrebările deschise din {{.Channel}} de la {{.Since}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_channel",
+    "translation": "Rezumă cele mai recente mesaje din {{.Channel}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_channel_since",
+    "translation": "Rezumă mesajele din {{.Channel}} de la {{.Since}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_thread",
+    "translation": "Rezumă acest fir de discuție: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_transcription",
+    "translation": "Rezumă transcrierea acestui apel: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.this_conversation",
+    "translation": "această conversație"
+  },
+  {
+    "id": "app.ai.agent.turn.empty",
+    "translation": "Îmi pare rău, nu am un răspuns pentru asta."
+  },
+  {
+    "id": "app.ai.agent.turn.failed",
+    "translation": "Ne pare rău, nu am putut răspunde: {{.Reason}}"
+  },
+  {
+    "id": "app.ai.agent.turn.interrupted",
+    "translation": "Îmi pare rău, răspunsul meu a fost întrerupt. Întreabă-mă din nou într-un moment."
+  },
+  {
+    "id": "app.ai.agent.turn.not_allowed",
+    "translation": "{{.Agent}} nu este disponibil pentru tine aici."
+  },
+  {
     "id": "app.ai.call.audience.app_error",
     "translation": "Nu poți utiliza această conexiune la model."
   },
@@ -6484,6 +6656,38 @@
     "translation": "Această valoare nu se potrivește atributului {{.Name}}."
   },
   {
+    "id": "app.community_rules.accept.app_error",
+    "translation": "Nu s-a putut salva acordul tău cu regulile comunității."
+  },
+  {
+    "id": "app.community_rules.accept.changed.app_error",
+    "translation": "Regulile comunității s-au modificat de când le-ai citit. Citește-le din nou înainte de a fi de acord."
+  },
+  {
+    "id": "app.community_rules.accept.not_member.app_error",
+    "translation": "Doar membrii comunității pot accepta regulile acesteia."
+  },
+  {
+    "id": "app.community_rules.accept.off.app_error",
+    "translation": "Această comunitate nu are reguli pe care să le accepți."
+  },
+  {
+    "id": "app.community_rules.delete.app_error",
+    "translation": "Nu s-au putut șterge regulile comunității."
+  },
+  {
+    "id": "app.community_rules.get.app_error",
+    "translation": "Nu se pot obține regulile comunității."
+  },
+  {
+    "id": "app.community_rules.save.app_error",
+    "translation": "Nu s-au putut salva regulile comunității."
+  },
+  {
+    "id": "app.community_rules.stats.app_error",
+    "translation": "Nu se poate număra cine a fost de acord cu regulile comunității."
+  },
+  {
     "id": "app.compile_csv_chunks.header_error",
     "translation": "Nu s-au putut scrie anteturile CSV."
   },
@@ -7262,6 +7466,34 @@
   {
     "id": "app.file_info.undelete_for_post_ids.app_error",
     "translation": "Nu s-au putut restaura atașamentele de fișiere ale postării."
+  },
+  {
+    "id": "app.focus.bot.app_error",
+    "translation": "Boții nu pot folosi modul focus."
+  },
+  {
+    "id": "app.focus.delete.app_error",
+    "translation": "Nu se poate șterge modul Focus al contului."
+  },
+  {
+    "id": "app.focus.get.app_error",
+    "translation": "Nu putem obține modul tău de concentrare."
+  },
+  {
+    "id": "app.focus.mark_read.app_error",
+    "translation": "Nu s-a putut marca ca citit ce ai pierdut."
+  },
+  {
+    "id": "app.focus.save.app_error",
+    "translation": "Nu se poate porni modul focus."
+  },
+  {
+    "id": "app.focus.statuses_disabled.app_error",
+    "translation": "Modul Focus necesită stările utilizatorilor, care sunt dezactivate pe acest server."
+  },
+  {
+    "id": "app.focus.summary.app_error",
+    "translation": "Nu putem obține ce ai pierdut în timp ce erai în modul Focus."
   },
   {
     "id": "app.get_user_team_scheduled_posts.error",
@@ -12264,6 +12496,90 @@
     "translation": "ID de utilizator invalid."
   },
   {
+    "id": "model.agent_activity.expires.app_error",
+    "translation": "Activitatea unui agent durează între 1 secundă și 24 de ore."
+  },
+  {
+    "id": "model.agent_activity.state.app_error",
+    "translation": "Starea unui agent este: inactiv, gândire, lucru, așteptare, blocat sau offline."
+  },
+  {
+    "id": "model.agent_activity.text.app_error",
+    "translation": "Acțiunea agentului trebuie să încapă pe o singură linie de maximum 200 de caractere."
+  },
+  {
+    "id": "model.agent_activity.thread_post_id.app_error",
+    "translation": "Firul de discuție al activității unui agent trebuie să fie un ID de mesaj."
+  },
+  {
+    "id": "model.ai_agent.access.app_error",
+    "translation": "Persoanele care pot conversa cu agentul indică comunități, canale, roluri sau persoane nevalide sau există prea multe."
+  },
+  {
+    "id": "model.ai_agent.access_community.app_error",
+    "translation": "Agentul unei comunități este destinat exclusiv comunității respective."
+  },
+  {
+    "id": "model.ai_agent.connection_id.app_error",
+    "translation": "Alege conexiunea la model pe care o folosește agentul."
+  },
+  {
+    "id": "model.ai_agent.external.app_error",
+    "translation": "Un agent extern nu are model, conexiune sau prompt de sistem: răspunde conform programului său."
+  },
+  {
+    "id": "model.ai_agent.max_tool_turns.app_error",
+    "translation": "Un agent poate efectua între 0 (valoarea implicită) și 250 de iterații ale instrumentelor."
+  },
+  {
+    "id": "model.ai_agent.model.app_error",
+    "translation": "Numele modelului este prea lung sau conține mai multe rânduri."
+  },
+  {
+    "id": "model.ai_agent.needs_attention.app_error",
+    "translation": "Nota privind elementele care necesită atenție este prea lungă."
+  },
+  {
+    "id": "model.ai_agent.reasoning.app_error",
+    "translation": "Efortul de raționament trebuie să fie minim, scăzut, mediu sau ridicat, iar bugetul său trebuie să fie între 0 și 128.000 de tokeni."
+  },
+  {
+    "id": "model.ai_agent.scope.app_error",
+    "translation": "Un agent aparține serverului sau unei comunități."
+  },
+  {
+    "id": "model.ai_agent.system_prompt.app_error",
+    "translation": "Promptul de sistem este prea lung (maximum 32.000 de caractere)."
+  },
+  {
+    "id": "model.ai_agent.times.app_error",
+    "translation": "Lipsesc datele de creare și actualizare ale agentului."
+  },
+  {
+    "id": "model.ai_agent.tools.app_error",
+    "translation": "Numele unei unelte este nevalid sau există prea multe (maximum 256)."
+  },
+  {
+    "id": "model.ai_agent.user_id.app_error",
+    "translation": "Un agent are nevoie de un cont valid."
+  },
+  {
+    "id": "model.ai_agent_task.channel_id.app_error",
+    "translation": "Această sarcină necesită un canal."
+  },
+  {
+    "id": "model.ai_agent_task.post_id.app_error",
+    "translation": "Această sarcină necesită un mesaj."
+  },
+  {
+    "id": "model.ai_agent_task.question.app_error",
+    "translation": "Pune o întrebare de maximum 2.000 de caractere."
+  },
+  {
+    "id": "model.ai_agent_task.task.app_error",
+    "translation": "Această sarcină nu este una pe care un agent o cunoaște."
+  },
+  {
     "id": "model.ai_connection.api_key.app_error",
     "translation": "Cheia API este prea lungă sau conține o întrerupere de linie."
   },
@@ -12426,6 +12742,10 @@
   {
     "id": "model.bot.is_valid.description.app_error",
     "translation": "Descriere invalidă."
+  },
+  {
+    "id": "model.bot.is_valid.kind.app_error",
+    "translation": "Un cont de bot este un bot sau un agent."
   },
   {
     "id": "model.bot.is_valid.update_at.app_error",
@@ -12814,6 +13134,14 @@
   {
     "id": "model.command_response.is_valid.response_type.app_error",
     "translation": "Tip de răspuns invalid."
+  },
+  {
+    "id": "model.community_rules.empty.app_error",
+    "translation": "Scrie regulile înainte de a le activa."
+  },
+  {
+    "id": "model.community_rules.text.app_error",
+    "translation": "Regulile pot avea maximum {{.Max}} caractere."
   },
   {
     "id": "model.compliance.is_valid.create_at.app_error",
@@ -13592,6 +13920,10 @@
     "translation": "BurnOnReadDurationSeconds trebuie să fie un număr pozitiv."
   },
   {
+    "id": "model.config.is_valid.service_settings.burn_on_read_maximum_duration_seconds.app_error",
+    "translation": "BurnOnReadMaximumDurationSeconds trebuie să fie un număr pozitiv."
+  },
+  {
     "id": "model.config.is_valid.service_settings.burn_on_read_maximum_time_to_live_seconds.app_error",
     "translation": "BurnOnReadMaximumTimeToLiveSeconds trebuie să fie un număr pozitiv."
   },
@@ -13850,6 +14182,22 @@
   {
     "id": "model.file_info.is_valid.user_id.app_error",
     "translation": "Valoare invalidă pentru user_id."
+  },
+  {
+    "id": "model.focus.duration.app_error",
+    "translation": "Modul Focus durează între o minută și o săptămână."
+  },
+  {
+    "id": "model.focus.duration_or_end.app_error",
+    "translation": "Alege durata concentrării: o perioadă sau o oră de sfârșit."
+  },
+  {
+    "id": "model.focus.reason.app_error",
+    "translation": "Motivul este prea lung: acesta devine starea ta personalizată, care poate avea maximum 100 de caractere."
+  },
+  {
+    "id": "model.focus.window.app_error",
+    "translation": "Intervalul de timp al rezumatului nu este valid: trebuie să fie în trecut, în ordine și să aibă cel mult opt zile."
   },
   {
     "id": "model.group.channel_id.app_error",

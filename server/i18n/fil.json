@@ -1716,6 +1716,38 @@
     "translation": "Si {{.Username}} ay hindi miyembro ng channel na ito."
   },
   {
+    "id": "api.command_rules.agree_hint",
+    "translation": "I-type ang `/rules agree` upang pumayag sa mga ito, pagkatapos ay maaari ka nang mag-post."
+  },
+  {
+    "id": "api.command_rules.agreed",
+    "translation": "Salamat: Pumayag ka sa mga patakaran ng {{.Community}}. Maaari ka nang mag-post doon."
+  },
+  {
+    "id": "api.command_rules.already_agreed",
+    "translation": "Pumayag ka na sa mga patakarang ito."
+  },
+  {
+    "id": "api.command_rules.desc",
+    "translation": "Basahin ang mga patakaran ng komunidad na ito, o pumayag sa mga ito"
+  },
+  {
+    "id": "api.command_rules.hint",
+    "translation": "[agree]"
+  },
+  {
+    "id": "api.command_rules.name",
+    "translation": "rules"
+  },
+  {
+    "id": "api.command_rules.none",
+    "translation": "Walang mga patakaran ang komunidad na ito na kailangang pumayagan."
+  },
+  {
+    "id": "api.command_rules.title",
+    "translation": "**Mga Patakaran ng {{.Community}}**"
+  },
+  {
     "id": "api.command_search.desc",
     "translation": "Maghanap ng text sa mga mensahe"
   },
@@ -2928,6 +2960,14 @@
     "translation": "Hindi na-notify ng mention na ito ang @{{.Username}} dahil hindi siya miyembro ng team na ito."
   },
   {
+    "id": "api.post.community_rules_not_accepted",
+    "translation": "Pumayag sa mga patakaran ng komunidad na ito bago ka mag-post dito."
+  },
+  {
+    "id": "api.post.community_rules_not_accepted.reminder",
+    "translation": "Hinihiling ng komunidad na ito sa lahat na pumayag sa mga patakaran nito bago mag-post. I-type ang `/rules` upang basahin ang mga ito, pagkatapos ay `/rules agree` upang pumayag."
+  },
+  {
     "id": "api.post.create_post.burn_on_read.abac_denied.app_error",
     "translation": "Hindi mo kayang magpadala ng burn-on-read na mensahe sa channel na ito."
   },
@@ -3030,6 +3070,10 @@
   {
     "id": "api.post.fill_in_post_props.burn_on_read.config.app_error",
     "translation": "Hindi aktibo ang burn-on-read na mga post. Paki-activate ang feature flag at service setting."
+  },
+  {
+    "id": "api.post.fill_in_post_props.burn_on_read.duration.app_error",
+    "translation": "Ang tagal ng burn-on-read ay dapat positibong bilang ng milliseconds."
   },
   {
     "id": "api.post.fill_in_post_props.burn_on_read.self_dm.app_error",
@@ -5192,6 +5236,134 @@
     "translation": "Hindi matagumpay ang bridge call."
   },
   {
+    "id": "app.agents.status.no_agents",
+    "translation": "Walang Agent na available para sa iyo."
+  },
+  {
+    "id": "app.ai.agent.access.app_error",
+    "translation": "Hindi ka makakapag-usap sa Agent na ito dito."
+  },
+  {
+    "id": "app.ai.agent.activity.get.app_error",
+    "translation": "Hindi mabasa ang aktibidad ng mga Agent."
+  },
+  {
+    "id": "app.ai.agent.activity.save.app_error",
+    "translation": "Hindi maisave ang aktibidad ng Agent."
+  },
+  {
+    "id": "app.ai.agent.connection.app_error",
+    "translation": "Hindi magagamit ng Agent na ito ang koneksyon ng modelong ito: ang Agent sa buong server ay nangangailangan ng koneksyon sa buong server, at ang Agent ng isang komunidad ay nangangailangan ng sariling koneksyon ng komunidad o isa na ibinahagi sa ito."
+  },
+  {
+    "id": "app.ai.agent.conversations.app_error",
+    "translation": "Hindi ma-load ang iyong mga usapan sa mga Agent."
+  },
+  {
+    "id": "app.ai.agent.get.app_error",
+    "translation": "Hindi mabasa ang mga Agent."
+  },
+  {
+    "id": "app.ai.agent.manage_permission.app_error",
+    "translation": "Hindi mo mapangangasiwaan ang mga Agent dito."
+  },
+  {
+    "id": "app.ai.agent.not_found.app_error",
+    "translation": "Hindi umiiral ang Agent na ito, o tinanggal na."
+  },
+  {
+    "id": "app.ai.agent.references.app_error",
+    "translation": "Tinutukoy ng Agent ang isang komunidad, channel o tao na hindi umiiral, o isang channel ng ibang komunidad."
+  },
+  {
+    "id": "app.ai.agent.save.app_error",
+    "translation": "Hindi maisave ang Agent."
+  },
+  {
+    "id": "app.ai.agent.task.agent_disabled.app_error",
+    "translation": "Naka-off ang Agent na ito."
+  },
+  {
+    "id": "app.ai.agent.task.channel.app_error",
+    "translation": "Hindi naroroon ang channel, o hindi mo mabasa ito."
+  },
+  {
+    "id": "app.ai.agent.task.external.app_error",
+    "translation": "Hindi tumatanggap ng mga Gawain ang external Agent dito: padalhan na lang ito ng mensahe."
+  },
+  {
+    "id": "app.ai.agent.task.not_transcription.app_error",
+    "translation": "Hindi transkripsyon ng tawag ang mensaheng ito."
+  },
+  {
+    "id": "app.ai.agent.task.post.app_error",
+    "translation": "Hindi makita ang mensahe, o hindi mo ito mabasa."
+  },
+  {
+    "id": "app.ai.agent.task.request.ask_channel",
+    "translation": "Tungkol sa {{.Channel}}: {{.Question}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items",
+    "translation": "Hanapin ang mga action item sa thread na ito: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items_channel",
+    "translation": "Hanapin ang mga action item sa mga pinakabagong mensahe sa {{.Channel}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items_channel_since",
+    "translation": "Hanapin ang mga action item sa {{.Channel}} simula {{.Since}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions",
+    "translation": "Hanapin ang mga bukas na tanong sa thread na ito: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions_channel",
+    "translation": "Hanapin ang mga bukas na tanong sa mga pinakabagong mensahe sa {{.Channel}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions_channel_since",
+    "translation": "Hanapin ang mga bukas na tanong sa {{.Channel}} simula {{.Since}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_channel",
+    "translation": "Buodan ang mga pinakabagong mensahe sa {{.Channel}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_channel_since",
+    "translation": "Buod ng mga mensahe sa {{.Channel}} simula noong {{.Since}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_thread",
+    "translation": "Buodan ang thread na ito: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_transcription",
+    "translation": "Buod ng transkripsyon ng tawag na ito: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.this_conversation",
+    "translation": "ang usapang ito"
+  },
+  {
+    "id": "app.ai.agent.turn.empty",
+    "translation": "Pasensya, wala akong sagot para diyan."
+  },
+  {
+    "id": "app.ai.agent.turn.failed",
+    "translation": "Pasensya, hindi ko kayang sumagot: {{.Reason}}"
+  },
+  {
+    "id": "app.ai.agent.turn.interrupted",
+    "translation": "Pasensya, naputol ang sagot ko. Tanungin mo ulit ako sandali lang."
+  },
+  {
+    "id": "app.ai.agent.turn.not_allowed",
+    "translation": "Hindi available ang {{.Agent}} para sa iyo dito."
+  },
+  {
     "id": "app.ai.call.audience.app_error",
     "translation": "Hindi mo ma-gamit ang model connection na ito."
   },
@@ -6088,6 +6260,38 @@
     "translation": "Hindi angkop ang value na ito sa attribute {{.Name}}."
   },
   {
+    "id": "app.community_rules.accept.app_error",
+    "translation": "Hindi ma-save ang pagpayag mo sa mga patakaran ng komunidad."
+  },
+  {
+    "id": "app.community_rules.accept.changed.app_error",
+    "translation": "Nagbago ang mga patakaran ng komunidad simula nang basahin mo ito. Basahin muli bago ka pumayag."
+  },
+  {
+    "id": "app.community_rules.accept.not_member.app_error",
+    "translation": "Mga miyembro lamang ng komunidad ang maaaring pumayag sa mga patakaran nito."
+  },
+  {
+    "id": "app.community_rules.accept.off.app_error",
+    "translation": "Walang patakaran ang komunidad na ito na kailangang pagsunurin."
+  },
+  {
+    "id": "app.community_rules.delete.app_error",
+    "translation": "Hindi mabura ang mga patakaran ng komunidad."
+  },
+  {
+    "id": "app.community_rules.get.app_error",
+    "translation": "Hindi makuha ang mga patakaran ng komunidad."
+  },
+  {
+    "id": "app.community_rules.save.app_error",
+    "translation": "Hindi ma-save ang mga patakaran ng komunidad."
+  },
+  {
+    "id": "app.community_rules.stats.app_error",
+    "translation": "Hindi mabilang ang mga sumang-ayon sa mga patakaran ng komunidad."
+  },
+  {
     "id": "app.compile_csv_chunks.header_error",
     "translation": "Hindi nasulat ang mga header ng CSV."
   },
@@ -6842,6 +7046,34 @@
   {
     "id": "app.file_info.undelete_for_post_ids.app_error",
     "translation": "Hindi ma-restore ang mga attachment ng file ng post."
+  },
+  {
+    "id": "app.focus.bot.app_error",
+    "translation": "Hindi magagamit ng mga Bot ang focus mode."
+  },
+  {
+    "id": "app.focus.delete.app_error",
+    "translation": "Hindi mabura ang focus mode ng account."
+  },
+  {
+    "id": "app.focus.get.app_error",
+    "translation": "Hindi makuha ang iyong focus mode."
+  },
+  {
+    "id": "app.focus.mark_read.app_error",
+    "translation": "Hindi mailagay bilang nabasa ang mga lumampas sa iyong nakita."
+  },
+  {
+    "id": "app.focus.save.app_error",
+    "translation": "Hindi magsimula ang focus mode."
+  },
+  {
+    "id": "app.focus.statuses_disabled.app_error",
+    "translation": "Kailangan ng focus mode ang mga status ng user, na nakasara sa server na ito."
+  },
+  {
+    "id": "app.focus.summary.app_error",
+    "translation": "Hindi makuha ang mga lumampas sa iyong nakita habang nagfo-focus."
   },
   {
     "id": "app.get_user_team_scheduled_posts.error",
@@ -11540,6 +11772,90 @@
     "translation": "Hindi wasto ang user id."
   },
   {
+    "id": "model.agent_activity.expires.app_error",
+    "translation": "Ang aktibidad ng isang Agent ay tumatagal mula 1 segundo hanggang 24 oras."
+  },
+  {
+    "id": "model.agent_activity.state.app_error",
+    "translation": "Ang estado ng isang Agent ay idle, nag-iisip, nagtatrabaho, naghihintay, blocked, o offline."
+  },
+  {
+    "id": "model.agent_activity.text.app_error",
+    "translation": "Ang ginagawa ng Agent ay kailangang umabot sa isang linya na hindi hihigit sa 200 karakter."
+  },
+  {
+    "id": "model.agent_activity.thread_post_id.app_error",
+    "translation": "Ang ID ng mensahe ang dapat maging thread ng aktibidad ng Agent."
+  },
+  {
+    "id": "model.ai_agent.access.app_error",
+    "translation": "Ang mga makakausap sa Agent ay may mga hindi wastong komunidad, channel, role, o tao, o masyadong marami."
+  },
+  {
+    "id": "model.ai_agent.access_community.app_error",
+    "translation": "Ang Agent ng isang komunidad ay para lamang sa komunidad na iyon."
+  },
+  {
+    "id": "model.ai_agent.connection_id.app_error",
+    "translation": "Piliin ang koneksyon ng model na gagamitin ng Agent."
+  },
+  {
+    "id": "model.ai_agent.external.app_error",
+    "translation": "Ang external na Agent ay walang model, koneksyon, o system prompt: ang programa nito ang sumasagot."
+  },
+  {
+    "id": "model.ai_agent.max_tool_turns.app_error",
+    "translation": "Ang Agent ay gumagamit ng 0 (default) hanggang 250 tool turns."
+  },
+  {
+    "id": "model.ai_agent.model.app_error",
+    "translation": "Ang pangalan ng model ay masyadong mahaba, o may higit sa isang linya."
+  },
+  {
+    "id": "model.ai_agent.needs_attention.app_error",
+    "translation": "Ang tala tungkol sa kailangang pansinin ay masyadong mahaba."
+  },
+  {
+    "id": "model.ai_agent.reasoning.app_error",
+    "translation": "Ang antas ng pag-iisip ay minimal, mababa, katamtaman, o mataas, at ang budget nito ay mula 0 hanggang 128,000 token."
+  },
+  {
+    "id": "model.ai_agent.scope.app_error",
+    "translation": "Ang Agent ay pag-aari ng server o ng isang komunidad."
+  },
+  {
+    "id": "model.ai_agent.system_prompt.app_error",
+    "translation": "Ang system prompt ay masyadong mahaba (hindi hihigit sa 32,000 karakter)."
+  },
+  {
+    "id": "model.ai_agent.times.app_error",
+    "translation": "Kulang ang mga oras ng paglikha at pag-update ng Agent."
+  },
+  {
+    "id": "model.ai_agent.tools.app_error",
+    "translation": "Ang pangalan ng tool ay hindi wasto, o masyadong marami (hindi hihigit sa 256)."
+  },
+  {
+    "id": "model.ai_agent.user_id.app_error",
+    "translation": "Kailangan ng Agent ng wastong account."
+  },
+  {
+    "id": "model.ai_agent_task.channel_id.app_error",
+    "translation": "Kailangan ng channel ang gawaing ito."
+  },
+  {
+    "id": "model.ai_agent_task.post_id.app_error",
+    "translation": "Kailangan ng mensahe ang gawaing ito."
+  },
+  {
+    "id": "model.ai_agent_task.question.app_error",
+    "translation": "Magtanong ng hanggang 2,000 karakter."
+  },
+  {
+    "id": "model.ai_agent_task.task.app_error",
+    "translation": "Hindi alam ng agent ang gawaing ito."
+  },
+  {
     "id": "model.ai_connection.api_key.app_error",
     "translation": "Masyadong mahaba ang API key o may line break ito."
   },
@@ -11702,6 +12018,10 @@
   {
     "id": "model.bot.is_valid.description.app_error",
     "translation": "Hindi wasto ang paglalarawan."
+  },
+  {
+    "id": "model.bot.is_valid.kind.app_error",
+    "translation": "Ang account ng bot ay isang bot o isang agent."
   },
   {
     "id": "model.bot.is_valid.update_at.app_error",
@@ -12090,6 +12410,14 @@
   {
     "id": "model.command_response.is_valid.response_type.app_error",
     "translation": "Hindi wastong uri ng sagot."
+  },
+  {
+    "id": "model.community_rules.empty.app_error",
+    "translation": "Isulat ang mga patakaran bago ito i-activate."
+  },
+  {
+    "id": "model.community_rules.text.app_error",
+    "translation": "Ang mga patakaran ay hanggang {{.Max}} karakter lamang."
   },
   {
     "id": "model.compliance.is_valid.create_at.app_error",
@@ -12868,6 +13196,10 @@
     "translation": "Dapat positive na numero ang BurnOnReadDurationSeconds."
   },
   {
+    "id": "model.config.is_valid.service_settings.burn_on_read_maximum_duration_seconds.app_error",
+    "translation": "Ang BurnOnReadMaximumDurationSeconds ay dapat positibong numero."
+  },
+  {
     "id": "model.config.is_valid.service_settings.burn_on_read_maximum_time_to_live_seconds.app_error",
     "translation": "Dapat positive na numero ang BurnOnReadMaximumTimeToLiveSeconds."
   },
@@ -13126,6 +13458,22 @@
   {
     "id": "model.file_info.is_valid.user_id.app_error",
     "translation": "Hindi wastong value para sa user_id."
+  },
+  {
+    "id": "model.focus.duration.app_error",
+    "translation": "Ang Focus mode ay tumatagal mula isang minuto hanggang isang linggo."
+  },
+  {
+    "id": "model.focus.duration_or_end.app_error",
+    "translation": "Piliin kung gaano katagal ang pag-focus: isang tagal o isang oras ng pagtatapos."
+  },
+  {
+    "id": "model.focus.reason.app_error",
+    "translation": "Masyadong mahaba ang dahilan: ito ang magiging custom status mo, na hanggang 100 karakter lamang."
+  },
+  {
+    "id": "model.focus.window.app_error",
+    "translation": "Hindi wasto ang saklaw ng oras ng buod: dapat ito ay sa nakaraan, ayon sa pagkakasunod-sunod, at hanggang walong araw lamang."
   },
   {
     "id": "model.group.channel_id.app_error",

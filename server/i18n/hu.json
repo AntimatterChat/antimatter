@@ -1766,6 +1766,38 @@
     "translation": "{{.Username}} nem tagja ennek a csatornának."
   },
   {
+    "id": "api.command_rules.agree_hint",
+    "translation": "Írd be: `/rules agree` az elfogadáshoz, utána posztolhatsz."
+  },
+  {
+    "id": "api.command_rules.agreed",
+    "translation": "Köszönjük: elfogadtad a(z) {{.Community}} szabályait. Most már posztolhatsz ott."
+  },
+  {
+    "id": "api.command_rules.already_agreed",
+    "translation": "Már elfogadtad ezeket a szabályokat."
+  },
+  {
+    "id": "api.command_rules.desc",
+    "translation": "A közösség szabályainak elolvasása vagy elfogadása"
+  },
+  {
+    "id": "api.command_rules.hint",
+    "translation": "[egyetértek]"
+  },
+  {
+    "id": "api.command_rules.name",
+    "translation": "szabályok"
+  },
+  {
+    "id": "api.command_rules.none",
+    "translation": "Ebben a közösségben nincsenek elfogadandó szabályok."
+  },
+  {
+    "id": "api.command_rules.title",
+    "translation": "**{{.Community}} szabályai**"
+  },
+  {
     "id": "api.command_search.desc",
     "translation": "Szöveg keresése az üzenetekben"
   },
@@ -3109,6 +3141,14 @@
     "translation": "@{{.Username}} nem lett értesítve az említésről, mert nem tagja ennek a csapatnak."
   },
   {
+    "id": "api.post.community_rules_not_accepted",
+    "translation": "Fogadd el a közösség szabályait, mielőtt posztolnál benne."
+  },
+  {
+    "id": "api.post.community_rules_not_accepted.reminder",
+    "translation": "Ez a közösség a közzététel előtt mindenkitől elfogadja a szabályokat. Írd be a `/rules` parancsot az elolvasásukhoz, majd a `/rules agree` parancsot az elfogadásukhoz."
+  },
+  {
     "id": "api.post.create_post.burn_on_read.abac_denied.app_error",
     "translation": "Nincs jogosultsága olvasáskor törlő üzenetek küldésére ebben a csatornában."
   },
@@ -3211,6 +3251,10 @@
   {
     "id": "api.post.fill_in_post_props.burn_on_read.config.app_error",
     "translation": "Az olvasás után megsemmisülő bejegyzések nincsenek engedélyezve. Kérjük, engedélyezze a funkciózászlót és a szolgáltatásbeállítást."
+  },
+  {
+    "id": "api.post.fill_in_post_props.burn_on_read.duration.app_error",
+    "translation": "Az olvasás utáni megsemmisítés időtartama pozitív ezredmásodpercérték kell legyen."
   },
   {
     "id": "api.post.fill_in_post_props.burn_on_read.license.app_error",
@@ -5567,6 +5611,134 @@
     "translation": "A bridge hívás sikertelen."
   },
   {
+    "id": "app.agents.status.no_agents",
+    "translation": "Nincs számodra elérhető ügynök."
+  },
+  {
+    "id": "app.ai.agent.access.app_error",
+    "translation": "Itt nem beszélhetsz ezzel az ügynökkel."
+  },
+  {
+    "id": "app.ai.agent.activity.get.app_error",
+    "translation": "Az ügynökök tevékenysége nem olvasható."
+  },
+  {
+    "id": "app.ai.agent.activity.save.app_error",
+    "translation": "Az ügynök tevékenysége nem menthető el."
+  },
+  {
+    "id": "app.ai.agent.connection.app_error",
+    "translation": "Egy ügynök itt nem használhatja ezt a modellkapcsolatot: a munkaterület szintű ügynöknek munkaterület szintű kapcsolatra van szüksége, a közösség ügynökének pedig a saját közössége kapcsolatára vagy egy vele megosztottra."
+  },
+  {
+    "id": "app.ai.agent.conversations.app_error",
+    "translation": "Nem sikerült betölteni az ügynökökkel folytatott beszélgetéseket."
+  },
+  {
+    "id": "app.ai.agent.get.app_error",
+    "translation": "Az ügynökök nem olvashatók."
+  },
+  {
+    "id": "app.ai.agent.manage_permission.app_error",
+    "translation": "Itt nem kezelheted az ügynököket."
+  },
+  {
+    "id": "app.ai.agent.not_found.app_error",
+    "translation": "Ez az ügynök nem létezik, vagy törölték."
+  },
+  {
+    "id": "app.ai.agent.references.app_error",
+    "translation": "Az ügynök nem létező közösségre, csatornára vagy személyre hivatkozik, vagy egy másik közösség csatornájára."
+  },
+  {
+    "id": "app.ai.agent.save.app_error",
+    "translation": "Az ügynök nem menthető el."
+  },
+  {
+    "id": "app.ai.agent.task.agent_disabled.app_error",
+    "translation": "Ez az ügynök ki van kapcsolva."
+  },
+  {
+    "id": "app.ai.agent.task.channel.app_error",
+    "translation": "A csatorna nem létezik, vagy nem olvashatod."
+  },
+  {
+    "id": "app.ai.agent.task.external.app_error",
+    "translation": "Egy külső ügynök nem vállal feladatokat itt: küldj neki inkább üzenetet."
+  },
+  {
+    "id": "app.ai.agent.task.not_transcription.app_error",
+    "translation": "Ez az üzenet nem hívás átirata."
+  },
+  {
+    "id": "app.ai.agent.task.post.app_error",
+    "translation": "Az üzenet nem található, vagy nem olvasható."
+  },
+  {
+    "id": "app.ai.agent.task.request.ask_channel",
+    "translation": "{{.Channel}}: {{.Question}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items",
+    "translation": "Feladatok keresése ebben az üzenetszálban: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items_channel",
+    "translation": "Keresd meg a teendőket a(z) {{.Channel}} legutóbbi üzeneteiben"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items_channel_since",
+    "translation": "Keresd meg a teendőket a(z) {{.Channel}} csatornában {{.Since}} óta"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions",
+    "translation": "Keresd meg a nyitott kérdéseket ebben az üzenetszálban: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions_channel",
+    "translation": "Keresd meg a nyitott kérdéseket a(z) {{.Channel}} legutóbbi üzeneteiben"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions_channel_since",
+    "translation": "Keresse a nyitott kérdéseket a(z) {{.Channel}} csatornában {{.Since}} óta"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_channel",
+    "translation": "Foglald össze a(z) {{.Channel}} legutóbbi üzeneteit"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_channel_since",
+    "translation": "Foglald össze a(z) {{.Channel}} üzeneteit {{.Since}} óta"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_thread",
+    "translation": "Foglald össze ezt az üzenetszálat: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_transcription",
+    "translation": "Foglald össze a hívás átiratát: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.this_conversation",
+    "translation": "ez a beszélgetés"
+  },
+  {
+    "id": "app.ai.agent.turn.empty",
+    "translation": "Sajnálom, nincs válaszom erre."
+  },
+  {
+    "id": "app.ai.agent.turn.failed",
+    "translation": "Sajnálom, nem tudtam válaszolni: {{.Reason}}"
+  },
+  {
+    "id": "app.ai.agent.turn.interrupted",
+    "translation": "Sajnálom, a válaszom megszakadt. Kérdezd meg újra egy pillanat múlva."
+  },
+  {
+    "id": "app.ai.agent.turn.not_allowed",
+    "translation": "{{.Agent}} itt nem áll rendelkezésedre."
+  },
+  {
     "id": "app.ai.call.audience.app_error",
     "translation": "Ezt a modellkötést nem használhatod."
   },
@@ -6479,6 +6651,38 @@
     "translation": "Ez az érték nem illik a(z) {{.Name}} attribútumhoz."
   },
   {
+    "id": "app.community_rules.accept.app_error",
+    "translation": "Nem sikerült menteni a közösségi szabályok elfogadását."
+  },
+  {
+    "id": "app.community_rules.accept.changed.app_error",
+    "translation": "A közösségi szabályzat a elolvasásod óta módosult. Kérjük, olvasd el újra, mielőtt elfogadod."
+  },
+  {
+    "id": "app.community_rules.accept.not_member.app_error",
+    "translation": "Csak a közösség tagjai fogadhatják el a szabályokat."
+  },
+  {
+    "id": "app.community_rules.accept.off.app_error",
+    "translation": "Ehhez a közösséghez nincs elfogadandó szabály."
+  },
+  {
+    "id": "app.community_rules.delete.app_error",
+    "translation": "Nem törölhetők a közösség szabályai."
+  },
+  {
+    "id": "app.community_rules.get.app_error",
+    "translation": "Nem sikerült lekérni a közösség szabályait."
+  },
+  {
+    "id": "app.community_rules.save.app_error",
+    "translation": "Nem sikerült menteni a közösség szabályait."
+  },
+  {
+    "id": "app.community_rules.stats.app_error",
+    "translation": "Nem sikerült megszámolni, hogy ki fogadta el a közösség szabályait."
+  },
+  {
     "id": "app.compile_csv_chunks.header_error",
     "translation": "Nem sikerült kiírni a CSV fejléceket."
   },
@@ -7255,6 +7459,34 @@
   {
     "id": "app.file_info.undelete_for_post_ids.app_error",
     "translation": "Nem sikerült visszaállítani a bejegyzés fájlmellékleteit."
+  },
+  {
+    "id": "app.focus.bot.app_error",
+    "translation": "A botok nem használhatják a fókusz módot."
+  },
+  {
+    "id": "app.focus.delete.app_error",
+    "translation": "Nem törölhető a fiók fókusz módja."
+  },
+  {
+    "id": "app.focus.get.app_error",
+    "translation": "Nem sikerült lekérni a fókusz módot."
+  },
+  {
+    "id": "app.focus.mark_read.app_error",
+    "translation": "Nem sikerült elolvasottnak jelölni a kimaradt üzeneteket."
+  },
+  {
+    "id": "app.focus.save.app_error",
+    "translation": "Nem sikerült elindítani a fókusz módot."
+  },
+  {
+    "id": "app.focus.statuses_disabled.app_error",
+    "translation": "A fókusz módhoz felhasználói állapotokra van szükség, amelyek ezen a szerveren ki vannak kapcsolva."
+  },
+  {
+    "id": "app.focus.summary.app_error",
+    "translation": "Nem sikerült meghatározni, mit hagytál ki fókuszálás közben."
   },
   {
     "id": "app.get_user_team_scheduled_posts.error",
@@ -12255,6 +12487,90 @@
     "translation": "Érvénytelen felhasználó-azonosító."
   },
   {
+    "id": "model.agent_activity.expires.app_error",
+    "translation": "Az ügynök tevékenysége 1 másodperc és 24 óra között lehet."
+  },
+  {
+    "id": "model.agent_activity.state.app_error",
+    "translation": "Az ügynök állapota lehet: tétlen, gondolkodik, dolgozik, vár, blokkolt vagy offline."
+  },
+  {
+    "id": "model.agent_activity.text.app_error",
+    "translation": "Az ügynök aktuális tevékenysége legfeljebb 200 karakter hosszú, egy sorba férjen el."
+  },
+  {
+    "id": "model.agent_activity.thread_post_id.app_error",
+    "translation": "Az ügynök tevékenységének üzenetszálát üzenetazonosítónak kell lennie."
+  },
+  {
+    "id": "model.ai_agent.access.app_error",
+    "translation": "Az ügynökkel való beszélgetésre jogosultak listája érvénytelen közösségeket, csatornákat, szerepköröket vagy személyeket tartalmaz, vagy túl hosszú."
+  },
+  {
+    "id": "model.ai_agent.access_community.app_error",
+    "translation": "Egy közösség ügynöke csak az adott közösség számára érhető el."
+  },
+  {
+    "id": "model.ai_agent.connection_id.app_error",
+    "translation": "Válassza ki az ügynök által használt modellkapcsolatot."
+  },
+  {
+    "id": "model.ai_agent.external.app_error",
+    "translation": "A külső ügynöknek nincs modellje, kapcsolata vagy rendszerpromptja: a programja válaszol."
+  },
+  {
+    "id": "model.ai_agent.max_tool_turns.app_error",
+    "translation": "Az ügynök 0 (alapértelmezés) és 250 eszközhasználati kör közötti értéket vehet fel."
+  },
+  {
+    "id": "model.ai_agent.model.app_error",
+    "translation": "A modell neve túl hosszú, vagy egynél több sorból áll."
+  },
+  {
+    "id": "model.ai_agent.needs_attention.app_error",
+    "translation": "A figyelmet igénylő elemmel kapcsolatos megjegyzés túl hosszú."
+  },
+  {
+    "id": "model.ai_agent.reasoning.app_error",
+    "translation": "Az érvelési erőfeszítésnek minimálisnak, alacsonynak, közepesnek vagy magasnak kell lennie, a költségkeretnek pedig 0 és 128 000 token között."
+  },
+  {
+    "id": "model.ai_agent.scope.app_error",
+    "translation": "Az ügynök vagy a szerverhez, vagy egy közösséghez tartozik."
+  },
+  {
+    "id": "model.ai_agent.system_prompt.app_error",
+    "translation": "A rendszerprompt túl hosszú (legfeljebb 32 000 karakter)."
+  },
+  {
+    "id": "model.ai_agent.times.app_error",
+    "translation": "Az ügynök létrehozásának és frissítésének időpontja hiányzik."
+  },
+  {
+    "id": "model.ai_agent.tools.app_error",
+    "translation": "Érvénytelen eszköznév, vagy túl sok eszköz van (legfeljebb 256)."
+  },
+  {
+    "id": "model.ai_agent.user_id.app_error",
+    "translation": "Az ügynöknek érvényes fiókra van szüksége."
+  },
+  {
+    "id": "model.ai_agent_task.channel_id.app_error",
+    "translation": "Ehhez a feladathoz csatorna szükséges."
+  },
+  {
+    "id": "model.ai_agent_task.post_id.app_error",
+    "translation": "Ehhez a feladathoz üzenet szükséges."
+  },
+  {
+    "id": "model.ai_agent_task.question.app_error",
+    "translation": "Legfeljebb 2000 karakteres kérdést tehet fel."
+  },
+  {
+    "id": "model.ai_agent_task.task.app_error",
+    "translation": "Ez a feladat nem szerepel az ügynök tudásában."
+  },
+  {
     "id": "model.ai_connection.api_key.app_error",
     "translation": "Az API-kulcs túl hosszú, vagy sorváltást tartalmaz."
   },
@@ -12417,6 +12733,10 @@
   {
     "id": "model.bot.is_valid.description.app_error",
     "translation": "Érvénytelen leírás."
+  },
+  {
+    "id": "model.bot.is_valid.kind.app_error",
+    "translation": "A botfiók lehet bot vagy ügynök."
   },
   {
     "id": "model.bot.is_valid.update_at.app_error",
@@ -12805,6 +13125,14 @@
   {
     "id": "model.command_response.is_valid.response_type.app_error",
     "translation": "Érvénytelen választípus."
+  },
+  {
+    "id": "model.community_rules.empty.app_error",
+    "translation": "A szabályok bekapcsolása előtt írja be őket."
+  },
+  {
+    "id": "model.community_rules.text.app_error",
+    "translation": "A szabályok legfeljebb {{.Max}} karakter hosszúak lehetnek."
   },
   {
     "id": "model.compliance.is_valid.create_at.app_error",
@@ -13583,6 +13911,10 @@
     "translation": "A BurnOnReadDurationSeconds értékének pozitív számnak kell lennie."
   },
   {
+    "id": "model.config.is_valid.service_settings.burn_on_read_maximum_duration_seconds.app_error",
+    "translation": "A BurnOnReadMaximumDurationSeconds értékének pozitív számnak kell lennie."
+  },
+  {
     "id": "model.config.is_valid.service_settings.burn_on_read_maximum_time_to_live_seconds.app_error",
     "translation": "A BurnOnReadMaximumTimeToLiveSeconds értékének pozitív számnak kell lennie."
   },
@@ -13841,6 +14173,22 @@
   {
     "id": "model.file_info.is_valid.user_id.app_error",
     "translation": "Érvénytelen érték: user_id."
+  },
+  {
+    "id": "model.focus.duration.app_error",
+    "translation": "A fókusz mód időtartama egy perc és egy hét között lehet."
+  },
+  {
+    "id": "model.focus.duration_or_end.app_error",
+    "translation": "Válassza ki a fókusz időtartamát: hossz vagy befejezési idő."
+  },
+  {
+    "id": "model.focus.reason.app_error",
+    "translation": "Az indok túl hosszú: ez lesz az egyéni állapotod, amely legfeljebb 100 karakter hosszú lehet."
+  },
+  {
+    "id": "model.focus.window.app_error",
+    "translation": "Az összefoglaló időtartama nem érvényes: a múltban kell lennie, időrendben, és legfeljebb nyolc napos lehet."
   },
   {
     "id": "model.group.channel_id.app_error",

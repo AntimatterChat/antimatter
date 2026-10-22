@@ -1716,6 +1716,38 @@
     "translation": "{{.Username}} ไม่ได้เป็นสมาชิกของช่องน้ี"
   },
   {
+    "id": "api.command_rules.agree_hint",
+    "translation": "พิมพ์ `/rules agree` เพื่อยอมรับข้อกำหนด จากนั้นคุณจึงสามารถโพสต์ได้"
+  },
+  {
+    "id": "api.command_rules.agreed",
+    "translation": "ขอบคุณ: คุณยอมรับข้อกำหนดของ {{.Community}} แล้ว ตอนนี้คุณสามารถโพสต์ที่นั่นได้"
+  },
+  {
+    "id": "api.command_rules.already_agreed",
+    "translation": "คุณยอมรับข้อกำหนดเหล่านี้แล้ว"
+  },
+  {
+    "id": "api.command_rules.desc",
+    "translation": "อ่านข้อกำหนดของชุมชนนี้ หรือยอมรับข้อกำหนด"
+  },
+  {
+    "id": "api.command_rules.hint",
+    "translation": "[agree]"
+  },
+  {
+    "id": "api.command_rules.name",
+    "translation": "rules"
+  },
+  {
+    "id": "api.command_rules.none",
+    "translation": "ชุมชนนี้ไม่มีข้อกำหนดให้ยอมรับ"
+  },
+  {
+    "id": "api.command_rules.title",
+    "translation": "**ข้อกำหนดของ {{.Community}}**"
+  },
+  {
     "id": "api.command_search.desc",
     "translation": "ค้นหาข้อความในข้อความ"
   },
@@ -2928,6 +2960,14 @@
     "translation": "@{{.Username}} ไม่ได้รับการแจ้งเตือนจากการเมนชันนี้เพราะพวกเขาไม่ใช่สมาชิกของทีมนี้"
   },
   {
+    "id": "api.post.community_rules_not_accepted",
+    "translation": "ยอมรับข้อกำหนดของชุมชนนี้ก่อนโพสต์ในชุมชนนี้"
+  },
+  {
+    "id": "api.post.community_rules_not_accepted.reminder",
+    "translation": "ชุมชนนี้ขอให้ทุกคนยอมรับข้อกำหนดก่อนโพสต์ พิมพ์ `/rules` เพื่ออ่านข้อกำหนด จากนั้นพิมพ์ `/rules agree` เพื่อยอมรับ"
+  },
+  {
     "id": "api.post.create_post.burn_on_read.abac_denied.app_error",
     "translation": "คุณไม่มีสิทธิ์ส่งข้อความเผาทันทีเมื่ออ่านในช่องนี้"
   },
@@ -3030,6 +3070,10 @@
   {
     "id": "api.post.fill_in_post_props.burn_on_read.config.app_error",
     "translation": "โพสต์แบบเผาหลังอ่านไม่ได้เปิดใช้งาน กรุณาเปิดใช้งานแฟลกฟีเจอร์และการตั้งค่าบริการ"
+  },
+  {
+    "id": "api.post.fill_in_post_props.burn_on_read.duration.app_error",
+    "translation": "ระยะเวลาการลบหลังอ่านต้องเป็นจำนวนมิลลิวินาทีที่เป็นบวก"
   },
   {
     "id": "api.post.fill_in_post_props.burn_on_read.self_dm.app_error",
@@ -5192,6 +5236,134 @@
     "translation": "การเรียกใช้ Bridge ไม่สำเร็จ"
   },
   {
+    "id": "app.agents.status.no_agents",
+    "translation": "ไม่มีเอเจนต์พร้อมใช้งานสำหรับคุณ"
+  },
+  {
+    "id": "app.ai.agent.access.app_error",
+    "translation": "คุณไม่สามารถพูดคุยกับเอเจนต์นี้ที่นี่ได้"
+  },
+  {
+    "id": "app.ai.agent.activity.get.app_error",
+    "translation": "ไม่สามารถอ่านกิจกรรมของเอเจนต์ได้"
+  },
+  {
+    "id": "app.ai.agent.activity.save.app_error",
+    "translation": "ไม่สามารถบันทึกกิจกรรมของเอเจนต์ได้"
+  },
+  {
+    "id": "app.ai.agent.connection.app_error",
+    "translation": "เอเจนต์ที่นี่ไม่สามารถใช้การเชื่อมต่อโมเดลนี้ได้: เอเจนต์ระดับเซิร์ฟเวอร์ต้องการการเชื่อมต่อระดับเซิร์ฟเวอร์ และเอเจนต์ของชุมชนต้องการการเชื่อมต่อของชุมชนนั้นเองหรือการเชื่อมต่อที่แชร์กับชุมชนนั้น"
+  },
+  {
+    "id": "app.ai.agent.conversations.app_error",
+    "translation": "ไม่สามารถโหลดบทสนทนาของคุณกับเอเจนต์ได้"
+  },
+  {
+    "id": "app.ai.agent.get.app_error",
+    "translation": "ไม่สามารถอ่านเอเจนต์ได้"
+  },
+  {
+    "id": "app.ai.agent.manage_permission.app_error",
+    "translation": "คุณไม่สามารถจัดการเอเจนต์ที่นี่ได้"
+  },
+  {
+    "id": "app.ai.agent.not_found.app_error",
+    "translation": "เอเจนต์นี้ไม่มีอยู่ หรือถูกลบไปแล้ว"
+  },
+  {
+    "id": "app.ai.agent.references.app_error",
+    "translation": "เอเจนต์ระบุชื่อชุมชน ช่อง หรือบุคคลที่ไม่มีอยู่ หรือระบุช่องของชุมชนอื่น"
+  },
+  {
+    "id": "app.ai.agent.save.app_error",
+    "translation": "ไม่สามารถบันทึกเอเจนต์ได้"
+  },
+  {
+    "id": "app.ai.agent.task.agent_disabled.app_error",
+    "translation": "เอเจนต์นี้ถูกปิดใช้งาน"
+  },
+  {
+    "id": "app.ai.agent.task.channel.app_error",
+    "translation": "ไม่มีช่องนี้ หรือคุณไม่สามารถอ่านช่องนี้ได้"
+  },
+  {
+    "id": "app.ai.agent.task.external.app_error",
+    "translation": "เอเจนต์ภายนอกไม่รับงานที่นี่: ส่งข้อความถึงเอเจนต์แทน"
+  },
+  {
+    "id": "app.ai.agent.task.not_transcription.app_error",
+    "translation": "ข้อความนี้ไม่ใช่การถอดเสียงของการโทร"
+  },
+  {
+    "id": "app.ai.agent.task.post.app_error",
+    "translation": "ข้อความไม่อยู่ที่นี่ หรือคุณไม่สามารถอ่านได้"
+  },
+  {
+    "id": "app.ai.agent.task.request.ask_channel",
+    "translation": "เกี่ยวกับ {{.Channel}}: {{.Question}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items",
+    "translation": "ค้นหาสิ่งที่ต้องทำในเธรดนี้: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items_channel",
+    "translation": "ค้นหาสิ่งที่ต้องทำจากข้อความล่าสุดใน {{.Channel}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items_channel_since",
+    "translation": "ค้นหาสิ่งที่ต้องทำใน {{.Channel}} ตั้งแต่ {{.Since}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions",
+    "translation": "ค้นหาคำถามที่ยังไม่ได้ตอบในเธรดนี้: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions_channel",
+    "translation": "ค้นหาคำถามที่ยังไม่ได้ตอบในข้อความล่าสุดของ {{.Channel}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions_channel_since",
+    "translation": "ค้นหาคำถามที่ยังไม่ได้รับการตอบใน {{.Channel}} ตั้งแต่ {{.Since}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_channel",
+    "translation": "สรุปข้อความล่าสุดใน {{.Channel}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_channel_since",
+    "translation": "สรุปข้อความใน {{.Channel}} ตั้งแต่ {{.Since}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_thread",
+    "translation": "สรุปเธรดนี้: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_transcription",
+    "translation": "สรุปการถอดเสียงของการโทรนี้: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.this_conversation",
+    "translation": "การสนทนานี้"
+  },
+  {
+    "id": "app.ai.agent.turn.empty",
+    "translation": "ขออภัย ฉันไม่มีคำตอบสำหรับสิ่งนั้น"
+  },
+  {
+    "id": "app.ai.agent.turn.failed",
+    "translation": "ขออภัย ฉันไม่สามารถตอบได้: {{.Reason}}"
+  },
+  {
+    "id": "app.ai.agent.turn.interrupted",
+    "translation": "ขออภัย คำตอบของฉันถูกขัดจังหวะ กรุณาสอบถามอีกครั้งในภายหลัง"
+  },
+  {
+    "id": "app.ai.agent.turn.not_allowed",
+    "translation": "{{.Agent}} ไม่พร้อมใช้งานสำหรับคุณที่นี่"
+  },
+  {
     "id": "app.ai.call.audience.app_error",
     "translation": "คุณไม่สามารถใช้การเชื่อมต่อโมเดลนี้ได้"
   },
@@ -6088,6 +6260,38 @@
     "translation": "ค่านี้ไม่ตรงกับข้อมูล {{.Name}}"
   },
   {
+    "id": "app.community_rules.accept.app_error",
+    "translation": "ไม่สามารถบันทึกการยอมรับกฎของชุมชนได้"
+  },
+  {
+    "id": "app.community_rules.accept.changed.app_error",
+    "translation": "กฎของชุมชนมีการเปลี่ยนแปลงหลังจากที่คุณอ่าน กรุณาอ่านอีกครั้งก่อนยอมรับ"
+  },
+  {
+    "id": "app.community_rules.accept.not_member.app_error",
+    "translation": "มีเฉพาะสมาชิกของคอมมูนิตี้เท่านั้นที่ยอมรับกฎได้"
+  },
+  {
+    "id": "app.community_rules.accept.off.app_error",
+    "translation": "ชุมชนนี้ไม่มีกฎที่ต้องยอมรับ"
+  },
+  {
+    "id": "app.community_rules.delete.app_error",
+    "translation": "ไม่สามารถลบกฎของชุมชนได้"
+  },
+  {
+    "id": "app.community_rules.get.app_error",
+    "translation": "ไม่สามารถรับกฎของชุมชนได้"
+  },
+  {
+    "id": "app.community_rules.save.app_error",
+    "translation": "ไม่สามารถบันทึกกฎของชุมชนได้"
+  },
+  {
+    "id": "app.community_rules.stats.app_error",
+    "translation": "ไม่สามารถนับจำนวนผู้ที่ตกลงตามกฎของชุมชนได้"
+  },
+  {
     "id": "app.compile_csv_chunks.header_error",
     "translation": "ไม่สำหรบัเขียนหัวข้ของ CSV"
   },
@@ -6842,6 +7046,34 @@
   {
     "id": "app.file_info.undelete_for_post_ids.app_error",
     "translation": "ล้มเหลวในการกู้คืนไฟล์แนบของโพสต์"
+  },
+  {
+    "id": "app.focus.bot.app_error",
+    "translation": "บอทไม่สามารถใช้โหมดโฟกัสได้"
+  },
+  {
+    "id": "app.focus.delete.app_error",
+    "translation": "ไม่สามารถลบโหมดโฟกัสของบัญชีได้"
+  },
+  {
+    "id": "app.focus.get.app_error",
+    "translation": "ไม่สามารถรับโหมดโฟกัสของคุณได้"
+  },
+  {
+    "id": "app.focus.mark_read.app_error",
+    "translation": "ไม่สามารถทำเครื่องหมายสิ่งที่คุณพลาดเป็นอ่านแล้วได้"
+  },
+  {
+    "id": "app.focus.save.app_error",
+    "translation": "ไม่สามารถเริ่มโหมดโฟกัสได้"
+  },
+  {
+    "id": "app.focus.statuses_disabled.app_error",
+    "translation": "โหมดโฟกัสต้องใช้สถานะผู้ใช้ ซึ่งถูกปิดไว้บนเซิร์ฟเวอร์นี้"
+  },
+  {
+    "id": "app.focus.summary.app_error",
+    "translation": "ไม่สามารถรับข้อมูลสิ่งที่คุณพลาดขณะโฟกัสได้"
   },
   {
     "id": "app.get_user_team_scheduled_posts.error",
@@ -11540,6 +11772,90 @@
     "translation": "ID ผู้ใช้ไม่ถูกต้อง"
   },
   {
+    "id": "model.agent_activity.expires.app_error",
+    "translation": "กิจกรรมของเอเจนต์ต้องมีระยะเวลาตั้งแต่ 1 วินาทีถึง 24 ชั่วโมง"
+  },
+  {
+    "id": "model.agent_activity.state.app_error",
+    "translation": "สถานะของเอเจนต์คือ idle, thinking, working, waiting, blocked หรือ offline"
+  },
+  {
+    "id": "model.agent_activity.text.app_error",
+    "translation": "สิ่งที่เอเจนต์กำลังดำเนินการต้องไม่เกิน 200 อักขระในบรรทัดเดียว"
+  },
+  {
+    "id": "model.agent_activity.thread_post_id.app_error",
+    "translation": "เธรดของกิจกรรมเอเจนต์ต้องเป็น ID ของข้อความ"
+  },
+  {
+    "id": "model.ai_agent.access.app_error",
+    "translation": "รายชื่อชุมชน ช่อง บทบาท หรือบุคคลที่ไม่อนุญาตให้พูดคุยกับเอเจนต์ไม่ถูกต้องหรือมีจำนวนเกินกำหนด"
+  },
+  {
+    "id": "model.ai_agent.access_community.app_error",
+    "translation": "เอเจนต์ของคอมมูนิตี้ใช้ได้เฉพาะในคอมมูนิตี้นั้นเท่านั้น"
+  },
+  {
+    "id": "model.ai_agent.connection_id.app_error",
+    "translation": "เลือกการเชื่อมต่อโมเดลที่เอเจนต์ใช้"
+  },
+  {
+    "id": "model.ai_agent.external.app_error",
+    "translation": "เอเจนต์ภายนอกไม่มีโมเดล การเชื่อมต่อ หรือพร้อมท์ระบบ: โปรแกรมของเอเจนต์จะตอบกลับ"
+  },
+  {
+    "id": "model.ai_agent.max_tool_turns.app_error",
+    "translation": "เอเจนต์ต้องใช้จำนวนรอบการใช้เครื่องมือระหว่าง 0 (ค่าเริ่มต้น) ถึง 250 รอบ"
+  },
+  {
+    "id": "model.ai_agent.model.app_error",
+    "translation": "ชื่อโมเดลยาวเกินไปหรือมีมากกว่าหนึ่งบรรทัด"
+  },
+  {
+    "id": "model.ai_agent.needs_attention.app_error",
+    "translation": "หมายเหตุเกี่ยวกับสิ่งที่ต้องดำเนินการยาวเกินไป"
+  },
+  {
+    "id": "model.ai_agent.reasoning.app_error",
+    "translation": "ระดับความพยายามในการให้เหตุผลต้องเป็นน้อยที่สุด น้อย ปานกลาง หรือสูง และงบประมาณต้องอยู่ระหว่าง 0 ถึง 128,000 โทเคน"
+  },
+  {
+    "id": "model.ai_agent.scope.app_error",
+    "translation": "เอเจนต์ต้องเป็นของเซิร์ฟเวอร์หรือของชุมชนใดชุมชนหนึ่ง"
+  },
+  {
+    "id": "model.ai_agent.system_prompt.app_error",
+    "translation": "พร้อมต์ของระบบยาวเกินไป (สูงสุด 32,000 อักขระ)"
+  },
+  {
+    "id": "model.ai_agent.times.app_error",
+    "translation": "ไม่พบเวลาสร้างและเวลาอัปเดตของเอเจนต์"
+  },
+  {
+    "id": "model.ai_agent.tools.app_error",
+    "translation": "ชื่อเครื่องมือไม่ถูกต้อง หรือมีจำนวนเครื่องมือมากเกินไป (สูงสุด 256)"
+  },
+  {
+    "id": "model.ai_agent.user_id.app_error",
+    "translation": "เอเจนต์ต้องมีบัญชีที่ถูกต้อง"
+  },
+  {
+    "id": "model.ai_agent_task.channel_id.app_error",
+    "translation": "งานนี้ต้องมีช่อง"
+  },
+  {
+    "id": "model.ai_agent_task.post_id.app_error",
+    "translation": "งานนี้ต้องมีข้อความ"
+  },
+  {
+    "id": "model.ai_agent_task.question.app_error",
+    "translation": "ถามคำถามได้สูงสุด 2,000 อักขระ"
+  },
+  {
+    "id": "model.ai_agent_task.task.app_error",
+    "translation": "งานนี้ไม่ใช่รูปแบบที่เอเจนต์รู้จัก"
+  },
+  {
     "id": "model.ai_connection.api_key.app_error",
     "translation": "คีย์ API ยาวเกินไปหรือมีตัวอักษรขึ้นบรรทัดใหม่"
   },
@@ -11702,6 +12018,10 @@
   {
     "id": "model.bot.is_valid.description.app_error",
     "translation": "คำอธิบายไม่ถูกต้อง"
+  },
+  {
+    "id": "model.bot.is_valid.kind.app_error",
+    "translation": "บัญชีบอทต้องเป็นบอทหรือเอเจนต์"
   },
   {
     "id": "model.bot.is_valid.update_at.app_error",
@@ -12090,6 +12410,14 @@
   {
     "id": "model.command_response.is_valid.response_type.app_error",
     "translation": "ประเภทของ response ไม่ถูกต้อง"
+  },
+  {
+    "id": "model.community_rules.empty.app_error",
+    "translation": "กรุณาเขียนกฎก่อนเปิดใช้งาน"
+  },
+  {
+    "id": "model.community_rules.text.app_error",
+    "translation": "กฎต้องมีอักขระไม่เกิน {{.Max}} ตัว"
   },
   {
     "id": "model.compliance.is_valid.create_at.app_error",
@@ -12868,6 +13196,10 @@
     "translation": "BurnOnReadDurationSeconds ต้องเป็นเลขบวก"
   },
   {
+    "id": "model.config.is_valid.service_settings.burn_on_read_maximum_duration_seconds.app_error",
+    "translation": "ค่า BurnOnReadMaximumDurationSeconds ต้องเป็นจำนวนเต็มบวก"
+  },
+  {
     "id": "model.config.is_valid.service_settings.burn_on_read_maximum_time_to_live_seconds.app_error",
     "translation": "BurnOnReadMaximumTimeToLiveSeconds ต้องเป็นเลขบวก"
   },
@@ -13126,6 +13458,22 @@
   {
     "id": "model.file_info.is_valid.user_id.app_error",
     "translation": "ค่าของ user_id ไม่ถูกต้อง"
+  },
+  {
+    "id": "model.focus.duration.app_error",
+    "translation": "โหมดโฟกัสมีระยะเวลาตั้งแต่ 1 นาทีถึง 1 สัปดาห์"
+  },
+  {
+    "id": "model.focus.duration_or_end.app_error",
+    "translation": "เลือกวิธีโฟกัส: กำหนดระยะเวลาหรือเวลาสิ้นสุด"
+  },
+  {
+    "id": "model.focus.reason.app_error",
+    "translation": "เหตุผลยาวเกินไป: จะถูกใช้เป็นสถานะกำหนดเองของคุณซึ่งต้องไม่เกิน 100 อักขระ"
+  },
+  {
+    "id": "model.focus.window.app_error",
+    "translation": "ช่วงเวลาของสรุปไม่ถูกต้อง: ต้องเป็นช่วงเวลาในอดีต เรียงตามลำดับ และยาวไม่เกิน 8 วัน"
   },
   {
     "id": "model.group.channel_id.app_error",

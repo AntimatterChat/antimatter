@@ -1766,6 +1766,38 @@
     "translation": "{{.Username}} ei ole tällä kanavalla."
   },
   {
+    "id": "api.command_rules.agree_hint",
+    "translation": "Hyväksy säännöt komennolla `/rules agree`, niin voit lähettää viestejä."
+  },
+  {
+    "id": "api.command_rules.agreed",
+    "translation": "Kiitos: hyväksyit yhteisön {{.Community}} säännöt. Voit nyt lähettää viestejä siellä."
+  },
+  {
+    "id": "api.command_rules.already_agreed",
+    "translation": "Olet jo hyväksynyt nämä säännöt."
+  },
+  {
+    "id": "api.command_rules.desc",
+    "translation": "Lue yhteisön säännöt tai hyväksy ne"
+  },
+  {
+    "id": "api.command_rules.hint",
+    "translation": "[sopimuksessa]"
+  },
+  {
+    "id": "api.command_rules.name",
+    "translation": "säännöt"
+  },
+  {
+    "id": "api.command_rules.none",
+    "translation": "Tässä yhteisössä ei ole sääntöjä, joihin pitää suostua."
+  },
+  {
+    "id": "api.command_rules.title",
+    "translation": "**{{.Community}}n säännöt**"
+  },
+  {
     "id": "api.command_search.desc",
     "translation": "Etsi tekstiä viesteistä"
   },
@@ -3109,6 +3141,14 @@
     "translation": "@{{.Username}} ei saanut ilmoitusta tästä maininnasta, koska hän ei ole tämän tiimin jäsen."
   },
   {
+    "id": "api.post.community_rules_not_accepted",
+    "translation": "Hyväksy yhteisön säännöt ennen viestin lähettämistä."
+  },
+  {
+    "id": "api.post.community_rules_not_accepted.reminder",
+    "translation": "Tämä yhteisö pyytää kaikkia hyväksymään sääntönsä ennen julkaisemista. Lue säännöt komennolla `/rules` ja hyväksy ne komennolla `/rules agree`."
+  },
+  {
     "id": "api.post.create_post.burn_on_read.abac_denied.app_error",
     "translation": "Sinulla ei ole oikeutta lähettää luettaessa tuhoutuvia viestejä tällä kanavalla."
   },
@@ -3211,6 +3251,10 @@
   {
     "id": "api.post.fill_in_post_props.burn_on_read.config.app_error",
     "translation": "Luettaessa tuhoutuvat viestit eivät ole käytössä. Ota ominaisuuslippu ja palveluasetus käyttöön."
+  },
+  {
+    "id": "api.post.fill_in_post_props.burn_on_read.duration.app_error",
+    "translation": "Lukukertalämpäisyysajan on oltava positiivinen millisekuntien määrä."
   },
   {
     "id": "api.post.fill_in_post_props.burn_on_read.license.app_error",
@@ -5567,6 +5611,134 @@
     "translation": "Siltakutsu epäonnistui."
   },
   {
+    "id": "app.agents.status.no_agents",
+    "translation": "Sinulle ei ole käytettävissä yhtään agenttia."
+  },
+  {
+    "id": "app.ai.agent.access.app_error",
+    "translation": "Et voi keskustella tämän agentin kanssa täällä."
+  },
+  {
+    "id": "app.ai.agent.activity.get.app_error",
+    "translation": "Agenttien toimintoja ei voitu lukea."
+  },
+  {
+    "id": "app.ai.agent.activity.save.app_error",
+    "translation": "Agentin toimintaa ei voitu tallentaa."
+  },
+  {
+    "id": "app.ai.agent.connection.app_error",
+    "translation": "Tämän työtilan agentti ei voi käyttää tätä malliyhteyttä: palvelinlaajuinen agentti tarvitsee palvelinlaajuisen yhteyden, ja yhteisön agentti oman yhteisönsä yhteyden tai yhteisön kanssa jaetun yhteyden."
+  },
+  {
+    "id": "app.ai.agent.conversations.app_error",
+    "translation": "Agenttien kanssa käytyjä keskusteluja ei voitu ladata."
+  },
+  {
+    "id": "app.ai.agent.get.app_error",
+    "translation": "Agentteja ei voitu lukea."
+  },
+  {
+    "id": "app.ai.agent.manage_permission.app_error",
+    "translation": "Et voi hallita agentteja täällä."
+  },
+  {
+    "id": "app.ai.agent.not_found.app_error",
+    "translation": "Tätä agenttia ei ole olemassa, tai se on poistettu."
+  },
+  {
+    "id": "app.ai.agent.references.app_error",
+    "translation": "Agentti viittaa yhteisöön, kanavaan tai henkilöön, jota ei ole olemassa, tai toisen yhteisön kanavaan."
+  },
+  {
+    "id": "app.ai.agent.save.app_error",
+    "translation": "Agenttia ei voitu tallentaa."
+  },
+  {
+    "id": "app.ai.agent.task.agent_disabled.app_error",
+    "translation": "Tämä agentti on poistettu käytöstä."
+  },
+  {
+    "id": "app.ai.agent.task.channel.app_error",
+    "translation": "Kanavaa ei ole olemassa, tai et voi lukea sitä."
+  },
+  {
+    "id": "app.ai.agent.task.external.app_error",
+    "translation": "Ulkoinen agentti ei ota tehtäviä täällä: lähetä sille sen sijaan viesti."
+  },
+  {
+    "id": "app.ai.agent.task.not_transcription.app_error",
+    "translation": "Tämä viesti ei ole puhelun transkriptio."
+  },
+  {
+    "id": "app.ai.agent.task.post.app_error",
+    "translation": "Viestiä ei ole olemassa, tai et voi lukea sitä."
+  },
+  {
+    "id": "app.ai.agent.task.request.ask_channel",
+    "translation": "Kanavasta {{.Channel}}: {{.Question}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items",
+    "translation": "Etsi tästä ketjusta tehtävät: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items_channel",
+    "translation": "Etsi tehtävät {{.Channel}}-kanavan uusimmista viesteistä"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items_channel_since",
+    "translation": "Etsi tehtävät kanavasta {{.Channel}} ajankohdasta {{.Since}} lähtien"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions",
+    "translation": "Etsi avoimet kysymykset tästä ketjusta: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions_channel",
+    "translation": "Etsi avoimet kysymykset kanavan {{.Channel}} viimeisimmistä viesteistä"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions_channel_since",
+    "translation": "Etsi avoimet kysymykset kanavassa {{.Channel}} ajankohdasta {{.Since}} lähtien"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_channel",
+    "translation": "Tiivistä kanavan {{.Channel}} viimeisimmät viestit"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_channel_since",
+    "translation": "Tiivistä kanavan {{.Channel}} viestit ajankohdasta {{.Since}} lähtien"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_thread",
+    "translation": "Tee yhteenveto tästä ketjusta: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_transcription",
+    "translation": "Tee yhteenveto tämän puhelun transkriptiosta: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.this_conversation",
+    "translation": "tämä keskustelu"
+  },
+  {
+    "id": "app.ai.agent.turn.empty",
+    "translation": "Valitettavasti minulla ei ole vastausta tähän."
+  },
+  {
+    "id": "app.ai.agent.turn.failed",
+    "translation": "Valitettavasti en pystynyt vastaamaan: {{.Reason}}"
+  },
+  {
+    "id": "app.ai.agent.turn.interrupted",
+    "translation": "Vastaukseni keskeytyi. Kysy uudelleen hetken kuluttua."
+  },
+  {
+    "id": "app.ai.agent.turn.not_allowed",
+    "translation": "{{.Agent}} ei ole käytettävissäsi täällä."
+  },
+  {
     "id": "app.ai.call.audience.app_error",
     "translation": "Tätä malliyhteyttä ei voi käyttää."
   },
@@ -6479,6 +6651,38 @@
     "translation": "Tämä arvo ei sovi attribuuttiin {{.Name}}."
   },
   {
+    "id": "app.community_rules.accept.app_error",
+    "translation": "Yhteisön sääntöjen hyväksymistä ei voitu tallentaa."
+  },
+  {
+    "id": "app.community_rules.accept.changed.app_error",
+    "translation": "Yhteisön säännöt ovat muuttuneet, kun luit ne. Lue ne uudelleen ennen hyväksymistä."
+  },
+  {
+    "id": "app.community_rules.accept.not_member.app_error",
+    "translation": "Vain yhteisön jäsenet voivat hyväksyä sen säännöt."
+  },
+  {
+    "id": "app.community_rules.accept.off.app_error",
+    "translation": "Tässä yhteisössä ei ole sääntöjä, joihin voi suostua."
+  },
+  {
+    "id": "app.community_rules.delete.app_error",
+    "translation": "Yhteisön sääntöjä ei voi poistaa."
+  },
+  {
+    "id": "app.community_rules.get.app_error",
+    "translation": "Yhteisön sääntöjä ei voitu hakea."
+  },
+  {
+    "id": "app.community_rules.save.app_error",
+    "translation": "Yhteisön sääntöjä ei voitu tallentaa."
+  },
+  {
+    "id": "app.community_rules.stats.app_error",
+    "translation": "Yhteisön säännöt hyväksyneiden määrää ei voitu laskea."
+  },
+  {
     "id": "app.compile_csv_chunks.header_error",
     "translation": "CSV-otsikoiden kirjoittaminen epäonnistui."
   },
@@ -7255,6 +7459,34 @@
   {
     "id": "app.file_info.undelete_for_post_ids.app_error",
     "translation": "Viestien tiedostoliitteiden palauttaminen epäonnistui."
+  },
+  {
+    "id": "app.focus.bot.app_error",
+    "translation": "Botit eivät voi käyttää keskittymistilaa."
+  },
+  {
+    "id": "app.focus.delete.app_error",
+    "translation": "Tilin keskittymistilaa ei voi poistaa."
+  },
+  {
+    "id": "app.focus.get.app_error",
+    "translation": "Keskittymistilasi hakeminen epäonnistui."
+  },
+  {
+    "id": "app.focus.mark_read.app_error",
+    "translation": "Ohittamiesi viestien merkitseminen luetuiksi epäonnistui."
+  },
+  {
+    "id": "app.focus.save.app_error",
+    "translation": "Keskittymistilaa ei voi aloittaa."
+  },
+  {
+    "id": "app.focus.statuses_disabled.app_error",
+    "translation": "Keskittymistila vaatii käyttäjätilojen käytön, mutta ne on poistettu käytöstä tällä palvelimella."
+  },
+  {
+    "id": "app.focus.summary.app_error",
+    "translation": "Keskiittymisen aikana ohitetun sisällön haku epäonnistui."
   },
   {
     "id": "app.get_user_team_scheduled_posts.error",
@@ -12255,6 +12487,90 @@
     "translation": "Virheellinen käyttäjän tunniste."
   },
   {
+    "id": "model.agent_activity.expires.app_error",
+    "translation": "Agentin toiminta voi kestää 1 sekunnista 24 tuntiin."
+  },
+  {
+    "id": "model.agent_activity.state.app_error",
+    "translation": "Agentin tila voi olla tyhjäkäynti, miettimässä, töissä, odottamassa, estetty tai ei verkossa."
+  },
+  {
+    "id": "model.agent_activity.text.app_error",
+    "translation": "Agentin toiminta mahtuu yhdelle riville, jossa on enintään 200 merkkiä."
+  },
+  {
+    "id": "model.agent_activity.thread_post_id.app_error",
+    "translation": "Agentin toimintaketjun on oltava viestitunnus."
+  },
+  {
+    "id": "model.ai_agent.access.app_error",
+    "translation": "Kuka voi puhua agentille -nimet sisältävät virheellisiä yhteisöjä, kanavia, rooleja tai henkilöitä, tai niitä on liian paljon."
+  },
+  {
+    "id": "model.ai_agent.access_community.app_error",
+    "translation": "Yhteisön agentti on tarkoitettu vain kyseisen yhteisön käyttöön."
+  },
+  {
+    "id": "model.ai_agent.connection_id.app_error",
+    "translation": "Valitse malliyhteys, jota agentti käyttää."
+  },
+  {
+    "id": "model.ai_agent.external.app_error",
+    "translation": "Ulkopuolisella agentilla ei ole mallia, yhteyttä tai järjestelmäkehote: sen ohjelma vastaa."
+  },
+  {
+    "id": "model.ai_agent.max_tool_turns.app_error",
+    "translation": "Agentti voi käyttää työkaluja 0–250 kertaa (oletusarvo 0)."
+  },
+  {
+    "id": "model.ai_agent.model.app_error",
+    "translation": "Mallin nimi on liian pitkä tai sisältää useamman kuin yhden rivin."
+  },
+  {
+    "id": "model.ai_agent.needs_attention.app_error",
+    "translation": "Huomautus huomioitavista asioista on liian pitkä."
+  },
+  {
+    "id": "model.ai_agent.reasoning.app_error",
+    "translation": "Päättelytehon on oltava minimi, matala, keskitaso tai korkea, ja sen budjetin välillä 0–128 000 merkkiä."
+  },
+  {
+    "id": "model.ai_agent.scope.app_error",
+    "translation": "Agentti kuuluu palvelimeen tai yhteen yhteisöön."
+  },
+  {
+    "id": "model.ai_agent.system_prompt.app_error",
+    "translation": "Järjestelmäkehote on liian pitkä (enintään 32 000 merkkiä)."
+  },
+  {
+    "id": "model.ai_agent.times.app_error",
+    "translation": "Agentin luomis- ja päivitysajat puuttuvat."
+  },
+  {
+    "id": "model.ai_agent.tools.app_error",
+    "translation": "Työkalun nimi on virheellinen tai työkaluja on liian paljon (enintään 256)."
+  },
+  {
+    "id": "model.ai_agent.user_id.app_error",
+    "translation": "Agentti tarvitsee kelvollisen käyttäjätilin."
+  },
+  {
+    "id": "model.ai_agent_task.channel_id.app_error",
+    "translation": "Tehtävä vaatii kanavan."
+  },
+  {
+    "id": "model.ai_agent_task.post_id.app_error",
+    "translation": "Tehtävä vaatii viestin."
+  },
+  {
+    "id": "model.ai_agent_task.question.app_error",
+    "translation": "Kysymys saa olla enintään 2 000 merkkiä."
+  },
+  {
+    "id": "model.ai_agent_task.task.app_error",
+    "translation": "Tehtävä ei ole agentin tuntema."
+  },
+  {
     "id": "model.ai_connection.api_key.app_error",
     "translation": "API-avain on liian pitkä tai sisältää rivinvaihdon."
   },
@@ -12417,6 +12733,10 @@
   {
     "id": "model.bot.is_valid.description.app_error",
     "translation": "Viallinen kuvaus"
+  },
+  {
+    "id": "model.bot.is_valid.kind.app_error",
+    "translation": "Bottitili voi olla botti tai agentti."
   },
   {
     "id": "model.bot.is_valid.update_at.app_error",
@@ -12805,6 +13125,14 @@
   {
     "id": "model.command_response.is_valid.response_type.app_error",
     "translation": "Virheellinen vastaustyyppi."
+  },
+  {
+    "id": "model.community_rules.empty.app_error",
+    "translation": "Kirjoita säännöt ennen niiden käyttöönottoa."
+  },
+  {
+    "id": "model.community_rules.text.app_error",
+    "translation": "Säännöt voivat olla enintään {{.Max}} merkkiä."
   },
   {
     "id": "model.compliance.is_valid.create_at.app_error",
@@ -13583,6 +13911,10 @@
     "translation": "BurnOnReadDurationSeconds-arvon on oltava positiivinen luku."
   },
   {
+    "id": "model.config.is_valid.service_settings.burn_on_read_maximum_duration_seconds.app_error",
+    "translation": "BurnOnReadMaximumDurationSeconds on oltava positiivinen luku."
+  },
+  {
     "id": "model.config.is_valid.service_settings.burn_on_read_maximum_time_to_live_seconds.app_error",
     "translation": "BurnOnReadMaximumTimeToLiveSeconds-arvon on oltava positiivinen luku."
   },
@@ -13841,6 +14173,22 @@
   {
     "id": "model.file_info.is_valid.user_id.app_error",
     "translation": "Virheellinen user_id arvo."
+  },
+  {
+    "id": "model.focus.duration.app_error",
+    "translation": "Keskittymistila voi kestää yhdestä minuutista yhteen viikkoon."
+  },
+  {
+    "id": "model.focus.duration_or_end.app_error",
+    "translation": "Valitse keskittymisen kesto: kesto tai lopetusaika."
+  },
+  {
+    "id": "model.focus.reason.app_error",
+    "translation": "Syy on liian pitkä: siitä tulee mukautettu tilasi, joka saa olla enintään 100 merkkiä."
+  },
+  {
+    "id": "model.focus.window.app_error",
+    "translation": "Yhteenvedon aikaväli ei kelpaa: sen on oltava menneisyydessä, oikeassa järjestyksessä ja enintään kahdeksan päivän pituinen."
   },
   {
     "id": "model.group.channel_id.app_error",
