@@ -1774,6 +1774,38 @@
     "translation": "{{.Username}} není členem tohoto kanálu."
   },
   {
+    "id": "api.command_rules.agree_hint",
+    "translation": "Pro souhlas zadejte `/rules agree`, poté můžete odesílat příspěvky."
+  },
+  {
+    "id": "api.command_rules.agreed",
+    "translation": "Děkujeme. Souhlasili jste s pravidly komunity {{.Community}}. Nyní tam můžete přidávat příspěvky."
+  },
+  {
+    "id": "api.command_rules.already_agreed",
+    "translation": "S těmito pravidly jste již souhlasili."
+  },
+  {
+    "id": "api.command_rules.desc",
+    "translation": "Přečtěte si pravidla komunity nebo s nimi souhlaste"
+  },
+  {
+    "id": "api.command_rules.hint",
+    "translation": "[souhlas]"
+  },
+  {
+    "id": "api.command_rules.name",
+    "translation": "pravidla"
+  },
+  {
+    "id": "api.command_rules.none",
+    "translation": "Tento komunitní prostor nemá žádná pravidla k souhlasu."
+  },
+  {
+    "id": "api.command_rules.title",
+    "translation": "**Pravidla komunity {{.Community}}**"
+  },
+  {
     "id": "api.command_search.desc",
     "translation": "Vyhledávat ve zprávách"
   },
@@ -3119,6 +3151,14 @@
     "translation": "Uživatel @{{.Username}} nebyl upozorněn na toto zmínění, protože není členem tohoto týmu."
   },
   {
+    "id": "api.post.community_rules_not_accepted",
+    "translation": "Než začnete v této komunitě publikovat, přijměte její pravidla."
+  },
+  {
+    "id": "api.post.community_rules_not_accepted.reminder",
+    "translation": "Tato komunita vyžaduje souhlas s jejími pravidly před zveřejněním příspěvku. Pravidla si přečtěte zadáním `/rules` a souhlas vyjádřete příkazem `/rules agree`."
+  },
+  {
     "id": "api.post.create_post.burn_on_read.abac_denied.app_error",
     "translation": "Nemáte oprávnění odesílat v tomto kanálu zprávy se zničením po přečtení."
   },
@@ -3221,6 +3261,10 @@
   {
     "id": "api.post.fill_in_post_props.burn_on_read.config.app_error",
     "translation": "Zprávy se sebesmázáním nejsou povoleny. Povolte příslušný feature flag a nastavení služby."
+  },
+  {
+    "id": "api.post.fill_in_post_props.burn_on_read.duration.app_error",
+    "translation": "Doba trvání automatického mazání po přečtení musí být kladné číslo v milisekundách."
   },
   {
     "id": "api.post.fill_in_post_props.burn_on_read.license.app_error",
@@ -5585,6 +5629,134 @@
     "translation": "Volání bridge se nezdařilo."
   },
   {
+    "id": "app.agents.status.no_agents",
+    "translation": "Není k dispozici žádný agent."
+  },
+  {
+    "id": "app.ai.agent.access.app_error",
+    "translation": "S tímto agentem tady nemůžete mluvit."
+  },
+  {
+    "id": "app.ai.agent.activity.get.app_error",
+    "translation": "Aktivitu agenta se nepodařilo načíst."
+  },
+  {
+    "id": "app.ai.agent.activity.save.app_error",
+    "translation": "Aktivitu agenta se nepodařilo uložit."
+  },
+  {
+    "id": "app.ai.agent.connection.app_error",
+    "translation": "Agent v tomto pracovním prostoru nemůže používat toto připojení k modelu: agent na úrovni serveru vyžaduje připojení na úrovni serveru a agent komunity potřebuje vlastní připojení komunity nebo připojení sdílené s touto komunitou."
+  },
+  {
+    "id": "app.ai.agent.conversations.app_error",
+    "translation": "Nepodařilo se načíst vaše konverzace s agenty."
+  },
+  {
+    "id": "app.ai.agent.get.app_error",
+    "translation": "Agenty se nepodařilo načíst."
+  },
+  {
+    "id": "app.ai.agent.manage_permission.app_error",
+    "translation": "Tady nemůžete spravovat agenty."
+  },
+  {
+    "id": "app.ai.agent.not_found.app_error",
+    "translation": "Tento agent neexistuje nebo byl smazán."
+  },
+  {
+    "id": "app.ai.agent.references.app_error",
+    "translation": "Agent odkazuje na komunitu, kanál nebo osobu, která neexistuje, nebo na kanál v jiné komunitě."
+  },
+  {
+    "id": "app.ai.agent.save.app_error",
+    "translation": "Agentu se nepodařilo uložit."
+  },
+  {
+    "id": "app.ai.agent.task.agent_disabled.app_error",
+    "translation": "Tento agent je vypnutý."
+  },
+  {
+    "id": "app.ai.agent.task.channel.app_error",
+    "translation": "Kanál neexistuje nebo ho nemůžete číst."
+  },
+  {
+    "id": "app.ai.agent.task.external.app_error",
+    "translation": "Externí agent zde neplní úkoly: pošlete mu raději zprávu."
+  },
+  {
+    "id": "app.ai.agent.task.not_transcription.app_error",
+    "translation": "Tato zpráva není přepisem hovoru."
+  },
+  {
+    "id": "app.ai.agent.task.post.app_error",
+    "translation": "Zpráva neexistuje nebo k ní nemáte přístup."
+  },
+  {
+    "id": "app.ai.agent.task.request.ask_channel",
+    "translation": "O kanálu {{.Channel}}: {{.Question}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items",
+    "translation": "Najdi úkoly v tomto vlákně: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items_channel",
+    "translation": "Najdi úkoly v nejnovějších zprávách v kanálu {{.Channel}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items_channel_since",
+    "translation": "Najít akční body v {{.Channel}} od {{.Since}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions",
+    "translation": "Najdi v tomto vlákně otevřené otázky: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions_channel",
+    "translation": "Najít otevřené otázky v posledních zprávách kanálu {{.Channel}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions_channel_since",
+    "translation": "Najít otevřené otázky v {{.Channel}} od {{.Since}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_channel",
+    "translation": "Shrňte nejnovější zprávy v kanálu {{.Channel}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_channel_since",
+    "translation": "Shrňte zprávy v kanálu {{.Channel}} od {{.Since}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_thread",
+    "translation": "Shrň toto vlákno: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_transcription",
+    "translation": "Shrňte přepis tohoto hovoru: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.this_conversation",
+    "translation": "tento konverzace"
+  },
+  {
+    "id": "app.ai.agent.turn.empty",
+    "translation": "Omlouvám se, na to nemám odpověď."
+  },
+  {
+    "id": "app.ai.agent.turn.failed",
+    "translation": "Omlouvám se, ale nemohu odpovědět: {{.Reason}}"
+  },
+  {
+    "id": "app.ai.agent.turn.interrupted",
+    "translation": "Omlouvám se, má odpověď byla přerušena. Zeptejte se prosím za chvíli znovu."
+  },
+  {
+    "id": "app.ai.agent.turn.not_allowed",
+    "translation": "{{.Agent}} tady není k dispozici."
+  },
+  {
     "id": "app.ai.call.audience.app_error",
     "translation": "Toto připojení modelu nelze použít."
   },
@@ -6505,6 +6677,38 @@
     "translation": "Tato hodnota neodpovídá atributu {{.Name}}."
   },
   {
+    "id": "app.community_rules.accept.app_error",
+    "translation": "Nepodařilo se uložit váš souhlas s pravidly komunity."
+  },
+  {
+    "id": "app.community_rules.accept.changed.app_error",
+    "translation": "Pravidla komunity se od doby, kdy jste je četli, změnila. Přečtěte si je znovu, než s nimi souhlasíte."
+  },
+  {
+    "id": "app.community_rules.accept.not_member.app_error",
+    "translation": "Pravidla komunity mohou přijmout pouze její členové."
+  },
+  {
+    "id": "app.community_rules.accept.off.app_error",
+    "translation": "Tato komunita nemá žádná pravidla k přijetí."
+  },
+  {
+    "id": "app.community_rules.delete.app_error",
+    "translation": "Pravidla komunity se nepodařilo smazat."
+  },
+  {
+    "id": "app.community_rules.get.app_error",
+    "translation": "Nelze načíst pravidla komunity."
+  },
+  {
+    "id": "app.community_rules.save.app_error",
+    "translation": "Pravidla komunity se nepodařilo uložit."
+  },
+  {
+    "id": "app.community_rules.stats.app_error",
+    "translation": "Nelze zjistit, kdo souhlasil s pravidly komunity."
+  },
+  {
     "id": "app.compile_csv_chunks.header_error",
     "translation": "Nepodařilo se zapsat hlavičky CSV."
   },
@@ -7293,6 +7497,34 @@
   {
     "id": "app.file_info.undelete_for_post_ids.app_error",
     "translation": "Nepodařilo se obnovit přílohy souborů k příspěvku."
+  },
+  {
+    "id": "app.focus.bot.app_error",
+    "translation": "Boté nemohou používat režim soustředění."
+  },
+  {
+    "id": "app.focus.delete.app_error",
+    "translation": "Režim soustředění účtu se nepodařilo smazat."
+  },
+  {
+    "id": "app.focus.get.app_error",
+    "translation": "Nepodařilo se získat režim soustředění."
+  },
+  {
+    "id": "app.focus.mark_read.app_error",
+    "translation": "Nepodařilo se označit chybějící zprávy jako přečtené."
+  },
+  {
+    "id": "app.focus.save.app_error",
+    "translation": "Režim soustředění se nepodařilo spustit."
+  },
+  {
+    "id": "app.focus.statuses_disabled.app_error",
+    "translation": "Režim soustředění vyžaduje stavy uživatelů, které jsou na tomto serveru vypnuty."
+  },
+  {
+    "id": "app.focus.summary.app_error",
+    "translation": "Nepodařilo se zjistit, co vám uniklo během soustředění."
   },
   {
     "id": "app.get_user_team_scheduled_posts.error",
@@ -12345,6 +12577,90 @@
     "translation": "Neplatné ID uživatele."
   },
   {
+    "id": "model.agent_activity.expires.app_error",
+    "translation": "Aktivita agenta trvá od 1 sekundy do 24 hodin."
+  },
+  {
+    "id": "model.agent_activity.state.app_error",
+    "translation": "Stav agenta je nečinný, přemýšlící, pracující, čekající, blokovaný nebo offline."
+  },
+  {
+    "id": "model.agent_activity.text.app_error",
+    "translation": "Činnost agenta se musí vejít na jeden řádek o maximální délce 200 znaků."
+  },
+  {
+    "id": "model.agent_activity.thread_post_id.app_error",
+    "translation": "Vlákno aktivity agenta musí mít ID zprávy."
+  },
+  {
+    "id": "model.ai_agent.access.app_error",
+    "translation": "Oprávnění ke komunikaci s agentem obsahuje neplatné komunity, kanály, role nebo osoby, nebo jich je příliš mnoho."
+  },
+  {
+    "id": "model.ai_agent.access_community.app_error",
+    "translation": "Agent komunit je určen pouze pro danou komunitu."
+  },
+  {
+    "id": "model.ai_agent.connection_id.app_error",
+    "translation": "Vyberte připojení modelu, které agent používá."
+  },
+  {
+    "id": "model.ai_agent.external.app_error",
+    "translation": "Externí agent nemá model, připojení ani systémový prompt: odpovídá podle svého programu."
+  },
+  {
+    "id": "model.ai_agent.max_tool_turns.app_error",
+    "translation": "Agent může provést mezi 0 (výchozí hodnota) a 250 cykly nástrojů."
+  },
+  {
+    "id": "model.ai_agent.model.app_error",
+    "translation": "Název modelu je příliš dlouhý nebo obsahuje více řádků."
+  },
+  {
+    "id": "model.ai_agent.needs_attention.app_error",
+    "translation": "Poznámka k tomu, co vyžaduje pozornost, je příliš dlouhá."
+  },
+  {
+    "id": "model.ai_agent.reasoning.app_error",
+    "translation": "Intenzita úvahy musí být minimální, nízká, střední nebo vysoká a její rozpočet musí být v rozmezí 0 až 128 000 tokenů."
+  },
+  {
+    "id": "model.ai_agent.scope.app_error",
+    "translation": "Agent patří na server nebo do jedné komunity."
+  },
+  {
+    "id": "model.ai_agent.system_prompt.app_error",
+    "translation": "Systémový prompt je příliš dlouhý (maximálně 32 000 znaků)."
+  },
+  {
+    "id": "model.ai_agent.times.app_error",
+    "translation": "Chybí údaje o časech vytvoření a aktualizace agenta."
+  },
+  {
+    "id": "model.ai_agent.tools.app_error",
+    "translation": "Název nástroje je neplatný nebo je jich příliš mnoho (maximálně 256)."
+  },
+  {
+    "id": "model.ai_agent.user_id.app_error",
+    "translation": "Agent potřebuje platný účet."
+  },
+  {
+    "id": "model.ai_agent_task.channel_id.app_error",
+    "translation": "Tento úkol potřebuje kanál."
+  },
+  {
+    "id": "model.ai_agent_task.post_id.app_error",
+    "translation": "Tento úkol vyžaduje zprávu."
+  },
+  {
+    "id": "model.ai_agent_task.question.app_error",
+    "translation": "Položte otázku o maximálně 2 000 znacích."
+  },
+  {
+    "id": "model.ai_agent_task.task.app_error",
+    "translation": "Tento úkol agent nezná."
+  },
+  {
     "id": "model.ai_connection.api_key.app_error",
     "translation": "API klíč je příliš dlouhý nebo obsahuje znak nového řádku."
   },
@@ -12507,6 +12823,10 @@
   {
     "id": "model.bot.is_valid.description.app_error",
     "translation": "Neplatný popis."
+  },
+  {
+    "id": "model.bot.is_valid.kind.app_error",
+    "translation": "Účet bota je bot nebo agent."
   },
   {
     "id": "model.bot.is_valid.update_at.app_error",
@@ -12895,6 +13215,14 @@
   {
     "id": "model.command_response.is_valid.response_type.app_error",
     "translation": "Neplatný typ odpovědi."
+  },
+  {
+    "id": "model.community_rules.empty.app_error",
+    "translation": "Než pravidla zapnete, nejprve je zadejte."
+  },
+  {
+    "id": "model.community_rules.text.app_error",
+    "translation": "Pravidla mohou mít maximálně {{.Max}} znaků."
   },
   {
     "id": "model.compliance.is_valid.create_at.app_error",
@@ -13673,6 +14001,10 @@
     "translation": "BurnOnReadDurationSeconds musí být kladné číslo."
   },
   {
+    "id": "model.config.is_valid.service_settings.burn_on_read_maximum_duration_seconds.app_error",
+    "translation": "BurnOnReadMaximumDurationSeconds musí být kladné číslo."
+  },
+  {
     "id": "model.config.is_valid.service_settings.burn_on_read_maximum_time_to_live_seconds.app_error",
     "translation": "BurnOnReadMaximumTimeToLiveSeconds musí být kladné číslo."
   },
@@ -13931,6 +14263,22 @@
   {
     "id": "model.file_info.is_valid.user_id.app_error",
     "translation": "Neplatná hodnota pro user_id."
+  },
+  {
+    "id": "model.focus.duration.app_error",
+    "translation": "Režim soustředění trvá od jedné minuty do jednoho týdne."
+  },
+  {
+    "id": "model.focus.duration_or_end.app_error",
+    "translation": "Zvolte délku soustředění: dobu trvání, nebo čas konce."
+  },
+  {
+    "id": "model.focus.reason.app_error",
+    "translation": "Důvod je příliš dlouhý: stane se vaším vlastním stavem, který může mít nejvýše 100 znaků."
+  },
+  {
+    "id": "model.focus.window.app_error",
+    "translation": "Rozsah času souhrnu není platný: musí být v minulosti, v pořadí a maximálně osm dní dlouhý."
   },
   {
     "id": "model.group.channel_id.app_error",

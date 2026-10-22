@@ -1720,6 +1720,38 @@
     "translation": "Ο χρήστης {{.Username}} δεν είναι μέλος αυτού του καναλιού."
   },
   {
+    "id": "api.command_rules.agree_hint",
+    "translation": "Πληκτρολογήστε `/rules agree` για να συμφωνήσετε και στη συνέχεια μπορείτε να αναρτήσετε."
+  },
+  {
+    "id": "api.command_rules.agreed",
+    "translation": "Ευχαριστούμε: συμφωνήσατε με τους κανόνες του {{.Community}}. Τώρα μπορείτε να αναρτήσετε εκεί."
+  },
+  {
+    "id": "api.command_rules.already_agreed",
+    "translation": "Έχετε ήδη αποδεχτεί αυτούς τους κανόνες."
+  },
+  {
+    "id": "api.command_rules.desc",
+    "translation": "Διαβάστε τους κανόνες αυτής της κοινότητας ή συμφωνήστε μαζί τους"
+  },
+  {
+    "id": "api.command_rules.hint",
+    "translation": "[συμφωνώ]"
+  },
+  {
+    "id": "api.command_rules.name",
+    "translation": "rules"
+  },
+  {
+    "id": "api.command_rules.none",
+    "translation": "Αυτή η κοινότητα δεν έχει κανόνους προς αποδοχή."
+  },
+  {
+    "id": "api.command_rules.title",
+    "translation": "**Κανόνες του {{.Community}}**"
+  },
+  {
     "id": "api.command_search.desc",
     "translation": "Αναζήτηση κειμένου σε μηνύματα"
   },
@@ -2932,6 +2964,14 @@
     "translation": "Το @{{.Username}} δεν ειδοποιήθηκε από αυτή την αναφορά επειδή δεν είναι μέλος αυτής της ομάδας."
   },
   {
+    "id": "api.post.community_rules_not_accepted",
+    "translation": "Αποδεχτείτε τους κανόνες αυτής της κοινότητας πριν αναρτήσετε σε αυτήν."
+  },
+  {
+    "id": "api.post.community_rules_not_accepted.reminder",
+    "translation": "Αυτή η κοινότητα ζητά από όλους να συμφωνήσουν με τους κανόνες της πριν αναρτήσουν. Πληκτρολογήστε `/rules` για να τους διαβάσετε και στη συνέχεια `/rules agree` για να συμφωνήσετε."
+  },
+  {
     "id": "api.post.create_post.burn_on_read.abac_denied.app_error",
     "translation": "Δεν έχετε άδεια να στέλνετε μηνύματα που καίγονται κατά την ανάγνωση σε αυτό το κανάλι."
   },
@@ -3034,6 +3074,10 @@
   {
     "id": "api.post.fill_in_post_props.burn_on_read.config.app_error",
     "translation": "Τα μηνύματα «καύσεως κατά την ανάγνωση» δεν είναι ενεργοποιημένα. Ενεργοποιήστε τη σημαία λειτουργίας και τη ρύθμιση υπηρεσίας."
+  },
+  {
+    "id": "api.post.fill_in_post_props.burn_on_read.duration.app_error",
+    "translation": "Η διάρκεια αυτόματης διαγραφής μετά την ανάγνωση πρέπει να είναι θετικός αριθμός χιλιοστών του δευτερολέπτου."
   },
   {
     "id": "api.post.fill_in_post_props.burn_on_read.self_dm.app_error",
@@ -5200,6 +5244,134 @@
     "translation": "Αποτυχία κλήσης γέφυρας."
   },
   {
+    "id": "app.agents.status.no_agents",
+    "translation": "Δεν υπάρχει διαθέσιμος πράκτορας για εσάς."
+  },
+  {
+    "id": "app.ai.agent.access.app_error",
+    "translation": "Δεν μπορείτε να μιλήσετε με αυτόν τον πράκτορα εδώ."
+  },
+  {
+    "id": "app.ai.agent.activity.get.app_error",
+    "translation": "Δεν ήταν δυνατή η ανάγνωση της δραστηριότητας των πρακτόρων."
+  },
+  {
+    "id": "app.ai.agent.activity.save.app_error",
+    "translation": "Δεν ήταν δυνατή η αποθήκευση της δραστηριότητας του πράκτορα."
+  },
+  {
+    "id": "app.ai.agent.connection.app_error",
+    "translation": "Ο πράκτορας εδώ δεν μπορεί να χρησιμοποιήσει αυτή τη σύνδεση μοντέλου: ένας πράκτορας σε επίπεδο διακομιστή απαιτεί σύνδεση σε επίπεδο διακομιστή, ενώ ο πράκτορας μιας κοινότητας απαιτεί τη δική της σύνδεση ή μια σύνδεση που μοιράζεται μαζί της."
+  },
+  {
+    "id": "app.ai.agent.conversations.app_error",
+    "translation": "Δεν ήταν δυνατή η φόρτωση των συνομιλιών σας με τους πράκτορες."
+  },
+  {
+    "id": "app.ai.agent.get.app_error",
+    "translation": "Δεν ήταν δυνατή η ανάγνωση των πρακτόρων."
+  },
+  {
+    "id": "app.ai.agent.manage_permission.app_error",
+    "translation": "Δεν μπορείτε να διαχειριστείτε τους πράκτορες εδώ."
+  },
+  {
+    "id": "app.ai.agent.not_found.app_error",
+    "translation": "Αυτός ο πράκτορας δεν υπάρχει ή διαγράφηκε."
+  },
+  {
+    "id": "app.ai.agent.references.app_error",
+    "translation": "Ο πράκτορας αναφέρει μια κοινότητα, κανάλι ή πρόσωπο που δεν υπάρχει ή ένα κανάλι άλλης κοινότητας."
+  },
+  {
+    "id": "app.ai.agent.save.app_error",
+    "translation": "Δεν ήταν δυνατή η αποθήκευση του πράκτορα."
+  },
+  {
+    "id": "app.ai.agent.task.agent_disabled.app_error",
+    "translation": "Αυτός ο πράκτορας είναι απενεργοποιημένος."
+  },
+  {
+    "id": "app.ai.agent.task.channel.app_error",
+    "translation": "Το κανάλι δεν υπάρχει ή δεν μπορείτε να το διαβάσετε."
+  },
+  {
+    "id": "app.ai.agent.task.external.app_error",
+    "translation": "Ο εξωτερικός πράκτορας δεν αναλαμβάνει εργασίες εδώ: στείλτε του μήνυμα."
+  },
+  {
+    "id": "app.ai.agent.task.not_transcription.app_error",
+    "translation": "Αυτό το μήνυμα δεν είναι μεταγραφή κλήσης."
+  },
+  {
+    "id": "app.ai.agent.task.post.app_error",
+    "translation": "Το μήνυμα δεν υπάρχει ή δεν μπορείτε να το διαβάσετε."
+  },
+  {
+    "id": "app.ai.agent.task.request.ask_channel",
+    "translation": "Σχετικά με {{.Channel}}: {{.Question}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items",
+    "translation": "Βρες τα στοιχεία δράσης σε αυτό το νήμα: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items_channel",
+    "translation": "Βρες τα στοιχεία δράσης στα τελευταία μηνύματα του {{.Channel}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items_channel_since",
+    "translation": "Βρες τα στοιχεία δράσης στο {{.Channel}} από {{.Since}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions",
+    "translation": "Βρες τις εκκρεμείς ερωτήσεις σε αυτό το νήμα: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions_channel",
+    "translation": "Βρες τις εκκρεμείς ερωτήσεις στα τελευταία μηνύματα του {{.Channel}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions_channel_since",
+    "translation": "Βρες τις εκκρεμείς ερωτήσεις στο {{.Channel}} από {{.Since}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_channel",
+    "translation": "Σύνοψη των τελευταίων μηνυμάτων στο {{.Channel}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_channel_since",
+    "translation": "Σύνοψη των μηνυμάτων στο {{.Channel}} από {{.Since}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_thread",
+    "translation": "Σύνοψη αυτού του νήματος: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_transcription",
+    "translation": "Σύνοψη της μεταγραφής αυτής της κλήσης: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.this_conversation",
+    "translation": "αυτή η συνομιλία"
+  },
+  {
+    "id": "app.ai.agent.turn.empty",
+    "translation": "Λυπάμαι, δεν έχω απάντηση για αυτό."
+  },
+  {
+    "id": "app.ai.agent.turn.failed",
+    "translation": "Λυπάμαι, δεν μπόρεσα να απαντήσω: {{.Reason}}"
+  },
+  {
+    "id": "app.ai.agent.turn.interrupted",
+    "translation": "Λυπάμαι, η απάντησή μου διακόπηκε. Ρώτησέ με ξανά σε λίγο."
+  },
+  {
+    "id": "app.ai.agent.turn.not_allowed",
+    "translation": "Ο/Η {{.Agent}} δεν είναι διαθέσιμος/η για εσάς εδώ."
+  },
+  {
     "id": "app.ai.call.audience.app_error",
     "translation": "Δεν μπορείτε να χρησιμοποιήσετε αυτή τη σύνδεση μοντέλου."
   },
@@ -6104,6 +6276,38 @@
     "translation": "Αυτή η τιμή δεν ταιριάζει στο χαρακτηριστικό {{.Name}}."
   },
   {
+    "id": "app.community_rules.accept.app_error",
+    "translation": "Δεν ήταν δυνατή η αποθήκευση της αποδοχής σας των κανόνων της κοινότητας."
+  },
+  {
+    "id": "app.community_rules.accept.changed.app_error",
+    "translation": "Οι κανόνες της κοινότητας άλλαξαν από τότε που τους διαβάσατε. Διαβάστε τους ξανά πριν τους αποδεχτείτε."
+  },
+  {
+    "id": "app.community_rules.accept.not_member.app_error",
+    "translation": "Μόνο τα μέλη της κοινότητας μπορούν να αποδεχτούν τους κανόνες της."
+  },
+  {
+    "id": "app.community_rules.accept.off.app_error",
+    "translation": "Αυτή η κοινότητα δεν έχει κανόνες προς αποδοχή."
+  },
+  {
+    "id": "app.community_rules.delete.app_error",
+    "translation": "Δεν ήταν δυνατή η διαγραφή των κανόνων της κοινότητας."
+  },
+  {
+    "id": "app.community_rules.get.app_error",
+    "translation": "Δεν ήταν δυνατή η λήψη των κανόνων της κοινότητας."
+  },
+  {
+    "id": "app.community_rules.save.app_error",
+    "translation": "Δεν ήταν δυνατή η αποθήκευση των κανόνων της κοινότητας."
+  },
+  {
+    "id": "app.community_rules.stats.app_error",
+    "translation": "Δεν ήταν δυνατή η καταμέτρηση των ατόμων που συμφώνησαν με τους κανόνες της κοινότητας."
+  },
+  {
     "id": "app.compile_csv_chunks.header_error",
     "translation": "Απέτυχε η εγγραφή των κεφαλαίων CSV."
   },
@@ -6866,6 +7070,34 @@
   {
     "id": "app.file_info.undelete_for_post_ids.app_error",
     "translation": "Απέτυχε η επαναφορά των συνημμένων αρχείων της δημοσίευσης."
+  },
+  {
+    "id": "app.focus.bot.app_error",
+    "translation": "Τα bots δεν μπορούν να χρησιμοποιήσουν τη λειτουργία εστίασης."
+  },
+  {
+    "id": "app.focus.delete.app_error",
+    "translation": "Δεν ήταν δυνατή η διαγραφή της λειτουργίας εστίασης του λογαριασμού."
+  },
+  {
+    "id": "app.focus.get.app_error",
+    "translation": "Δεν ήταν δυνατή η λήψη της λειτουργίας εστίασης."
+  },
+  {
+    "id": "app.focus.mark_read.app_error",
+    "translation": "Δεν ήταν δυνατή η σήμανση ως αναγνωσμένων των μηνυμάτων που χάσατε."
+  },
+  {
+    "id": "app.focus.save.app_error",
+    "translation": "Δεν ήταν δυνατή η έναρξη της λειτουργίας εστίασης."
+  },
+  {
+    "id": "app.focus.statuses_disabled.app_error",
+    "translation": "Η λειτουργία Εστίασης απαιτεί τις καταστάσεις των χρηστών, οι οποίες είναι απενεργοποιημένες σε αυτόν τον διακομιστή."
+  },
+  {
+    "id": "app.focus.summary.app_error",
+    "translation": "Δεν ήταν δυνατή η λήψη των μηνυμάτων που χάσατε κατά την εστίαση."
   },
   {
     "id": "app.get_user_team_scheduled_posts.error",
@@ -11604,6 +11836,90 @@
     "translation": "Μη έγκυρο id χρήστη."
   },
   {
+    "id": "model.agent_activity.expires.app_error",
+    "translation": "Η δραστηριότητα ενός πράκτορα διαρκεί από 1 δευτερόλεπτο έως 24 ώρες."
+  },
+  {
+    "id": "model.agent_activity.state.app_error",
+    "translation": "Η κατάσταση ενός πράκτορα είναι αδρανής, σκέψη, εργασία, αναμονή, αποκλεισμένος ή εκτός σύνδεσης."
+  },
+  {
+    "id": "model.agent_activity.text.app_error",
+    "translation": "Η δραστηριότητα του πράκτορα χωράει σε μία γραμμή το πολύ 200 χαρακτήρων."
+  },
+  {
+    "id": "model.agent_activity.thread_post_id.app_error",
+    "translation": "Το νήμα της δραστηριότητας ενός πράκτορα πρέπει να είναι αναγνωριστικό μηνύματος."
+  },
+  {
+    "id": "model.ai_agent.access.app_error",
+    "translation": "Οι επιλογές για το ποιος μπορεί να μιλήσει στον πράκτορα περιλαμβάνουν μη έγκυρες κοινότητες, κανάλια, ρόλους ή άτομα, ή είναι υπερβολικός ο αριθμός τους."
+  },
+  {
+    "id": "model.ai_agent.access_community.app_error",
+    "translation": "Ο πράκτορας μιας κοινότητας προορίζεται αποκλειστικά για τη δική της κοινότητα."
+  },
+  {
+    "id": "model.ai_agent.connection_id.app_error",
+    "translation": "Επιλέξτε τη σύνδεση μοντέλου που χρησιμοποιεί ο πράκτορας."
+  },
+  {
+    "id": "model.ai_agent.external.app_error",
+    "translation": "Ο εξωτερικός πράκτορας δεν έχει μοντέλο, σύνδεση ή προτροπή συστήματος: το πρόγραμμα απαντά."
+  },
+  {
+    "id": "model.ai_agent.max_tool_turns.app_error",
+    "translation": "Ένας πράκτορας εκτελεί από 0 (προεπιλογή) έως 250 κύκλους εργαλείων."
+  },
+  {
+    "id": "model.ai_agent.model.app_error",
+    "translation": "Το όνομα του μοντέλου είναι πολύ μεγάλο ή περιλαμβάνει περισσότερες από μία γραμμές."
+  },
+  {
+    "id": "model.ai_agent.needs_attention.app_error",
+    "translation": "Η σημείωση για τα στοιχεία που χρήζουν προσοχής είναι πολύ μεγάλη."
+  },
+  {
+    "id": "model.ai_agent.reasoning.app_error",
+    "translation": "Η ένταση συλλογισμού είναι ελάχιστη, χαμηλή, μέτρια ή υψηλή και το όριό της κυμαίνεται μεταξύ 0 και 128.000 διακριτικών."
+  },
+  {
+    "id": "model.ai_agent.scope.app_error",
+    "translation": "Ένας πράκτορας ανήκει στον διακομιστή ή σε μία κοινότητα."
+  },
+  {
+    "id": "model.ai_agent.system_prompt.app_error",
+    "translation": "Το σύστημα προτροπής είναι πολύ μεγάλο (μέγιστο 32.000 χαρακτήρες)."
+  },
+  {
+    "id": "model.ai_agent.times.app_error",
+    "translation": "Λείπουν οι χρόνοι δημιουργίας και ενημέρωσης του πράκτορα."
+  },
+  {
+    "id": "model.ai_agent.tools.app_error",
+    "translation": "Το όνομα εργαλείου δεν είναι έγκυο ή υπάρχουν πάρα πολλά (το μέγιστο είναι 256)."
+  },
+  {
+    "id": "model.ai_agent.user_id.app_error",
+    "translation": "Ο πράκτορας χρειάζεται έγκυρο λογαριασμό."
+  },
+  {
+    "id": "model.ai_agent_task.channel_id.app_error",
+    "translation": "Αυτή η εργασία χρειάζεται κανάλι."
+  },
+  {
+    "id": "model.ai_agent_task.post_id.app_error",
+    "translation": "Αυτή η εργασία χρειάζεται ένα μήνυμα."
+  },
+  {
+    "id": "model.ai_agent_task.question.app_error",
+    "translation": "Κάντε μια ερώτηση έως 2.000 χαρακτήρες."
+  },
+  {
+    "id": "model.ai_agent_task.task.app_error",
+    "translation": "Αυτή η εργασία δεν είναι γνωστή σε κάποιον πράκτορα."
+  },
+  {
     "id": "model.ai_connection.api_key.app_error",
     "translation": "Το κλειδί API είναι πολύ μακρύ ή περιέχει αλλαγή γραμμής."
   },
@@ -11766,6 +12082,10 @@
   {
     "id": "model.bot.is_valid.description.app_error",
     "translation": "Μη έγκυρη περιγραφή."
+  },
+  {
+    "id": "model.bot.is_valid.kind.app_error",
+    "translation": "Ο λογαριασμός bot είναι bot ή πράκτορας."
   },
   {
     "id": "model.bot.is_valid.update_at.app_error",
@@ -12154,6 +12474,14 @@
   {
     "id": "model.command_response.is_valid.response_type.app_error",
     "translation": "Μη έγκυρος τύπος απόκρισης."
+  },
+  {
+    "id": "model.community_rules.empty.app_error",
+    "translation": "Γράψτε τους κανόνες πριν τους ενεργοποιήσετε."
+  },
+  {
+    "id": "model.community_rules.text.app_error",
+    "translation": "Οι κανόνες μπορούν να έχουν το πολύ {{.Max}} χαρακτήρες."
   },
   {
     "id": "model.compliance.is_valid.create_at.app_error",
@@ -12932,6 +13260,10 @@
     "translation": "Το BurnOnReadDurationSeconds πρέπει να είναι θετικός αριθμός."
   },
   {
+    "id": "model.config.is_valid.service_settings.burn_on_read_maximum_duration_seconds.app_error",
+    "translation": "Το BurnOnReadMaximumDurationSeconds πρέπει να είναι θετικός αριθμός."
+  },
+  {
     "id": "model.config.is_valid.service_settings.burn_on_read_maximum_time_to_live_seconds.app_error",
     "translation": "Το BurnOnReadMaximumTimeToLiveSeconds πρέπει να είναι θετικός αριθμός."
   },
@@ -13190,6 +13522,22 @@
   {
     "id": "model.file_info.is_valid.user_id.app_error",
     "translation": "Μη έγκυρη τιμή για user_id."
+  },
+  {
+    "id": "model.focus.duration.app_error",
+    "translation": "Η λειτουργία συγκέντρωσης διαρκεί από ένα λεπτό έως μία εβδομάδα."
+  },
+  {
+    "id": "model.focus.duration_or_end.app_error",
+    "translation": "Επιλέξτε τη διάρκεια συγκέντρωσης: μια χρονική περίοδο ή μια ώρα λήξης."
+  },
+  {
+    "id": "model.focus.reason.app_error",
+    "translation": "Ο λόγος είναι πολύ μεγάλος: γίνεται η προσαρμοσμένη κατάστασή σας, με έως 100 χαρακτήρες."
+  },
+  {
+    "id": "model.focus.window.app_error",
+    "translation": "Το εύρος χρόνου της περίληψης δεν είναι έγκυρο: πρέπει να είναι στο παρελθόν, με τη σωστή σειρά και να μην ξεπερνά τις οκτώ ημέρες."
   },
   {
     "id": "model.group.channel_id.app_error",

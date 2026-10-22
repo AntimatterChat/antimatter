@@ -1720,6 +1720,38 @@
     "translation": "{{.Username}} אינו חבר בערוץ זה."
   },
   {
+    "id": "api.command_rules.agree_hint",
+    "translation": "הקלד `/rules agree` כדי להסכים לכללים, ואז תוכל לפרסם."
+  },
+  {
+    "id": "api.command_rules.agreed",
+    "translation": "תודה: הסכמת לכללים של {{.Community}}. כעת תוכל לפרסם שם."
+  },
+  {
+    "id": "api.command_rules.already_agreed",
+    "translation": "כבר הסכמת לכללים אלה."
+  },
+  {
+    "id": "api.command_rules.desc",
+    "translation": "קרא את כללי הקהילה או הסכם להם"
+  },
+  {
+    "id": "api.command_rules.hint",
+    "translation": "[agree]"
+  },
+  {
+    "id": "api.command_rules.name",
+    "translation": "rules"
+  },
+  {
+    "id": "api.command_rules.none",
+    "translation": "לקהילה זו אין כללים להסכמה."
+  },
+  {
+    "id": "api.command_rules.title",
+    "translation": "**כללי {{.Community}}**"
+  },
+  {
     "id": "api.command_search.desc",
     "translation": "חיפוש טקסט בהודעות"
   },
@@ -2932,6 +2964,14 @@
     "translation": "@{{.Username}} לא קיבל/ה התראה על ההזכרה הזו מכיוון שהוא/ה אינו/ה חבר/ה בצוות הזה."
   },
   {
+    "id": "api.post.community_rules_not_accepted",
+    "translation": "הסכם לכללי הקהילה לפני שאתה מפרסם בה."
+  },
+  {
+    "id": "api.post.community_rules_not_accepted.reminder",
+    "translation": "קהילה זו דורשת מהכול להסכים לכלליה לפני הפרסום. הקלד `/rules` כדי לקרוא אותם, ואז `/rules agree` כדי להסכים."
+  },
+  {
     "id": "api.post.create_post.burn_on_read.abac_denied.app_error",
     "translation": "אין לך הרשאה לשלוח הודעות שנסתרות לאחר קריאה בערוץ זה."
   },
@@ -3034,6 +3074,10 @@
   {
     "id": "api.post.fill_in_post_props.burn_on_read.config.app_error",
     "translation": "הודעות שנמחקות לאחר קריאה אינן מופעלות. יש להפעיל את דגל התכונה וההגדרה השירותית."
+  },
+  {
+    "id": "api.post.fill_in_post_props.burn_on_read.duration.app_error",
+    "translation": "משך הקריאה-ואז-השמדה חייב להיות מספר מילישניות חיובי."
   },
   {
     "id": "api.post.fill_in_post_props.burn_on_read.self_dm.app_error",
@@ -5200,6 +5244,134 @@
     "translation": "הקריאה לגשר נכשלה."
   },
   {
+    "id": "app.agents.status.no_agents",
+    "translation": "אין סוכן זמין עבורך."
+  },
+  {
+    "id": "app.ai.agent.access.app_error",
+    "translation": "לא ניתן לשוחח עם סוכן זה כאן."
+  },
+  {
+    "id": "app.ai.agent.activity.get.app_error",
+    "translation": "לא ניתן היה לקרוא את פעילות הסוכנים."
+  },
+  {
+    "id": "app.ai.agent.activity.save.app_error",
+    "translation": "לא ניתן היה לשמור את פעילות הסוכן."
+  },
+  {
+    "id": "app.ai.agent.connection.app_error",
+    "translation": "סוכן כאן לא יכול להשתמש בחיבור מודל זה: סוכן ברמת השרת זקוק לחיבור ברמת השרת, וסוכן של קהילה זקוק לחיבור של הקהילה שלו או לחיבור משותף איתה."
+  },
+  {
+    "id": "app.ai.agent.conversations.app_error",
+    "translation": "לא ניתן היה לטעון את השיחות שלך עם סוכנים."
+  },
+  {
+    "id": "app.ai.agent.get.app_error",
+    "translation": "לא ניתן היה לקרוא את הסוכנים."
+  },
+  {
+    "id": "app.ai.agent.manage_permission.app_error",
+    "translation": "אין לך הרשאה לנהל סוכנים כאן."
+  },
+  {
+    "id": "app.ai.agent.not_found.app_error",
+    "translation": "סוכן זה לא קיים, או שנמחק."
+  },
+  {
+    "id": "app.ai.agent.references.app_error",
+    "translation": "הסוכן מפנה לקהילה, ערוץ או אדם שלא קיימים, או לערוץ של קהילה אחרת."
+  },
+  {
+    "id": "app.ai.agent.save.app_error",
+    "translation": "לא ניתן היה לשמור את הסוכן."
+  },
+  {
+    "id": "app.ai.agent.task.agent_disabled.app_error",
+    "translation": "סוכן זה מושבת."
+  },
+  {
+    "id": "app.ai.agent.task.channel.app_error",
+    "translation": "הערוץ לא קיים, או שאין לך הרשאה לקרוא אותו."
+  },
+  {
+    "id": "app.ai.agent.task.external.app_error",
+    "translation": "סוכן חיצוני לא מקבל משימות כאן: שלח לו הודעה במקום."
+  },
+  {
+    "id": "app.ai.agent.task.not_transcription.app_error",
+    "translation": "הודעה זו אינה תמלול של שיחה."
+  },
+  {
+    "id": "app.ai.agent.task.post.app_error",
+    "translation": "ההודעה אינה קיימת, או שאין לך הרשאה לקרוא אותה."
+  },
+  {
+    "id": "app.ai.agent.task.request.ask_channel",
+    "translation": "על {{.Channel}}: {{.Question}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items",
+    "translation": "מצא את המשימות בשרשור זה: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items_channel",
+    "translation": "מצא את רכיבי הפעולה בהודעות האחרונות ב־{{.Channel}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items_channel_since",
+    "translation": "מצא את משימות הפעולה ב־{{.Channel}} מאז {{.Since}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions",
+    "translation": "מצא את השאלות הפתוחות בשרשור זה: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions_channel",
+    "translation": "מצא את השאלות הפתוחות בהודעות האחרונות ב{{.Channel}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions_channel_since",
+    "translation": "מצא את השאלות הפתוחות ב־{{.Channel}} מ־{{.Since}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_channel",
+    "translation": "סכם את ההודעות האחרונות ב־{{.Channel}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_channel_since",
+    "translation": "סכם את ההודעות ב־{{.Channel}} מ־{{.Since}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_thread",
+    "translation": "סכם את השרשור הזה: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_transcription",
+    "translation": "סכם את התמלול של השיחה הזו: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.this_conversation",
+    "translation": "שיחה זו"
+  },
+  {
+    "id": "app.ai.agent.turn.empty",
+    "translation": "מצטער, אין לי תשובה לכך."
+  },
+  {
+    "id": "app.ai.agent.turn.failed",
+    "translation": "מצטער, לא הצלחתי לענות: {{.Reason}}"
+  },
+  {
+    "id": "app.ai.agent.turn.interrupted",
+    "translation": "מצטער, התשובה שלי נקטעה. נסה שוב בעוד רגע."
+  },
+  {
+    "id": "app.ai.agent.turn.not_allowed",
+    "translation": "{{.Agent}} אינו זמין עבורך כאן."
+  },
+  {
     "id": "app.ai.call.audience.app_error",
     "translation": "לא ניתן להשתמש בחיבור המודל הזה."
   },
@@ -6104,6 +6276,38 @@
     "translation": "הערך הזה אינו מתאים למאפיין {{.Name}}."
   },
   {
+    "id": "app.community_rules.accept.app_error",
+    "translation": "לא ניתן לשמור את הסכמתך לכללי הקהילה."
+  },
+  {
+    "id": "app.community_rules.accept.changed.app_error",
+    "translation": "כללי הקהילה השתנו מאז שקראת אותם. יש לקרוא אותם שוב לפני ההסכמה."
+  },
+  {
+    "id": "app.community_rules.accept.not_member.app_error",
+    "translation": "רק חברי הקהילה יכולים להסכים לכלליה."
+  },
+  {
+    "id": "app.community_rules.accept.off.app_error",
+    "translation": "לקהילה זו אין כללים שיש להסכים להם."
+  },
+  {
+    "id": "app.community_rules.delete.app_error",
+    "translation": "לא ניתן למחוק את כללי הקהילה."
+  },
+  {
+    "id": "app.community_rules.get.app_error",
+    "translation": "לא ניתן לקבל את כללי הקהילה."
+  },
+  {
+    "id": "app.community_rules.save.app_error",
+    "translation": "לא ניתן לשמור את כללי הקהילה."
+  },
+  {
+    "id": "app.community_rules.stats.app_error",
+    "translation": "לא ניתן לספור מי הסכים לכללי הקהילה."
+  },
+  {
     "id": "app.compile_csv_chunks.header_error",
     "translation": "נכשל כתיבת כותרות CSV."
   },
@@ -6866,6 +7070,34 @@
   {
     "id": "app.file_info.undelete_for_post_ids.app_error",
     "translation": "נכשל בשחזור קבצי המצורף של ההודעה."
+  },
+  {
+    "id": "app.focus.bot.app_error",
+    "translation": "בוטים לא יכולים להשתמש במצב התמקדות."
+  },
+  {
+    "id": "app.focus.delete.app_error",
+    "translation": "לא ניתן למחוק את מצב המיקוד של החשבון."
+  },
+  {
+    "id": "app.focus.get.app_error",
+    "translation": "לא ניתן לקבל את מצב המיקוד שלך."
+  },
+  {
+    "id": "app.focus.mark_read.app_error",
+    "translation": "לא ניתן לסמן את מה שפספסת כנקרא."
+  },
+  {
+    "id": "app.focus.save.app_error",
+    "translation": "לא ניתן להתחיל במצב התמקדות."
+  },
+  {
+    "id": "app.focus.statuses_disabled.app_error",
+    "translation": "מצב התמקדות דורש סטטוסים של משתמשים, שמושבתים בשרת זה."
+  },
+  {
+    "id": "app.focus.summary.app_error",
+    "translation": "לא ניתן להציג מה פספסת בזמן ההתמקדות."
   },
   {
     "id": "app.get_user_team_scheduled_posts.error",
@@ -11604,6 +11836,90 @@
     "translation": "מזהה משתמש לא תקין."
   },
   {
+    "id": "model.agent_activity.expires.app_error",
+    "translation": "פעילות של סוכן נמשכת בין שנייה אחת ל־24 שעות."
+  },
+  {
+    "id": "model.agent_activity.state.app_error",
+    "translation": "מצב הסוכן הוא: ממתין, חושב, עובד, ממתין לתשובה, חסום או מנותק."
+  },
+  {
+    "id": "model.agent_activity.text.app_error",
+    "translation": "הפעולה שהסוכן מבצע חייבת להיכנס בשורה אחת של עד 200 תווים."
+  },
+  {
+    "id": "model.agent_activity.thread_post_id.app_error",
+    "translation": "השרשור של פעילות הסוכן חייב להיות מזהה הודעה."
+  },
+  {
+    "id": "model.ai_agent.access.app_error",
+    "translation": "הרשאות הדיבור עם הסוכן כוללות קהילות, ערוצים, תפקידים או אנשים לא חוקיים, או שהמספר גדול מדי."
+  },
+  {
+    "id": "model.ai_agent.access_community.app_error",
+    "translation": "סוכן של קהילה מיועד אך ורק לקהילה שלו."
+  },
+  {
+    "id": "model.ai_agent.connection_id.app_error",
+    "translation": "בחרו את חיבור הדגם שבו משתמש הסוכן."
+  },
+  {
+    "id": "model.ai_agent.external.app_error",
+    "translation": "לסוכן חיצוני אין מודל, חיבור או הודעת מערכת: התוכנית שלו עונה."
+  },
+  {
+    "id": "model.ai_agent.max_tool_turns.app_error",
+    "translation": "סוכן מבצע בין 0 (ברירת המחדל) ל-250 פניות לכלי."
+  },
+  {
+    "id": "model.ai_agent.model.app_error",
+    "translation": "שם הדגם ארוך מדי או מכיל יותר משורה אחת."
+  },
+  {
+    "id": "model.ai_agent.needs_attention.app_error",
+    "translation": "הפתק על מה שדורש תשומת לב ארוך מדי."
+  },
+  {
+    "id": "model.ai_agent.reasoning.app_error",
+    "translation": "רמת המאמץ לחשיבה היא מינימלית, נמוכה, בינונית או גבוהה, והתקציב שלה נע בין 0 ל־128,000 אסימונים."
+  },
+  {
+    "id": "model.ai_agent.scope.app_error",
+    "translation": "סוכן שייך לשרת או לקהילה אחת."
+  },
+  {
+    "id": "model.ai_agent.system_prompt.app_error",
+    "translation": "הנחיות המערכת ארוכות מדי (עד 32,000 תווים לכל היותר)."
+  },
+  {
+    "id": "model.ai_agent.times.app_error",
+    "translation": "חסרים זמני היצירה והעדכון של הסוכן."
+  },
+  {
+    "id": "model.ai_agent.tools.app_error",
+    "translation": "שם הכלי אינו חוקי, או שיש יותר מדי כלים (עד 256 לכל היותר)."
+  },
+  {
+    "id": "model.ai_agent.user_id.app_error",
+    "translation": "על הסוכן להיות בעל חשבון תקף."
+  },
+  {
+    "id": "model.ai_agent_task.channel_id.app_error",
+    "translation": "משימה זו דורשת ערוץ."
+  },
+  {
+    "id": "model.ai_agent_task.post_id.app_error",
+    "translation": "משימה זו דורשת הודעה."
+  },
+  {
+    "id": "model.ai_agent_task.question.app_error",
+    "translation": "יש לשאול שאלה באורך של עד 2,000 תווים."
+  },
+  {
+    "id": "model.ai_agent_task.task.app_error",
+    "translation": "משימה זו אינה מוכרת לסוכן."
+  },
+  {
     "id": "model.ai_connection.api_key.app_error",
     "translation": "מפתח ה-API ארוך מדי או מכיל שורת פס."
   },
@@ -11766,6 +12082,10 @@
   {
     "id": "model.bot.is_valid.description.app_error",
     "translation": "תיאור לא תקין."
+  },
+  {
+    "id": "model.bot.is_valid.kind.app_error",
+    "translation": "חשבון בוט הוא בוט או סוכן."
   },
   {
     "id": "model.bot.is_valid.update_at.app_error",
@@ -12154,6 +12474,14 @@
   {
     "id": "model.command_response.is_valid.response_type.app_error",
     "translation": "סוג תגובה לא תקין."
+  },
+  {
+    "id": "model.community_rules.empty.app_error",
+    "translation": "יש לכתוב את הכללים לפני ההפעלה."
+  },
+  {
+    "id": "model.community_rules.text.app_error",
+    "translation": "הכללים יכולים להכיל לכל היותר {{.Max}} תווים."
   },
   {
     "id": "model.compliance.is_valid.create_at.app_error",
@@ -12932,6 +13260,10 @@
     "translation": "BurnOnReadDurationSeconds חייב להיות מספר חיובי."
   },
   {
+    "id": "model.config.is_valid.service_settings.burn_on_read_maximum_duration_seconds.app_error",
+    "translation": "BurnOnReadMaximumDurationSeconds חייב להיות מספר חיובי."
+  },
+  {
     "id": "model.config.is_valid.service_settings.burn_on_read_maximum_time_to_live_seconds.app_error",
     "translation": "BurnOnReadMaximumTimeToLiveSeconds חייב להיות מספר חיובי."
   },
@@ -13190,6 +13522,22 @@
   {
     "id": "model.file_info.is_valid.user_id.app_error",
     "translation": "ערך לא תקין עבור user_id."
+  },
+  {
+    "id": "model.focus.duration.app_error",
+    "translation": "מצב התמקדות נמשך מדקה אחת ועד שבוע אחד."
+  },
+  {
+    "id": "model.focus.duration_or_end.app_error",
+    "translation": "בחרו משך זמן להתמקדות: משך זמן או שעת סיום."
+  },
+  {
+    "id": "model.focus.reason.app_error",
+    "translation": "הסיבה ארוכה מדי: היא הופכת לסטטוס המותאם אישית שלך, שאורכו עד 100 תווים לכל היותר."
+  },
+  {
+    "id": "model.focus.window.app_error",
+    "translation": "טווח הזמן של הסיכום אינו חוקי: הוא חייב להיות בעבר, מסודר לפי סדר כרונולוגי, ולא ארוך משמונה ימים לכל היותר."
   },
   {
     "id": "model.group.channel_id.app_error",
