@@ -529,8 +529,10 @@ func TestPublishReceivedGroupEvent(t *testing.T) {
 	th := Setup(t)
 
 	testCluster := &testlib.FakeClusterInterface{}
+	// Antimatter always has a cluster service: put the real one back, never nil.
+	realCluster := th.Server.Platform().Cluster()
 	th.Server.Platform().SetCluster(testCluster)
-	defer th.Server.Platform().SetCluster(nil)
+	defer th.Server.Platform().SetCluster(realCluster)
 
 	capturePublishedGroup := func(t *testing.T, publish func()) *model.WebSocketEvent {
 		t.Helper()
