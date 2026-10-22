@@ -48,8 +48,10 @@ func TestDBHAFailoverStormRisk(t *testing.T) {
 		{"config absent", newSnapshot(nil, nil, clusterDiag(new(3))), unknownConfigWant},
 		{"cluster unset", newSnapshot(clusterUnset, nil, clusterDiag(new(3))), unknownConfigWant},
 		{"cluster off", newSnapshot(clusterOff, nil, clusterDiag(new(3))), resolvedWant},
-		{"cluster off without diagnostics", newSnapshot(clusterOff, nil, nil), resolvedWant},
+		{"cluster off without cluster diagnostics", newSnapshot(clusterOff, nil, &model.SupportPacketDiagnostics{}), resolvedWant},
 		{"leader diagnostics absent", newSnapshot(clusterConfig(200, primaryDSN), nil, nil), unknownDiagWant},
+		// Antimatter's cluster is free, so no licence is read.
+		{"licence section failed changes nothing", failSection(newSnapshot(clusterConfig(200, primaryDSN), nil, clusterDiag(new(2))), model.SectionLicense), firing.withValue(400)},
 		{"node count not collected", newSnapshot(clusterConfig(200, primaryDSN), nil, clusterDiag(nil)), unknownDiagWant},
 		{"cluster section failed", failSection(newSnapshot(clusterConfig(200, primaryDSN), nil, clusterDiag(new(2))), model.SectionCluster), unknownDiagWant},
 		{"single node", newSnapshot(clusterConfig(1000, primaryDSN), nil, clusterDiag(new(1))), resolvedWant},
@@ -83,7 +85,7 @@ func TestDBHAFailoverStormRisk(t *testing.T) {
 func TestDBHAFailoverStormRiskDetails(t *testing.T) {
 	t.Parallel()
 
-	results := evalDBHAFailoverStormRisk(newSnapshot(clusterConfig(300, primaryDSN, replicaDSN), nil, clusterDiag(new(2))))
+	results := dbHAFailoverStormRisk.Eval(newSnapshot(clusterConfig(300, primaryDSN, replicaDSN), nil, clusterDiag(new(2))))
 	require.Len(t, results, 1)
 	assert.Equal(t, map[string]string{"nodes": "2", "max_open": "300", "burst": "600"}, results[0].Details)
 }

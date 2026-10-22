@@ -41,20 +41,35 @@ func jobsConfig(enabled bool) *model.Config {
 	return cfg
 }
 
+// leaderSnapshot returns a snapshot whose leader carries empty diagnostics: no licence is ever read.
+func leaderSnapshot() *healthcheck.Snapshot {
+	return healthcheck.NewSnapshot([]*healthcheck.NodeSnapshot{{
+		Hostname:    "app-1",
+		IsLeader:    true,
+		Diagnostics: &model.NodeDiagnostics{Diagnostics: &model.SupportPacketDiagnostics{}},
+	}})
+}
+
+func configSnapshot(cfg *model.Config) *healthcheck.Snapshot {
+	s := leaderSnapshot()
+	s.CollectedAt = collectedAt
+	s.Config = &model.SupportPacketConfig{Config: cfg}
+	s.Sections = map[model.WorkspaceSection]error{model.SectionConfig: nil}
+	return s
+}
+
 // jobsSnapshot returns a snapshot with every gate open and the given runs, newest first, for every job type.
 func jobsSnapshot(runs ...*model.Job) *healthcheck.Snapshot {
-	return &healthcheck.Snapshot{
-		CollectedAt: collectedAt,
-		Config:      &model.SupportPacketConfig{Config: jobsConfig(true)},
-		Jobs: &model.SupportPacketJobList{
-			LDAPSyncJobs:               runs,
-			DataRetentionJobs:          runs,
-			MessageExportJobs:          runs,
-			ElasticPostIndexingJobs:    runs,
-			ElasticPostAggregationJobs: runs,
-		},
-		Sections: map[model.WorkspaceSection]error{model.SectionConfig: nil, model.SectionJobs: nil},
+	s := configSnapshot(jobsConfig(true))
+	s.Jobs = &model.SupportPacketJobList{
+		LDAPSyncJobs:               runs,
+		DataRetentionJobs:          runs,
+		MessageExportJobs:          runs,
+		ElasticPostIndexingJobs:    runs,
+		ElasticPostAggregationJobs: runs,
 	}
+	s.Sections[model.SectionJobs] = nil
+	return s
 }
 
 func withoutCollectedAt(s *healthcheck.Snapshot) *healthcheck.Snapshot {
@@ -110,12 +125,16 @@ func TestJobRulesEmitOneResultPerSubject(t *testing.T) {
 		{rule: jobFailed, subjects: allTypes},
 	}
 
+	configAbsent := leaderSnapshot()
+	configAbsent.CollectedAt = collectedAt
+
 	snapshots := map[string]*healthcheck.Snapshot{
-		"no runs":        jobsSnapshot(),
-		"config absent":  {CollectedAt: collectedAt},
-		"gates closed":   {CollectedAt: collectedAt, Config: &model.SupportPacketConfig{Config: jobsConfig(false)}, Sections: map[model.WorkspaceSection]error{model.SectionConfig: nil}},
-		"jobs absent":    {CollectedAt: collectedAt, Config: &model.SupportPacketConfig{Config: jobsConfig(true)}, Sections: map[model.WorkspaceSection]error{model.SectionConfig: nil}},
-		"collected zero": withoutCollectedAt(jobsSnapshot()),
+		"no runs":           jobsSnapshot(),
+		"config absent":     configAbsent,
+		"gates closed":      configSnapshot(jobsConfig(false)),
+		"jobs absent":       configSnapshot(jobsConfig(true)),
+		"collected zero":    withoutCollectedAt(jobsSnapshot()),
+		"nothing collected": {CollectedAt: collectedAt},
 	}
 
 	for _, tc := range testCases {
@@ -149,6 +168,11 @@ func TestJobRulesUnknownWithoutData(t *testing.T) {
 	configErrored := jobsSnapshot(stale)
 	configErrored.Sections[model.SectionConfig] = errors.New("boom")
 
+	configAbsent := jobsSnapshot(stale)
+	delete(configAbsent.Sections, model.SectionConfig)
+
+	withoutNodes := &healthcheck.Snapshot{CollectedAt: collectedAt, Config: full.Config, Jobs: full.Jobs, Sections: full.Sections}
+
 	testCases := []struct {
 		name     string
 		snapshot *healthcheck.Snapshot
@@ -156,7 +180,7 @@ func TestJobRulesUnknownWithoutData(t *testing.T) {
 	}{
 		{
 			name:     "config section absent",
-			snapshot: &healthcheck.Snapshot{CollectedAt: collectedAt, Jobs: full.Jobs, Sections: map[model.WorkspaceSection]error{model.SectionJobs: nil}},
+			snapshot: configAbsent,
 			reason:   healthcheck.ReasonConfigUnavailable,
 		},
 		{
@@ -187,6 +211,14 @@ func TestJobRulesUnknownWithoutData(t *testing.T) {
 			}
 		})
 	}
+
+	t.Run("a snapshot without nodes runs the rules", func(t *testing.T) {
+		t.Parallel()
+
+		for _, rule := range []healthcheck.Rule{jobStuck, jobWedgedAtZero, jobFailed} {
+			assert.Equal(t, rule.Eval(full), rule.Eval(withoutNodes), rule.Code)
+		}
+	})
 }
 
 func TestJobRulesGates(t *testing.T) {
@@ -247,6 +279,20 @@ func TestJobRulesGates(t *testing.T) {
 					assert.Equal(t, healthcheck.StateFiring, result.State, tc.name, subject)
 				}
 			}
+		}
+	})
+
+	// Antimatter runs these jobs through its own free service packages, so no licence closes a job type.
+	t.Run("a failed licence section closes no job type", func(t *testing.T) {
+		t.Parallel()
+
+		snapshot := jobsSnapshot(stale)
+		leader, ok := snapshot.Leader()
+		require.True(t, ok)
+		leader.Diagnostics.Errors = model.SectionErrors{model.SectionLicense: errors.New("boom")}
+
+		for subject, result := range resultsBySubject(t, jobStuck, snapshot) {
+			assert.Equal(t, healthcheck.StateFiring, result.State, subject)
 		}
 	})
 

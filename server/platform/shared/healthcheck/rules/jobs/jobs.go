@@ -90,7 +90,8 @@ func gate(s *healthcheck.Snapshot, jobType string) (enabled, ok bool) {
 	case model.JobTypeElasticsearchPostIndexing, model.JobTypeElasticsearchPostAggregation:
 		return s.ConfigBool(func(cfg *model.Config) *bool { return cfg.ElasticsearchSettings.EnableIndexing })
 	default:
-		return true, s.Has(model.SectionConfig) && s.Config != nil && s.Config.Config != nil
+		_, ok := s.ConfigRoot()
+		return true, ok
 	}
 }
 
@@ -218,11 +219,12 @@ func retentionLeftover(s *healthcheck.Snapshot, job *model.Job) bool {
 		return false
 	}
 	files, ok := s.ConfigBool(func(cfg *model.Config) *bool { return cfg.DataRetentionSettings.EnableFileDeletion })
-	if !ok || files || s.CollectedAt.IsZero() {
+	if !ok || files {
 		return false
 	}
 
-	return s.CollectedAt.Sub(time.UnixMilli(job.LastActivityAt)) > retentionStaleAfter
+	idle, ok := s.Since(time.UnixMilli(job.LastActivityAt))
+	return ok && idle > retentionStaleAfter
 }
 
 func evalJobFailed(s *healthcheck.Snapshot) []healthcheck.Result {

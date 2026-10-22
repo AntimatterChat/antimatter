@@ -154,7 +154,7 @@ func TestClusterGossipUnencrypted(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
-			assertResult(t, tc.want, evalClusterGossipUnencrypted(tc.snapshot))
+			assertResult(t, tc.want, clusterGossipUnencrypted.Eval(tc.snapshot))
 		})
 	}
 }
@@ -184,7 +184,7 @@ func TestClusterLRUCache(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
-			assertResult(t, tc.want, evalClusterLRUCache(tc.snapshot))
+			assertResult(t, tc.want, clusterLRUCache.Eval(tc.snapshot))
 		})
 	}
 }
@@ -222,6 +222,7 @@ func TestClusterSingleNode(t *testing.T) {
 			delete(node.Diagnostics.Errors, model.SectionCluster)
 			return node
 		}()), diagUnknown},
+		{"leader without cluster diagnostics", configSnapshot(haEnabled), diagUnknown},
 		{"no leader", configSnapshot(haEnabled, diagNode("app-2.example.com", false, nodes(1))), diagUnknown},
 		{"leader without diagnostics", configSnapshot(haEnabled, &healthcheck.NodeSnapshot{IsLeader: true}), diagUnknown},
 	}
@@ -229,7 +230,7 @@ func TestClusterSingleNode(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
-			assertResult(t, tc.want, evalClusterSingleNode(tc.snapshot))
+			assertResult(t, tc.want, clusterSingleNode.Eval(tc.snapshot))
 		})
 	}
 }
@@ -263,13 +264,13 @@ func TestClusterBadAdvertise(t *testing.T) {
 			if tc.fires {
 				expected = firing(badAdvertiseMessage, map[string]string{"address": tc.address})
 			}
-			assertResult(t, expected, evalClusterBadAdvertise(configSnapshot(all(haEnabled, advertise(tc.address)))))
+			assertResult(t, expected, clusterBadAdvertise.Eval(configSnapshot(all(haEnabled, advertise(tc.address)))))
 		})
 	}
 
 	t.Run("address unset", func(t *testing.T) {
 		t.Parallel()
-		assertResult(t, configUnknown, evalClusterBadAdvertise(configSnapshot(all(haEnabled, func(cfg *model.Config) { cfg.ClusterSettings.AdvertiseAddress = nil }))))
+		assertResult(t, configUnknown, clusterBadAdvertise.Eval(configSnapshot(all(haEnabled, func(cfg *model.Config) { cfg.ClusterSettings.AdvertiseAddress = nil }))))
 	})
 }
 
@@ -295,14 +296,15 @@ func TestClusterConfigWritable(t *testing.T) {
 			return node
 		}()), diagUnknown},
 		{"empty source from an older packet", configSnapshot(writable, leaderNode(source(""))), diagUnknown},
-		{"no leader", configSnapshot(writable), diagUnknown},
+		{"leader without config source", configSnapshot(writable), diagUnknown},
+		{"no leader", configSnapshot(writable, diagNode("app-2.example.com", false, fileSource)), diagUnknown},
 		{"read-only unset", configSnapshot(all(haEnabled, func(cfg *model.Config) { cfg.ClusterSettings.ReadOnlyConfig = nil }), leaderNode(fileSource)), configUnknown},
 	}
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
-			assertResult(t, tc.want, evalClusterConfigWritable(tc.snapshot))
+			assertResult(t, tc.want, clusterConfigWritable.Eval(tc.snapshot))
 		})
 	}
 }

@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/mattermost/mattermost/server/public/model"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
@@ -47,4 +48,31 @@ func TestRuleIsNodeScoped(t *testing.T) {
 	nodeRule := validRule("NODE")
 	nodeRule.EvalNode = func(*Snapshot, *NodeSnapshot) []Result { return nil }
 	require.True(t, nodeRule.IsNodeScoped())
+}
+
+func TestGate(t *testing.T) {
+	t.Parallel()
+
+	firing := Firing("message")
+	check := func(*Snapshot) Result { return firing }
+	nodeCheck := func(*Snapshot, *NodeSnapshot) Result { return firing }
+
+	testCases := []struct {
+		name     string
+		enabled  bool
+		ok       bool
+		expected Result
+	}{
+		{name: "gate unknown", ok: false, expected: Unknown(ReasonConfigUnavailable)},
+		{name: "gate off", enabled: false, ok: true, expected: Resolved()},
+		{name: "gate on", enabled: true, ok: true, expected: firing},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			gate := func(*Snapshot) (bool, bool) { return tc.enabled, tc.ok }
+			assert.Equal(t, []Result{tc.expected}, Gate(gate, ReasonConfigUnavailable, check)(&Snapshot{}))
+			assert.Equal(t, []Result{tc.expected}, GateNode(gate, ReasonConfigUnavailable, nodeCheck)(&Snapshot{}, &NodeSnapshot{}))
+		})
+	}
 }

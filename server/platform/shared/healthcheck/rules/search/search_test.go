@@ -27,8 +27,7 @@ var (
 	unknownDiagWant   = searchWant{state: healthcheck.StateUnknown, messageID: healthcheck.ReasonDiagnosticsUnavailable}
 )
 
-// searchSnapshot builds a snapshot from the default config with indexing on, the given
-// leader diagnostics (nil for none) and post count (nil for no stats).
+// searchSnapshot builds a snapshot from the default config with indexing on, the given leader diagnostics (nil for no search diagnostics) and post count (nil for no stats).
 func searchSnapshot(mutate func(*model.Config), diag *model.SupportPacketDiagnostics, posts *int64) *healthcheck.Snapshot {
 	cfg := &model.Config{}
 	cfg.SetDefaults()
@@ -37,10 +36,15 @@ func searchSnapshot(mutate func(*model.Config), diag *model.SupportPacketDiagnos
 		mutate(cfg)
 	}
 
-	leader := &healthcheck.NodeSnapshot{Hostname: "app-1", IsLeader: true}
+	// Copied so tests sharing a diag can change it in parallel.
+	leaderDiag := model.SupportPacketDiagnostics{}
+	var errs model.SectionErrors
 	if diag != nil {
-		leader.Diagnostics = &model.NodeDiagnostics{Diagnostics: diag}
+		leaderDiag = *diag
+	} else {
+		errs = model.SectionErrors{model.SectionSearchProbe: errors.New("not collected"), model.SectionSearchEngine: errors.New("not collected")}
 	}
+	leader := &healthcheck.NodeSnapshot{Hostname: "app-1", IsLeader: true, Diagnostics: &model.NodeDiagnostics{Diagnostics: &leaderDiag, Errors: errs}}
 
 	s := healthcheck.NewSnapshot([]*healthcheck.NodeSnapshot{leader})
 	s.Config = &model.SupportPacketConfig{Config: cfg}
@@ -79,8 +83,11 @@ func TestConfigAbsentIsUnknown(t *testing.T) {
 	configRules := []healthcheck.Rule{esLocalhostURL, searchUnavailable, scaleESRequired, scaleESRecommended, esLiveBatchSync, esLiveBatchTooHigh, esVersionUnsupported, esSkipTLSVerify}
 	failed := searchSnapshot(nil, nil, nil)
 	failed.Sections[model.SectionConfig] = errors.New("boom")
+	absent := searchSnapshot(nil, nil, nil)
+	absent.Config = nil
+	absent.Sections = nil
 
-	for name, s := range map[string]*healthcheck.Snapshot{"absent": {}, "failed": failed} {
+	for name, s := range map[string]*healthcheck.Snapshot{"absent": absent, "failed": failed} {
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
 
@@ -108,6 +115,42 @@ func TestIndexingGateClosed(t *testing.T) {
 
 	s.Config.Config.ElasticsearchSettings.LiveIndexingBatchSize = new(500)
 	assertResult(t, esLiveBatchTooHigh, s, resolvedWant)
+}
+
+// TestESNoLicenceGate: Antimatter's search engine and cluster are free, so the search rules read no licence and a
+// failed licence section in the support packet changes nothing.
+func TestESNoLicenceGate(t *testing.T) {
+	t.Parallel()
+
+	firingRules := []healthcheck.Rule{esLocalhostURL, esServerError, esLiveBatchSync, esVersionUnsupported, esSkipTLSVerify}
+	firingSnapshot := func() *healthcheck.Snapshot {
+		return searchSnapshot(func(cfg *model.Config) {
+			cfg.ElasticsearchSettings.ConnectionURL = new("https://localhost:9200")
+			cfg.ElasticsearchSettings.LiveIndexingBatchSize = new(1)
+			cfg.ElasticsearchSettings.SkipTLSVerification = new(true)
+			cfg.ClusterSettings.Enable = new(true)
+		}, esDiag(model.StatusFail, model.ElasticsearchSettingsESBackend, "6.8.23"), nil)
+	}
+	licenceFailed := firingSnapshot()
+	leader, ok := licenceFailed.Leader()
+	require.True(t, ok)
+	leader.Diagnostics.Errors = model.SectionErrors{model.SectionLicense: errors.New("boom")}
+
+	for name, s := range map[string]*healthcheck.Snapshot{
+		"no licence":             firingSnapshot(),
+		"licence section failed": licenceFailed,
+	} {
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
+			for _, rule := range firingRules {
+				results := rule.Eval(s)
+				require.Len(t, results, 1, rule.Code)
+				assert.Equal(t, healthcheck.StateFiring, results[0].State, rule.Code)
+			}
+			assertResult(t, esLiveBatchTooHigh, s, resolvedWant)
+		})
+	}
 }
 
 func TestESLocalhostURL(t *testing.T) {

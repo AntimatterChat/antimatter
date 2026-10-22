@@ -16,19 +16,14 @@ const (
 	samlDocsURL     = "https://antimatter.chat/docs/admins/authentication.html#sso"
 )
 
-// gated resolves a rule whose gate is closed, so a condition that cannot bite never fires.
-func gated(gate func(*healthcheck.Snapshot) (bool, bool), check func(*healthcheck.Snapshot) healthcheck.Result) func(*healthcheck.Snapshot) []healthcheck.Result {
-	return func(s *healthcheck.Snapshot) []healthcheck.Result {
-		open, ok := gate(s)
-		switch {
-		case !ok:
-			return []healthcheck.Result{unknownConfig()}
-		case !open:
-			return []healthcheck.Result{healthcheck.Resolved()}
-		default:
-			return []healthcheck.Result{check(s)}
-		}
-	}
+// ldapRule resolves while gate reports LDAP off. Antimatter's LDAP service is free, so no licence is read.
+func ldapRule(gate func(*healthcheck.Snapshot) (bool, bool), check func(*healthcheck.Snapshot) healthcheck.Result) func(*healthcheck.Snapshot) []healthcheck.Result {
+	return healthcheck.Gate(gate, healthcheck.ReasonConfigUnavailable, check)
+}
+
+// samlRule resolves while SamlSettings.Enable is off. Antimatter's SAML service is free, so no licence is read.
+func samlRule(check func(*healthcheck.Snapshot) healthcheck.Result) func(*healthcheck.Snapshot) []healthcheck.Result {
+	return healthcheck.Gate(samlEnabled, healthcheck.ReasonConfigUnavailable, check)
 }
 
 // ldapEnabled matches the server's own test before probing LDAP: sync-only installs count.

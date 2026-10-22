@@ -65,7 +65,7 @@ func TestDBPostgresUnsupported(t *testing.T) {
 		})
 	}
 
-	results := evalDBPostgresUnsupported(newSnapshot(nil, nil, versionDiag(new("14.9"))))
+	results := dbPostgresUnsupported.Eval(newSnapshot(nil, nil, versionDiag(new("14.9"))))
 	require.Len(t, results, 1)
 	assert.Equal(t, map[string]string{"version": "14.9", "minimum": "15"}, results[0].Details)
 }
@@ -105,7 +105,7 @@ func TestDBPoolSaturated(t *testing.T) {
 		})
 	}
 
-	results := evalDBPoolSaturated(newSnapshot(maxOpen(new(100)), nil, poolDiag(new(95), nil)))
+	results := dbPoolSaturated.Eval(newSnapshot(maxOpen(new(100)), nil, poolDiag(new(95), nil)))
 	require.Len(t, results, 1)
 	assert.Equal(t, map[string]string{"in_use": "95", "max_open": "100", "percent": "95"}, results[0].Details)
 }
@@ -123,11 +123,14 @@ func TestDBReplicaUnused(t *testing.T) {
 	}{
 		{"config absent", newSnapshot(nil, nil, poolDiag(nil, nil)), unknownConfigWant},
 		{"no replicas configured", newSnapshot(defaultConfig(), nil, poolDiag(nil, nil)), resolvedWant},
-		{"no replicas without diagnostics", newSnapshot(defaultConfig(), nil, nil), resolvedWant},
+		{"no replicas without pool diagnostics", newSnapshot(defaultConfig(), nil, &model.SupportPacketDiagnostics{}), resolvedWant},
 		{"no replica online", newSnapshot(withReplica, nil, poolDiag(nil, new(0))), firingWant("health.rule.db_replica_unused.message")},
 		{"idle replica online", newSnapshot(withReplica, nil, poolDiag(nil, new(1))), resolvedWant},
 		{"online replicas not collected", newSnapshot(withReplica, nil, poolDiag(nil, nil)), unknownDiagWant},
 		{"leader diagnostics absent", newSnapshot(withReplica, nil, nil), unknownDiagWant},
+		// Antimatter's store uses read replicas on every server, so no licence is read.
+		{"replicas offline with no licence", newSnapshot(withReplica, nil, poolDiag(nil, new(0))), firingWant("health.rule.db_replica_unused.message")},
+		{"licence section failed changes nothing", failSection(newSnapshot(withReplica, nil, poolDiag(nil, new(0))), model.SectionLicense), firingWant("health.rule.db_replica_unused.message")},
 		{"pool section failed", failSection(newSnapshot(withReplica, nil, poolDiag(nil, new(1))), model.SectionDatabasePool), unknownDiagWant},
 	}
 
