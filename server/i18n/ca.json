@@ -1716,6 +1716,38 @@
     "translation": "{{.Username}} no és membre d'aquest canal."
   },
   {
+    "id": "api.command_rules.agree_hint",
+    "translation": "Escriu `/rules agree` per acceptar-les; després podràs publicar."
+  },
+  {
+    "id": "api.command_rules.agreed",
+    "translation": "Gràcies: has acceptat les normes de {{.Community}}. Ara hi pots publicar."
+  },
+  {
+    "id": "api.command_rules.already_agreed",
+    "translation": "Ja has acceptat aquestes normes."
+  },
+  {
+    "id": "api.command_rules.desc",
+    "translation": "Llegeix les normes d'aquesta comunitat o accepta-les"
+  },
+  {
+    "id": "api.command_rules.hint",
+    "translation": "[d'acord]"
+  },
+  {
+    "id": "api.command_rules.name",
+    "translation": "regles"
+  },
+  {
+    "id": "api.command_rules.none",
+    "translation": "Aquesta comunitat no té normes per acceptar."
+  },
+  {
+    "id": "api.command_rules.title",
+    "translation": "**Normes de {{.Community}}**"
+  },
+  {
     "id": "api.command_search.desc",
     "translation": "Cerca text als missatges"
   },
@@ -2928,6 +2960,14 @@
     "translation": "@{{.Username}} no ha rebut notificació per aquesta menció perquè no és membre d'aquest equip."
   },
   {
+    "id": "api.post.community_rules_not_accepted",
+    "translation": "Accepta les normes d'aquesta comunitat abans de publicar-hi."
+  },
+  {
+    "id": "api.post.community_rules_not_accepted.reminder",
+    "translation": "Aquesta comunitat demana que tothom n'accepti les normes abans de publicar. Escriu `/rules` per llegir-les i `/rules agree` per acceptar-les."
+  },
+  {
     "id": "api.post.create_post.burn_on_read.abac_denied.app_error",
     "translation": "No tens permís per enviar missatges que es cremen en llegir-los en aquest canal."
   },
@@ -3030,6 +3070,10 @@
   {
     "id": "api.post.fill_in_post_props.burn_on_read.config.app_error",
     "translation": "Els missatges que s'eliminen en llegir-los no estan habilitats. Si us plau, habilita la bandera de funció i la configuració del servei."
+  },
+  {
+    "id": "api.post.fill_in_post_props.burn_on_read.duration.app_error",
+    "translation": "La durada de la lectura única ha de ser un nombre positiu de mil·lisegons."
   },
   {
     "id": "api.post.fill_in_post_props.burn_on_read.self_dm.app_error",
@@ -5192,6 +5236,134 @@
     "translation": "La crida al bridge ha fallat."
   },
   {
+    "id": "app.agents.status.no_agents",
+    "translation": "No hi ha cap agent disponible per a tu."
+  },
+  {
+    "id": "app.ai.agent.access.app_error",
+    "translation": "No pots parlar amb aquest agent aquí."
+  },
+  {
+    "id": "app.ai.agent.activity.get.app_error",
+    "translation": "No s'ha pogut llegir l'activitat dels agents."
+  },
+  {
+    "id": "app.ai.agent.activity.save.app_error",
+    "translation": "No s'ha pogut desar l'activitat de l'agent."
+  },
+  {
+    "id": "app.ai.agent.connection.app_error",
+    "translation": "Un agent d'aquí no pot utilitzar aquesta connexió de model: un agent de tot el servidor necessita una connexió de tot el servidor, i un agent d'una comunitat necessita la seva pròpia connexió o una compartida amb ella."
+  },
+  {
+    "id": "app.ai.agent.conversations.app_error",
+    "translation": "No s'han pogut carregar les teves converses amb els agents."
+  },
+  {
+    "id": "app.ai.agent.get.app_error",
+    "translation": "No s'han pogut llegir els agents."
+  },
+  {
+    "id": "app.ai.agent.manage_permission.app_error",
+    "translation": "No pots gestionar els agents aquí."
+  },
+  {
+    "id": "app.ai.agent.not_found.app_error",
+    "translation": "Aquest agent no existeix o s'ha suprimit."
+  },
+  {
+    "id": "app.ai.agent.references.app_error",
+    "translation": "L'agent es refereix a una comunitat, un canal o una persona que no existeix, o a un canal d'una altra comunitat."
+  },
+  {
+    "id": "app.ai.agent.save.app_error",
+    "translation": "No s'ha pogut desar l'agent."
+  },
+  {
+    "id": "app.ai.agent.task.agent_disabled.app_error",
+    "translation": "Aquest agent està desactivat."
+  },
+  {
+    "id": "app.ai.agent.task.channel.app_error",
+    "translation": "El canal no existeix o no el pots llegir."
+  },
+  {
+    "id": "app.ai.agent.task.external.app_error",
+    "translation": "Un agent extern no accepta tasques aquí: envia-li un missatge."
+  },
+  {
+    "id": "app.ai.agent.task.not_transcription.app_error",
+    "translation": "Aquest missatge no és la transcripció d'una trucada."
+  },
+  {
+    "id": "app.ai.agent.task.post.app_error",
+    "translation": "El missatge no existeix o no el pots llegir."
+  },
+  {
+    "id": "app.ai.agent.task.request.ask_channel",
+    "translation": "Pel que fa a {{.Channel}}: {{.Question}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items",
+    "translation": "Troba les accions pendents en aquest fil: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items_channel",
+    "translation": "Troba les tasques pendents dels missatges més recents de {{.Channel}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items_channel_since",
+    "translation": "Troba les accions pendents a {{.Channel}} des de {{.Since}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions",
+    "translation": "Troba les preguntes pendents en aquest fil: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions_channel",
+    "translation": "Troba les preguntes pendents dels missatges més recents de {{.Channel}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions_channel_since",
+    "translation": "Troba les preguntes obertes a {{.Channel}} des de {{.Since}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_channel",
+    "translation": "Resumeix els missatges més recents del canal {{.Channel}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_channel_since",
+    "translation": "Resumeix els missatges de {{.Channel}} des de {{.Since}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_thread",
+    "translation": "Resumeix aquest fil: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_transcription",
+    "translation": "Resumeix la transcripció d'aquesta trucada: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.this_conversation",
+    "translation": "aquesta conversa"
+  },
+  {
+    "id": "app.ai.agent.turn.empty",
+    "translation": "Ho sento, no tinc cap resposta per a això."
+  },
+  {
+    "id": "app.ai.agent.turn.failed",
+    "translation": "Ho sento, no he pogut respondre: {{.Reason}}"
+  },
+  {
+    "id": "app.ai.agent.turn.interrupted",
+    "translation": "Ho sento, la meva resposta s'ha interromput. Torna-m'ho a preguntar d'aquí a una estona."
+  },
+  {
+    "id": "app.ai.agent.turn.not_allowed",
+    "translation": "L'{{.Agent}} no està disponible aquí per a tu."
+  },
+  {
     "id": "app.ai.call.audience.app_error",
     "translation": "No pots utilitzar aquesta connexió de model."
   },
@@ -6088,6 +6260,38 @@
     "translation": "Aquest valor no s'ajusta a l'atribut {{.Name}}."
   },
   {
+    "id": "app.community_rules.accept.app_error",
+    "translation": "No s'ha pogut desar la teva acceptació de les normes de la comunitat."
+  },
+  {
+    "id": "app.community_rules.accept.changed.app_error",
+    "translation": "Les normes de la comunitat han canviat des que les vas llegir. Torna-les a llegir abans d'acceptar-les."
+  },
+  {
+    "id": "app.community_rules.accept.not_member.app_error",
+    "translation": "Només els membres de la comunitat poden acceptar-ne les normes."
+  },
+  {
+    "id": "app.community_rules.accept.off.app_error",
+    "translation": "Aquesta comunitat no té normes per acceptar."
+  },
+  {
+    "id": "app.community_rules.delete.app_error",
+    "translation": "No s'han pogut suprimir les normes de la comunitat."
+  },
+  {
+    "id": "app.community_rules.get.app_error",
+    "translation": "No s'han pogut obtenir les normes de la comunitat."
+  },
+  {
+    "id": "app.community_rules.save.app_error",
+    "translation": "No s'han pogut desar les normes de la comunitat."
+  },
+  {
+    "id": "app.community_rules.stats.app_error",
+    "translation": "No s'ha pogut comptar qui ha acceptat les normes de la comunitat."
+  },
+  {
     "id": "app.compile_csv_chunks.header_error",
     "translation": "No s'han pogut escriure les capçaleres del CSV."
   },
@@ -6842,6 +7046,34 @@
   {
     "id": "app.file_info.undelete_for_post_ids.app_error",
     "translation": "No s'han pogut restaurar els adjunts dels missatges."
+  },
+  {
+    "id": "app.focus.bot.app_error",
+    "translation": "Els bots no poden utilitzar el mode de concentració."
+  },
+  {
+    "id": "app.focus.delete.app_error",
+    "translation": "No s'ha pogut eliminar el mode de concentració del compte."
+  },
+  {
+    "id": "app.focus.get.app_error",
+    "translation": "No s'ha pogut obtenir el teu mode de concentració."
+  },
+  {
+    "id": "app.focus.mark_read.app_error",
+    "translation": "No s'ha pogut marcar com a llegit el que t'has perdut."
+  },
+  {
+    "id": "app.focus.save.app_error",
+    "translation": "No s'ha pogut iniciar el mode de concentració."
+  },
+  {
+    "id": "app.focus.statuses_disabled.app_error",
+    "translation": "El mode de concentració necessita els estats dels usuaris, que estan desactivats en aquest servidor."
+  },
+  {
+    "id": "app.focus.summary.app_error",
+    "translation": "No s'ha pogut obtenir el que t'has perdut mentre eres en mode concentrat."
   },
   {
     "id": "app.get_user_team_scheduled_posts.error",
@@ -11540,6 +11772,90 @@
     "translation": "ID d'usuari no vàlid."
   },
   {
+    "id": "model.agent_activity.expires.app_error",
+    "translation": "L'activitat d'un agent dura entre 1 segon i 24 hores."
+  },
+  {
+    "id": "model.agent_activity.state.app_error",
+    "translation": "L'estat d'un agent pot ser inactiu, pensant, treballant, esperant, bloquejat o desconnectat."
+  },
+  {
+    "id": "model.agent_activity.text.app_error",
+    "translation": "El que fa l'agent ha de cabre en una línia de com a màxim 200 caràcters."
+  },
+  {
+    "id": "model.agent_activity.thread_post_id.app_error",
+    "translation": "El fil de l'activitat d'un agent ha de ser un ID de missatge."
+  },
+  {
+    "id": "model.ai_agent.access.app_error",
+    "translation": "Els permisos per parlar amb l'agent inclouen comunitats, canals, rols o persones no vàlids, o bé n'hi ha massa."
+  },
+  {
+    "id": "model.ai_agent.access_community.app_error",
+    "translation": "L'agent d'una comunitat només és per a la seva pròpia comunitat."
+  },
+  {
+    "id": "model.ai_agent.connection_id.app_error",
+    "translation": "Trieu la connexió de model que utilitza l'agent."
+  },
+  {
+    "id": "model.ai_agent.external.app_error",
+    "translation": "Un agent extern no té model, connexió ni indicador del sistema: el seu programa respon."
+  },
+  {
+    "id": "model.ai_agent.max_tool_turns.app_error",
+    "translation": "Un agent pot fer entre 0 (el valor predeterminat) i 250 tornades d'eines."
+  },
+  {
+    "id": "model.ai_agent.model.app_error",
+    "translation": "El nom del model és massa llarg o conté més d'una línia."
+  },
+  {
+    "id": "model.ai_agent.needs_attention.app_error",
+    "translation": "La nota sobre el que necessita atenció és massa llarga."
+  },
+  {
+    "id": "model.ai_agent.reasoning.app_error",
+    "translation": "L'esforç de raonament ha de ser mínim, baix, mitjà o alt, i el seu pressupost, entre 0 i 128.000 tokens."
+  },
+  {
+    "id": "model.ai_agent.scope.app_error",
+    "translation": "Un agent pertany al servidor o a una comunitat."
+  },
+  {
+    "id": "model.ai_agent.system_prompt.app_error",
+    "translation": "L'instrucció del sistema és massa llarga (màxim 32.000 caràcters)."
+  },
+  {
+    "id": "model.ai_agent.times.app_error",
+    "translation": "Falten les dates de creació i actualització de l'agent."
+  },
+  {
+    "id": "model.ai_agent.tools.app_error",
+    "translation": "El nom d'una eina no és vàlid o n'hi ha massa (màxim 256)."
+  },
+  {
+    "id": "model.ai_agent.user_id.app_error",
+    "translation": "Un agent necessita un compte vàlid."
+  },
+  {
+    "id": "model.ai_agent_task.channel_id.app_error",
+    "translation": "Aquesta tasca necessita un canal."
+  },
+  {
+    "id": "model.ai_agent_task.post_id.app_error",
+    "translation": "Aquesta tasca necessita un missatge."
+  },
+  {
+    "id": "model.ai_agent_task.question.app_error",
+    "translation": "Fes una pregunta de fins a 2.000 caràcters."
+  },
+  {
+    "id": "model.ai_agent_task.task.app_error",
+    "translation": "Aquesta tasca no és una de les que coneix l'agent."
+  },
+  {
     "id": "model.ai_connection.api_key.app_error",
     "translation": "La clau d'API és massa llarga o conté un salt de línia."
   },
@@ -11702,6 +12018,10 @@
   {
     "id": "model.bot.is_valid.description.app_error",
     "translation": "Descripció no vàlida."
+  },
+  {
+    "id": "model.bot.is_valid.kind.app_error",
+    "translation": "Un compte de bot és un bot o un agent."
   },
   {
     "id": "model.bot.is_valid.update_at.app_error",
@@ -12090,6 +12410,14 @@
   {
     "id": "model.command_response.is_valid.response_type.app_error",
     "translation": "Tipus de resposta no vàlid."
+  },
+  {
+    "id": "model.community_rules.empty.app_error",
+    "translation": "Escriu les normes abans d'activar-les."
+  },
+  {
+    "id": "model.community_rules.text.app_error",
+    "translation": "Les normes poden tenir com a màxim {{.Max}} caràcters."
   },
   {
     "id": "model.compliance.is_valid.create_at.app_error",
@@ -12868,6 +13196,10 @@
     "translation": "BurnOnReadDurationSeconds ha de ser un nombre positiu."
   },
   {
+    "id": "model.config.is_valid.service_settings.burn_on_read_maximum_duration_seconds.app_error",
+    "translation": "BurnOnReadMaximumDurationSeconds ha de ser un nombre positiu."
+  },
+  {
     "id": "model.config.is_valid.service_settings.burn_on_read_maximum_time_to_live_seconds.app_error",
     "translation": "BurnOnReadMaximumTimeToLiveSeconds ha de ser un nombre positiu."
   },
@@ -13126,6 +13458,22 @@
   {
     "id": "model.file_info.is_valid.user_id.app_error",
     "translation": "Valor no vàlid per a user_id."
+  },
+  {
+    "id": "model.focus.duration.app_error",
+    "translation": "El mode de concentració dura d'un minut a una setmana."
+  },
+  {
+    "id": "model.focus.duration_or_end.app_error",
+    "translation": "Trieu la durada de la sessió de concentració: una durada o una hora de finalització."
+  },
+  {
+    "id": "model.focus.reason.app_error",
+    "translation": "El motiu és massa llarg: es converteix en el teu estat personalitzat, de com a màxim 100 caràcters."
+  },
+  {
+    "id": "model.focus.window.app_error",
+    "translation": "L'interval de temps del resum no és vàlid: ha de ser en el passat, en ordre i de com a màxim vuit dies."
   },
   {
     "id": "model.group.channel_id.app_error",

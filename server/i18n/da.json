@@ -1766,6 +1766,38 @@
     "translation": "{{.Username}} er ikke et medlem af denne kanal."
   },
   {
+    "id": "api.command_rules.agree_hint",
+    "translation": "Skriv `/rules agree` for at acceptere reglerne, og du kan derefter sende beskeder."
+  },
+  {
+    "id": "api.command_rules.agreed",
+    "translation": "Tak: du har accepteret reglerne for {{.Community}}. Du kan nu oprette indlæg der."
+  },
+  {
+    "id": "api.command_rules.already_agreed",
+    "translation": "Du har allerede accepteret disse regler."
+  },
+  {
+    "id": "api.command_rules.desc",
+    "translation": "Læs dette fællesskabs regler, eller accepter dem"
+  },
+  {
+    "id": "api.command_rules.hint",
+    "translation": "[enig]"
+  },
+  {
+    "id": "api.command_rules.name",
+    "translation": "regler"
+  },
+  {
+    "id": "api.command_rules.none",
+    "translation": "Dette fællesskab har ingen regler, du skal acceptere."
+  },
+  {
+    "id": "api.command_rules.title",
+    "translation": "**Regler for {{.Community}}**"
+  },
+  {
     "id": "api.command_search.desc",
     "translation": "Søg efter tekst i beskeder"
   },
@@ -3109,6 +3141,14 @@
     "translation": "@{{.Username}} blev ikke underrettet af denne omtale, fordi vedkommende ikke er medlem af dette team."
   },
   {
+    "id": "api.post.community_rules_not_accepted",
+    "translation": "Acceptér denne communities regler, før du skriver i det."
+  },
+  {
+    "id": "api.post.community_rules_not_accepted.reminder",
+    "translation": "Dette fællesskab kræver, at alle accepterer dets regler, før de kan oprette et indlæg. Skriv `/rules` for at læse dem, og derefter `/rules agree` for at acceptere."
+  },
+  {
     "id": "api.post.create_post.burn_on_read.abac_denied.app_error",
     "translation": "Du har ikke tilladelse til at sende Burn-on-Read-beskeder i denne kanal."
   },
@@ -3211,6 +3251,10 @@
   {
     "id": "api.post.fill_in_post_props.burn_on_read.config.app_error",
     "translation": "Brændes-ved-læsning-opslag er ikke aktiveret. Aktivér venligst funktionsflagget og serviceindstillingen."
+  },
+  {
+    "id": "api.post.fill_in_post_props.burn_on_read.duration.app_error",
+    "translation": "Varigheden for sletning efter læsning skal være et positivt antal millisekunder."
   },
   {
     "id": "api.post.fill_in_post_props.burn_on_read.license.app_error",
@@ -5567,6 +5611,134 @@
     "translation": "Bridge-kald mislykkedes."
   },
   {
+    "id": "app.agents.status.no_agents",
+    "translation": "Der er ingen tilgængelige agenter for dig."
+  },
+  {
+    "id": "app.ai.agent.access.app_error",
+    "translation": "Du kan ikke tale med denne agent her."
+  },
+  {
+    "id": "app.ai.agent.activity.get.app_error",
+    "translation": "Agenternes aktivitet kunne ikke læses."
+  },
+  {
+    "id": "app.ai.agent.activity.save.app_error",
+    "translation": "Agentens aktivitet kunne ikke gemmes."
+  },
+  {
+    "id": "app.ai.agent.connection.app_error",
+    "translation": "En agent her kan ikke bruge denne modelforbindelse: En serverdækkende agent kræver en serverdækkende forbindelse, og en agents i et fællesskab kræver fællesskabets egen forbindelse eller en forbindelse, der er delt med det."
+  },
+  {
+    "id": "app.ai.agent.conversations.app_error",
+    "translation": "Kunne ikke indlæse dine samtaler med agenter."
+  },
+  {
+    "id": "app.ai.agent.get.app_error",
+    "translation": "Agenterne kunne ikke læses."
+  },
+  {
+    "id": "app.ai.agent.manage_permission.app_error",
+    "translation": "Du kan ikke administrere agenterne her."
+  },
+  {
+    "id": "app.ai.agent.not_found.app_error",
+    "translation": "Denne agent findes ikke eller er blevet slettet."
+  },
+  {
+    "id": "app.ai.agent.references.app_error",
+    "translation": "Agenten nævner et fællesskab, en kanal eller en person, der ikke findes, eller en kanal i et andet fællesskab."
+  },
+  {
+    "id": "app.ai.agent.save.app_error",
+    "translation": "Agenten kunne ikke gemmes."
+  },
+  {
+    "id": "app.ai.agent.task.agent_disabled.app_error",
+    "translation": "Denne agent er deaktiveret."
+  },
+  {
+    "id": "app.ai.agent.task.channel.app_error",
+    "translation": "Kanalen findes ikke, eller du kan ikke læse den."
+  },
+  {
+    "id": "app.ai.agent.task.external.app_error",
+    "translation": "En ekstern agent modtager ikke opgaver her: send den i stedet en besked."
+  },
+  {
+    "id": "app.ai.agent.task.not_transcription.app_error",
+    "translation": "Denne besked er ikke en transkription af et opkald."
+  },
+  {
+    "id": "app.ai.agent.task.post.app_error",
+    "translation": "Beskeden findes ikke, eller du kan ikke læse den."
+  },
+  {
+    "id": "app.ai.agent.task.request.ask_channel",
+    "translation": "Om {{.Channel}}: {{.Question}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items",
+    "translation": "Find handlingspunkterne i denne tråd: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items_channel",
+    "translation": "Find handlingspunkterne i de seneste beskeder i {{.Channel}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items_channel_since",
+    "translation": "Find handlingspunkterne i {{.Channel}} siden {{.Since}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions",
+    "translation": "Find de åbne spørgsmål i denne tråd: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions_channel",
+    "translation": "Find de åbne spørgsmål i de seneste beskeder i {{.Channel}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions_channel_since",
+    "translation": "Find de åbne spørgsmål i {{.Channel}} siden {{.Since}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_channel",
+    "translation": "Opsummér de seneste beskeder i {{.Channel}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_channel_since",
+    "translation": "Opsummer beskederne i {{.Channel}} siden {{.Since}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_thread",
+    "translation": "Opsummér denne tråd: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_transcription",
+    "translation": "Opsummér transkriptionen af dette opkald: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.this_conversation",
+    "translation": "denne samtale"
+  },
+  {
+    "id": "app.ai.agent.turn.empty",
+    "translation": "Beklager, jeg har ikke noget svar på det."
+  },
+  {
+    "id": "app.ai.agent.turn.failed",
+    "translation": "Beklager, jeg kunne ikke svare: {{.Reason}}"
+  },
+  {
+    "id": "app.ai.agent.turn.interrupted",
+    "translation": "Beklager, mit svar blev afbrudt. Prøv igen om et øjeblik."
+  },
+  {
+    "id": "app.ai.agent.turn.not_allowed",
+    "translation": "{{.Agent}} er ikke tilgængelig for dig her."
+  },
+  {
     "id": "app.ai.call.audience.app_error",
     "translation": "Du kan ikke bruge denne modelforbindelse."
   },
@@ -6479,6 +6651,38 @@
     "translation": "Denne værdi passer ikke til attributten {{.Name}}."
   },
   {
+    "id": "app.community_rules.accept.app_error",
+    "translation": "Din accept af fællesskabets regler kunne ikke gemmes."
+  },
+  {
+    "id": "app.community_rules.accept.changed.app_error",
+    "translation": "Fællesskabets regler er ændret, siden du læste dem. Læs dem igen, før du accepterer."
+  },
+  {
+    "id": "app.community_rules.accept.not_member.app_error",
+    "translation": "Kun medlemmer af fællesskabet kan acceptere dets regler."
+  },
+  {
+    "id": "app.community_rules.accept.off.app_error",
+    "translation": "Dette fællesskab har ingen regler, du skal acceptere."
+  },
+  {
+    "id": "app.community_rules.delete.app_error",
+    "translation": "Kunne ikke slette fællesskabets regler."
+  },
+  {
+    "id": "app.community_rules.get.app_error",
+    "translation": "Kunne ikke hente fællesskabets regler."
+  },
+  {
+    "id": "app.community_rules.save.app_error",
+    "translation": "Kunne ikke gemme fællesskabets regler."
+  },
+  {
+    "id": "app.community_rules.stats.app_error",
+    "translation": "Kunne ikke tæle, hvem der har accepteret fællesskabets regler."
+  },
+  {
     "id": "app.compile_csv_chunks.header_error",
     "translation": "Kunne ikke skrive CSV-overskrifter."
   },
@@ -7255,6 +7459,34 @@
   {
     "id": "app.file_info.undelete_for_post_ids.app_error",
     "translation": "Kunne ikke gendanne vedhæftede filer til indlæg."
+  },
+  {
+    "id": "app.focus.bot.app_error",
+    "translation": "Bots kan ikke bruge fokustilstand."
+  },
+  {
+    "id": "app.focus.delete.app_error",
+    "translation": "Kan ikke slette fokustilstanden for kontoen."
+  },
+  {
+    "id": "app.focus.get.app_error",
+    "translation": "Kunne ikke hente din fokustilstand."
+  },
+  {
+    "id": "app.focus.mark_read.app_error",
+    "translation": "Kunne ikke markere det, du har gået glip af, som læst."
+  },
+  {
+    "id": "app.focus.save.app_error",
+    "translation": "Kan ikke starte fokustilstand."
+  },
+  {
+    "id": "app.focus.statuses_disabled.app_error",
+    "translation": "Fokustilstand kræver brugerstatusser, som er slået fra på denne server."
+  },
+  {
+    "id": "app.focus.summary.app_error",
+    "translation": "Kunne ikke hente, hvad du gik glip af, mens du var fokuseret."
   },
   {
     "id": "app.get_user_team_scheduled_posts.error",
@@ -12255,6 +12487,90 @@
     "translation": "Ugyldigt bruger-id."
   },
   {
+    "id": "model.agent_activity.expires.app_error",
+    "translation": "En agents aktivitet kan vare fra 1 sekund til 24 timer."
+  },
+  {
+    "id": "model.agent_activity.state.app_error",
+    "translation": "En agents status er inaktiv, tænker, arbejder, venter, blokeret eller offline."
+  },
+  {
+    "id": "model.agent_activity.text.app_error",
+    "translation": "Hvad agenten laver, skal passe på én linje på højst 200 tegn."
+  },
+  {
+    "id": "model.agent_activity.thread_post_id.app_error",
+    "translation": "Tråden for en agents aktivitet skal være et besked-ID."
+  },
+  {
+    "id": "model.ai_agent.access.app_error",
+    "translation": "De, der må tale med agenten, angiver ugyldige fællesskaber, kanaler, roller eller personer, eller er for mange."
+  },
+  {
+    "id": "model.ai_agent.access_community.app_error",
+    "translation": "En agents er kun tilgængelig for det pågældende community."
+  },
+  {
+    "id": "model.ai_agent.connection_id.app_error",
+    "translation": "Vælg den modelforbindelse, som agenten bruger."
+  },
+  {
+    "id": "model.ai_agent.external.app_error",
+    "translation": "En ekstern agent har ingen model, forbindelse eller systemprompt: dens program svarer."
+  },
+  {
+    "id": "model.ai_agent.max_tool_turns.app_error",
+    "translation": "En agent kræver mellem 0 (standard) og 250 værktøjskørsler."
+  },
+  {
+    "id": "model.ai_agent.model.app_error",
+    "translation": "Modelnavnet er for langt eller indeholder mere end én linje."
+  },
+  {
+    "id": "model.ai_agent.needs_attention.app_error",
+    "translation": "Notaten om, hvad der kræver opmærksomhed, er for lang."
+  },
+  {
+    "id": "model.ai_agent.reasoning.app_error",
+    "translation": "Ræsonnementsefforten skal være minimal, lav, medium eller høj, og dens budget skal være mellem 0 og 128.000 tokens."
+  },
+  {
+    "id": "model.ai_agent.scope.app_error",
+    "translation": "En agent tilhører serveren eller ét community."
+  },
+  {
+    "id": "model.ai_agent.system_prompt.app_error",
+    "translation": "Systemprompten er for lang (maks. 32.000 tegn)."
+  },
+  {
+    "id": "model.ai_agent.times.app_error",
+    "translation": "Oprettelses- og opdateringstidspunkterne for agenten mangler."
+  },
+  {
+    "id": "model.ai_agent.tools.app_error",
+    "translation": "Et værktøjsnavn er ugyldigt, eller der er for mange (maks. 256)."
+  },
+  {
+    "id": "model.ai_agent.user_id.app_error",
+    "translation": "En agent skal have en gyldig konto."
+  },
+  {
+    "id": "model.ai_agent_task.channel_id.app_error",
+    "translation": "Denne opgave kræver en kanal."
+  },
+  {
+    "id": "model.ai_agent_task.post_id.app_error",
+    "translation": "Denne opgave kræver en besked."
+  },
+  {
+    "id": "model.ai_agent_task.question.app_error",
+    "translation": "Stil et spørgsmål på op til 2.000 tegn."
+  },
+  {
+    "id": "model.ai_agent_task.task.app_error",
+    "translation": "Denne opgave er ikke en, som agenten kender."
+  },
+  {
     "id": "model.ai_connection.api_key.app_error",
     "translation": "API-nøglen er for lang eller indeholder et linjeskift."
   },
@@ -12417,6 +12733,10 @@
   {
     "id": "model.bot.is_valid.description.app_error",
     "translation": "Ugyldig beskrivelse."
+  },
+  {
+    "id": "model.bot.is_valid.kind.app_error",
+    "translation": "En bot-konto er en bot eller en agent."
   },
   {
     "id": "model.bot.is_valid.update_at.app_error",
@@ -12805,6 +13125,14 @@
   {
     "id": "model.command_response.is_valid.response_type.app_error",
     "translation": "Ugyldig svartype."
+  },
+  {
+    "id": "model.community_rules.empty.app_error",
+    "translation": "Skriv reglerne, før du aktiverer dem."
+  },
+  {
+    "id": "model.community_rules.text.app_error",
+    "translation": "Reglerne må højst være {{.Max}} tegn lange."
   },
   {
     "id": "model.compliance.is_valid.create_at.app_error",
@@ -13583,6 +13911,10 @@
     "translation": "BurnOnReadDurationSeconds skal være et positivt tal."
   },
   {
+    "id": "model.config.is_valid.service_settings.burn_on_read_maximum_duration_seconds.app_error",
+    "translation": "BurnOnReadMaximumDurationSeconds skal være et positivt tal."
+  },
+  {
     "id": "model.config.is_valid.service_settings.burn_on_read_maximum_time_to_live_seconds.app_error",
     "translation": "BurnOnReadMaximumTimeToLiveSeconds skal være et positivt tal."
   },
@@ -13841,6 +14173,22 @@
   {
     "id": "model.file_info.is_valid.user_id.app_error",
     "translation": "Ugyldig værdi for user_id."
+  },
+  {
+    "id": "model.focus.duration.app_error",
+    "translation": "Fokustilvaren skal være mellem ét minut og én uge."
+  },
+  {
+    "id": "model.focus.duration_or_end.app_error",
+    "translation": "Vælg, hvor længe du vil fokusere: en varighed eller et sluttidspunkt."
+  },
+  {
+    "id": "model.focus.reason.app_error",
+    "translation": "Årsagen er for lang. Den bliver til din brugerdefinerede status, som må være på højst 100 tegn."
+  },
+  {
+    "id": "model.focus.window.app_error",
+    "translation": "Tidsintervallet for resuméet er ugyldigt: Det skal være i fortiden, i kronologisk orden og højst otte dage langt."
   },
   {
     "id": "model.group.channel_id.app_error",

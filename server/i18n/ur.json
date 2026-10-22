@@ -1716,6 +1716,38 @@
     "translation": "{{.Username}} اس چینل کا رکن نہیں ہے۔"
   },
   {
+    "id": "api.command_rules.agree_hint",
+    "translation": "ان سے اتفاق کرنے کے لیے `/rules agree` ٹائپ کریں، اس کے بعد آپ پوسٹ کر سکیں گے۔"
+  },
+  {
+    "id": "api.command_rules.agreed",
+    "translation": "شکریہ: آپ نے {{.Community}} کے قواعد سے اتفاق کیا ہے۔ اب آپ وہاں پوسٹ کر سکتے ہیں۔"
+  },
+  {
+    "id": "api.command_rules.already_agreed",
+    "translation": "آپ نے ان قواعد سے اتفاق کیا ہے۔"
+  },
+  {
+    "id": "api.command_rules.desc",
+    "translation": "اس کمیونٹی کے قواعد پڑھیں، یا ان سے اتفاق کریں"
+  },
+  {
+    "id": "api.command_rules.hint",
+    "translation": "[متفق]"
+  },
+  {
+    "id": "api.command_rules.name",
+    "translation": "rules"
+  },
+  {
+    "id": "api.command_rules.none",
+    "translation": "اس کمیونٹی میں متفق ہونے کے لیے کوئی اصول نہیں ہیں۔"
+  },
+  {
+    "id": "api.command_rules.title",
+    "translation": "**{{.Community}} کے قواعد**"
+  },
+  {
     "id": "api.command_search.desc",
     "translation": "پیغامات میں متن تلاش کریں"
   },
@@ -2928,6 +2960,14 @@
     "translation": "@{{.Username}} کو اس تذکرے کی اطلاع نہیں ملی کیونکہ وہ اس ٹیم کے رکن نہیں ہیں۔"
   },
   {
+    "id": "api.post.community_rules_not_accepted",
+    "translation": "پوسٹ کرنے سے پہلے اس کمیونٹی کے قواعد سے متفق ہوں۔"
+  },
+  {
+    "id": "api.post.community_rules_not_accepted.reminder",
+    "translation": "یہ کمیونٹی پوسٹ کرنے سے پہلے سب سے اپنے قواعد پر اتفاق کرنے کی درخواست کرتی ہے۔ انہیں پڑھنے کے لیے `/rules` ٹائپ کریں، اور اتفاق کرنے کے لیے `/rules agree` ٹائپ کریں۔"
+  },
+  {
     "id": "api.post.create_post.burn_on_read.abac_denied.app_error",
     "translation": "آپ کے پاس اس چینل میں burn-on-read پیغامات بھیجنے کی اجازت نہیں ہے۔"
   },
@@ -3030,6 +3070,10 @@
   {
     "id": "api.post.fill_in_post_props.burn_on_read.config.app_error",
     "translation": "پڑھنے پر جلنے والی پوسٹس فعال نہیں ہیں۔ براہ کرم فیچر فلیگ اور سروس سیٹنگ کو فعال کریں۔"
+  },
+  {
+    "id": "api.post.fill_in_post_props.burn_on_read.duration.app_error",
+    "translation": "برن آن ریڈ کی مدت ملی سیکنڈز میں ایک مثبت عدد ہونی چاہیے۔"
   },
   {
     "id": "api.post.fill_in_post_props.burn_on_read.self_dm.app_error",
@@ -5192,6 +5236,134 @@
     "translation": "برج کال ناکام ہوئی۔"
   },
   {
+    "id": "app.agents.status.no_agents",
+    "translation": "آپ کے لیے کوئی ایجنٹ دستیاب نہیں ہے۔"
+  },
+  {
+    "id": "app.ai.agent.access.app_error",
+    "translation": "آپ یہاں اس ایجنٹ سے بات نہیں کر سکتے۔"
+  },
+  {
+    "id": "app.ai.agent.activity.get.app_error",
+    "translation": "ایجنٹس کی سرگرمی پڑھی نہیں جا سکی۔"
+  },
+  {
+    "id": "app.ai.agent.activity.save.app_error",
+    "translation": "ایجنٹ کی سرگرمی محفوظ نہیں کی جا سکی۔"
+  },
+  {
+    "id": "app.ai.agent.connection.app_error",
+    "translation": "یہاں موجود ایجنٹ اس ماڈل کنکشن کو استعمال نہیں کر سکتا: سرور سطح کے ایجنٹ کو سرور سطح کے کنکشن کی ضرورت ہوتی ہے، اور کمیونٹی کے ایجنٹ کو اپنی کمیونٹی کے کنکشن یا اس کے ساتھ شیئر کیے گئے کنکشن کی ضرورت ہوتی ہے۔"
+  },
+  {
+    "id": "app.ai.agent.conversations.app_error",
+    "translation": "ایجنٹس کے ساتھ آپ کے مکالمے لوڈ نہیں ہو سکے۔"
+  },
+  {
+    "id": "app.ai.agent.get.app_error",
+    "translation": "ایجنٹس کو پڑھا نہیں جا سکا۔"
+  },
+  {
+    "id": "app.ai.agent.manage_permission.app_error",
+    "translation": "آپ یہاں ایجنٹس کا انتظام نہیں کر سکتے۔"
+  },
+  {
+    "id": "app.ai.agent.not_found.app_error",
+    "translation": "یہ ایجنٹ موجود نہیں ہے، یا اسے حذف کر دیا گیا ہے۔"
+  },
+  {
+    "id": "app.ai.agent.references.app_error",
+    "translation": "ایجنٹ نے کوئی ایسا کمیونٹی، چینل یا فرد کا ذکر کیا ہے جو موجود نہیں ہے، یا کسی دوسری کمیونٹی کا چینل ہے۔"
+  },
+  {
+    "id": "app.ai.agent.save.app_error",
+    "translation": "ایجنٹ محفوظ نہیں کیا جا سکا۔"
+  },
+  {
+    "id": "app.ai.agent.task.agent_disabled.app_error",
+    "translation": "یہ ایجنٹ بند ہے۔"
+  },
+  {
+    "id": "app.ai.agent.task.channel.app_error",
+    "translation": "چینل موجود نہیں ہے، یا آپ اسے پڑھ نہیں سکتے۔"
+  },
+  {
+    "id": "app.ai.agent.task.external.app_error",
+    "translation": "بیرونی ایجنٹ یہاں ٹاسک نہیں لیتا: اسے پیغام بھیجیں۔"
+  },
+  {
+    "id": "app.ai.agent.task.not_transcription.app_error",
+    "translation": "یہ پیغام کال کی ٹرانسکرپشن نہیں ہے۔"
+  },
+  {
+    "id": "app.ai.agent.task.post.app_error",
+    "translation": "پیغام موجود نہیں ہے، یا آپ اسے پڑھ نہیں سکتے۔"
+  },
+  {
+    "id": "app.ai.agent.task.request.ask_channel",
+    "translation": "{{.Channel}} کے بارے میں: {{.Question}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items",
+    "translation": "اس سلسلے میں کرنے کے کام تلاش کریں: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items_channel",
+    "translation": "{{.Channel}} کے تازہ ترین پیغامات میں کرنے کے کام تلاش کریں"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items_channel_since",
+    "translation": "{{.Since}} کے بعد سے {{.Channel}} میں افعال کی فہرست تلاش کریں"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions",
+    "translation": "اس سلسلے میں کھلے سوالات تلاش کریں: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions_channel",
+    "translation": "{{.Channel}} کے تازہ ترین پیغامات میں کھلے سوالات تلاش کریں"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions_channel_since",
+    "translation": "{{.Since}} کے بعد سے {{.Channel}} میں کھلے سوالات تلاش کریں"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_channel",
+    "translation": "{{.Channel}} کے تازہ ترین پیغامات کا خلاصہ بنائیں"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_channel_since",
+    "translation": "{{.Since}} کے بعد سے {{.Channel}} کے پیغامات کا خلاصہ بنائیں"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_thread",
+    "translation": "اس سلسلے کا خلاصہ کریں: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_transcription",
+    "translation": "اس کال کی ٹرانسکرپشن کا خلاصہ بنائیں: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.this_conversation",
+    "translation": "یہ مکالمہ"
+  },
+  {
+    "id": "app.ai.agent.turn.empty",
+    "translation": "معذرت، میرے پاس اس کا کوئی جواب نہیں ہے۔"
+  },
+  {
+    "id": "app.ai.agent.turn.failed",
+    "translation": "معذرت، میں جواب نہیں دے سکا: {{.Reason}}"
+  },
+  {
+    "id": "app.ai.agent.turn.interrupted",
+    "translation": "معذرت، میرا جواب رک گیا۔ براہ کرم کچھ دیر بعد دوبارہ پوچھیں۔"
+  },
+  {
+    "id": "app.ai.agent.turn.not_allowed",
+    "translation": "{{.Agent}} یہاں آپ کے لیے دستیاب نہیں ہے۔"
+  },
+  {
     "id": "app.ai.call.audience.app_error",
     "translation": "آپ اس ماڈل کنکشن کا استعمال نہیں کر سکتے۔"
   },
@@ -6088,6 +6260,38 @@
     "translation": "یہ ویلیو اٹری بیٹ {{.Name}} کے لیے درست نہیں ہے۔"
   },
   {
+    "id": "app.community_rules.accept.app_error",
+    "translation": "آپ کی کمیونٹی کے قواعد و ضوابط سے اتفاق محفوظ نہیں کیا جا سکا۔"
+  },
+  {
+    "id": "app.community_rules.accept.changed.app_error",
+    "translation": "آپ کے پڑھنے کے بعد کمیونٹی کے قواعد تبدیل ہو گئے ہیں۔ انہیں قبول کرنے سے پہلے دوبارہ پڑھیں۔"
+  },
+  {
+    "id": "app.community_rules.accept.not_member.app_error",
+    "translation": "صرف کمیونٹی کے رکن ہی اس کے قواعد سے اتفاق کر سکتے ہیں۔"
+  },
+  {
+    "id": "app.community_rules.accept.off.app_error",
+    "translation": "اس کمیونٹی میں متفق ہونے کے لیے کوئی اصول نہیں ہیں۔"
+  },
+  {
+    "id": "app.community_rules.delete.app_error",
+    "translation": "کمیونٹی کے قواعد حذف نہیں کیے جا سکے۔"
+  },
+  {
+    "id": "app.community_rules.get.app_error",
+    "translation": "کمیونٹی کے قواعد حاصل نہیں کیے جا سکے۔"
+  },
+  {
+    "id": "app.community_rules.save.app_error",
+    "translation": "کمیونٹی کے قواعد محفوظ نہیں کیے جا سکے۔"
+  },
+  {
+    "id": "app.community_rules.stats.app_error",
+    "translation": "کمیونٹی کے قواعد سے اتفاق کرنے والوں کی گنتی نہیں کی جا سکی۔"
+  },
+  {
     "id": "app.compile_csv_chunks.header_error",
     "translation": "CSV ہیڈرز لکھنے میں ناکامی۔"
   },
@@ -6842,6 +7046,34 @@
   {
     "id": "app.file_info.undelete_for_post_ids.app_error",
     "translation": "پوسٹ کی منسلک فائلوں کو بحال کرنے میں ناکامی۔"
+  },
+  {
+    "id": "app.focus.bot.app_error",
+    "translation": "بوٹس فوکس موڈ استعمال نہیں کر سکتے۔"
+  },
+  {
+    "id": "app.focus.delete.app_error",
+    "translation": "اکاؤنٹ کا فوکس موڈ حذف نہیں کیا جا سکا۔"
+  },
+  {
+    "id": "app.focus.get.app_error",
+    "translation": "آپ کا فوکس موڈ حاصل نہیں کیا جا سکا۔"
+  },
+  {
+    "id": "app.focus.mark_read.app_error",
+    "translation": "آپ کے چھوٹے ہوئے پیغامات کو پڑھا ہوا نہیں نشان زد کیا جا سکا۔"
+  },
+  {
+    "id": "app.focus.save.app_error",
+    "translation": "فوکس موڈ شروع نہیں کیا جا سکا۔"
+  },
+  {
+    "id": "app.focus.statuses_disabled.app_error",
+    "translation": "فوکس موڈ کے لیے صارفین کے اسٹیٹس درکار ہیں، جو اس سرور پر بند ہیں۔"
+  },
+  {
+    "id": "app.focus.summary.app_error",
+    "translation": "فوکس کے دوران آپ نے جو کچھ چھوڑا ہے، اسے حاصل نہیں کیا جا سکا۔"
   },
   {
     "id": "app.get_user_team_scheduled_posts.error",
@@ -11540,6 +11772,90 @@
     "translation": "غلط صارف ID۔"
   },
   {
+    "id": "model.agent_activity.expires.app_error",
+    "translation": "ایجنٹ کی سرگرمی 1 سیکنڈ سے 24 گھنٹے کے درمیان ہوتی ہے۔"
+  },
+  {
+    "id": "model.agent_activity.state.app_error",
+    "translation": "ایجنٹ کی حالت خالی، سوچ رہا ہے، کام کر رہا ہے، انتظار کر رہا ہے، رکاوٹ یا آف لائن ہو سکتی ہے۔"
+  },
+  {
+    "id": "model.agent_activity.text.app_error",
+    "translation": "ایجنٹ کا کام زیادہ سے زیادہ 200 حروف والی ایک سطر میں آنا چاہیے۔"
+  },
+  {
+    "id": "model.agent_activity.thread_post_id.app_error",
+    "translation": "ایجنٹ کی سرگرمی کا سلسلہ ایک پیغام آئی ڈی ہونا چاہیے۔"
+  },
+  {
+    "id": "model.ai_agent.access.app_error",
+    "translation": "ایجنٹ سے بات کرنے والوں کی فہرست میں غلط کمیونٹیز، چینلز، کردار یا افراد شامل ہیں، یا تعداد بہت زیادہ ہے۔"
+  },
+  {
+    "id": "model.ai_agent.access_community.app_error",
+    "translation": "کسی کمیونٹی کا ایجنٹ صرف اسی کمیونٹی کے لیے ہے۔"
+  },
+  {
+    "id": "model.ai_agent.connection_id.app_error",
+    "translation": "وہ ماڈل کنکشن منتخب کریں جو ایجنٹ استعمال کرتا ہے۔"
+  },
+  {
+    "id": "model.ai_agent.external.app_error",
+    "translation": "بیرونی ایجنٹ کا کوئی ماڈل، کنکشن یا سسٹم پرامپٹ نہیں ہے: اس کا پروگرام جوابات فراہم کرتا ہے۔"
+  },
+  {
+    "id": "model.ai_agent.max_tool_turns.app_error",
+    "translation": "ایجنٹ 0 (ڈیفالٹ) سے 250 ٹول ٹرنز کے درمیان لیتا ہے۔"
+  },
+  {
+    "id": "model.ai_agent.model.app_error",
+    "translation": "ماڈل کا نام بہت طویل ہے یا اس میں ایک سے زیادہ سطریں ہیں۔"
+  },
+  {
+    "id": "model.ai_agent.needs_attention.app_error",
+    "translation": "توجہ کی ضرورت کے بارے میں نوٹ بہت طویل ہے۔"
+  },
+  {
+    "id": "model.ai_agent.reasoning.app_error",
+    "translation": " reasoning کی کوشش کم، درمیانی یا زیادہ ہونی چاہیے، اور اس کا بجٹ 0 سے 128,000 ٹوکنز کے درمیان ہونا چاہیے۔"
+  },
+  {
+    "id": "model.ai_agent.scope.app_error",
+    "translation": "ایک ایجنٹ یا تو سرور سے تعلق رکھتا ہے یا کسی ایک کمیونٹی سے۔"
+  },
+  {
+    "id": "model.ai_agent.system_prompt.app_error",
+    "translation": "سسٹم پرامپٹ بہت طویل ہے (زیادہ سے زیادہ 32,000 حروف)۔"
+  },
+  {
+    "id": "model.ai_agent.times.app_error",
+    "translation": "ایجنٹ کی تخلیق اور اپ ڈیٹ کا وقت موجود نہیں ہے۔"
+  },
+  {
+    "id": "model.ai_agent.tools.app_error",
+    "translation": "ٹول کا نام غلط ہے، یا بہت زیادہ ٹولز ہیں (زیادہ سے زیادہ 256)۔"
+  },
+  {
+    "id": "model.ai_agent.user_id.app_error",
+    "translation": "ایجنٹ کے لیے ایک درست اکاؤنٹ ضروری ہے۔"
+  },
+  {
+    "id": "model.ai_agent_task.channel_id.app_error",
+    "translation": "اس ٹاسک کے لیے چینل درکار ہے۔"
+  },
+  {
+    "id": "model.ai_agent_task.post_id.app_error",
+    "translation": "اس ٹاسک کے لیے ایک پیغام درکار ہے۔"
+  },
+  {
+    "id": "model.ai_agent_task.question.app_error",
+    "translation": "2,000 حروف تک کا سوال پوچھیں۔"
+  },
+  {
+    "id": "model.ai_agent_task.task.app_error",
+    "translation": "یہ ٹاسک کسی ایجنٹ کو معلوم نہیں ہے۔"
+  },
+  {
     "id": "model.ai_connection.api_key.app_error",
     "translation": "API کلید بہت لمبی ہے یا اس میں لائن بریک شامل ہے۔"
   },
@@ -11702,6 +12018,10 @@
   {
     "id": "model.bot.is_valid.description.app_error",
     "translation": "غلط تفصیل۔"
+  },
+  {
+    "id": "model.bot.is_valid.kind.app_error",
+    "translation": "بوٹ اکاؤنٹ یا تو بوٹ ہوتا ہے یا ایجنٹ۔"
   },
   {
     "id": "model.bot.is_valid.update_at.app_error",
@@ -12090,6 +12410,14 @@
   {
     "id": "model.command_response.is_valid.response_type.app_error",
     "translation": "غلط جواب کی قسم۔"
+  },
+  {
+    "id": "model.community_rules.empty.app_error",
+    "translation": "نظام کو فعال کرنے سے پہلے قواعد لکھیں۔"
+  },
+  {
+    "id": "model.community_rules.text.app_error",
+    "translation": "قواعد زیادہ سے زیادہ {{.Max}} حروف پر مشتمل ہو سکتے ہیں۔"
   },
   {
     "id": "model.compliance.is_valid.create_at.app_error",
@@ -12868,6 +13196,10 @@
     "translation": "BurnOnReadDurationSeconds ایک مثبت نمبر ہونا چاہیے۔"
   },
   {
+    "id": "model.config.is_valid.service_settings.burn_on_read_maximum_duration_seconds.app_error",
+    "translation": "BurnOnReadMaximumDurationSeconds ایک مثبت عدد ہونا چاہیے۔"
+  },
+  {
     "id": "model.config.is_valid.service_settings.burn_on_read_maximum_time_to_live_seconds.app_error",
     "translation": "BurnOnReadMaximumTimeToLiveSeconds ایک مثبت نمبر ہونا چاہیے۔"
   },
@@ -13126,6 +13458,22 @@
   {
     "id": "model.file_info.is_valid.user_id.app_error",
     "translation": "user_id کے لیے غلط قدر۔"
+  },
+  {
+    "id": "model.focus.duration.app_error",
+    "translation": "فوکس موڈ ایک منٹ سے ایک ہفتے تک رہ سکتا ہے۔"
+  },
+  {
+    "id": "model.focus.duration_or_end.app_error",
+    "translation": "فوکس کی مدت کا انتخاب کریں: ایک مدت یا اختتامی وقت۔"
+  },
+  {
+    "id": "model.focus.reason.app_error",
+    "translation": "وجہ بہت لمبی ہے: یہ آپ کی حسبِ ضرورت اسٹیٹس بن جائے گی، جس کی زیادہ سے زیادہ لمبائی 100 حروف ہے۔"
+  },
+  {
+    "id": "model.focus.window.app_error",
+    "translation": "خلاصے کا وقت کا دورہ درست نہیں ہے: یہ ماضی میں ہونا چاہیے، ترتیب وار ہونا چاہیے، اور زیادہ سے زیادہ آٹھ دنوں تک کا ہونا چاہیے۔"
   },
   {
     "id": "model.group.channel_id.app_error",

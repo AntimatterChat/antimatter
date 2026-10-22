@@ -1716,6 +1716,38 @@
     "translation": "{{.Username}} ليس عضواً في هذه القناة."
   },
   {
+    "id": "api.command_rules.agree_hint",
+    "translation": "اكتب `/rules agree` للموافقة على القواعد، ثم يمكنك النشر."
+  },
+  {
+    "id": "api.command_rules.agreed",
+    "translation": "شكرًا لك: لقد وافقت على قواعد {{.Community}}. يمكنك النشر هناك الآن."
+  },
+  {
+    "id": "api.command_rules.already_agreed",
+    "translation": "لقد وافقت على هذه القواعد."
+  },
+  {
+    "id": "api.command_rules.desc",
+    "translation": "اقرأ قواعد هذه المجموعة، أو وافق عليها"
+  },
+  {
+    "id": "api.command_rules.hint",
+    "translation": "[موافقة]"
+  },
+  {
+    "id": "api.command_rules.name",
+    "translation": "rules"
+  },
+  {
+    "id": "api.command_rules.none",
+    "translation": "لا توجد قواعد لهذه المجموعة تتطلب الموافقة عليها."
+  },
+  {
+    "id": "api.command_rules.title",
+    "translation": "**قواعد {{.Community}}**"
+  },
+  {
     "id": "api.command_search.desc",
     "translation": "البحث عن نص في الرسائل"
   },
@@ -2928,6 +2960,14 @@
     "translation": "لم يتم إشعار @{{.Username}} بهذه الإشارة لأنه ليس عضوًا في هذا الفريق."
   },
   {
+    "id": "api.post.community_rules_not_accepted",
+    "translation": "وافق على قواعد هذه المجموعة قبل النشر فيها."
+  },
+  {
+    "id": "api.post.community_rules_not_accepted.reminder",
+    "translation": "تطلب هذه المجموعة من الجميع الموافقة على قواعدها قبل النشر. اكتب `/rules` لقراءتها، ثم `/rules agree` للموافقة عليها."
+  },
+  {
     "id": "api.post.create_post.burn_on_read.abac_denied.app_error",
     "translation": "ليس لديك صلاحية إرسال رسائل تُحرق بعد القراءة في هذه القناة."
   },
@@ -3030,6 +3070,10 @@
   {
     "id": "api.post.fill_in_post_props.burn_on_read.config.app_error",
     "translation": "المنشورات التي تحترق بعد القراءة غير مفعّلة. يرجى تفعيل علم الميزة وإعداد الخدمة."
+  },
+  {
+    "id": "api.post.fill_in_post_props.burn_on_read.duration.app_error",
+    "translation": "يجب أن تكون مدة الحرق بعد القراءة عددًا موجبًا من المللي ثانية."
   },
   {
     "id": "api.post.fill_in_post_props.burn_on_read.self_dm.app_error",
@@ -5192,6 +5236,134 @@
     "translation": "فشلت مكالمة الجسر."
   },
   {
+    "id": "app.agents.status.no_agents",
+    "translation": "لا يوجد وكيل متاح لك."
+  },
+  {
+    "id": "app.ai.agent.access.app_error",
+    "translation": "لا يمكنك التحدث مع هذا الوكيل هنا."
+  },
+  {
+    "id": "app.ai.agent.activity.get.app_error",
+    "translation": "تعذر قراءة نشاط الوكلاء."
+  },
+  {
+    "id": "app.ai.agent.activity.save.app_error",
+    "translation": "تعذر حفظ نشاط الوكيل."
+  },
+  {
+    "id": "app.ai.agent.connection.app_error",
+    "translation": "لا يمكن لأحد الوكلاء هنا استخدام اتصال هذا النموذج: يتطلب الوكيل على مستوى الخادم اتصالاً على مستوى الخادم، ويتطلب وكيل المجموعة اتصال مجموعته الخاصة أو اتصالاً مشتركًا معه."
+  },
+  {
+    "id": "app.ai.agent.conversations.app_error",
+    "translation": "تعذر تحميل محادثاتك مع الوكلاء."
+  },
+  {
+    "id": "app.ai.agent.get.app_error",
+    "translation": "تعذر قراءة الوكلاء."
+  },
+  {
+    "id": "app.ai.agent.manage_permission.app_error",
+    "translation": "لا يمكنك إدارة الوكلاء هنا."
+  },
+  {
+    "id": "app.ai.agent.not_found.app_error",
+    "translation": "هذا الوكيل غير موجود، أو تم حذفه."
+  },
+  {
+    "id": "app.ai.agent.references.app_error",
+    "translation": "يشير الوكيل إلى مجموعة أو قناة أو شخص غير موجود، أو إلى قناة في مجموعة أخرى."
+  },
+  {
+    "id": "app.ai.agent.save.app_error",
+    "translation": "تعذر حفظ الوكيل."
+  },
+  {
+    "id": "app.ai.agent.task.agent_disabled.app_error",
+    "translation": "هذا الوكيل معطّل."
+  },
+  {
+    "id": "app.ai.agent.task.channel.app_error",
+    "translation": "القناة غير موجودة، أو لا يمكنك قراءتها."
+  },
+  {
+    "id": "app.ai.agent.task.external.app_error",
+    "translation": "لا يقبل الوكيل الخارجي المهام هنا: أرسل له رسالة بدلاً من ذلك."
+  },
+  {
+    "id": "app.ai.agent.task.not_transcription.app_error",
+    "translation": "هذه الرسالة ليست نسخة نصية لمكالمة."
+  },
+  {
+    "id": "app.ai.agent.task.post.app_error",
+    "translation": "الرسالة غير موجودة، أو لا يمكنك قراءتها."
+  },
+  {
+    "id": "app.ai.agent.task.request.ask_channel",
+    "translation": "بخصوص {{.Channel}}: {{.Question}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items",
+    "translation": "ابحث عن عناصر الإجراء في سلسلة الرسائل هذه: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items_channel",
+    "translation": "ابحث عن عناصر الإجراء في أحدث رسائل {{.Channel}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items_channel_since",
+    "translation": "ابحث عن عناصر الإجراء في {{.Channel}} منذ {{.Since}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions",
+    "translation": "ابحث عن الأسئلة المفتوحة في سلسلة الرسائل هذه: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions_channel",
+    "translation": "ابحث عن الأسئلة المفتوحة في أحدث رسائل {{.Channel}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions_channel_since",
+    "translation": "ابحث عن الأسئلة المفتوحة في {{.Channel}} منذ {{.Since}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_channel",
+    "translation": "لخّص أحدث الرسائل في {{.Channel}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_channel_since",
+    "translation": "لخّص الرسائل في {{.Channel}} منذ {{.Since}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_thread",
+    "translation": "لخّص سلسلة الرسائل هذه: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_transcription",
+    "translation": "لخّص النسخة النصية لهذه المكالمة: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.this_conversation",
+    "translation": "هذه المحادثة"
+  },
+  {
+    "id": "app.ai.agent.turn.empty",
+    "translation": "عذرًا، ليس لدي إجابة عن ذلك."
+  },
+  {
+    "id": "app.ai.agent.turn.failed",
+    "translation": "عذرًا، لم أتمكن من الإجابة: {{.Reason}}"
+  },
+  {
+    "id": "app.ai.agent.turn.interrupted",
+    "translation": "عذرًا، تم قطع إجابتي. حاول سؤال مرة أخرى بعد قليل."
+  },
+  {
+    "id": "app.ai.agent.turn.not_allowed",
+    "translation": "{{.Agent}} غير متاح لك هنا."
+  },
+  {
     "id": "app.ai.call.audience.app_error",
     "translation": "لا يمكنك استخدام هذا الاتصال بالنموذج."
   },
@@ -6088,6 +6260,38 @@
     "translation": "هذه القيمة غير متوافقة مع السمة {{.Name}}."
   },
   {
+    "id": "app.community_rules.accept.app_error",
+    "translation": "تعذر حفظ موافقتك على قواعد المجتمع."
+  },
+  {
+    "id": "app.community_rules.accept.changed.app_error",
+    "translation": "تغيّرت قواعد المجتمع منذ أن قرأتها. اقرأها مرة أخرى قبل الموافقة."
+  },
+  {
+    "id": "app.community_rules.accept.not_member.app_error",
+    "translation": "يمكن لأعضاء المجتمع فقط الموافقة على قواعده."
+  },
+  {
+    "id": "app.community_rules.accept.off.app_error",
+    "translation": "لا توجد قواعد لهذا المجتمع للموافقة عليها."
+  },
+  {
+    "id": "app.community_rules.delete.app_error",
+    "translation": "تعذر حذف قواعد المجتمع."
+  },
+  {
+    "id": "app.community_rules.get.app_error",
+    "translation": "تعذر الحصول على قواعد المجتمع."
+  },
+  {
+    "id": "app.community_rules.save.app_error",
+    "translation": "تعذر حفظ قواعد المجتمع."
+  },
+  {
+    "id": "app.community_rules.stats.app_error",
+    "translation": "تعذّر حساب من وافقوا على قواعد المجتمع."
+  },
+  {
     "id": "app.compile_csv_chunks.header_error",
     "translation": "فشل في كتابة رؤوس ملف CSV."
   },
@@ -6842,6 +7046,34 @@
   {
     "id": "app.file_info.undelete_for_post_ids.app_error",
     "translation": "فشل في استعادة مرفقات ملفات المشاركة."
+  },
+  {
+    "id": "app.focus.bot.app_error",
+    "translation": "لا يمكن للبوتات استخدام وضع التركيز."
+  },
+  {
+    "id": "app.focus.delete.app_error",
+    "translation": "تعذّر حذف وضع التركيز للحساب."
+  },
+  {
+    "id": "app.focus.get.app_error",
+    "translation": "تعذّر الحصول على وضع التركيز الخاص بك."
+  },
+  {
+    "id": "app.focus.mark_read.app_error",
+    "translation": "تعذّر تعليم ما فاتك كمقروء."
+  },
+  {
+    "id": "app.focus.save.app_error",
+    "translation": "تعذّر بدء وضع التركيز."
+  },
+  {
+    "id": "app.focus.statuses_disabled.app_error",
+    "translation": "يتطلب وضع التركيز حالات المستخدمين، وهي معطلة على هذا الخادم."
+  },
+  {
+    "id": "app.focus.summary.app_error",
+    "translation": "تعذّر الحصول على ملخص لما فاتك أثناء التركيز."
   },
   {
     "id": "app.get_user_team_scheduled_posts.error",
@@ -11540,6 +11772,90 @@
     "translation": "معرّف المستخدم غير صالح."
   },
   {
+    "id": "model.agent_activity.expires.app_error",
+    "translation": "تستمر نشاطات الوكيل بين ثانية واحدة و24 ساعة."
+  },
+  {
+    "id": "model.agent_activity.state.app_error",
+    "translation": "حالة الوكيل هي: خامل، يفكر، يعمل، ينتظر، محظور، أو غير متصل."
+  },
+  {
+    "id": "model.agent_activity.text.app_error",
+    "translation": "يجب أن يكون وصف ما يفعله الوكيل في سطر واحد لا يتجاوز 200 حرف."
+  },
+  {
+    "id": "model.agent_activity.thread_post_id.app_error",
+    "translation": "يجب أن تكون سلسلة رسائل نشاط الوكيل معرّف رسالة صالحًا."
+  },
+  {
+    "id": "model.ai_agent.access.app_error",
+    "translation": "أسماء المجتمعات أو القنوات أو الأدوار أو الأشخاص المسموح لهم بالحديث مع الوكيل غير صالحة أو كثيرة جدًا."
+  },
+  {
+    "id": "model.ai_agent.access_community.app_error",
+    "translation": "وكيل المجتمع مخصص لمجتمعه الخاص فقط."
+  },
+  {
+    "id": "model.ai_agent.connection_id.app_error",
+    "translation": "اختر اتصال النموذج الذي يستخدمه الوكيل."
+  },
+  {
+    "id": "model.ai_agent.external.app_error",
+    "translation": "لا يحتوي الوكيل الخارجي على نموذج أو اتصال أو مطالبة نظام؛ بل يجيب برنامجه."
+  },
+  {
+    "id": "model.ai_agent.max_tool_turns.app_error",
+    "translation": "يتراوح عدد دورات الأدوات للوكيل بين 0 (الافتراضي) و250."
+  },
+  {
+    "id": "model.ai_agent.model.app_error",
+    "translation": "اسم النموذج طويل جدًا أو يحتوي على أكثر من سطر."
+  },
+  {
+    "id": "model.ai_agent.needs_attention.app_error",
+    "translation": "ملاحظة ما يتطلب الانتباه طويلة جدًا."
+  },
+  {
+    "id": "model.ai_agent.reasoning.app_error",
+    "translation": "جهد الاستدلال هو: أدنى، منخفض، متوسط، أو عالٍ، وميزانيته بين 0 و128,000 رمز."
+  },
+  {
+    "id": "model.ai_agent.scope.app_error",
+    "translation": "ينتمي الوكيل إلى الخادم أو إلى مجتمع واحد."
+  },
+  {
+    "id": "model.ai_agent.system_prompt.app_error",
+    "translation": "مطالبة النظام طويلة جدًا (32,000 حرف كحد أقصى)."
+  },
+  {
+    "id": "model.ai_agent.times.app_error",
+    "translation": "تاريخا إنشاء الوكيل وتحديثه مفقودان."
+  },
+  {
+    "id": "model.ai_agent.tools.app_error",
+    "translation": "اسم الأداة غير صالح، أو عددها كبير جدًا (256 كحد أقصى)."
+  },
+  {
+    "id": "model.ai_agent.user_id.app_error",
+    "translation": "يحتاج الوكيل إلى حساب صالح."
+  },
+  {
+    "id": "model.ai_agent_task.channel_id.app_error",
+    "translation": "تحتاج هذه المهمة إلى قناة."
+  },
+  {
+    "id": "model.ai_agent_task.post_id.app_error",
+    "translation": "تتطلب هذه المهمة رسالة."
+  },
+  {
+    "id": "model.ai_agent_task.question.app_error",
+    "translation": "اطرح سؤالًا لا يتجاوز 2000 حرف."
+  },
+  {
+    "id": "model.ai_agent_task.task.app_error",
+    "translation": "هذه المهمة غير معروفة لدى الوكيل."
+  },
+  {
     "id": "model.ai_connection.api_key.app_error",
     "translation": "مفتاح API طويل جدًا أو يحتوي على سطر جديد."
   },
@@ -11702,6 +12018,10 @@
   {
     "id": "model.bot.is_valid.description.app_error",
     "translation": "الوصف غير صالح."
+  },
+  {
+    "id": "model.bot.is_valid.kind.app_error",
+    "translation": "حساب البوت هو بوت أو وكيل."
   },
   {
     "id": "model.bot.is_valid.update_at.app_error",
@@ -12090,6 +12410,14 @@
   {
     "id": "model.command_response.is_valid.response_type.app_error",
     "translation": "نوع الاستجابة غير صالح."
+  },
+  {
+    "id": "model.community_rules.empty.app_error",
+    "translation": "اكتب القواعد قبل تفعيلها."
+  },
+  {
+    "id": "model.community_rules.text.app_error",
+    "translation": "لا يمكن أن تتجاوز القواعد {{.Max}} حرفًا."
   },
   {
     "id": "model.compliance.is_valid.create_at.app_error",
@@ -12868,6 +13196,10 @@
     "translation": "يجب أن يكون BurnOnReadDurationSeconds رقمًا موجبًا."
   },
   {
+    "id": "model.config.is_valid.service_settings.burn_on_read_maximum_duration_seconds.app_error",
+    "translation": "يجب أن تكون قيمة BurnOnReadMaximumDurationSeconds رقمًا موجبًا."
+  },
+  {
     "id": "model.config.is_valid.service_settings.burn_on_read_maximum_time_to_live_seconds.app_error",
     "translation": "يجب أن يكون BurnOnReadMaximumTimeToLiveSeconds رقمًا موجبًا."
   },
@@ -13126,6 +13458,22 @@
   {
     "id": "model.file_info.is_valid.user_id.app_error",
     "translation": "قيمة user_id غير صالحة."
+  },
+  {
+    "id": "model.focus.duration.app_error",
+    "translation": "تستمر مدة وضع التركيز من دقيقة واحدة إلى أسبوع واحد."
+  },
+  {
+    "id": "model.focus.duration_or_end.app_error",
+    "translation": "اختر مدة التركيز: مدة زمنية أو وقت انتهاء."
+  },
+  {
+    "id": "model.focus.reason.app_error",
+    "translation": "السبب طويل جدًا: سيصبح حالة مخصصة بطول 100 حرف كحد أقصى."
+  },
+  {
+    "id": "model.focus.window.app_error",
+    "translation": "الفترة الزمنية للملخص غير صالحة: يجب أن تكون في الماضي، ومرتبة، وبحد أقصى ثمانية أيام."
   },
   {
     "id": "model.group.channel_id.app_error",

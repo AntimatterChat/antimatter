@@ -1716,6 +1716,38 @@
     "translation": "{{.Username}} এই চ্যানেলের সদস্য নন।"
   },
   {
+    "id": "api.command_rules.agree_hint",
+    "translation": "সম্মতি জানাতে `/rules agree` টাইপ করুন, এরপর আপনি পোস্ট করতে পারবেন।"
+  },
+  {
+    "id": "api.command_rules.agreed",
+    "translation": "ধন্যবাদ: আপনি {{.Community}}-এর নিয়মাবলিতে সম্মত হয়েছেন। আপনি এখন সেখানে পোস্ট করতে পারেন।"
+  },
+  {
+    "id": "api.command_rules.already_agreed",
+    "translation": "আপনি এই নিয়মাবলিতে সম্মত হয়েছেন।"
+  },
+  {
+    "id": "api.command_rules.desc",
+    "translation": "এই কমিউনিটির নিয়মাবলী পড়ুন, অথবা সেগুলোতে সম্মত হন"
+  },
+  {
+    "id": "api.command_rules.hint",
+    "translation": "[agree]"
+  },
+  {
+    "id": "api.command_rules.name",
+    "translation": "rules"
+  },
+  {
+    "id": "api.command_rules.none",
+    "translation": "এই কমিউনিটিতে সম্মত হওয়ার কোনো নিয়ম নেই।"
+  },
+  {
+    "id": "api.command_rules.title",
+    "translation": "**{{.Community}}-এর নিয়মাবলী**"
+  },
+  {
     "id": "api.command_search.desc",
     "translation": "বার্তায় টেক্সট সার্চ করুন"
   },
@@ -2928,6 +2960,14 @@
     "translation": "@{{.Username}} এই মেনশন থেকে নোটিফাই করা হয়নি কারণ তারা এই টিমের সদস্য নয়।"
   },
   {
+    "id": "api.post.community_rules_not_accepted",
+    "translation": "পোস্ট করার আগে এই কমিউনিটির নিয়মাবলিতে সম্মত হন।"
+  },
+  {
+    "id": "api.post.community_rules_not_accepted.reminder",
+    "translation": "এই কমিউনিটিতে পোস্ট করার আগে সবাইকে তাদের নিয়মাবলিতে সম্মত হতে হবে। নিয়মাবলি পড়তে `/rules` টাইপ করুন, তারপর সম্মত হতে `/rules agree` টাইপ করুন।"
+  },
+  {
     "id": "api.post.create_post.burn_on_read.abac_denied.app_error",
     "translation": "আপনি এই চ্যানেলে burn-on-read মেসেজ পাঠানোর অনুমতি পাননি।"
   },
@@ -3030,6 +3070,10 @@
   {
     "id": "api.post.fill_in_post_props.burn_on_read.config.app_error",
     "translation": "বার্ন-অন-রিড পোস্ট সক্রিয় নয়। অনুগ্রহ করে ফিচার ফ্ল্যাগ এবং সার্ভিস সেটিং সক্রিয় করুন।"
+  },
+  {
+    "id": "api.post.fill_in_post_props.burn_on_read.duration.app_error",
+    "translation": "বার্ন-অন-রিড সময়কাল অবশ্যই মিলিসেকেন্ডে একটি ধনাত্মক সংখ্যা হতে হবে।"
   },
   {
     "id": "api.post.fill_in_post_props.burn_on_read.self_dm.app_error",
@@ -5192,6 +5236,134 @@
     "translation": "ব্রিজ কল ব্যর্থ হয়েছে।"
   },
   {
+    "id": "app.agents.status.no_agents",
+    "translation": "আপনার জন্য কোনো এজেন্ট উপলব্ধ নেই।"
+  },
+  {
+    "id": "app.ai.agent.access.app_error",
+    "translation": "আপনি এখানে এই এজেন্টের সাথে কথা বলতে পারবেন না।"
+  },
+  {
+    "id": "app.ai.agent.activity.get.app_error",
+    "translation": "এজেন্টদের কার্যকলাপ পড়া যায়নি।"
+  },
+  {
+    "id": "app.ai.agent.activity.save.app_error",
+    "translation": "এজেন্টের কার্যকলাপ সংরক্ষণ করা যায়নি।"
+  },
+  {
+    "id": "app.ai.agent.connection.app_error",
+    "translation": "এখানে একটি এজেন্ট এই মডেল সংযোগ ব্যবহার করতে পারে না: একটি সার্ভার-ওয়াইড এজেন্টের জন্য সার্ভার-ওয়াইড সংযোগ প্রয়োজন, এবং একটি কমিউনিটির এজেন্টের জন্য সেই কমিউনিটির নিজস্ব সংযোগ বা তার সাথে শেয়ার করা সংযোগ প্রয়োজন।"
+  },
+  {
+    "id": "app.ai.agent.conversations.app_error",
+    "translation": "এজেন্টদের সাথে আপনার কথোপকথন লোড করা যায়নি।"
+  },
+  {
+    "id": "app.ai.agent.get.app_error",
+    "translation": "এজেন্টসমূহ পড়া যায়নি।"
+  },
+  {
+    "id": "app.ai.agent.manage_permission.app_error",
+    "translation": "আপনি এখানে এজেন্টসমূহ পরিচালনা করতে পারবেন না।"
+  },
+  {
+    "id": "app.ai.agent.not_found.app_error",
+    "translation": "এই এজেন্টটি নেই বা এটি মুছে ফেলা হয়েছে।"
+  },
+  {
+    "id": "app.ai.agent.references.app_error",
+    "translation": "এজেন্ট এমন একটি কমিউনিটি, চ্যানেল বা ব্যক্তির নাম উল্লেখ করেছে যারা বিদ্যমান নেই, অথবা অন্য কমিউনিটির একটি চ্যানেল।"
+  },
+  {
+    "id": "app.ai.agent.save.app_error",
+    "translation": "এজেন্টটি সংরক্ষণ করা যায়নি।"
+  },
+  {
+    "id": "app.ai.agent.task.agent_disabled.app_error",
+    "translation": "এই এজেন্টটি বন্ধ আছে।"
+  },
+  {
+    "id": "app.ai.agent.task.channel.app_error",
+    "translation": "চ্যানেলটি নেই, অথবা আপনি এটি পড়তে পারছেন না।"
+  },
+  {
+    "id": "app.ai.agent.task.external.app_error",
+    "translation": "এই এজেন্ট এখানে টাস্ক নেয় না: পরিবর্তে তাকে একটি মেসেজ পাঠান।"
+  },
+  {
+    "id": "app.ai.agent.task.not_transcription.app_error",
+    "translation": "এই মেসেজটি কোনো কলের ট্রান্সক্রিপশন নয়।"
+  },
+  {
+    "id": "app.ai.agent.task.post.app_error",
+    "translation": "মেসেজটি নেই, অথবা আপনি এটি পড়তে পারছেন না।"
+  },
+  {
+    "id": "app.ai.agent.task.request.ask_channel",
+    "translation": "{{.Channel}} সম্পর্কে: {{.Question}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items",
+    "translation": "এই থ্রেডে করণীয়গুলো খুঁজে বের করুন: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items_channel",
+    "translation": "{{.Channel}}-এর সাম্প্রতিক মেসেজসমূহ থেকে করণীয় খুঁজে বের করুন"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items_channel_since",
+    "translation": " {{.Since}} থেকে {{.Channel}} চ্যানেলে করণীয় খুঁজুন"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions",
+    "translation": "এই থ্রেডে থাকা উত্তরপ্রাপ্ত হয়নি এমন প্রশ্নগুলো খুঁজে বের করুন: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions_channel",
+    "translation": "{{.Channel}}-এর সাম্প্রতিক মেসেজসমূহে থাকা খোলা প্রশ্নগুলো খুঁজে বের করুন"
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions_channel_since",
+    "translation": "{{.Since}} থেকে {{.Channel}}-এর অনস্বীকৃত প্রশ্নগুলো খুঁজে বের করুন"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_channel",
+    "translation": "{{.Channel}}-এর সাম্প্রতিক মেসেজসমূহ সংক্ষেপ করুন"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_channel_since",
+    "translation": "{{.Since}} থেকে {{.Channel}}-এর মেসেজসমূহ সংক্ষেপ করুন"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_thread",
+    "translation": "এই থ্রেডটি সংক্ষেপ করুন: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_transcription",
+    "translation": "এই কলের ট্রান্সক্রিপশন সংক্ষেপ করুন: {{.Link}}"
+  },
+  {
+    "id": "app.ai.agent.task.this_conversation",
+    "translation": "এই কথোপকথন"
+  },
+  {
+    "id": "app.ai.agent.turn.empty",
+    "translation": "দুঃখিত, এর কোনো উত্তর আমার নেই।"
+  },
+  {
+    "id": "app.ai.agent.turn.failed",
+    "translation": "দুঃখিত, আমি উত্তর দিতে পারিনি: {{.Reason}}"
+  },
+  {
+    "id": "app.ai.agent.turn.interrupted",
+    "translation": "দুঃখিত, আমার উত্তরটি বাধাপ্রাপ্ত হয়েছে। একটু পরে আবার জিজ্ঞাসা করুন।"
+  },
+  {
+    "id": "app.ai.agent.turn.not_allowed",
+    "translation": "{{.Agent}} এখানে আপনার জন্য উপলব্ধ নয়।"
+  },
+  {
     "id": "app.ai.call.audience.app_error",
     "translation": "আপনি এই মডেল কানেকশনটি ব্যবহার করতে পারবেন না।"
   },
@@ -6088,6 +6260,38 @@
     "translation": "এই ভ্যালুটি {{.Name}} অ্যাট্রিবিউটের সাথে মেলে না।"
   },
   {
+    "id": "app.community_rules.accept.app_error",
+    "translation": "কমিউনিটির নিয়মাবলীতে আপনার সম্মতি সংরক্ষণ করা যায়নি।"
+  },
+  {
+    "id": "app.community_rules.accept.changed.app_error",
+    "translation": "আপনি পড়ার পর থেকে কমিউনিটির নিয়মাবলী পরিবর্তন হয়েছে। সম্মতি দেওয়ার আগে আবার পড়ুন।"
+  },
+  {
+    "id": "app.community_rules.accept.not_member.app_error",
+    "translation": "শুধুমাত্র কমিউনিটির সদস্যরাই এর নিয়মাবলিতে সম্মত হতে পারেন।"
+  },
+  {
+    "id": "app.community_rules.accept.off.app_error",
+    "translation": "এই কমিউনিটিতে সম্মত হওয়ার মতো কোনো নিয়ম নেই।"
+  },
+  {
+    "id": "app.community_rules.delete.app_error",
+    "translation": "কমিউনিটির নিয়মগুলো মুছে ফেলা যায়নি।"
+  },
+  {
+    "id": "app.community_rules.get.app_error",
+    "translation": "কমিউনিটির নিয়মগুলো পাওয়া যায়নি।"
+  },
+  {
+    "id": "app.community_rules.save.app_error",
+    "translation": "কমিউনিটির নিয়ম সংরক্ষণ করা যায়নি।"
+  },
+  {
+    "id": "app.community_rules.stats.app_error",
+    "translation": "কমিউনিটির নিয়মাবলিতে সম্মত ব্যক্তিদের সংখ্যা গণনা করা যায়নি।"
+  },
+  {
     "id": "app.compile_csv_chunks.header_error",
     "translation": "CSV হেডার লেখা যায়নি।"
   },
@@ -6842,6 +7046,34 @@
   {
     "id": "app.file_info.undelete_for_post_ids.app_error",
     "translation": "পোস্টের ফাইল আটাচমেন্টসমূহ পুনরুদ্ধার করা যায়নি।"
+  },
+  {
+    "id": "app.focus.bot.app_error",
+    "translation": "বটরা ফোকাস মোড ব্যবহার করতে পারে না।"
+  },
+  {
+    "id": "app.focus.delete.app_error",
+    "translation": "অ্যাকাউন্টের ফোকাস মোড মুছে ফেলা যায়নি।"
+  },
+  {
+    "id": "app.focus.get.app_error",
+    "translation": "আপনার ফোকাস মোড পাওয়া যায়নি।"
+  },
+  {
+    "id": "app.focus.mark_read.app_error",
+    "translation": "আপনি যা মিস করেছেন তা পড়া হিসেবে চিহ্নিত করা যায়নি।"
+  },
+  {
+    "id": "app.focus.save.app_error",
+    "translation": "ফোকাস মোড শুরু করা যায়নি।"
+  },
+  {
+    "id": "app.focus.statuses_disabled.app_error",
+    "translation": "ফোকাস মোড চালু করতে ব্যবহারকারীর স্ট্যাটাস প্রয়োজন, যা এই সার্ভারে বন্ধ আছে।"
+  },
+  {
+    "id": "app.focus.summary.app_error",
+    "translation": "ফোকাস করার সময় আপনি যা মিস করেছেন তা পাওয়া যায়নি।"
   },
   {
     "id": "app.get_user_team_scheduled_posts.error",
@@ -11540,6 +11772,90 @@
     "translation": "অবৈধ ইউজার আইডি।"
   },
   {
+    "id": "model.agent_activity.expires.app_error",
+    "translation": "একটি এজেন্টের কার্যকলাপ ১ সেকেন্ড থেকে ২৪ ঘণ্টার মধ্যে স্থায়ী হয়।"
+  },
+  {
+    "id": "model.agent_activity.state.app_error",
+    "translation": "একটি এজেন্টের স্ট্যাটাস হলো: আইডল, থিংকিং, ওয়ার্কিং, ওয়েটিং, ব্লকড বা অফলাইন।"
+  },
+  {
+    "id": "model.agent_activity.text.app_error",
+    "translation": "এজেন্ট কী করছে তা সর্বোচ্চ ২০০ অক্ষরের একটি লাইনে থাকতে হবে।"
+  },
+  {
+    "id": "model.agent_activity.thread_post_id.app_error",
+    "translation": "এজেন্টের কার্যকলাপের থ্রেড অবশ্যই একটি মেসেজ আইডি হতে হবে।"
+  },
+  {
+    "id": "model.ai_agent.access.app_error",
+    "translation": "এজেন্টের সাথে কথা বলার অনুমতিপ্রাপ্তদের তালিকায় অবৈধ কমিউনিটি, চ্যানেল, ভূমিকা বা ব্যক্তি রয়েছে, অথবা তালিকাটিতে খুব বেশি সংখ্যক আইটেম রয়েছে।"
+  },
+  {
+    "id": "model.ai_agent.access_community.app_error",
+    "translation": "কোনো কমিউনিটির এজেন্ট কেবল সেই কমিউনিটির জন্যই ব্যবহারযোগ্য।"
+  },
+  {
+    "id": "model.ai_agent.connection_id.app_error",
+    "translation": "এজেন্ট যে মডেল সংযোগ ব্যবহার করে তা নির্বাচন করুন।"
+  },
+  {
+    "id": "model.ai_agent.external.app_error",
+    "translation": "একটি এক্সটার্নাল এজেন্টের কোনো মডেল, সংযোগ বা সিস্টেম প্রম্পট নেই: এর প্রোগ্রাম উত্তর দেয়।"
+  },
+  {
+    "id": "model.ai_agent.max_tool_turns.app_error",
+    "translation": "একটি এজেন্ট ০ (ডিফল্ট) থেকে ২৫০টি টুল টার্নের মধ্যে নেয়।"
+  },
+  {
+    "id": "model.ai_agent.model.app_error",
+    "translation": "মডেলের নামটি খুব দীর্ঘ বা একাধিক লাইন রয়েছে।"
+  },
+  {
+    "id": "model.ai_agent.needs_attention.app_error",
+    "translation": "যে বিষয়টিতে মনোযোগ প্রয়োজন তার নোটটি খুব দীর্ঘ।"
+  },
+  {
+    "id": "model.ai_agent.reasoning.app_error",
+    "translation": "যুক্তি প্রচেষ্টা ন্যূনতম, কম, মাঝারি বা উচ্চ হতে হবে এবং এর বাজেট ০ থেকে ১২৮,০০০ টোকেনের মধ্যে হতে হবে।"
+  },
+  {
+    "id": "model.ai_agent.scope.app_error",
+    "translation": "একটি এজেন্ট সার্ভার বা একটি কমিউনিটির অন্তর্গত।"
+  },
+  {
+    "id": "model.ai_agent.system_prompt.app_error",
+    "translation": "সিস্টেম প্রম্পটটি খুব দীর্ঘ (সর্বোচ্চ ৩২,০০০ অক্ষর)।"
+  },
+  {
+    "id": "model.ai_agent.times.app_error",
+    "translation": "এজেন্টের তৈরি এবং আপডেটের সময় অনুপস্থিত।"
+  },
+  {
+    "id": "model.ai_agent.tools.app_error",
+    "translation": "একটি টুলের নাম অবৈধ, অথবা টুলের সংখ্যা খুব বেশি (সর্বোচ্চ ২৫৬টি)।"
+  },
+  {
+    "id": "model.ai_agent.user_id.app_error",
+    "translation": "একটি এজেন্টের জন্য একটি বৈধ অ্যাকাউন্ট প্রয়োজন।"
+  },
+  {
+    "id": "model.ai_agent_task.channel_id.app_error",
+    "translation": "এই টাস্কের জন্য একটি চ্যানেল প্রয়োজন।"
+  },
+  {
+    "id": "model.ai_agent_task.post_id.app_error",
+    "translation": "এই টাস্কের জন্য একটি মেসেজ প্রয়োজন।"
+  },
+  {
+    "id": "model.ai_agent_task.question.app_error",
+    "translation": "সর্বোচ্চ ২,০০০ অক্ষরের একটি প্রশ্ন করুন।"
+  },
+  {
+    "id": "model.ai_agent_task.task.app_error",
+    "translation": "এই টাস্কটি কোনো এজেন্টের কাছে পরিচিত নয়।"
+  },
+  {
     "id": "model.ai_connection.api_key.app_error",
     "translation": "API কীটি খুব দীর্ঘ অথবা এতে একটি লাইন ব্রেক রয়েছে।"
   },
@@ -11702,6 +12018,10 @@
   {
     "id": "model.bot.is_valid.description.app_error",
     "translation": "অবৈধ বর্ণনা।"
+  },
+  {
+    "id": "model.bot.is_valid.kind.app_error",
+    "translation": "একটি বট অ্যাকাউন্ট হলো একটি বট বা এজেন্ট।"
   },
   {
     "id": "model.bot.is_valid.update_at.app_error",
@@ -12090,6 +12410,14 @@
   {
     "id": "model.command_response.is_valid.response_type.app_error",
     "translation": "অবৈধ রেসপন্স টাইপ।"
+  },
+  {
+    "id": "model.community_rules.empty.app_error",
+    "translation": "নিয়মগুলো চালু করার আগে সেগুলো লিখুন।"
+  },
+  {
+    "id": "model.community_rules.text.app_error",
+    "translation": "নিয়মাবলী সর্বোচ্চ {{.Max}} অক্ষরের হতে পারবে।"
   },
   {
     "id": "model.compliance.is_valid.create_at.app_error",
@@ -12868,6 +13196,10 @@
     "translation": "BurnOnReadDurationSeconds একটি ধনাত্মক সংখ্যা হতে হবে।"
   },
   {
+    "id": "model.config.is_valid.service_settings.burn_on_read_maximum_duration_seconds.app_error",
+    "translation": "BurnOnReadMaximumDurationSeconds অবশ্যই একটি ধনাত্মক সংখ্যা হতে হবে।"
+  },
+  {
     "id": "model.config.is_valid.service_settings.burn_on_read_maximum_time_to_live_seconds.app_error",
     "translation": "BurnOnReadMaximumTimeToLiveSeconds একটি ধনাত্মক সংখ্যা হতে হবে।"
   },
@@ -13126,6 +13458,22 @@
   {
     "id": "model.file_info.is_valid.user_id.app_error",
     "translation": "user_id-এর জন্য অবৈধ মান।"
+  },
+  {
+    "id": "model.focus.duration.app_error",
+    "translation": "ফোকাস মোড এক মিনিট থেকে এক সপ্তাহ পর্যন্ত থাকতে পারে।"
+  },
+  {
+    "id": "model.focus.duration_or_end.app_error",
+    "translation": "কতক্ষণ ফোকাস করবেন তা নির্বাচন করুন: একটি সময়কাল বা একটি সমাপ্তির সময়।"
+  },
+  {
+    "id": "model.focus.reason.app_error",
+    "translation": "কারণটি খুব দীর্ঘ: এটি আপনার কাস্টম স্ট্যাটাস হিসেবে ব্যবহৃত হয়, যা সর্বোচ্চ ১০০ অক্ষরের হতে পারে।"
+  },
+  {
+    "id": "model.focus.window.app_error",
+    "translation": "সারসংক্ষেপের সময়সীমাটি বৈধ নয়: এটি অবশ্যই অতীতের হতে হবে, ক্রমানুসারে থাকতে হবে এবং সর্বোচ্চ আট দিনের হতে হবে।"
   },
   {
     "id": "model.group.channel_id.app_error",

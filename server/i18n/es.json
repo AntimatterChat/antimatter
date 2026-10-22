@@ -1766,6 +1766,10 @@
     "translation": "{{.Username}} no es un miembro de este canal."
   },
   {
+    "id": "api.command_rules.agree_hint",
+    "translation": "Escribe `/rules agree` para aceptarlas y, a continuación, podrás publicar."
+  },
+  {
     "id": "api.command_search.desc",
     "translation": "Buscar texto en mensajes"
   },
@@ -5565,6 +5569,18 @@
   {
     "id": "app.agents.get_services.bridge_call_failed",
     "translation": "Falló la llamada al bridge."
+  },
+  {
+    "id": "app.ai.agent.task.request.summarize_channel_since",
+    "translation": "Resumir los mensajes de {{.Channel}} desde {{.Since}}"
+  },
+  {
+    "id": "app.ai.agent.turn.empty",
+    "translation": "Lo siento, no tengo una respuesta para eso."
+  },
+  {
+    "id": "app.ai.agent.turn.failed",
+    "translation": "Lo siento, no he podido responder: {{.Reason}}"
   },
   {
     "id": "app.ai.call.audience.app_error",
