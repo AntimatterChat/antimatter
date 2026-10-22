@@ -34,84 +34,6 @@ func (_m *ChannelOverrideStore) Delete(rctx request.CTX, channelID string, targe
 	return r0
 }
 
-// GetForChannel provides a mock function with given fields: rctx, channelID
-func (_m *ChannelOverrideStore) GetForChannel(rctx request.CTX, channelID string) ([]*model.ChannelOverride, error) {
-	ret := _m.Called(rctx, channelID)
-
-	if len(ret) == 0 {
-		panic("no return value specified for GetForChannel")
-	}
-
-	var r0 []*model.ChannelOverride
-	var r1 error
-	if rf, ok := ret.Get(0).(func(request.CTX, string) ([]*model.ChannelOverride, error)); ok {
-		return rf(rctx, channelID)
-	}
-	if rf, ok := ret.Get(0).(func(request.CTX, string) []*model.ChannelOverride); ok {
-		r0 = rf(rctx, channelID)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]*model.ChannelOverride)
-		}
-	}
-
-	if rf, ok := ret.Get(1).(func(request.CTX, string) error); ok {
-		r1 = rf(rctx, channelID)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// PermanentDeleteForUser provides a mock function with given fields: rctx, userID
-func (_m *ChannelOverrideStore) PermanentDeleteForUser(rctx request.CTX, userID string) error {
-	ret := _m.Called(rctx, userID)
-
-	if len(ret) == 0 {
-		panic("no return value specified for PermanentDeleteForUser")
-	}
-
-	var r0 error
-	if rf, ok := ret.Get(0).(func(request.CTX, string) error); ok {
-		r0 = rf(rctx, userID)
-	} else {
-		r0 = ret.Error(0)
-	}
-
-	return r0
-}
-
-// Save provides a mock function with given fields: rctx, override
-func (_m *ChannelOverrideStore) Save(rctx request.CTX, override *model.ChannelOverride) (*model.ChannelOverride, error) {
-	ret := _m.Called(rctx, override)
-
-	if len(ret) == 0 {
-		panic("no return value specified for Save")
-	}
-
-	var r0 *model.ChannelOverride
-	var r1 error
-	if rf, ok := ret.Get(0).(func(request.CTX, *model.ChannelOverride) (*model.ChannelOverride, error)); ok {
-		return rf(rctx, override)
-	}
-	if rf, ok := ret.Get(0).(func(request.CTX, *model.ChannelOverride) *model.ChannelOverride); ok {
-		r0 = rf(rctx, override)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*model.ChannelOverride)
-		}
-	}
-
-	if rf, ok := ret.Get(1).(func(request.CTX, *model.ChannelOverride) error); ok {
-		r1 = rf(rctx, override)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
 // DeleteCategoriesForTeam provides a mock function with given fields: rctx, teamID
 func (_m *ChannelOverrideStore) DeleteCategoriesForTeam(rctx request.CTX, teamID string) error {
 	ret := _m.Called(rctx, teamID)
@@ -196,6 +118,54 @@ func (_m *ChannelOverrideStore) GetForCategories(rctx request.CTX, teamID string
 	return r0, r1
 }
 
+// GetForChannel provides a mock function with given fields: rctx, channelID
+func (_m *ChannelOverrideStore) GetForChannel(rctx request.CTX, channelID string) ([]*model.ChannelOverride, error) {
+	ret := _m.Called(rctx, channelID)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetForChannel")
+	}
+
+	var r0 []*model.ChannelOverride
+	var r1 error
+	if rf, ok := ret.Get(0).(func(request.CTX, string) ([]*model.ChannelOverride, error)); ok {
+		return rf(rctx, channelID)
+	}
+	if rf, ok := ret.Get(0).(func(request.CTX, string) []*model.ChannelOverride); ok {
+		r0 = rf(rctx, channelID)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]*model.ChannelOverride)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(request.CTX, string) error); ok {
+		r1 = rf(rctx, channelID)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// PermanentDeleteForUser provides a mock function with given fields: rctx, userID
+func (_m *ChannelOverrideStore) PermanentDeleteForUser(rctx request.CTX, userID string) error {
+	ret := _m.Called(rctx, userID)
+
+	if len(ret) == 0 {
+		panic("no return value specified for PermanentDeleteForUser")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(request.CTX, string) error); ok {
+		r0 = rf(rctx, userID)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
 // RenameCategory provides a mock function with given fields: rctx, teamID, from, to
 func (_m *ChannelOverrideStore) RenameCategory(rctx request.CTX, teamID string, from string, to string) error {
 	ret := _m.Called(rctx, teamID, from, to)
@@ -212,6 +182,36 @@ func (_m *ChannelOverrideStore) RenameCategory(rctx request.CTX, teamID string, 
 	}
 
 	return r0
+}
+
+// Save provides a mock function with given fields: rctx, override
+func (_m *ChannelOverrideStore) Save(rctx request.CTX, override *model.ChannelOverride) (*model.ChannelOverride, error) {
+	ret := _m.Called(rctx, override)
+
+	if len(ret) == 0 {
+		panic("no return value specified for Save")
+	}
+
+	var r0 *model.ChannelOverride
+	var r1 error
+	if rf, ok := ret.Get(0).(func(request.CTX, *model.ChannelOverride) (*model.ChannelOverride, error)); ok {
+		return rf(rctx, override)
+	}
+	if rf, ok := ret.Get(0).(func(request.CTX, *model.ChannelOverride) *model.ChannelOverride); ok {
+		r0 = rf(rctx, override)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*model.ChannelOverride)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(request.CTX, *model.ChannelOverride) error); ok {
+		r1 = rf(rctx, override)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // SaveForCategory provides a mock function with given fields: rctx, override
