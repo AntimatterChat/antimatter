@@ -228,6 +228,37 @@ describe('UserAttributeFields', () => {
         expect(screen.queryByText(ADMIN_MANAGED)).not.toBeInTheDocument();
     });
 
+    test.each([
+        ['ldap', 'AD/LDAP: department'],
+        ['saml', 'SAML: Department'],
+        ['openid', 'OpenID Connect: org.department'],
+    ] as const)('locks a field synced from %s and names the source', (source, chip) => {
+        const mapping = {ldap: 'department', saml: 'Department', openid: 'org.department'}[source];
+        renderFields({fields: [buildField({}, {[source]: mapping})], canEditAdminManaged: true});
+
+        expect(screen.getByRole('textbox')).toBeDisabled();
+        expect(screen.getByTestId(`user-detail-cpa-field__${source}-department`)).toHaveTextContent(chip);
+    });
+
+    test('names every source of a field synced from several', () => {
+        renderFields({fields: [buildField({}, {ldap: 'dept', openid: 'org.department'})]});
+
+        expect(screen.getByTestId('user-detail-cpa-field__ldap-department')).toHaveTextContent('AD/LDAP: dept');
+        expect(screen.getByTestId('user-detail-cpa-field__openid-department')).toHaveTextContent('OpenID Connect: org.department');
+        expect(screen.queryByTestId('user-detail-cpa-field__saml-department')).not.toBeInTheDocument();
+    });
+
+    test('a synced multiselect shows its values without remove buttons', () => {
+        const options = [{id: 'opt-1', name: 'Alpha'}, {id: 'opt-2', name: 'Beta'}];
+        const {unmount} = renderFields({fields: [buildField({type: 'multiselect'}, {options, openid: 'groups'})], values: {'field-1': ['opt-1']}});
+        expect(screen.getByText('Alpha')).toBeInTheDocument();
+        expect(screen.queryByRole('button', {name: 'Remove Alpha'})).not.toBeInTheDocument();
+        unmount();
+
+        renderFields({fields: [buildField({type: 'multiselect'}, {options})], values: {'field-1': ['opt-1']}});
+        expect(screen.getByRole('button', {name: 'Remove Alpha'})).toBeInTheDocument();
+    });
+
     test('shows the omitted-options value as a disabled id input', () => {
         const field = buildField({type: 'select'}, {options_omitted: true});
         renderFields({fields: [field], values: {'field-1': 'opt-9'}});
