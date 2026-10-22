@@ -795,7 +795,10 @@ function MessageBox({channelId, rootId = '', placeholder, afterSubmit}: Props) {
                     {richText && (
                         <div
                             className={am('rich-input')}
-                            onPaste={(e) => {
+
+                            // Pasted files are attached, as in the text box, and the editor doesn't get the paste:
+                            // it would add the text that comes with them (a file's name) or show an image inline.
+                            onPasteCapture={(e) => {
                                 if (e.clipboardData.files.length) {
                                     e.preventDefault();
                                     e.stopPropagation();

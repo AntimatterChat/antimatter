@@ -3,6 +3,7 @@
 
 import React from 'react';
 
+import {uploadFile} from 'actions/file_actions';
 import {onSubmit} from 'actions/views/create_comment';
 
 import {LAYER_ID} from 'fusion/components/layer';
@@ -21,6 +22,10 @@ jest.mock('actions/views/create_comment', () => ({
     onSubmit: jest.fn(() => () => Promise.resolve({data: true})),
 }));
 jest.mock('actions/global_actions', () => ({emitLocalUserTypingEvent: jest.fn()}));
+jest.mock('actions/file_actions', () => ({
+    ...jest.requireActual('actions/file_actions'),
+    uploadFile: jest.fn(() => () => ({abort: jest.fn()})),
+}));
 jest.mock('./confirm_mentions', () => ({confirmChannelWideMentions: () => () => Promise.resolve({data: true})}));
 jest.mock('fusion/shell/dialogs_context', () => ({useDialogs: () => ({})}));
 jest.mock('fusion/shell/toast_context', () => ({useToast: () => jest.fn()}));
@@ -347,6 +352,46 @@ describe('fusion/composer/Composer', () => {
             render({}, {ComposerMode: [{...poll, shouldRender: () => false}]});
             await userEvent.click(screen.getByRole('button', {name: 'Add a file and more'}));
             expect(screen.queryByRole('menuitem', {name: 'Create a poll'})).not.toBeInTheDocument();
+        });
+    });
+
+    // The rich text editor (the WysiwygEditor flag and the person's choice in the settings).
+    describe('rich text editor', () => {
+        const renderRich = () => renderWithContext(
+            <Composer
+                channelId='c1'
+                placeholder='Write to General'
+            />,
+            {
+                entities: {
+                    general: {config: {FeatureFlagWysiwygEditor: 'true'}},
+                    users: {currentUserId: 'me'},
+                    channels: {currentChannelId: 'c1', channels: {c1: channel}},
+                    preferences: {myPreferences: {'display_settings--wysiwyg_editor': {category: 'display_settings', name: 'wysiwyg_editor', user_id: 'me', value: 'true'}}},
+                },
+            } as never,
+        );
+
+        beforeAll(() => {
+            document.elementFromPoint = () => null;
+        });
+
+        test('a pasted file is attached, and the text that comes with it (its name) is not written', () => {
+            renderRich();
+            const editor = document.querySelector('.am-rich-input .ProseMirror') as HTMLElement;
+            expect(editor).not.toBeNull();
+            const file = new File(['png'], 'screenshot.png', {type: 'image/png'});
+
+            fireEvent.paste(editor, {
+                clipboardData: {
+                    files: [file],
+                    types: ['Files', 'text/plain'],
+                    getData: (type: string) => (type === 'text/plain' ? 'screenshot.png' : ''),
+                },
+            });
+
+            expect(uploadFile).toHaveBeenCalledWith(expect.objectContaining({file, name: 'screenshot.png', channelId: 'c1'}));
+            expect(editor.textContent).not.toContain('screenshot.png');
         });
     });
 });
