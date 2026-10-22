@@ -5718,10 +5718,6 @@
     "translation": "Đã vượt quá giới hạn cho phân trang."
   },
   {
-    "id": "app.audit.permanent_delete_by_user.app_error",
-    "translation": "Chúng tôi đã gặp lỗi khi xoá các kiểm duyệt"
-  },
-  {
     "id": "app.audit.save.saving.app_error",
     "translation": "Chúng tôi đã gặp lỗi khi lưu kiểm toán"
   },
@@ -6128,10 +6124,6 @@
   {
     "id": "app.channel.permanent_delete.app_error",
     "translation": "Không thể xóa kênh."
-  },
-  {
-    "id": "app.channel.permanent_delete_members_by_user.app_error",
-    "translation": "Không thể xóa thành viên kênh."
   },
   {
     "id": "app.channel.pinned_posts.app_error",
@@ -7062,10 +7054,6 @@
     "translation": "Bản nháp đã bị plugin từ chối: {{.Reason}}"
   },
   {
-    "id": "app.drafts.permanent_delete_by_user.app_error",
-    "translation": "Không thể xóa bản nháp của người dùng."
-  },
-  {
     "id": "app.email.no_rate_limiter.app_error",
     "translation": "Giới hạn tỷ lệ không được thiết lập."
   },
@@ -7238,10 +7226,6 @@
     "translation": "Không tìm thấy tệp trong kho lưu trữ tệp tại đường dẫn này."
   },
   {
-    "id": "app.file_info.permanent_delete_by_user.app_error",
-    "translation": "Không thể xóa tệp đính kèm của người dùng."
-  },
-  {
     "id": "app.file_info.permanent_delete_for_post.app_error",
     "translation": "Không thể xóa vĩnh viễn tệp cho bài đăng."
   },
@@ -7296,10 +7280,6 @@
   {
     "id": "app.group.no_rows",
     "translation": "không tìm thấy nhóm phù hợp"
-  },
-  {
-    "id": "app.group.permanent_delete_members_by_user.app_error",
-    "translation": "Không thể xóa thành viên nhóm có UserID \"{{.UserId}}\"."
   },
   {
     "id": "app.group.uniqueness_error",
@@ -8398,10 +8378,6 @@
     "translation": "Đã xảy ra lỗi khi tìm Ứng dụng OAuth2."
   },
   {
-    "id": "app.oauth.permanent_delete_auth_data_by_user.app_error",
-    "translation": "Không thể xóa mã ủy quyền."
-  },
-  {
     "id": "app.oauth.remove_access_data.app_error",
     "translation": "Không thể xóa mã thông báo truy cập."
   },
@@ -9102,10 +9078,6 @@
     "translation": "Không thể xóa bài viết theo kênh."
   },
   {
-    "id": "app.post.permanent_delete_by_user.app_error",
-    "translation": "Không thể chọn bài viết để xóa cho người dùng."
-  },
-  {
     "id": "app.post.permanent_delete_post.error",
     "translation": "Không thể xóa vĩnh viễn bài đăng."
   },
@@ -9224,10 +9196,6 @@
   {
     "id": "app.preference.get_category.app_error",
     "translation": "Chúng tôi đã gặp lỗi khi tìm tùy chọn."
-  },
-  {
-    "id": "app.preference.permanent_delete_by_user.app_error",
-    "translation": "Chúng tôi đã gặp lỗi khi xóa tùy chọn."
   },
   {
     "id": "app.preference.save.updating.app_error",
@@ -9594,10 +9562,6 @@
     "translation": "Không thể nhận được phản ứng cho bài viết."
   },
   {
-    "id": "app.reaction.permanent_delete_by_user.app_error",
-    "translation": "Không thể xóa phản ứng cho người dùng."
-  },
-  {
     "id": "app.reaction.save.save.app_error",
     "translation": "Không thể lưu phản ứng"
   },
@@ -9900,10 +9864,6 @@
     "translation": {
       "other": "Không thể gửi {{.Count}} tin nhắn đã lên lịch."
     }
-  },
-  {
-    "id": "app.scheduled_post.permanent_delete_by_user.app_error",
-    "translation": "Không thể xóa tin nhắn đã lên lịch của người dùng."
   },
   {
     "id": "app.scheduled_post.private_channel",
@@ -10654,10 +10614,6 @@
     "translation": "Không thể xóa tài khoản hiện có."
   },
   {
-    "id": "app.user.permanentdeleteuser.internal_error",
-    "translation": "Không thể xóa người dùng."
-  },
-  {
     "id": "app.user.promote_guest.user_update.app_error",
     "translation": "Không thể cập nhật người dùng."
   },
@@ -10998,15 +10954,7 @@
     "translation": "Không thể xóa webhooks."
   },
   {
-    "id": "app.webhooks.permanent_delete_incoming_by_user.app_error",
-    "translation": "Không thể xóa webhooks."
-  },
-  {
     "id": "app.webhooks.permanent_delete_outgoing_by_channel.app_error",
-    "translation": "Không thể xóa webhooks."
-  },
-  {
-    "id": "app.webhooks.permanent_delete_outgoing_by_user.app_error",
     "translation": "Không thể xóa webhooks."
   },
   {

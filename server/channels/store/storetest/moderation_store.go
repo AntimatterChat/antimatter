@@ -18,6 +18,35 @@ import (
 func TestModerationStore(t *testing.T, rctx request.CTX, ss store.Store) {
 	t.Run("Timeouts", func(t *testing.T) { testModerationTimeouts(t, rctx, ss) })
 	t.Run("CountPosts", func(t *testing.T) { testModerationCountPosts(t, rctx, ss) })
+	t.Run("PermanentDeleteTimeoutsByUser", func(t *testing.T) { testModerationPermanentDeleteTimeoutsByUser(t, rctx, ss) })
+}
+
+func testModerationPermanentDeleteTimeoutsByUser(t *testing.T, rctx request.CTX, ss store.Store) {
+	teamID, otherTeamID, ada, bob := model.NewId(), model.NewId(), model.NewId(), model.NewId()
+	until := model.GetMillis() + time.Hour.Milliseconds()
+	for _, timeout := range []*model.MemberTimeout{
+		{TeamId: teamID, UserId: ada, Until: until},
+		{TeamId: otherTeamID, UserId: ada, Until: until},
+		{TeamId: teamID, UserId: bob, Until: until},
+	} {
+		_, err := ss.Moderation().SaveTimeout(rctx, timeout)
+		require.NoError(t, err)
+	}
+
+	require.NoError(t, ss.Moderation().PermanentDeleteTimeoutsByUser(rctx, ada))
+	require.NoError(t, ss.Moderation().PermanentDeleteTimeoutsByUser(rctx, ada), "deleting again is fine")
+
+	for _, team := range []string{teamID, otherTeamID} {
+		timeouts, err := ss.Moderation().GetTimeouts(rctx, team, model.GetMillis())
+		require.NoError(t, err)
+		for _, timeout := range timeouts {
+			assert.NotEqual(t, ada, timeout.UserId, "their timeouts are gone in every team")
+		}
+	}
+	timeouts, err := ss.Moderation().GetTimeouts(rctx, teamID, model.GetMillis())
+	require.NoError(t, err)
+	require.Len(t, timeouts, 1, "others keep theirs")
+	assert.Equal(t, bob, timeouts[0].UserId)
 }
 
 func testModerationTimeouts(t *testing.T, rctx request.CTX, ss store.Store) {

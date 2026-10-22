@@ -91,6 +91,18 @@ func (s *SqlChannelOverrideStore) Delete(rctx request.CTX, channelID, targetType
 	return nil
 }
 
+func (s *SqlChannelOverrideStore) PermanentDeleteForUser(rctx request.CTX, userID string) error {
+	for _, table := range []string{"ChannelOverrides", "CategoryOverrides"} {
+		builder := s.getQueryBuilder().
+			Delete(table).
+			Where(sq.Eq{"TargetType": model.ChannelOverrideTargetUser, "TargetId": userID})
+		if _, err := s.GetMaster().ExecBuilder(builder); err != nil {
+			return errors.Wrapf(err, "failed to delete the %s of user=%s", table, userID)
+		}
+	}
+	return nil
+}
+
 // categoryOverrideRow is a category's override as stored.
 type categoryOverrideRow struct {
 	TeamId     string

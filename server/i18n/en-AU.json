@@ -1480,10 +1480,6 @@
     "translation": "An error occurred while updating preferences."
   },
   {
-    "id": "app.preference.permanent_delete_by_user.app_error",
-    "translation": "An error occurred while deleting preferences."
-  },
-  {
     "id": "app.preference.get_category.app_error",
     "translation": "An error occurred while finding preferences."
   },
@@ -1514,10 +1510,6 @@
   {
     "id": "app.post.save.app_error",
     "translation": "Unable to save the Post."
-  },
-  {
-    "id": "app.post.permanent_delete_by_user.app_error",
-    "translation": "Unable to select the posts to delete for the user."
   },
   {
     "id": "app.post.permanent_delete_by_channel.app_error",
@@ -1886,10 +1878,6 @@
   {
     "id": "app.oauth.remove_access_data.app_error",
     "translation": "Unable to remove the access token."
-  },
-  {
-    "id": "app.oauth.permanent_delete_auth_data_by_user.app_error",
-    "translation": "Unable to remove the authorisation code."
   },
   {
     "id": "app.oauth.get_apps.find.app_error",
@@ -2500,10 +2488,6 @@
     "translation": "group member already exists"
   },
   {
-    "id": "app.group.permanent_delete_members_by_user.app_error",
-    "translation": "Unable to remove the group member with UserID '{{.UserId}}'."
-  },
-  {
     "id": "app.group.no_rows",
     "translation": "no matching group found"
   },
@@ -2518,10 +2502,6 @@
   {
     "id": "app.file_info.save.app_error",
     "translation": "Unable to save the file info."
-  },
-  {
-    "id": "app.file_info.permanent_delete_by_user.app_error",
-    "translation": "Unable to delete attachments of the user."
   },
   {
     "id": "app.file_info.get_with_options.app_error",
@@ -3340,15 +3320,7 @@
     "translation": "Unable to save the IncomingWebhook."
   },
   {
-    "id": "app.webhooks.permanent_delete_outgoing_by_user.app_error",
-    "translation": "Unable to delete the webhook."
-  },
-  {
     "id": "app.webhooks.permanent_delete_outgoing_by_channel.app_error",
-    "translation": "Unable to delete the webhook."
-  },
-  {
-    "id": "app.webhooks.permanent_delete_incoming_by_user.app_error",
     "translation": "Unable to delete the webhook."
   },
   {
@@ -3522,10 +3494,6 @@
   {
     "id": "app.user.promote_guest.user_update.app_error",
     "translation": "Failed to update the user."
-  },
-  {
-    "id": "app.user.permanentdeleteuser.internal_error",
-    "translation": "Unable to delete user."
   },
   {
     "id": "app.user.permanent_delete.app_error",
@@ -4004,10 +3972,6 @@
     "translation": "Unable to find the pinned posts."
   },
   {
-    "id": "app.channel.permanent_delete_members_by_user.app_error",
-    "translation": "Unable to remove the channel member."
-  },
-  {
     "id": "app.channel.permanent_delete.app_error",
     "translation": "Unable to delete the channel."
   },
@@ -4194,10 +4158,6 @@
   {
     "id": "app.audit.save.saving.app_error",
     "translation": "An error occurred while saving the audit."
-  },
-  {
-    "id": "app.audit.permanent_delete_by_user.app_error",
-    "translation": "An error occurred while deleting the audits."
   },
   {
     "id": "app.audit.get.limit.app_error",
@@ -8510,10 +8470,6 @@
     "translation": "Unable to set the searchable content of the file."
   },
   {
-    "id": "app.reaction.permanent_delete_by_user.app_error",
-    "translation": "Unable to delete reactions for user."
-  },
-  {
     "id": "app.thread.mark_all_as_read_by_channels.app_error",
     "translation": "Unable to mark all threads as read by channel"
   },
@@ -9648,10 +9604,6 @@
     }
   },
   {
-    "id": "app.scheduled_post.permanent_delete_by_user.app_error",
-    "translation": "Unable to delete scheduled posts for user."
-  },
-  {
     "id": "app.scheduled_post.private_channel",
     "translation": "Private channel"
   },
@@ -9814,10 +9766,6 @@
   {
     "id": "api.user.reset_password_failed_attempts.ldap_and_email_only.app_error",
     "translation": "User auth service must be LDAP or Email."
-  },
-  {
-    "id": "app.drafts.permanent_delete_by_user.app_error",
-    "translation": "Unable to delete drafts for user."
   },
   {
     "id": "app.group.license_error",

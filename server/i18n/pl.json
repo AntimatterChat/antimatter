@@ -5733,10 +5733,6 @@
     "translation": "Przekroczono limit stronicowania."
   },
   {
-    "id": "app.audit.permanent_delete_by_user.app_error",
-    "translation": "Napotkaliśmy błąd usuwając audyty."
-  },
-  {
     "id": "app.audit.save.saving.app_error",
     "translation": "Napotkaliśmy błąd zapisując audyty."
   },
@@ -6143,10 +6139,6 @@
   {
     "id": "app.channel.permanent_delete.app_error",
     "translation": "Nie można skasować kanału."
-  },
-  {
-    "id": "app.channel.permanent_delete_members_by_user.app_error",
-    "translation": "Nie można usunąć członka kanału."
   },
   {
     "id": "app.channel.pinned_posts.app_error",
@@ -7083,10 +7075,6 @@
     "translation": "Wersja robocza odrzucona przez wtyczkę: {{.Reason}}"
   },
   {
-    "id": "app.drafts.permanent_delete_by_user.app_error",
-    "translation": "Nie można usunąć wersji roboczych dla użytkownika."
-  },
-  {
     "id": "app.email.no_rate_limiter.app_error",
     "translation": "Ogranicznik nie jest ustawiony."
   },
@@ -7259,10 +7247,6 @@
     "translation": "Nie znaleziono pliku w magazynie plików pod podaną ścieżką."
   },
   {
-    "id": "app.file_info.permanent_delete_by_user.app_error",
-    "translation": "Nie można usunąć załączników użytkownika."
-  },
-  {
     "id": "app.file_info.permanent_delete_for_post.app_error",
     "translation": "Nie udało się trwale usunąć pliku dla postu."
   },
@@ -7317,10 +7301,6 @@
   {
     "id": "app.group.no_rows",
     "translation": "nie znaleziono pasującej grupy"
-  },
-  {
-    "id": "app.group.permanent_delete_members_by_user.app_error",
-    "translation": "Możesz usuwać członków grupy z UserID \"{{.UserId}}\"."
   },
   {
     "id": "app.group.uniqueness_error",
@@ -8419,10 +8399,6 @@
     "translation": "Wystąpił błąd podczas znajdywania aplikacji OAuth2."
   },
   {
-    "id": "app.oauth.permanent_delete_auth_data_by_user.app_error",
-    "translation": "Nie można usunąć kodu autoryzacji."
-  },
-  {
     "id": "app.oauth.remove_access_data.app_error",
     "translation": "Nie można usunąć tokena dostępu."
   },
@@ -9123,10 +9099,6 @@
     "translation": "Nie można usunąć wpisów według kanałów."
   },
   {
-    "id": "app.post.permanent_delete_by_user.app_error",
-    "translation": "Nie można wybrać wpisów do usunięcia dla użytkownika."
-  },
-  {
     "id": "app.post.permanent_delete_post.error",
     "translation": "Nie udało się trwale usunąć postu."
   },
@@ -9245,10 +9217,6 @@
   {
     "id": "app.preference.get_category.app_error",
     "translation": "Wystąpił błąd w trakcie pobierania ustawień."
-  },
-  {
-    "id": "app.preference.permanent_delete_by_user.app_error",
-    "translation": "Wystąpił błąd w trakcie kasowania ustawień."
   },
   {
     "id": "app.preference.save.updating.app_error",
@@ -9615,10 +9583,6 @@
     "translation": "Nie można uzyskać reakcji na wiadomość."
   },
   {
-    "id": "app.reaction.permanent_delete_by_user.app_error",
-    "translation": "Nie udało się usunąć reakcji użytkownika."
-  },
-  {
     "id": "app.reaction.save.save.app_error",
     "translation": "Nie udało się zapisać reakcji."
   },
@@ -9927,10 +9891,6 @@
       "many": "Nie udało się wysłać {{.Count}} zaplanowanych postów.",
       "other": "Nie udało się wysłać {{.Count}} zaplanowanego posta."
     }
-  },
-  {
-    "id": "app.scheduled_post.permanent_delete_by_user.app_error",
-    "translation": "Nie można usunąć zaplanowanych postów dla użytkownika."
   },
   {
     "id": "app.scheduled_post.private_channel",
@@ -10681,10 +10641,6 @@
     "translation": "Nie można usunąć istniejącego konta."
   },
   {
-    "id": "app.user.permanentdeleteuser.internal_error",
-    "translation": "Nie można usunąć tokenu."
-  },
-  {
     "id": "app.user.promote_guest.user_update.app_error",
     "translation": "Nie udało się zaktualizować użytkownika."
   },
@@ -11025,15 +10981,7 @@
     "translation": "Nie można usunąć webhooka."
   },
   {
-    "id": "app.webhooks.permanent_delete_incoming_by_user.app_error",
-    "translation": "Nie można usunąć webhooka."
-  },
-  {
     "id": "app.webhooks.permanent_delete_outgoing_by_channel.app_error",
-    "translation": "Nie można usunąć webhooka."
-  },
-  {
-    "id": "app.webhooks.permanent_delete_outgoing_by_user.app_error",
     "translation": "Nie można usunąć webhooka."
   },
   {

@@ -5723,10 +5723,6 @@
     "translation": "Sayfalandırma sınırı aşıldı."
   },
   {
-    "id": "app.audit.permanent_delete_by_user.app_error",
-    "translation": "Denetimler silinirken bir sorun çıktı."
-  },
-  {
     "id": "app.audit.save.saving.app_error",
     "translation": "Denetim kaydedilirken bir sorun çıktı."
   },
@@ -6133,10 +6129,6 @@
   {
     "id": "app.channel.permanent_delete.app_error",
     "translation": "Kanal silinemedi."
-  },
-  {
-    "id": "app.channel.permanent_delete_members_by_user.app_error",
-    "translation": "Kanal üyesi silinemedi."
   },
   {
     "id": "app.channel.pinned_posts.app_error",
@@ -7069,10 +7061,6 @@
     "translation": "Taslak, uygulama eki tarafından reddedildi: {{.Reason}}"
   },
   {
-    "id": "app.drafts.permanent_delete_by_user.app_error",
-    "translation": "Kullanıcının taslakları silinemedi."
-  },
-  {
     "id": "app.email.no_rate_limiter.app_error",
     "translation": "Hız sınırlaması ayarlanmamış."
   },
@@ -7245,10 +7233,6 @@
     "translation": "Dosya, dosya deposunda belirtilen yolda bulunamadı."
   },
   {
-    "id": "app.file_info.permanent_delete_by_user.app_error",
-    "translation": "Kullanıcının ek dosyaları silinemedi."
-  },
-  {
     "id": "app.file_info.permanent_delete_for_post.app_error",
     "translation": "İletinin dosyası kalıcı olarak silinemedi."
   },
@@ -7303,10 +7287,6 @@
   {
     "id": "app.group.no_rows",
     "translation": "eşleşen bir grup bulunamadı"
-  },
-  {
-    "id": "app.group.permanent_delete_members_by_user.app_error",
-    "translation": "\"{{.UserId}}\" kullanıcı kodlu grup üyesi çıkarılamadı."
   },
   {
     "id": "app.group.uniqueness_error",
@@ -8405,10 +8385,6 @@
     "translation": "OAuth2 uygulamaları aranırken bir sorun çıktı."
   },
   {
-    "id": "app.oauth.permanent_delete_auth_data_by_user.app_error",
-    "translation": "Kimlik doğrulama kodu silinemedi."
-  },
-  {
     "id": "app.oauth.remove_access_data.app_error",
     "translation": "Erişim kodu silinemedi."
   },
@@ -9109,10 +9085,6 @@
     "translation": "Kanalın iletileri silinemedi."
   },
   {
-    "id": "app.post.permanent_delete_by_user.app_error",
-    "translation": "Kullanıcının silinecek iletileri seçilemedi."
-  },
-  {
     "id": "app.post.permanent_delete_post.error",
     "translation": "İleti kalıcı olarak silinemedi."
   },
@@ -9231,10 +9203,6 @@
   {
     "id": "app.preference.get_category.app_error",
     "translation": "Ayarlar aranırken bir sorun çıktı."
-  },
-  {
-    "id": "app.preference.permanent_delete_by_user.app_error",
-    "translation": "Ayarlar silinirken bir sorun çıktı."
   },
   {
     "id": "app.preference.save.updating.app_error",
@@ -9601,10 +9569,6 @@
     "translation": "İletinin tepkileri alınamadı."
   },
   {
-    "id": "app.reaction.permanent_delete_by_user.app_error",
-    "translation": "Kullanıcının tepkileri silinemedi."
-  },
-  {
     "id": "app.reaction.save.save.app_error",
     "translation": "Tepki kaydedilemedi."
   },
@@ -9909,10 +9873,6 @@
       "one": "{{.Count}} zamanlanmış ileti gönderilemedi.",
       "other": "{{.Count}} zamanlanmış ileti gönderilemedi."
     }
-  },
-  {
-    "id": "app.scheduled_post.permanent_delete_by_user.app_error",
-    "translation": "Kullanıcının zamanlanmış iletileri silinemedi."
   },
   {
     "id": "app.scheduled_post.private_channel",
@@ -10663,10 +10623,6 @@
     "translation": "Var olan hesap silinemedi."
   },
   {
-    "id": "app.user.permanentdeleteuser.internal_error",
-    "translation": "Kullanıcı silinemedi."
-  },
-  {
     "id": "app.user.promote_guest.user_update.app_error",
     "translation": "Kullanıcı güncellenemedi."
   },
@@ -11007,15 +10963,7 @@
     "translation": "İnternet kancası silinemedi."
   },
   {
-    "id": "app.webhooks.permanent_delete_incoming_by_user.app_error",
-    "translation": "İnternet kancası silinemedi."
-  },
-  {
     "id": "app.webhooks.permanent_delete_outgoing_by_channel.app_error",
-    "translation": "İnternet kancası silinemedi."
-  },
-  {
-    "id": "app.webhooks.permanent_delete_outgoing_by_user.app_error",
     "translation": "İnternet kancası silinemedi."
   },
   {

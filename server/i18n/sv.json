@@ -5723,10 +5723,6 @@
     "translation": "Sid-gränsen överskriden."
   },
   {
-    "id": "app.audit.permanent_delete_by_user.app_error",
-    "translation": "Ett fel uppstod vid radering av audits."
-  },
-  {
     "id": "app.audit.save.saving.app_error",
     "translation": "Ett fel uppstod när audits sparades."
   },
@@ -6133,10 +6129,6 @@
   {
     "id": "app.channel.permanent_delete.app_error",
     "translation": "Kunde inte radera kanalen."
-  },
-  {
-    "id": "app.channel.permanent_delete_members_by_user.app_error",
-    "translation": "Kunde inte radera kanalmedlemmen."
   },
   {
     "id": "app.channel.pinned_posts.app_error",
@@ -7069,10 +7061,6 @@
     "translation": "Utkastet avvisades av plugin: {{.Reason}}"
   },
   {
-    "id": "app.drafts.permanent_delete_by_user.app_error",
-    "translation": "Kunde inte radera användarens utkast."
-  },
-  {
     "id": "app.email.no_rate_limiter.app_error",
     "translation": "Mängdbegränsning (Rate limiter) är inte konfigurerad."
   },
@@ -7245,10 +7233,6 @@
     "translation": "Filen hittades inte i fillagringen på sökvägen."
   },
   {
-    "id": "app.file_info.permanent_delete_by_user.app_error",
-    "translation": "Kunde inte radera användarens bilagor."
-  },
-  {
     "id": "app.file_info.permanent_delete_for_post.app_error",
     "translation": "Misslyckades med att permanent radera filen för inlägget."
   },
@@ -7303,10 +7287,6 @@
   {
     "id": "app.group.no_rows",
     "translation": "ingen matchande grupp hittad"
-  },
-  {
-    "id": "app.group.permanent_delete_members_by_user.app_error",
-    "translation": "Kunde inte ta bort gruppmedlem med UserID \"{{.UserId}}\"."
   },
   {
     "id": "app.group.uniqueness_error",
@@ -8405,10 +8385,6 @@
     "translation": "Ett fel uppstod när OAuth2 App skulle hittas."
   },
   {
-    "id": "app.oauth.permanent_delete_auth_data_by_user.app_error",
-    "translation": "Kunde inte ta bort auktorisationskoden."
-  },
-  {
     "id": "app.oauth.remove_access_data.app_error",
     "translation": "Kunde inte ta bort access-token."
   },
@@ -9109,10 +9085,6 @@
     "translation": "Kunde inte radera meddelanden utifrån kanal."
   },
   {
-    "id": "app.post.permanent_delete_by_user.app_error",
-    "translation": "Kunde inte utröna meddelanden att radera utifrån användare."
-  },
-  {
     "id": "app.post.permanent_delete_post.error",
     "translation": "Misslyckades med att permanent radera inlägget."
   },
@@ -9231,10 +9203,6 @@
   {
     "id": "app.preference.get_category.app_error",
     "translation": "Ett fel uppstod när inställningar hämtades."
-  },
-  {
-    "id": "app.preference.permanent_delete_by_user.app_error",
-    "translation": "Ett fel uppstod när inställningar raderades."
   },
   {
     "id": "app.preference.save.updating.app_error",
@@ -9601,10 +9569,6 @@
     "translation": "Kunde inte hämta meddelandets reaktioner."
   },
   {
-    "id": "app.reaction.permanent_delete_by_user.app_error",
-    "translation": "Det gick inte att radera reaktioner för användaren."
-  },
-  {
     "id": "app.reaction.save.save.app_error",
     "translation": "Kunde inte spara reaktionen."
   },
@@ -9909,10 +9873,6 @@
       "one": "Misslyckades med att skicka {{.Count}} schemalagd post.",
       "other": "Misslyckades med att skicka {{.Count}} schemalagda poster."
     }
-  },
-  {
-    "id": "app.scheduled_post.permanent_delete_by_user.app_error",
-    "translation": "Det går inte att ta bort användarens schemalagda inlägg."
   },
   {
     "id": "app.scheduled_post.private_channel",
@@ -10663,10 +10623,6 @@
     "translation": "Kunde inte radera det befintliga kontot."
   },
   {
-    "id": "app.user.permanentdeleteuser.internal_error",
-    "translation": "Kan inte radera användare."
-  },
-  {
     "id": "app.user.promote_guest.user_update.app_error",
     "translation": "Misslyckades att uppdatera användaren."
   },
@@ -11007,15 +10963,7 @@
     "translation": "Kunde inte radera webhooken."
   },
   {
-    "id": "app.webhooks.permanent_delete_incoming_by_user.app_error",
-    "translation": "Kunde inte radera webhooken."
-  },
-  {
     "id": "app.webhooks.permanent_delete_outgoing_by_channel.app_error",
-    "translation": "Kunde inte radera webhooken."
-  },
-  {
-    "id": "app.webhooks.permanent_delete_outgoing_by_user.app_error",
     "translation": "Kunde inte radera webhooken."
   },
   {

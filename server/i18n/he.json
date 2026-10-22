@@ -5348,10 +5348,6 @@
     "translation": "הגבול לעימוד עמודים חורג."
   },
   {
-    "id": "app.audit.permanent_delete_by_user.app_error",
-    "translation": "נתקלנו בשגיאה בעת מחיקת רשומות הביקורת."
-  },
-  {
     "id": "app.audit.save.saving.app_error",
     "translation": "אירעה שגיאה בשמירת האודיט."
   },
@@ -5758,10 +5754,6 @@
   {
     "id": "app.channel.permanent_delete.app_error",
     "translation": "לא ניתן למחוק את הערוץ."
-  },
-  {
-    "id": "app.channel.permanent_delete_members_by_user.app_error",
-    "translation": "לא ניתן להסיר את חבר הערוץ."
   },
   {
     "id": "app.channel.pinned_posts.app_error",
@@ -6664,10 +6656,6 @@
     "translation": "הטיוטה נדחתה על ידי תוסף: {{.Reason}}"
   },
   {
-    "id": "app.drafts.permanent_delete_by_user.app_error",
-    "translation": "לא ניתן למחוק טיוטות עבור המשתמש."
-  },
-  {
     "id": "app.email.no_rate_limiter.app_error",
     "translation": "מגביל הקצב אינו מוגדר."
   },
@@ -6832,10 +6820,6 @@
     "translation": "הקובץ לא נמצא במאגר הקבצים בנתיב."
   },
   {
-    "id": "app.file_info.permanent_delete_by_user.app_error",
-    "translation": "לא ניתן למחוק את קבצי המצורף של המשתמש."
-  },
-  {
     "id": "app.file_info.permanent_delete_for_post.app_error",
     "translation": "נכשל במחיקה הקבועה של הקובץ עבור ההודעה."
   },
@@ -6886,10 +6870,6 @@
   {
     "id": "app.group.no_rows",
     "translation": "לא נמצאה קבוצה תואמת"
-  },
-  {
-    "id": "app.group.permanent_delete_members_by_user.app_error",
-    "translation": "לא ניתן להסיר את חבר הקבוצה עם מזהה משתמש \"{{.UserId}}\"."
   },
   {
     "id": "app.group.uniqueness_error",
@@ -7976,10 +7956,6 @@
     "translation": "אירעה שגיאה במציאת אפליקציות OAuth2."
   },
   {
-    "id": "app.oauth.permanent_delete_auth_data_by_user.app_error",
-    "translation": "לא ניתן להסיר את קוד האימות."
-  },
-  {
     "id": "app.oauth.remove_access_data.app_error",
     "translation": "לא ניתן להסיר את אסימון הגישה."
   },
@@ -8656,10 +8632,6 @@
     "translation": "לא ניתן למחוק את ההודעות לפי ערוץ."
   },
   {
-    "id": "app.post.permanent_delete_by_user.app_error",
-    "translation": "לא ניתן לבחור את ההודעות למחיקה עבור המשתמש."
-  },
-  {
     "id": "app.post.permanent_delete_post.error",
     "translation": "המחיקה הקבועה של ההודעה נכשלה."
   },
@@ -8778,10 +8750,6 @@
   {
     "id": "app.preference.get_category.app_error",
     "translation": "אירעה שגיאה במהלך מציאת ההעדפות."
-  },
-  {
-    "id": "app.preference.permanent_delete_by_user.app_error",
-    "translation": "אירעה שגיאה במהלך מחיקת ההעדפות."
   },
   {
     "id": "app.preference.save.updating.app_error",
@@ -9144,10 +9112,6 @@
     "translation": "לא ניתן להשיג תגובות עבור ההודעה."
   },
   {
-    "id": "app.reaction.permanent_delete_by_user.app_error",
-    "translation": "לא ניתן למחוק תגובות עבור המשתמש."
-  },
-  {
     "id": "app.reaction.save.save.app_error",
     "translation": "לא ניתן לשמור תגובה."
   },
@@ -9434,10 +9398,6 @@
   {
     "id": "app.scheduled_post.error_reason.user_missing",
     "translation": "המשתמש לא קיים"
-  },
-  {
-    "id": "app.scheduled_post.permanent_delete_by_user.app_error",
-    "translation": "לא ניתן למחוק פוסטים מתוזמנים עבור המשתמש."
   },
   {
     "id": "app.scheduled_post.private_channel",
@@ -10184,10 +10144,6 @@
     "translation": "לא ניתן למחוק את החשבון הקיים."
   },
   {
-    "id": "app.user.permanentdeleteuser.internal_error",
-    "translation": "לא ניתן למחוק את המשתמש."
-  },
-  {
     "id": "app.user.promote_guest.user_update.app_error",
     "translation": "העדכון של המשתמש נכשל."
   },
@@ -10520,15 +10476,7 @@
     "translation": "לא ניתן למחוק את ה-Webhook."
   },
   {
-    "id": "app.webhooks.permanent_delete_incoming_by_user.app_error",
-    "translation": "לא ניתן למחוק את ה-Webhook."
-  },
-  {
     "id": "app.webhooks.permanent_delete_outgoing_by_channel.app_error",
-    "translation": "לא ניתן למחוק את ה-Webhook."
-  },
-  {
-    "id": "app.webhooks.permanent_delete_outgoing_by_user.app_error",
     "translation": "לא ניתן למחוק את ה-Webhook."
   },
   {

@@ -64,6 +64,24 @@ func (_m *ChannelOverrideStore) GetForChannel(rctx request.CTX, channelID string
 	return r0, r1
 }
 
+// PermanentDeleteForUser provides a mock function with given fields: rctx, userID
+func (_m *ChannelOverrideStore) PermanentDeleteForUser(rctx request.CTX, userID string) error {
+	ret := _m.Called(rctx, userID)
+
+	if len(ret) == 0 {
+		panic("no return value specified for PermanentDeleteForUser")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(request.CTX, string) error); ok {
+		r0 = rf(rctx, userID)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
 // Save provides a mock function with given fields: rctx, override
 func (_m *ChannelOverrideStore) Save(rctx request.CTX, override *model.ChannelOverride) (*model.ChannelOverride, error) {
 	ret := _m.Called(rctx, override)

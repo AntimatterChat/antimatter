@@ -5457,10 +5457,6 @@
     "translation": "Viršytas puslapiavimo limitas."
   },
   {
-    "id": "app.audit.permanent_delete_by_user.app_error",
-    "translation": "Trinant audito įrašus įvyko klaida."
-  },
-  {
     "id": "app.audit.save.saving.app_error",
     "translation": "Išsaugant audito įrašą įvyko klaida."
   },
@@ -5859,10 +5855,6 @@
   {
     "id": "app.channel.permanent_delete.app_error",
     "translation": "Nepavyksta ištrinti kanalo."
-  },
-  {
-    "id": "app.channel.permanent_delete_members_by_user.app_error",
-    "translation": "Nepavyksta pašalinti kanalo nario."
   },
   {
     "id": "app.channel.pinned_posts.app_error",
@@ -6699,10 +6691,6 @@
     "translation": "Papildinys atmetė juodraštį: {{.Reason}}"
   },
   {
-    "id": "app.drafts.permanent_delete_by_user.app_error",
-    "translation": "Nepavyksta ištrinti naudotojo juodraščių."
-  },
-  {
     "id": "app.email.no_rate_limiter.app_error",
     "translation": "Spartos ribotuvas nenustatytas."
   },
@@ -6875,10 +6863,6 @@
     "translation": "Failas nurodytu keliu failų saugykloje nerastas."
   },
   {
-    "id": "app.file_info.permanent_delete_by_user.app_error",
-    "translation": "Nepavyksta ištrinti naudotojo priedų."
-  },
-  {
     "id": "app.file_info.permanent_delete_for_post.app_error",
     "translation": "Nepavyko negrįžtamai ištrinti pranešimo failo."
   },
@@ -6933,10 +6917,6 @@
   {
     "id": "app.group.no_rows",
     "translation": "atitinkančių grupių nerasta"
-  },
-  {
-    "id": "app.group.permanent_delete_members_by_user.app_error",
-    "translation": "Nepavyksta pašalinti grupės nario, kurio UserID yra \"{{.UserId}}\"."
   },
   {
     "id": "app.group.uniqueness_error",
@@ -7931,10 +7911,6 @@
     "translation": "Ieškant OAuth2 programų įvyko klaida."
   },
   {
-    "id": "app.oauth.permanent_delete_auth_data_by_user.app_error",
-    "translation": "Nepavyksta pašalinti įgaliojimo kodo."
-  },
-  {
     "id": "app.oauth.remove_access_data.app_error",
     "translation": "Nepavyksta pašalinti prieigos rakto."
   },
@@ -8567,10 +8543,6 @@
     "translation": "Nepavyksta ištrinti kanalo pranešimų."
   },
   {
-    "id": "app.post.permanent_delete_by_user.app_error",
-    "translation": "Nepavyksta atrinkti trintinų naudotojo pranešimų."
-  },
-  {
     "id": "app.post.permanent_delete_post.error",
     "translation": "Nepavyko negrįžtamai ištrinti pranešimo."
   },
@@ -8677,10 +8649,6 @@
   {
     "id": "app.preference.get_category.app_error",
     "translation": "Ieškant nuostatų įvyko klaida."
-  },
-  {
-    "id": "app.preference.permanent_delete_by_user.app_error",
-    "translation": "Trinant nuostatas įvyko klaida."
   },
   {
     "id": "app.preference.save.updating.app_error",
@@ -9047,10 +9015,6 @@
     "translation": "Nepavyksta gauti pranešimo reakcijų."
   },
   {
-    "id": "app.reaction.permanent_delete_by_user.app_error",
-    "translation": "Nepavyksta ištrinti naudotojo reakcijų."
-  },
-  {
     "id": "app.reaction.save.save.app_error",
     "translation": "Nepavyksta išsaugoti reakcijos."
   },
@@ -9359,10 +9323,6 @@
       "many": "Nepavyko išsiųsti {{.Count}} suplanuoto pranešimo.",
       "other": "Nepavyko išsiųsti {{.Count}} suplanuotų pranešimų."
     }
-  },
-  {
-    "id": "app.scheduled_post.permanent_delete_by_user.app_error",
-    "translation": "Nepavyksta ištrinti naudotojo suplanuotų pranešimų."
   },
   {
     "id": "app.scheduled_post.private_channel",
@@ -10061,10 +10021,6 @@
     "translation": "Nepavyksta ištrinti esamos paskyros."
   },
   {
-    "id": "app.user.permanentdeleteuser.internal_error",
-    "translation": "Nepavyksta ištrinti naudotojo."
-  },
-  {
     "id": "app.user.promote_guest.user_update.app_error",
     "translation": "Nepavyko atnaujinti naudotojo."
   },
@@ -10393,15 +10349,7 @@
     "translation": "Nepavyksta ištrinti žiniatinklio kablio."
   },
   {
-    "id": "app.webhooks.permanent_delete_incoming_by_user.app_error",
-    "translation": "Nepavyksta ištrinti žiniatinklio kablio."
-  },
-  {
     "id": "app.webhooks.permanent_delete_outgoing_by_channel.app_error",
-    "translation": "Nepavyksta ištrinti žiniatinklio kablio."
-  },
-  {
-    "id": "app.webhooks.permanent_delete_outgoing_by_user.app_error",
     "translation": "Nepavyksta ištrinti žiniatinklio kablio."
   },
   {

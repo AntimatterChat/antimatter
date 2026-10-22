@@ -19,6 +19,7 @@ func TestAIAgentStore(t *testing.T, rctx request.CTX, ss store.Store) {
 	t.Run("External", func(t *testing.T) { testAIAgentExternal(t, rctx, ss) })
 	t.Run("Scopes", func(t *testing.T) { testAIAgentScopes(t, rctx, ss) })
 	t.Run("Delete", func(t *testing.T) { testAIAgentDelete(t, rctx, ss) })
+	t.Run("PermanentDelete", func(t *testing.T) { testAIAgentPermanentDelete(t, rctx, ss) })
 	t.Run("Conversations", func(t *testing.T) { testAIAgentConversations(t, rctx, ss) })
 }
 
@@ -171,6 +172,28 @@ func testAIAgentDelete(t *testing.T, rctx request.CTX, ss store.Store) {
 	assert.ErrorAs(t, ss.AIAgent().Delete(rctx, a.UserId, model.GetMillis()), &nfErr, "deleted once")
 	_, err = ss.AIAgent().Update(rctx, got)
 	assert.ErrorAs(t, err, &nfErr, "a deleted agent isn't updated")
+}
+
+func testAIAgentPermanentDelete(t *testing.T, rctx request.CTX, ss store.Store) {
+	team := model.NewId()
+	active, err := ss.AIAgent().Save(rctx, newTestAIAgent(team))
+	require.NoError(t, err)
+	deleted, err := ss.AIAgent().Save(rctx, newTestAIAgent(team))
+	require.NoError(t, err)
+	require.NoError(t, ss.AIAgent().Delete(rctx, deleted.UserId, model.GetMillis()))
+	kept, err := ss.AIAgent().Save(rctx, newTestAIAgent(team))
+	require.NoError(t, err)
+
+	var nfErr *store.ErrNotFound
+	for _, a := range []*model.AIAgent{active, deleted} {
+		require.NoError(t, ss.AIAgent().PermanentDelete(rctx, a.UserId))
+		_, err = ss.AIAgent().Get(rctx, a.UserId)
+		assert.ErrorAs(t, err, &nfErr, "gone, deleted before or not")
+	}
+	require.NoError(t, ss.AIAgent().PermanentDelete(rctx, model.NewId()), "nothing to delete is fine")
+
+	_, err = ss.AIAgent().Get(rctx, kept.UserId)
+	require.NoError(t, err, "other agents stay")
 }
 
 func testAgentActivitySaveGet(t *testing.T, rctx request.CTX, ss store.Store) {

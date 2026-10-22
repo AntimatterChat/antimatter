@@ -5348,10 +5348,6 @@
     "translation": "تم تجاوز الحد المخصص للترقيم."
   },
   {
-    "id": "app.audit.permanent_delete_by_user.app_error",
-    "translation": "وقع خطأ أثناء حذف سجلات التدقيق."
-  },
-  {
     "id": "app.audit.save.saving.app_error",
     "translation": "حدث خطأ أثناء حفظ سجل التدقيق."
   },
@@ -5758,10 +5754,6 @@
   {
     "id": "app.channel.permanent_delete.app_error",
     "translation": "تعذّر حذف القناة."
-  },
-  {
-    "id": "app.channel.permanent_delete_members_by_user.app_error",
-    "translation": "تعذّر إزالة عضو القناة."
   },
   {
     "id": "app.channel.pinned_posts.app_error",
@@ -6664,10 +6656,6 @@
     "translation": "رفضت الإضافة المسودة: {{.Reason}}"
   },
   {
-    "id": "app.drafts.permanent_delete_by_user.app_error",
-    "translation": "تعذّر حذف مسودات المستخدم."
-  },
-  {
     "id": "app.email.no_rate_limiter.app_error",
     "translation": "لم يتم ضبط مُقيّد المعدل."
   },
@@ -6832,10 +6820,6 @@
     "translation": "لم يتم العثور على الملف في مخزن الملفات عند المسار المحدد."
   },
   {
-    "id": "app.file_info.permanent_delete_by_user.app_error",
-    "translation": "تعذّر حذف المرفقات الخاصة بالمستخدم."
-  },
-  {
     "id": "app.file_info.permanent_delete_for_post.app_error",
     "translation": "فشل في حذف الملف الخاص بالمشاركة بشكل دائم."
   },
@@ -6886,10 +6870,6 @@
   {
     "id": "app.group.no_rows",
     "translation": "لم يتم العثور على مجموعة مطابقة"
-  },
-  {
-    "id": "app.group.permanent_delete_members_by_user.app_error",
-    "translation": "تعذّر إزالة عضو المجموعة الذي يحمل معرّف المستخدم \"{{.UserId}}\"."
   },
   {
     "id": "app.group.uniqueness_error",
@@ -7976,10 +7956,6 @@
     "translation": "حدث خطأ أثناء البحث عن تطبيقات OAuth2."
   },
   {
-    "id": "app.oauth.permanent_delete_auth_data_by_user.app_error",
-    "translation": "تعذّر إزالة رمز التفويض."
-  },
-  {
     "id": "app.oauth.remove_access_data.app_error",
     "translation": "تعذّر إزالة رمز الوصول."
   },
@@ -8656,10 +8632,6 @@
     "translation": "تعذّر حذف المنشورات حسب القناة."
   },
   {
-    "id": "app.post.permanent_delete_by_user.app_error",
-    "translation": "تعذّر تحديد المنشورات التي يجب حذفها للمستخدم."
-  },
-  {
     "id": "app.post.permanent_delete_post.error",
     "translation": "فشل في حذف المنشور بشكل دائم."
   },
@@ -8778,10 +8750,6 @@
   {
     "id": "app.preference.get_category.app_error",
     "translation": "وقعنا في خطأ أثناء البحث عن التفضيلات."
-  },
-  {
-    "id": "app.preference.permanent_delete_by_user.app_error",
-    "translation": "وقعنا في خطأ أثناء حذف التفضيلات."
   },
   {
     "id": "app.preference.save.updating.app_error",
@@ -9144,10 +9112,6 @@
     "translation": "تعذّر الحصول على ردود الفعل للمقال."
   },
   {
-    "id": "app.reaction.permanent_delete_by_user.app_error",
-    "translation": "تعذّر حذف ردود الفعل الخاصة بالمستخدم."
-  },
-  {
     "id": "app.reaction.save.save.app_error",
     "translation": "تعذّر حفظ رد الفعل."
   },
@@ -9434,10 +9398,6 @@
   {
     "id": "app.scheduled_post.error_reason.user_missing",
     "translation": "المستخدم غير موجود"
-  },
-  {
-    "id": "app.scheduled_post.permanent_delete_by_user.app_error",
-    "translation": "تعذّر حذف المنشورات المجدولة للمستخدم."
   },
   {
     "id": "app.scheduled_post.private_channel",
@@ -10184,10 +10144,6 @@
     "translation": "تعذّر حذف الحساب الموجود."
   },
   {
-    "id": "app.user.permanentdeleteuser.internal_error",
-    "translation": "تعذّر حذف المستخدم."
-  },
-  {
     "id": "app.user.promote_guest.user_update.app_error",
     "translation": "فشل في تحديث المستخدم."
   },
@@ -10520,15 +10476,7 @@
     "translation": "تعذّر حذف خطاف الويب."
   },
   {
-    "id": "app.webhooks.permanent_delete_incoming_by_user.app_error",
-    "translation": "تعذّر حذف خطاف الويب."
-  },
-  {
     "id": "app.webhooks.permanent_delete_outgoing_by_channel.app_error",
-    "translation": "تعذّر حذف خطاف الويب."
-  },
-  {
-    "id": "app.webhooks.permanent_delete_outgoing_by_user.app_error",
     "translation": "تعذّر حذف خطاف الويب."
   },
   {

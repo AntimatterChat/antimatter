@@ -5348,10 +5348,6 @@
     "translation": "پیجنگ کے لیے حد عبور ہو گئی۔"
   },
   {
-    "id": "app.audit.permanent_delete_by_user.app_error",
-    "translation": "آڈٹس حذف کرنے میں ایک ایرر سامنے آیا۔"
-  },
-  {
     "id": "app.audit.save.saving.app_error",
     "translation": "آڈٹ محفوظ کرتے وقت ایک خرابی پیش آئی۔"
   },
@@ -5758,10 +5754,6 @@
   {
     "id": "app.channel.permanent_delete.app_error",
     "translation": "چینل کو حذف نہیں کیا جا سکا۔"
-  },
-  {
-    "id": "app.channel.permanent_delete_members_by_user.app_error",
-    "translation": "چینل کے رکن کو ہٹانے میں ناکامی۔"
   },
   {
     "id": "app.channel.pinned_posts.app_error",
@@ -6664,10 +6656,6 @@
     "translation": "پلگ ان نے مسودہ مسترد کر دیا: {{.Reason}}"
   },
   {
-    "id": "app.drafts.permanent_delete_by_user.app_error",
-    "translation": "صارف کے لیے مسودے حذف نہیں کیے جا سکے۔"
-  },
-  {
     "id": "app.email.no_rate_limiter.app_error",
     "translation": "ریٹ لیمٹر سیٹ اپ نہیں کیا گیا۔"
   },
@@ -6832,10 +6820,6 @@
     "translation": "فائل اسٹور میں دیے گئے پاتھ پر نہیں ملی۔"
   },
   {
-    "id": "app.file_info.permanent_delete_by_user.app_error",
-    "translation": "صارف کی منسلک فائلوں کو حذف کرنے میں ناکامی۔"
-  },
-  {
     "id": "app.file_info.permanent_delete_for_post.app_error",
     "translation": "پوسٹ کی فائل کو مستقل طور پر حذف کرنے میں ناکامی۔"
   },
@@ -6886,10 +6870,6 @@
   {
     "id": "app.group.no_rows",
     "translation": "کوئی مماثل گروپ نہیں ملا۔"
-  },
-  {
-    "id": "app.group.permanent_delete_members_by_user.app_error",
-    "translation": "UserID \"{{.UserId}}\" والا گروپ رکن ہٹانے میں ناکامی۔"
   },
   {
     "id": "app.group.uniqueness_error",
@@ -7976,10 +7956,6 @@
     "translation": "OAuth2 ایپس کو تلاش کرتے وقت ایک خرابی پیش آئی۔"
   },
   {
-    "id": "app.oauth.permanent_delete_auth_data_by_user.app_error",
-    "translation": "تصدیقی کوڈ کو ہٹایا نہیں جا سکا۔"
-  },
-  {
     "id": "app.oauth.remove_access_data.app_error",
     "translation": "ایکسس ٹوکن کو ہٹایا نہیں جا سکا۔"
   },
@@ -8656,10 +8632,6 @@
     "translation": "چینل کے ذریعے پوسٹس کو حذف کرنے میں ناکام۔"
   },
   {
-    "id": "app.post.permanent_delete_by_user.app_error",
-    "translation": "صارف کے لیے حذف کرنے کے لیے پوسٹس منتخب کرنے میں ناکام۔"
-  },
-  {
     "id": "app.post.permanent_delete_post.error",
     "translation": "پوسٹ کو مستقل طور پر حذف کرنے میں ناکام۔"
   },
@@ -8778,10 +8750,6 @@
   {
     "id": "app.preference.get_category.app_error",
     "translation": "ترتیبات تلاش کرتے وقت ہمیں ایک خرابی کا سامنا ہوا۔"
-  },
-  {
-    "id": "app.preference.permanent_delete_by_user.app_error",
-    "translation": "ترتیبات حذف کرتے وقت ہمیں ایک خرابی کا سامنا ہوا۔"
   },
   {
     "id": "app.preference.save.updating.app_error",
@@ -9144,10 +9112,6 @@
     "translation": "پوسٹ کے لیے ردعمل حاصل کرنے میں ناکامی۔"
   },
   {
-    "id": "app.reaction.permanent_delete_by_user.app_error",
-    "translation": "صارف کے ردعمل حذف کرنے میں ناکامی۔"
-  },
-  {
     "id": "app.reaction.save.save.app_error",
     "translation": "ردعمل محفوظ کرنے میں ناکامی۔"
   },
@@ -9434,10 +9398,6 @@
   {
     "id": "app.scheduled_post.error_reason.user_missing",
     "translation": "صارف موجود نہیں"
-  },
-  {
-    "id": "app.scheduled_post.permanent_delete_by_user.app_error",
-    "translation": "صارف کے لیے شیڈول شدہ پوسٹس حذف کرنے میں ناکامی۔"
   },
   {
     "id": "app.scheduled_post.private_channel",
@@ -10184,10 +10144,6 @@
     "translation": "موجودہ اکاؤنٹ حذف کرنے میں ناکام۔"
   },
   {
-    "id": "app.user.permanentdeleteuser.internal_error",
-    "translation": "صارف کو حذف کرنے میں ناکام۔"
-  },
-  {
     "id": "app.user.promote_guest.user_update.app_error",
     "translation": "صارف کو اپ ڈیٹ کرنے میں ناکام۔"
   },
@@ -10520,15 +10476,7 @@
     "translation": "ویب ہک حذف نہیں کیا جا سکتا۔"
   },
   {
-    "id": "app.webhooks.permanent_delete_incoming_by_user.app_error",
-    "translation": "ویب ہک حذف نہیں کیا جا سکتا۔"
-  },
-  {
     "id": "app.webhooks.permanent_delete_outgoing_by_channel.app_error",
-    "translation": "ویب ہک حذف نہیں کیا جا سکتا۔"
-  },
-  {
-    "id": "app.webhooks.permanent_delete_outgoing_by_user.app_error",
     "translation": "ویب ہک حذف نہیں کیا جا سکتا۔"
   },
   {

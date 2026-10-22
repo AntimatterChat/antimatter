@@ -5728,10 +5728,6 @@
     "translation": "Limita depășită pentru paginare."
   },
   {
-    "id": "app.audit.permanent_delete_by_user.app_error",
-    "translation": "Am întâmpinat o eroare la ștergerea auditurilor."
-  },
-  {
     "id": "app.audit.save.saving.app_error",
     "translation": "Am întâmpinat o eroare la salvarea auditului."
   },
@@ -6138,10 +6134,6 @@
   {
     "id": "app.channel.permanent_delete.app_error",
     "translation": "Nu se poate șterge canalul."
-  },
-  {
-    "id": "app.channel.permanent_delete_members_by_user.app_error",
-    "translation": "Nu se poate elimina membrul canalului."
   },
   {
     "id": "app.channel.pinned_posts.app_error",
@@ -7076,10 +7068,6 @@
     "translation": "Schița a fost respinsă de plugin: {{.Reason}}"
   },
   {
-    "id": "app.drafts.permanent_delete_by_user.app_error",
-    "translation": "Nu s-au putut șterge schițele utilizatorului."
-  },
-  {
     "id": "app.email.no_rate_limiter.app_error",
     "translation": "Limitatorul de viteză nu este configurat."
   },
@@ -7252,10 +7240,6 @@
     "translation": "Fișierul nu a fost găsit în spațiul de stocare la calea indicată."
   },
   {
-    "id": "app.file_info.permanent_delete_by_user.app_error",
-    "translation": "Imposibil de șters fișierele atașate ale utilizatorului."
-  },
-  {
     "id": "app.file_info.permanent_delete_for_post.app_error",
     "translation": "Nu s-a putut șterge definitiv fișierul pentru postare."
   },
@@ -7310,10 +7294,6 @@
   {
     "id": "app.group.no_rows",
     "translation": "nu a fost găsit niciun grup de potrivire"
-  },
-  {
-    "id": "app.group.permanent_delete_members_by_user.app_error",
-    "translation": "Imposibil de eliminat membrul grupului cu ID-ul de utilizator „{{.UserId}}”."
   },
   {
     "id": "app.group.uniqueness_error",
@@ -8412,10 +8392,6 @@
     "translation": "A apărut o eroare la găsirea aplicațiilor OAuth2."
   },
   {
-    "id": "app.oauth.permanent_delete_auth_data_by_user.app_error",
-    "translation": "Imposibil de eliminat codul de autorizare."
-  },
-  {
     "id": "app.oauth.remove_access_data.app_error",
     "translation": "Imposibil de eliminat tokenul de acces."
   },
@@ -9116,10 +9092,6 @@
     "translation": "Nu se pot șterge postările după canal."
   },
   {
-    "id": "app.post.permanent_delete_by_user.app_error",
-    "translation": "Imposibil de selectat mesajele pe care trebuie să le ștergeți pentru utilizator."
-  },
-  {
     "id": "app.post.permanent_delete_post.error",
     "translation": "Nu s-a putut șterge definitiv postarea."
   },
@@ -9238,10 +9210,6 @@
   {
     "id": "app.preference.get_category.app_error",
     "translation": "Am întâlnit o eroare la găsirea preferințelor."
-  },
-  {
-    "id": "app.preference.permanent_delete_by_user.app_error",
-    "translation": "Am întâmpinat o eroare la ștergerea preferințelor."
   },
   {
     "id": "app.preference.save.updating.app_error",
@@ -9608,10 +9576,6 @@
     "translation": "Nu se pot obține reacții pentru postare."
   },
   {
-    "id": "app.reaction.permanent_delete_by_user.app_error",
-    "translation": "Nu s-au putut șterge reacțiile utilizatorului."
-  },
-  {
     "id": "app.reaction.save.save.app_error",
     "translation": "Imposibil de salvat reacția."
   },
@@ -9918,10 +9882,6 @@
       "few": "Nu s-au putut trimite {{.Count}} postări programate.",
       "other": "Nu s-au putut trimite {{.Count}} de postări programate."
     }
-  },
-  {
-    "id": "app.scheduled_post.permanent_delete_by_user.app_error",
-    "translation": "Nu s-au putut șterge postările programate ale utilizatorului."
   },
   {
     "id": "app.scheduled_post.private_channel",
@@ -10672,10 +10632,6 @@
     "translation": "Imposibil de șters contul existent."
   },
   {
-    "id": "app.user.permanentdeleteuser.internal_error",
-    "translation": "Imposibil de șters token."
-  },
-  {
     "id": "app.user.promote_guest.user_update.app_error",
     "translation": "Actualizarea utilizatorului nu a reușit."
   },
@@ -11016,15 +10972,7 @@
     "translation": "În imposibilitatea de a șterge webhook."
   },
   {
-    "id": "app.webhooks.permanent_delete_incoming_by_user.app_error",
-    "translation": "În imposibilitatea de a șterge webhook."
-  },
-  {
     "id": "app.webhooks.permanent_delete_outgoing_by_channel.app_error",
-    "translation": "În imposibilitatea de a șterge webhook."
-  },
-  {
-    "id": "app.webhooks.permanent_delete_outgoing_by_user.app_error",
     "translation": "În imposibilitatea de a șterge webhook."
   },
   {

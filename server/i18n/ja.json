@@ -5666,10 +5666,6 @@
     "translation": "ページングの限度を超えました。"
   },
   {
-    "id": "app.audit.permanent_delete_by_user.app_error",
-    "translation": "監査ログを削除する際にエラーが発生しました。"
-  },
-  {
     "id": "app.audit.save.saving.app_error",
     "translation": "監査ログを保存する際にエラーが発生しました。"
   },
@@ -6076,10 +6072,6 @@
   {
     "id": "app.channel.permanent_delete.app_error",
     "translation": "チャンネルを削除できませんでした。"
-  },
-  {
-    "id": "app.channel.permanent_delete_members_by_user.app_error",
-    "translation": "チャンネルメンバーを削除できませんでした。"
   },
   {
     "id": "app.channel.pinned_posts.app_error",
@@ -7010,10 +7002,6 @@
     "translation": "下書きがプラグインによって拒否されました: {{.Reason}}"
   },
   {
-    "id": "app.drafts.permanent_delete_by_user.app_error",
-    "translation": "ユーザーの下書きを削除できません。"
-  },
-  {
     "id": "app.email.no_rate_limiter.app_error",
     "translation": "頻度制限が設定されていません。"
   },
@@ -7182,10 +7170,6 @@
     "translation": "指定されたパスのファイルストアにファイルが見つかりませんでした。"
   },
   {
-    "id": "app.file_info.permanent_delete_by_user.app_error",
-    "translation": "ユーザーの添付ファイルを削除できませんでした。"
-  },
-  {
     "id": "app.file_info.permanent_delete_for_post.app_error",
     "translation": "投稿に対するファイルを完全に削除できませんでした。"
   },
@@ -7240,10 +7224,6 @@
   {
     "id": "app.group.no_rows",
     "translation": "一致するグループが見つかりませんでした"
-  },
-  {
-    "id": "app.group.permanent_delete_members_by_user.app_error",
-    "translation": "UserID \"{{.UserId}}\"を持つグループメンバーを削除できませんでした。"
   },
   {
     "id": "app.group.uniqueness_error",
@@ -8334,10 +8314,6 @@
     "translation": "OAuth2アプリケーションを検索中にエラーが発生しました。"
   },
   {
-    "id": "app.oauth.permanent_delete_auth_data_by_user.app_error",
-    "translation": "認証コードを削除できませんでした。"
-  },
-  {
     "id": "app.oauth.remove_access_data.app_error",
     "translation": "アクセストークンを削除できませんでした。"
   },
@@ -9018,10 +8994,6 @@
     "translation": "チャンネルから投稿を削除できませんでした。"
   },
   {
-    "id": "app.post.permanent_delete_by_user.app_error",
-    "translation": "ユーザーの削除すべき投稿を選択できませんでした。"
-  },
-  {
     "id": "app.post.permanent_delete_post.error",
     "translation": "投稿を完全に削除できませんでした。"
   },
@@ -9140,10 +9112,6 @@
   {
     "id": "app.preference.get_category.app_error",
     "translation": "設定を探す際にエラーが発生しました。"
-  },
-  {
-    "id": "app.preference.permanent_delete_by_user.app_error",
-    "translation": "設定を削除する際にエラーが発生しました。"
   },
   {
     "id": "app.preference.save.updating.app_error",
@@ -9506,10 +9474,6 @@
     "translation": "投稿に対するリアクションを取得できませんでした。"
   },
   {
-    "id": "app.reaction.permanent_delete_by_user.app_error",
-    "translation": "ユーザーに対するリアクションを削除できませんでした。"
-  },
-  {
     "id": "app.reaction.save.save.app_error",
     "translation": "リアクションを保存できませんでした。"
   },
@@ -9812,10 +9776,6 @@
     "translation": {
       "other": "スケジュール済みの投稿 {{.Count}} 件を送信できませんでした。"
     }
-  },
-  {
-    "id": "app.scheduled_post.permanent_delete_by_user.app_error",
-    "translation": "ユーザーのスケジュール済みの投稿を削除できませんでした。"
   },
   {
     "id": "app.scheduled_post.private_channel",
@@ -10566,10 +10526,6 @@
     "translation": "既存のアカウントを削除できませんでした。"
   },
   {
-    "id": "app.user.permanentdeleteuser.internal_error",
-    "translation": "トークンを削除できませんでした。"
-  },
-  {
     "id": "app.user.promote_guest.user_update.app_error",
     "translation": "ユーザーを更新できませんでした。"
   },
@@ -10910,15 +10866,7 @@
     "translation": "ウェブフックを削除できませんでした。"
   },
   {
-    "id": "app.webhooks.permanent_delete_incoming_by_user.app_error",
-    "translation": "ウェブフックを削除できませんでした。"
-  },
-  {
     "id": "app.webhooks.permanent_delete_outgoing_by_channel.app_error",
-    "translation": "ウェブフックを削除できませんでした。"
-  },
-  {
-    "id": "app.webhooks.permanent_delete_outgoing_by_user.app_error",
     "translation": "ウェブフックを削除できませんでした。"
   },
   {

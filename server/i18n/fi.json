@@ -5723,10 +5723,6 @@
     "translation": "Sivutuksen raja ylitettiin."
   },
   {
-    "id": "app.audit.permanent_delete_by_user.app_error",
-    "translation": "Kohdattiin virhe poistettaessa auditeja"
-  },
-  {
     "id": "app.audit.save.saving.app_error",
     "translation": "Kohdattiin virhe tallennettaessa auditia"
   },
@@ -6133,10 +6129,6 @@
   {
     "id": "app.channel.permanent_delete.app_error",
     "translation": "Kanavaa ei voitu poistaa."
-  },
-  {
-    "id": "app.channel.permanent_delete_members_by_user.app_error",
-    "translation": "Kanavan jäsentä ei voitu poistaa."
   },
   {
     "id": "app.channel.pinned_posts.app_error",
@@ -7069,10 +7061,6 @@
     "translation": "Lisäosa esti luonnoksen: {{.Reason}}"
   },
   {
-    "id": "app.drafts.permanent_delete_by_user.app_error",
-    "translation": "Käyttäjän luonnoksia ei voitu poistaa."
-  },
-  {
     "id": "app.email.no_rate_limiter.app_error",
     "translation": "Nopeusrajoitinta ei ole määritetty."
   },
@@ -7245,10 +7233,6 @@
     "translation": "Tiedostoa ei löytynyt tiedostovarastosta annetusta polusta."
   },
   {
-    "id": "app.file_info.permanent_delete_by_user.app_error",
-    "translation": "Käyttäjän liitteitä ei voitu poistaa."
-  },
-  {
     "id": "app.file_info.permanent_delete_for_post.app_error",
     "translation": "Viestin tiedoston pysyvä poistaminen epäonnistui."
   },
@@ -7303,10 +7287,6 @@
   {
     "id": "app.group.no_rows",
     "translation": "vastaavaa ryhmää ei löytynyt"
-  },
-  {
-    "id": "app.group.permanent_delete_members_by_user.app_error",
-    "translation": "Ryhmän jäsentä, jonka UserID on \"{{.UserId}}\", ei voitu poistaa."
   },
   {
     "id": "app.group.uniqueness_error",
@@ -8405,10 +8385,6 @@
     "translation": "OAuth2-sovellusten hakemisessa tapahtui virhe."
   },
   {
-    "id": "app.oauth.permanent_delete_auth_data_by_user.app_error",
-    "translation": "Valtuutuskoodia ei voitu poistaa."
-  },
-  {
     "id": "app.oauth.remove_access_data.app_error",
     "translation": "Käyttöoikeustunnusta ei voitu poistaa."
   },
@@ -9109,10 +9085,6 @@
     "translation": "Kanavan viestejä ei voitu poistaa."
   },
   {
-    "id": "app.post.permanent_delete_by_user.app_error",
-    "translation": "Käyttäjän poistettavia viestejä ei voitu valita."
-  },
-  {
     "id": "app.post.permanent_delete_post.error",
     "translation": "Viestin pysyvä poistaminen epäonnistui."
   },
@@ -9231,10 +9203,6 @@
   {
     "id": "app.preference.get_category.app_error",
     "translation": "Asetusten hakemisessa tapahtui virhe."
-  },
-  {
-    "id": "app.preference.permanent_delete_by_user.app_error",
-    "translation": "Asetusten poistamisessa tapahtui virhe."
   },
   {
     "id": "app.preference.save.updating.app_error",
@@ -9601,10 +9569,6 @@
     "translation": "Viestin reaktioita ei voitu hakea."
   },
   {
-    "id": "app.reaction.permanent_delete_by_user.app_error",
-    "translation": "Käyttäjän reaktioita ei voitu poistaa."
-  },
-  {
     "id": "app.reaction.save.save.app_error",
     "translation": "Ei voitu tallentaa reaktiota"
   },
@@ -9909,10 +9873,6 @@
       "one": "{{.Count}} ajoitetun viestin lähettäminen epäonnistui.",
       "other": "{{.Count}} ajoitetun viestin lähettäminen epäonnistui."
     }
-  },
-  {
-    "id": "app.scheduled_post.permanent_delete_by_user.app_error",
-    "translation": "Käyttäjän ajoitettuja viestejä ei voitu poistaa."
   },
   {
     "id": "app.scheduled_post.private_channel",
@@ -10663,10 +10623,6 @@
     "translation": "Tiliä ei voitu poistaa."
   },
   {
-    "id": "app.user.permanentdeleteuser.internal_error",
-    "translation": "Käyttäjää ei voitu poistaa."
-  },
-  {
     "id": "app.user.promote_guest.user_update.app_error",
     "translation": "Käyttäjän päivittäminen epäonnistui."
   },
@@ -11007,15 +10963,7 @@
     "translation": "Webhookia ei voitu poistaa."
   },
   {
-    "id": "app.webhooks.permanent_delete_incoming_by_user.app_error",
-    "translation": "Webhookia ei voitu poistaa."
-  },
-  {
     "id": "app.webhooks.permanent_delete_outgoing_by_channel.app_error",
-    "translation": "Webhookia ei voitu poistaa."
-  },
-  {
-    "id": "app.webhooks.permanent_delete_outgoing_by_user.app_error",
     "translation": "Webhookia ei voitu poistaa."
   },
   {

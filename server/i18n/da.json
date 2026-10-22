@@ -5723,10 +5723,6 @@
     "translation": "Grænsen for sideinddeling er overskredet."
   },
   {
-    "id": "app.audit.permanent_delete_by_user.app_error",
-    "translation": "Der opstod en fejl ved sletning af revisioner."
-  },
-  {
     "id": "app.audit.save.saving.app_error",
     "translation": "Der opstod en fejl ved gemning af revisionen."
   },
@@ -6133,10 +6129,6 @@
   {
     "id": "app.channel.permanent_delete.app_error",
     "translation": "Kan ikke slette kanalen."
-  },
-  {
-    "id": "app.channel.permanent_delete_members_by_user.app_error",
-    "translation": "Kan ikke fjerne kanalmedlemmet."
   },
   {
     "id": "app.channel.pinned_posts.app_error",
@@ -7069,10 +7061,6 @@
     "translation": "Kladde afvist af plugin: {{.Reason}}"
   },
   {
-    "id": "app.drafts.permanent_delete_by_user.app_error",
-    "translation": "Kunne ikke slette kladder for bruger."
-  },
-  {
     "id": "app.email.no_rate_limiter.app_error",
     "translation": "Hastighedsbegrænseren er ikke konfigureret."
   },
@@ -7245,10 +7233,6 @@
     "translation": "Filen blev ikke fundet i fillageret på stien."
   },
   {
-    "id": "app.file_info.permanent_delete_by_user.app_error",
-    "translation": "Kunne ikke slette brugerens vedhæftede filer."
-  },
-  {
     "id": "app.file_info.permanent_delete_for_post.app_error",
     "translation": "Kunne ikke slette fil permanent for indlæg."
   },
@@ -7303,10 +7287,6 @@
   {
     "id": "app.group.no_rows",
     "translation": "ingen matchende gruppe fundet"
-  },
-  {
-    "id": "app.group.permanent_delete_members_by_user.app_error",
-    "translation": "Kunne ikke fjerne gruppemedlemmet med UserID \"{{.UserId}}\"."
   },
   {
     "id": "app.group.uniqueness_error",
@@ -8405,10 +8385,6 @@
     "translation": "Der opstod en fejl under søgning efter OAuth2-apps."
   },
   {
-    "id": "app.oauth.permanent_delete_auth_data_by_user.app_error",
-    "translation": "Kan ikke fjerne autorisationskoden."
-  },
-  {
     "id": "app.oauth.remove_access_data.app_error",
     "translation": "Kan ikke fjerne adgangstoken."
   },
@@ -9109,10 +9085,6 @@
     "translation": "Kunne ikke slette indlæg i kanalen."
   },
   {
-    "id": "app.post.permanent_delete_by_user.app_error",
-    "translation": "Kunne ikke vælge de indlæg, der skal slettes for brugeren."
-  },
-  {
     "id": "app.post.permanent_delete_post.error",
     "translation": "Kunne ikke slette indlæg permanent."
   },
@@ -9231,10 +9203,6 @@
   {
     "id": "app.preference.get_category.app_error",
     "translation": "Der opstod en fejl ved søgning efter præferencer."
-  },
-  {
-    "id": "app.preference.permanent_delete_by_user.app_error",
-    "translation": "Der opstod en fejl ved sletning af præferencer."
   },
   {
     "id": "app.preference.save.updating.app_error",
@@ -9601,10 +9569,6 @@
     "translation": "Kunne ikke hente reaktioner for indlæg."
   },
   {
-    "id": "app.reaction.permanent_delete_by_user.app_error",
-    "translation": "Kunne ikke slette reaktioner for bruger."
-  },
-  {
     "id": "app.reaction.save.save.app_error",
     "translation": "Kunne ikke gemme reaktion."
   },
@@ -9909,10 +9873,6 @@
       "one": "Kunne ikke sende {{.Count}} planlagt opslag.",
       "other": "Kunne ikke sende {{.Count}} planlagte opslag."
     }
-  },
-  {
-    "id": "app.scheduled_post.permanent_delete_by_user.app_error",
-    "translation": "Kunne ikke slette planlagte opslag for brugeren."
   },
   {
     "id": "app.scheduled_post.private_channel",
@@ -10663,10 +10623,6 @@
     "translation": "Kan ikke slette den eksisterende konto."
   },
   {
-    "id": "app.user.permanentdeleteuser.internal_error",
-    "translation": "Kan ikke slette bruger."
-  },
-  {
     "id": "app.user.promote_guest.user_update.app_error",
     "translation": "Kunne ikke opdatere brugeren."
   },
@@ -11007,15 +10963,7 @@
     "translation": "Kunne ikke slette webhooket."
   },
   {
-    "id": "app.webhooks.permanent_delete_incoming_by_user.app_error",
-    "translation": "Kunne ikke slette webhook."
-  },
-  {
     "id": "app.webhooks.permanent_delete_outgoing_by_channel.app_error",
-    "translation": "Kunne ikke slette webhook."
-  },
-  {
-    "id": "app.webhooks.permanent_delete_outgoing_by_user.app_error",
     "translation": "Kunne ikke slette webhook."
   },
   {

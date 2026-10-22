@@ -5723,10 +5723,6 @@
     "translation": "Túllépte a lapozás korlátját."
   },
   {
-    "id": "app.audit.permanent_delete_by_user.app_error",
-    "translation": "Hiba történt az auditok törlésekor."
-  },
-  {
     "id": "app.audit.save.saving.app_error",
     "translation": "Hiba történt az auditok mentésekor."
   },
@@ -6133,10 +6129,6 @@
   {
     "id": "app.channel.permanent_delete.app_error",
     "translation": "Nem sikerült törölni a csatornát."
-  },
-  {
-    "id": "app.channel.permanent_delete_members_by_user.app_error",
-    "translation": "Nem sikerült eltávolítani a csatorna tagot."
   },
   {
     "id": "app.channel.pinned_posts.app_error",
@@ -7069,10 +7061,6 @@
     "translation": "A piszkozatot egy bővítmény elutasította: {{.Reason}}"
   },
   {
-    "id": "app.drafts.permanent_delete_by_user.app_error",
-    "translation": "Nem sikerült törölni a felhasználó piszkozatait."
-  },
-  {
     "id": "app.email.no_rate_limiter.app_error",
     "translation": "Az időközönkénti kérések számának korlátja nincs beállítva."
   },
@@ -7245,10 +7233,6 @@
     "translation": "A fájl nem található a fájltárolóban a megadott útvonalon."
   },
   {
-    "id": "app.file_info.permanent_delete_by_user.app_error",
-    "translation": "Nem sikerült törölni a felhasználó mellékleteit."
-  },
-  {
     "id": "app.file_info.permanent_delete_for_post.app_error",
     "translation": "Nem sikerült véglegesen törölni a bejegyzés fájlját."
   },
@@ -7303,10 +7287,6 @@
   {
     "id": "app.group.no_rows",
     "translation": "nem található egyező csoport"
-  },
-  {
-    "id": "app.group.permanent_delete_members_by_user.app_error",
-    "translation": "Nem sikerült eltávolítani a következő csoporttagot UserID \"{{.UserId}}\"."
   },
   {
     "id": "app.group.uniqueness_error",
@@ -8405,10 +8385,6 @@
     "translation": "Hiba történt az OAuth2 alkalmazások keresésekor."
   },
   {
-    "id": "app.oauth.permanent_delete_auth_data_by_user.app_error",
-    "translation": "Nem sikerült eltávolítani a hitelesítési kódot."
-  },
-  {
     "id": "app.oauth.remove_access_data.app_error",
     "translation": "Nem sikerült eltávolítani a hozzáférési tokent."
   },
@@ -9109,10 +9085,6 @@
     "translation": "Nem sikerült törölni a bejegyzéseket csatornánként."
   },
   {
-    "id": "app.post.permanent_delete_by_user.app_error",
-    "translation": "Nem sikerült kiválasztani a törlendő bejegyzéseket a felhasználóhoz."
-  },
-  {
     "id": "app.post.permanent_delete_post.error",
     "translation": "Nem sikerült véglegesen törölni a bejegyzést."
   },
@@ -9231,10 +9203,6 @@
   {
     "id": "app.preference.get_category.app_error",
     "translation": "Hiba merült fel a beállítások keresése közben."
-  },
-  {
-    "id": "app.preference.permanent_delete_by_user.app_error",
-    "translation": "Hiba merült fel a beállítások törlése közben."
   },
   {
     "id": "app.preference.save.updating.app_error",
@@ -9601,10 +9569,6 @@
     "translation": "Nem sikerült lekérni a reakciókat a bejegyzéshez."
   },
   {
-    "id": "app.reaction.permanent_delete_by_user.app_error",
-    "translation": "Nem sikerült törölni a felhasználó reakcióit."
-  },
-  {
     "id": "app.reaction.save.save.app_error",
     "translation": "Nem sikerült elmenteni a reakciót."
   },
@@ -9909,10 +9873,6 @@
       "one": "Nem sikerült elküldeni {{.Count}} időzített bejegyzést.",
       "other": "Nem sikerült elküldeni {{.Count}} időzített bejegyzést."
     }
-  },
-  {
-    "id": "app.scheduled_post.permanent_delete_by_user.app_error",
-    "translation": "Nem sikerült törölni a felhasználó időzített bejegyzéseit."
   },
   {
     "id": "app.scheduled_post.private_channel",
@@ -10663,10 +10623,6 @@
     "translation": "Nem sikerült törölni a létező fiókot."
   },
   {
-    "id": "app.user.permanentdeleteuser.internal_error",
-    "translation": "Nem sikerült törölni a felhasználót."
-  },
-  {
     "id": "app.user.promote_guest.user_update.app_error",
     "translation": "Nem sikerült frissíteni a felhasználót."
   },
@@ -11007,15 +10963,7 @@
     "translation": "Nem sikerült törölni a webhookot."
   },
   {
-    "id": "app.webhooks.permanent_delete_incoming_by_user.app_error",
-    "translation": "Nem sikerült törölni a webhookot."
-  },
-  {
     "id": "app.webhooks.permanent_delete_outgoing_by_channel.app_error",
-    "translation": "Nem sikerült törölni a webhookot."
-  },
-  {
-    "id": "app.webhooks.permanent_delete_outgoing_by_user.app_error",
     "translation": "Nem sikerült törölni a webhookot."
   },
   {

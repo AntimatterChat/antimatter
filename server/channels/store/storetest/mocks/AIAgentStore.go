@@ -183,6 +183,24 @@ func (_m *AIAgentStore) GetForScopes(rctx request.CTX, scopes []string) ([]*mode
 	return r0, r1
 }
 
+// PermanentDelete provides a mock function with given fields: rctx, userID
+func (_m *AIAgentStore) PermanentDelete(rctx request.CTX, userID string) error {
+	ret := _m.Called(rctx, userID)
+
+	if len(ret) == 0 {
+		panic("no return value specified for PermanentDelete")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(request.CTX, string) error); ok {
+		r0 = rf(rctx, userID)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
 // Save provides a mock function with given fields: rctx, agent
 func (_m *AIAgentStore) Save(rctx request.CTX, agent *model.AIAgent) (*model.AIAgent, error) {
 	ret := _m.Called(rctx, agent)

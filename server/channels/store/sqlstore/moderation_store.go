@@ -63,6 +63,13 @@ func (s *SqlModerationStore) DeleteTimeoutsForTeam(rctx request.CTX, teamID stri
 	return nil
 }
 
+func (s *SqlModerationStore) PermanentDeleteTimeoutsByUser(rctx request.CTX, userID string) error {
+	if _, err := s.GetMaster().ExecBuilder(s.getQueryBuilder().Delete("MemberTimeouts").Where(sq.Eq{"UserId": userID})); err != nil {
+		return errors.Wrapf(err, "failed to delete the timeouts of user=%s", userID)
+	}
+	return nil
+}
+
 // CountPosts counts someone's messages in a team's channels since a time, their system messages left out.
 func (s *SqlModerationStore) CountPosts(rctx request.CTX, teamID, userID string, since int64) (int64, error) {
 	query := s.getQueryBuilder().

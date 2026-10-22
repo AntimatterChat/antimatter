@@ -5723,10 +5723,6 @@
     "translation": "برای صفحه بندی از حد مجاز بیشتر شده است."
   },
   {
-    "id": "app.audit.permanent_delete_by_user.app_error",
-    "translation": "هنگام حذف ممیزی ها با خطایی مواجه شدیم."
-  },
-  {
     "id": "app.audit.save.saving.app_error",
     "translation": "We encountered an error saving the audit."
   },
@@ -6133,10 +6129,6 @@
   {
     "id": "app.channel.permanent_delete.app_error",
     "translation": "حذف کانال امکان پذیر نیست."
-  },
-  {
-    "id": "app.channel.permanent_delete_members_by_user.app_error",
-    "translation": "حذف عضو کانال امکان پذیر نیست."
   },
   {
     "id": "app.channel.pinned_posts.app_error",
@@ -7069,10 +7061,6 @@
     "translation": "پیش‌نویس توسط افزونه رد شد: {{.Reason}}"
   },
   {
-    "id": "app.drafts.permanent_delete_by_user.app_error",
-    "translation": "حذف پیش‌نویس‌های کاربر امکان‌پذیر نیست."
-  },
-  {
     "id": "app.email.no_rate_limiter.app_error",
     "translation": "محدود کننده نرخ تنظیم نشده است."
   },
@@ -7245,10 +7233,6 @@
     "translation": "فایل در مسیر مشخص‌شده در مخزن فایل پیدا نشد."
   },
   {
-    "id": "app.file_info.permanent_delete_by_user.app_error",
-    "translation": "پیوست های کاربر حذف نمی شوند."
-  },
-  {
     "id": "app.file_info.permanent_delete_for_post.app_error",
     "translation": "حذف دائمی فایل پست ناموفق بود."
   },
@@ -7303,10 +7287,6 @@
   {
     "id": "app.group.no_rows",
     "translation": "هیچ گروه منطبقی پیدا نشد"
-  },
-  {
-    "id": "app.group.permanent_delete_members_by_user.app_error",
-    "translation": "حذف عضو گروه با شناسه کاربری \"{{.UserId}}\" ممکن نیست."
   },
   {
     "id": "app.group.uniqueness_error",
@@ -8405,10 +8385,6 @@
     "translation": "هنگام یافتن برنامه های OAuth2 خطایی روی داد."
   },
   {
-    "id": "app.oauth.permanent_delete_auth_data_by_user.app_error",
-    "translation": "کد مجوز حذف نشد"
-  },
-  {
     "id": "app.oauth.remove_access_data.app_error",
     "translation": "رمز دسترسی حذف نشد."
   },
@@ -9109,10 +9085,6 @@
     "translation": "حذف پست ها توسط کانال امکان پذیر نیست."
   },
   {
-    "id": "app.post.permanent_delete_by_user.app_error",
-    "translation": "انتخاب پست ها برای حذف برای کاربر امکان پذیر نیست."
-  },
-  {
     "id": "app.post.permanent_delete_post.error",
     "translation": "حذف دائمی پست ناموفق بود."
   },
@@ -9231,10 +9203,6 @@
   {
     "id": "app.preference.get_category.app_error",
     "translation": "هنگام پیدا کردن تنظیمات برگزیده با خطایی روبرو شدیم."
-  },
-  {
-    "id": "app.preference.permanent_delete_by_user.app_error",
-    "translation": "هنگام حذف تنظیمات برگزیده با خطایی روبرو شدیم."
   },
   {
     "id": "app.preference.save.updating.app_error",
@@ -9601,10 +9569,6 @@
     "translation": "واکنش برای ارسال امکان پذیر نیست."
   },
   {
-    "id": "app.reaction.permanent_delete_by_user.app_error",
-    "translation": "حذف واکنش‌های کاربر امکان‌پذیر نیست."
-  },
-  {
     "id": "app.reaction.save.save.app_error",
     "translation": "واکنش ذخیره نمی شود."
   },
@@ -9909,10 +9873,6 @@
       "one": "ارسال {{.Count}} پیام زمان‌بندی‌شده ناموفق بود.",
       "other": "ارسال {{.Count}} پیام زمان‌بندی‌شده ناموفق بود."
     }
-  },
-  {
-    "id": "app.scheduled_post.permanent_delete_by_user.app_error",
-    "translation": "حذف پیام‌های زمان‌بندی‌شده کاربر امکان‌پذیر نیست."
   },
   {
     "id": "app.scheduled_post.private_channel",
@@ -10663,10 +10623,6 @@
     "translation": "حذف حساب موجود ممکن نیست."
   },
   {
-    "id": "app.user.permanentdeleteuser.internal_error",
-    "translation": "حذف کاربر امکان پذیر نیست."
-  },
-  {
     "id": "app.user.promote_guest.user_update.app_error",
     "translation": "کاربر به روز نشد."
   },
@@ -11007,15 +10963,7 @@
     "translation": "حذف وب هوک امکان پذیر نیست"
   },
   {
-    "id": "app.webhooks.permanent_delete_incoming_by_user.app_error",
-    "translation": "حذف وب هوک امکان پذیر نیست"
-  },
-  {
     "id": "app.webhooks.permanent_delete_outgoing_by_channel.app_error",
-    "translation": "حذف وب هوک امکان پذیر نیست."
-  },
-  {
-    "id": "app.webhooks.permanent_delete_outgoing_by_user.app_error",
     "translation": "حذف وب هوک امکان پذیر نیست."
   },
   {

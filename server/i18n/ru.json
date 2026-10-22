@@ -5733,10 +5733,6 @@
     "translation": "Превышен лимит для разделения по страницам."
   },
   {
-    "id": "app.audit.permanent_delete_by_user.app_error",
-    "translation": "Мы столкнулись с ошибкой при удалении аудитов."
-  },
-  {
     "id": "app.audit.save.saving.app_error",
     "translation": "Мы столкнулись с ошибкой при сохранении аудитов."
   },
@@ -6143,10 +6139,6 @@
   {
     "id": "app.channel.permanent_delete.app_error",
     "translation": "Не получилось удалить канал."
-  },
-  {
-    "id": "app.channel.permanent_delete_members_by_user.app_error",
-    "translation": "Невозможно удалить участника канала."
   },
   {
     "id": "app.channel.pinned_posts.app_error",
@@ -7083,10 +7075,6 @@
     "translation": "Черновик отклонён плагином: {{.Reason}}"
   },
   {
-    "id": "app.drafts.permanent_delete_by_user.app_error",
-    "translation": "Невозможно удалить черновики пользователя."
-  },
-  {
     "id": "app.email.no_rate_limiter.app_error",
     "translation": "Ограничитель скорости не настроен."
   },
@@ -7259,10 +7247,6 @@
     "translation": "Файл не найден в хранилище файлов по указанному пути."
   },
   {
-    "id": "app.file_info.permanent_delete_by_user.app_error",
-    "translation": "Невозможно удалить вложения пользователя."
-  },
-  {
     "id": "app.file_info.permanent_delete_for_post.app_error",
     "translation": "Не удалось окончательно удалить файл для сообщения."
   },
@@ -7317,10 +7301,6 @@
   {
     "id": "app.group.no_rows",
     "translation": "не найдено подходящей группы"
-  },
-  {
-    "id": "app.group.permanent_delete_members_by_user.app_error",
-    "translation": "Невозможно удалить участника группы с UserID \"{{.UserId}}\"."
   },
   {
     "id": "app.group.uniqueness_error",
@@ -8419,10 +8399,6 @@
     "translation": "Произошла ошибка при поиске приложений OAuth2."
   },
   {
-    "id": "app.oauth.permanent_delete_auth_data_by_user.app_error",
-    "translation": "Невозможно удалить код авторизации."
-  },
-  {
     "id": "app.oauth.remove_access_data.app_error",
     "translation": "Невозможно удалить токен доступа."
   },
@@ -9123,10 +9099,6 @@
     "translation": "Невозможно удалить сообщения по каналу."
   },
   {
-    "id": "app.post.permanent_delete_by_user.app_error",
-    "translation": "Не удалось выбрать для удаления посты пользователя."
-  },
-  {
     "id": "app.post.permanent_delete_post.error",
     "translation": "Не удалось окончательно удалить сообщение."
   },
@@ -9245,10 +9217,6 @@
   {
     "id": "app.preference.get_category.app_error",
     "translation": "Возникла ошибка при поиске настроек."
-  },
-  {
-    "id": "app.preference.permanent_delete_by_user.app_error",
-    "translation": "Возникла ошибка при удалении настроек."
   },
   {
     "id": "app.preference.save.updating.app_error",
@@ -9615,10 +9583,6 @@
     "translation": "Не удалось получить реакции для данного сообщения."
   },
   {
-    "id": "app.reaction.permanent_delete_by_user.app_error",
-    "translation": "Невозможно удалить реакции для пользователя."
-  },
-  {
     "id": "app.reaction.save.save.app_error",
     "translation": "Не удалось сохранить реакцию."
   },
@@ -9927,10 +9891,6 @@
       "many": "Не удалось отправить {{.Count}} запланированных сообщений.",
       "other": "Не удалось отправить {{.Count}} запланированных сообщения."
     }
-  },
-  {
-    "id": "app.scheduled_post.permanent_delete_by_user.app_error",
-    "translation": "Невозможно удалить запланированные сообщения для пользователя."
   },
   {
     "id": "app.scheduled_post.private_channel",
@@ -10681,10 +10641,6 @@
     "translation": "Не удалось удалить существующую учётную запись."
   },
   {
-    "id": "app.user.permanentdeleteuser.internal_error",
-    "translation": "Невозможно удалить пользователя."
-  },
-  {
     "id": "app.user.promote_guest.user_update.app_error",
     "translation": "Не удалось обновить пользователя."
   },
@@ -11025,15 +10981,7 @@
     "translation": "Невозможно удалить вебхук."
   },
   {
-    "id": "app.webhooks.permanent_delete_incoming_by_user.app_error",
-    "translation": "Невозможно удалить вебхук."
-  },
-  {
     "id": "app.webhooks.permanent_delete_outgoing_by_channel.app_error",
-    "translation": "Невозможно удалить вебхук."
-  },
-  {
-    "id": "app.webhooks.permanent_delete_outgoing_by_user.app_error",
     "translation": "Невозможно удалить вебхук."
   },
   {

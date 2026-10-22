@@ -5723,10 +5723,6 @@
     "translation": "Limite dépassée pour la pagination"
   },
   {
-    "id": "app.audit.permanent_delete_by_user.app_error",
-    "translation": "Une erreur s'est produite lors de la suppression des audits"
-  },
-  {
     "id": "app.audit.save.saving.app_error",
     "translation": "Une erreur s'est produite lors de l'enregistrement des audits"
   },
@@ -6133,10 +6129,6 @@
   {
     "id": "app.channel.permanent_delete.app_error",
     "translation": "Impossible de supprimer le canal."
-  },
-  {
-    "id": "app.channel.permanent_delete_members_by_user.app_error",
-    "translation": "Impossible de récupérer le membre du canal."
   },
   {
     "id": "app.channel.pinned_posts.app_error",
@@ -7069,10 +7061,6 @@
     "translation": "Brouillon rejeté par le plugin : {{.Reason}}"
   },
   {
-    "id": "app.drafts.permanent_delete_by_user.app_error",
-    "translation": "Impossible de supprimer les brouillons de l'utilisateur."
-  },
-  {
     "id": "app.email.no_rate_limiter.app_error",
     "translation": "Les paramètres de limite ne sont pas configurées."
   },
@@ -7245,10 +7233,6 @@
     "translation": "Fichier introuvable dans le stockage de fichiers au chemin indiqué."
   },
   {
-    "id": "app.file_info.permanent_delete_by_user.app_error",
-    "translation": "Impossible de supprimer les fichiers joints de l'utilisateur."
-  },
-  {
     "id": "app.file_info.permanent_delete_for_post.app_error",
     "translation": "Impossible de supprimer définitivement le fichier du message."
   },
@@ -7303,10 +7287,6 @@
   {
     "id": "app.group.no_rows",
     "translation": "aucun groupe correspondant trouvé"
-  },
-  {
-    "id": "app.group.permanent_delete_members_by_user.app_error",
-    "translation": "Impossible de supprimer le membre du groupe portant l'identifiant utilisateur « {{.UserId}} »."
   },
   {
     "id": "app.group.uniqueness_error",
@@ -8405,10 +8385,6 @@
     "translation": "Une erreur s'est produite durant la recherche des applications OAuth2."
   },
   {
-    "id": "app.oauth.permanent_delete_auth_data_by_user.app_error",
-    "translation": "Impossible de supprimer le code d'autorisation."
-  },
-  {
     "id": "app.oauth.remove_access_data.app_error",
     "translation": "Impossible de supprimer le jeton d'accès."
   },
@@ -9109,10 +9085,6 @@
     "translation": "Impossible de supprimer les messages par canal"
   },
   {
-    "id": "app.post.permanent_delete_by_user.app_error",
-    "translation": "Impossible de sélectionner les messages à supprimer pour l'utilisateur spécifié"
-  },
-  {
     "id": "app.post.permanent_delete_post.error",
     "translation": "Impossible de supprimer définitivement le message."
   },
@@ -9231,10 +9203,6 @@
   {
     "id": "app.preference.get_category.app_error",
     "translation": "Une erreur s'est produite lors de la recherche des préférences."
-  },
-  {
-    "id": "app.preference.permanent_delete_by_user.app_error",
-    "translation": "Une erreur s'est produite lors de la suppression des préférences."
   },
   {
     "id": "app.preference.save.updating.app_error",
@@ -9601,10 +9569,6 @@
     "translation": "Impossible de récupérer les réactions du message spécifié"
   },
   {
-    "id": "app.reaction.permanent_delete_by_user.app_error",
-    "translation": "Impossible de supprimer les réactions de l'utilisateur."
-  },
-  {
     "id": "app.reaction.save.save.app_error",
     "translation": "Impossible de sauvegarder cette réaction"
   },
@@ -9909,10 +9873,6 @@
       "one": "Échec de l'envoi de {{.Count}} message planifié.",
       "other": "Échec de l'envoi de {{.Count}} messages planifiés."
     }
-  },
-  {
-    "id": "app.scheduled_post.permanent_delete_by_user.app_error",
-    "translation": "Impossible de supprimer les messages planifiés de l'utilisateur."
   },
   {
     "id": "app.scheduled_post.private_channel",
@@ -10663,10 +10623,6 @@
     "translation": "Impossible de supprimer le compte existant."
   },
   {
-    "id": "app.user.permanentdeleteuser.internal_error",
-    "translation": "Impossible de supprimer le jeton."
-  },
-  {
     "id": "app.user.promote_guest.user_update.app_error",
     "translation": "Échec de mise à jour de l'utilisateur."
   },
@@ -11007,15 +10963,7 @@
     "translation": "Impossible de supprimer le webhook"
   },
   {
-    "id": "app.webhooks.permanent_delete_incoming_by_user.app_error",
-    "translation": "Impossible de supprimer le webhook"
-  },
-  {
     "id": "app.webhooks.permanent_delete_outgoing_by_channel.app_error",
-    "translation": "Impossible de supprimer le webhook"
-  },
-  {
-    "id": "app.webhooks.permanent_delete_outgoing_by_user.app_error",
     "translation": "Impossible de supprimer le webhook"
   },
   {

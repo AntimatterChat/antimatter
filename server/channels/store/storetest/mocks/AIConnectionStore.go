@@ -34,6 +34,24 @@ func (_m *AIConnectionStore) AddUsage(rctx request.CTX, usage *model.AIUsage) er
 	return r0
 }
 
+// AnonymizeUsageByUser provides a mock function with given fields: rctx, userID
+func (_m *AIConnectionStore) AnonymizeUsageByUser(rctx request.CTX, userID string) error {
+	ret := _m.Called(rctx, userID)
+
+	if len(ret) == 0 {
+		panic("no return value specified for AnonymizeUsageByUser")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(request.CTX, string) error); ok {
+		r0 = rf(rctx, userID)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
 // Delete provides a mock function with given fields: rctx, id, deleteAt
 func (_m *AIConnectionStore) Delete(rctx request.CTX, id string, deleteAt int64) error {
 	ret := _m.Called(rctx, id, deleteAt)

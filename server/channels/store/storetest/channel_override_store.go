@@ -18,6 +18,42 @@ import (
 func TestChannelOverrideStore(t *testing.T, rctx request.CTX, ss store.Store) {
 	t.Run("SaveReplacesAndDeletes", func(t *testing.T) { testChannelOverrideSaveReplacesAndDeletes(t, rctx, ss) })
 	t.Run("CategoryOverrides", func(t *testing.T) { testCategoryOverrides(t, rctx, ss) })
+	t.Run("PermanentDeleteForUser", func(t *testing.T) { testChannelOverridePermanentDeleteForUser(t, rctx, ss) })
+}
+
+func testChannelOverridePermanentDeleteForUser(t *testing.T, rctx request.CTX, ss store.Store) {
+	channelID, teamID, userID, otherID := model.NewId(), model.NewId(), model.NewId(), model.NewId()
+	for _, o := range []*model.ChannelOverride{
+		{ChannelId: channelID, TargetType: model.ChannelOverrideTargetUser, TargetId: userID, Deny: []string{"create_post"}},
+		{ChannelId: channelID, TargetType: model.ChannelOverrideTargetUser, TargetId: otherID, Deny: []string{"create_post"}},
+		// A role that happens to have the same ID isn't theirs.
+		{ChannelId: channelID, TargetType: model.ChannelOverrideTargetRole, TargetId: userID, Deny: []string{"add_reaction"}},
+	} {
+		_, err := ss.ChannelOverride().Save(rctx, o)
+		require.NoError(t, err)
+	}
+	for _, o := range []*model.CategoryOverride{
+		{TeamId: teamID, Category: "community", TargetType: model.ChannelOverrideTargetUser, TargetId: userID, Deny: []string{"upload_file"}},
+		{TeamId: teamID, Category: "community", TargetType: model.ChannelOverrideTargetUser, TargetId: otherID, Deny: []string{"upload_file"}},
+	} {
+		_, err := ss.ChannelOverride().SaveForCategory(rctx, o)
+		require.NoError(t, err)
+	}
+
+	require.NoError(t, ss.ChannelOverride().PermanentDeleteForUser(rctx, userID))
+
+	channel, err := ss.ChannelOverride().GetForChannel(rctx, channelID)
+	require.NoError(t, err)
+	targets := []string{}
+	for _, o := range channel {
+		targets = append(targets, o.TargetType+":"+o.TargetId)
+	}
+	assert.ElementsMatch(t, []string{model.ChannelOverrideTargetUser + ":" + otherID, model.ChannelOverrideTargetRole + ":" + userID}, targets)
+
+	categories, err := ss.ChannelOverride().GetForCategories(rctx, teamID)
+	require.NoError(t, err)
+	require.Len(t, categories, 1)
+	assert.Equal(t, otherID, categories[0].TargetId)
 }
 
 func testChannelOverrideSaveReplacesAndDeletes(t *testing.T, rctx request.CTX, ss store.Store) {

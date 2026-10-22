@@ -5348,10 +5348,6 @@
     "translation": "Had paging terlampaui."
   },
   {
-    "id": "app.audit.permanent_delete_by_user.app_error",
-    "translation": "Kami menemui ralat semasa memadam audit."
-  },
-  {
     "id": "app.audit.save.saving.app_error",
     "translation": "Kami menghadapi ralat semasa menyimpan audit."
   },
@@ -5758,10 +5754,6 @@
   {
     "id": "app.channel.permanent_delete.app_error",
     "translation": "Tidak dapat memadam saluran."
-  },
-  {
-    "id": "app.channel.permanent_delete_members_by_user.app_error",
-    "translation": "Tidak dapat memadam ahli saluran."
   },
   {
     "id": "app.channel.pinned_posts.app_error",
@@ -6664,10 +6656,6 @@
     "translation": "Draf ditolak oleh plugin: {{.Reason}}"
   },
   {
-    "id": "app.drafts.permanent_delete_by_user.app_error",
-    "translation": "Tidak dapat memadam draf untuk pengguna."
-  },
-  {
     "id": "app.email.no_rate_limiter.app_error",
     "translation": "Pembatas kadar tidak diset."
   },
@@ -6832,10 +6820,6 @@
     "translation": "Faili tidak ditemui dalam stor fail pada laluan."
   },
   {
-    "id": "app.file_info.permanent_delete_by_user.app_error",
-    "translation": "Tidak dapat memadam lampiran pengguna."
-  },
-  {
     "id": "app.file_info.permanent_delete_for_post.app_error",
     "translation": "Gagal memadam fail untuk hantaran secara kekal."
   },
@@ -6886,10 +6870,6 @@
   {
     "id": "app.group.no_rows",
     "translation": "tiada kumpulan yang sepadan ditemui"
-  },
-  {
-    "id": "app.group.permanent_delete_members_by_user.app_error",
-    "translation": "Tidak dapat membuang ahli kumpulan dengan UserID \"{{.UserId}}\"."
   },
   {
     "id": "app.group.uniqueness_error",
@@ -7976,10 +7956,6 @@
     "translation": "Ralat berlaku semasa mencari Aplikasi OAuth2."
   },
   {
-    "id": "app.oauth.permanent_delete_auth_data_by_user.app_error",
-    "translation": "Tidak dapat membuang kod kebenaran."
-  },
-  {
     "id": "app.oauth.remove_access_data.app_error",
     "translation": "Tidak dapat membuang token akses."
   },
@@ -8656,10 +8632,6 @@
     "translation": "Tidak dapat memadam pos mengikut saluran."
   },
   {
-    "id": "app.post.permanent_delete_by_user.app_error",
-    "translation": "Tidak dapat memilih pos untuk dipadam untuk pengguna."
-  },
-  {
     "id": "app.post.permanent_delete_post.error",
     "translation": "Gagal memadam pos secara kekal."
   },
@@ -8778,10 +8750,6 @@
   {
     "id": "app.preference.get_category.app_error",
     "translation": "Kami menghadapi ralat semasa mencari tetapan."
-  },
-  {
-    "id": "app.preference.permanent_delete_by_user.app_error",
-    "translation": "Kami menghadapi ralat semasa memadamkan tetapan."
   },
   {
     "id": "app.preference.save.updating.app_error",
@@ -9144,10 +9112,6 @@
     "translation": "Tidak dapat mendapatkan reaksi untuk hantaran."
   },
   {
-    "id": "app.reaction.permanent_delete_by_user.app_error",
-    "translation": "Tidak dapat memadam reaksi untuk pengguna."
-  },
-  {
     "id": "app.reaction.save.save.app_error",
     "translation": "Tidak dapat menyimpan reaksi."
   },
@@ -9434,10 +9398,6 @@
   {
     "id": "app.scheduled_post.error_reason.user_missing",
     "translation": "Pengguna tidak wujud"
-  },
-  {
-    "id": "app.scheduled_post.permanent_delete_by_user.app_error",
-    "translation": "Tidak dapat memadamkan hantaran yang dijadualkan untuk pengguna."
   },
   {
     "id": "app.scheduled_post.private_channel",
@@ -10184,10 +10144,6 @@
     "translation": "Tidak dapat memadam akaun sedia ada."
   },
   {
-    "id": "app.user.permanentdeleteuser.internal_error",
-    "translation": "Tidak dapat memadam pengguna."
-  },
-  {
     "id": "app.user.promote_guest.user_update.app_error",
     "translation": "Gagal mengemas kini pengguna."
   },
@@ -10520,15 +10476,7 @@
     "translation": "Tidak dapat memadam webhook."
   },
   {
-    "id": "app.webhooks.permanent_delete_incoming_by_user.app_error",
-    "translation": "Tidak dapat memadam webhook."
-  },
-  {
     "id": "app.webhooks.permanent_delete_outgoing_by_channel.app_error",
-    "translation": "Tidak dapat memadam webhook."
-  },
-  {
-    "id": "app.webhooks.permanent_delete_outgoing_by_user.app_error",
     "translation": "Tidak dapat memadam webhook."
   },
   {

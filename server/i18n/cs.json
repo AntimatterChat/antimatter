@@ -5733,10 +5733,6 @@
     "translation": "Byl překročen limit pro stránkování."
   },
   {
-    "id": "app.audit.permanent_delete_by_user.app_error",
-    "translation": "Došlo k chybě při mazání auditních záznamů."
-  },
-  {
     "id": "app.audit.save.saving.app_error",
     "translation": "Došlo k chybě při ukládání auditních záznamů."
   },
@@ -6143,10 +6139,6 @@
   {
     "id": "app.channel.permanent_delete.app_error",
     "translation": "Nemohu smazat kanál."
-  },
-  {
-    "id": "app.channel.permanent_delete_members_by_user.app_error",
-    "translation": "Nepodařilo se odebrat člena kanálu."
   },
   {
     "id": "app.channel.pinned_posts.app_error",
@@ -7083,10 +7075,6 @@
     "translation": "Koncept byl odmítnut pluginem: {{.Reason}}"
   },
   {
-    "id": "app.drafts.permanent_delete_by_user.app_error",
-    "translation": "Koncepty pro uživatele nelze smazat."
-  },
-  {
     "id": "app.email.no_rate_limiter.app_error",
     "translation": "Omezovač toku není nastaven."
   },
@@ -7259,10 +7247,6 @@
     "translation": "Soubor nebyl v souborovém úložišti na dané cestě nalezen."
   },
   {
-    "id": "app.file_info.permanent_delete_by_user.app_error",
-    "translation": "Nelze smazat přílohy daného uživatele."
-  },
-  {
     "id": "app.file_info.permanent_delete_for_post.app_error",
     "translation": "Nepodařilo se trvale smazat soubor pro příspěvek."
   },
@@ -7317,10 +7301,6 @@
   {
     "id": "app.group.no_rows",
     "translation": "nebyla nalezena žádná opdovídající skupina"
-  },
-  {
-    "id": "app.group.permanent_delete_members_by_user.app_error",
-    "translation": "Nelze odstranit člena skupiny s UserID \"{{.UserId}}\"."
   },
   {
     "id": "app.group.uniqueness_error",
@@ -8419,10 +8399,6 @@
     "translation": "Chyba při hledání OAuth2 aplikací."
   },
   {
-    "id": "app.oauth.permanent_delete_auth_data_by_user.app_error",
-    "translation": "Nelze odstranit autorizační kód."
-  },
-  {
     "id": "app.oauth.remove_access_data.app_error",
     "translation": "Nelze odstranit přístupový token."
   },
@@ -9123,10 +9099,6 @@
     "translation": "Nelze smazat příspěvky dle kanálu."
   },
   {
-    "id": "app.post.permanent_delete_by_user.app_error",
-    "translation": "Nelze vybrat zprávy pro smazání u tohoto uživatele."
-  },
-  {
     "id": "app.post.permanent_delete_post.error",
     "translation": "Nepodařilo se trvale smazat příspěvek."
   },
@@ -9245,10 +9217,6 @@
   {
     "id": "app.preference.get_category.app_error",
     "translation": "Narazili jsme na chybu při vyhledávání předvoleb."
-  },
-  {
-    "id": "app.preference.permanent_delete_by_user.app_error",
-    "translation": "Narazili jsme na chybu při mazání předvoleb."
   },
   {
     "id": "app.preference.save.updating.app_error",
@@ -9615,10 +9583,6 @@
     "translation": "Nelze získat reakce na příspěvek."
   },
   {
-    "id": "app.reaction.permanent_delete_by_user.app_error",
-    "translation": "Nelze odstranit reakce uživatele."
-  },
-  {
     "id": "app.reaction.save.save.app_error",
     "translation": "NElze uložit reakci."
   },
@@ -9927,10 +9891,6 @@
       "many": "Nepodařilo se odeslat {{.Count}} naplánovaného příspěvku.",
       "other": "Nepodařilo se odeslat {{.Count}} naplánovaných příspěvků."
     }
-  },
-  {
-    "id": "app.scheduled_post.permanent_delete_by_user.app_error",
-    "translation": "Nepodařilo se smazat naplánované příspěvky pro uživatele."
   },
   {
     "id": "app.scheduled_post.private_channel",
@@ -10681,10 +10641,6 @@
     "translation": "Nepodařilo se smazat daný účet."
   },
   {
-    "id": "app.user.permanentdeleteuser.internal_error",
-    "translation": "Nemohu smazat uživatele."
-  },
-  {
     "id": "app.user.promote_guest.user_update.app_error",
     "translation": "Selhala aktualizace uživatele."
   },
@@ -11025,15 +10981,7 @@
     "translation": "Nepodařilo se smazat webhook."
   },
   {
-    "id": "app.webhooks.permanent_delete_incoming_by_user.app_error",
-    "translation": "Nepodařilo se smazat webhook."
-  },
-  {
     "id": "app.webhooks.permanent_delete_outgoing_by_channel.app_error",
-    "translation": "Nepodařilo se smazat webhook."
-  },
-  {
-    "id": "app.webhooks.permanent_delete_outgoing_by_user.app_error",
     "translation": "Nepodařilo se smazat webhook."
   },
   {

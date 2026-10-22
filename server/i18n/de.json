@@ -5723,10 +5723,6 @@
     "translation": "Die Grenze für Paging wurde überschritten."
   },
   {
-    "id": "app.audit.permanent_delete_by_user.app_error",
-    "translation": "Es trat ein Fehler beim Löschen der Audits auf."
-  },
-  {
     "id": "app.audit.save.saving.app_error",
     "translation": "Es trat ein Fehler beim Speichern der Audits auf."
   },
@@ -6133,10 +6129,6 @@
   {
     "id": "app.channel.permanent_delete.app_error",
     "translation": "Konnte den Kanal nicht löschen."
-  },
-  {
-    "id": "app.channel.permanent_delete_members_by_user.app_error",
-    "translation": "Konnte das Kanalmitglied nicht entfernen."
   },
   {
     "id": "app.channel.pinned_posts.app_error",
@@ -7069,10 +7061,6 @@
     "translation": "Entwurf durch Plugin abgelehnt: {{.Reason}}"
   },
   {
-    "id": "app.drafts.permanent_delete_by_user.app_error",
-    "translation": "Entwürfe für Benutzer können nicht gelöscht werden."
-  },
-  {
     "id": "app.email.no_rate_limiter.app_error",
     "translation": "Ratenbegrenzung ist nicht aufgesetzt."
   },
@@ -7245,10 +7233,6 @@
     "translation": "Datei im Dateispeicher unter dem Pfad nicht gefunden."
   },
   {
-    "id": "app.file_info.permanent_delete_by_user.app_error",
-    "translation": "Konnte die Anhänge des Benutzers nicht löschen."
-  },
-  {
     "id": "app.file_info.permanent_delete_for_post.app_error",
     "translation": "Die Datei für diese Nachricht konnte nicht dauerhaft gelöscht werden."
   },
@@ -7303,10 +7287,6 @@
   {
     "id": "app.group.no_rows",
     "translation": "Keine passende Gruppe gefunden"
-  },
-  {
-    "id": "app.group.permanent_delete_members_by_user.app_error",
-    "translation": "Konnte Gruppenmitglied mit UserID \"{{.UserId}}\" nicht entfernen."
   },
   {
     "id": "app.group.uniqueness_error",
@@ -8405,10 +8385,6 @@
     "translation": "Es ist ein Fehler beim Suchen nach der OAuth2-App aufgetreten."
   },
   {
-    "id": "app.oauth.permanent_delete_auth_data_by_user.app_error",
-    "translation": "Konnte den Autorisationscode nicht entfernen."
-  },
-  {
     "id": "app.oauth.remove_access_data.app_error",
     "translation": "Konnte das Zugangs-Token nicht entfernen."
   },
@@ -9109,10 +9085,6 @@
     "translation": "Konnte die Nachrichten nach Kanal nicht löschen."
   },
   {
-    "id": "app.post.permanent_delete_by_user.app_error",
-    "translation": "Konnte die zu löschenden Nachrichten für den Benutzer nicht auswählen."
-  },
-  {
     "id": "app.post.permanent_delete_post.error",
     "translation": "Die Nachricht konnte nicht dauerhaft gelöscht werden."
   },
@@ -9231,10 +9203,6 @@
   {
     "id": "app.preference.get_category.app_error",
     "translation": "Es trat ein Fehler beim Sichern der Einstellungen auf."
-  },
-  {
-    "id": "app.preference.permanent_delete_by_user.app_error",
-    "translation": "Es trat ein Fehler beim Löschen von Einstellungen auf."
   },
   {
     "id": "app.preference.save.updating.app_error",
@@ -9601,10 +9569,6 @@
     "translation": "Konnte Reaktionen für Nachricht nicht abrufen."
   },
   {
-    "id": "app.reaction.permanent_delete_by_user.app_error",
-    "translation": "Reaktionen für Benutzer können nicht gelöscht werden."
-  },
-  {
     "id": "app.reaction.save.save.app_error",
     "translation": "Konnte Reaktion nicht speichern."
   },
@@ -9909,10 +9873,6 @@
       "one": "Der Versand von einem geplanten Beitrag ist fehlgeschlagen.",
       "other": "Der Versand von {{.Count}} geplanten Beiträgen ist fehlgeschlagen."
     }
-  },
-  {
-    "id": "app.scheduled_post.permanent_delete_by_user.app_error",
-    "translation": "Geplante Beiträge für Benutzer können nicht gelöscht werden."
   },
   {
     "id": "app.scheduled_post.private_channel",
@@ -10663,10 +10623,6 @@
     "translation": "Konnte das bestehende Konto nicht löschen."
   },
   {
-    "id": "app.user.permanentdeleteuser.internal_error",
-    "translation": "Konnte Benutzer nicht löschen."
-  },
-  {
     "id": "app.user.promote_guest.user_update.app_error",
     "translation": "Konnte Benutzer nicht aktualisieren."
   },
@@ -11007,15 +10963,7 @@
     "translation": "Konnte den Webhook nicht löschen."
   },
   {
-    "id": "app.webhooks.permanent_delete_incoming_by_user.app_error",
-    "translation": "Konnte den Webhook nicht löschen."
-  },
-  {
     "id": "app.webhooks.permanent_delete_outgoing_by_channel.app_error",
-    "translation": "Konnte den Webhook nicht löschen."
-  },
-  {
-    "id": "app.webhooks.permanent_delete_outgoing_by_user.app_error",
     "translation": "Konnte den Webhook nicht löschen."
   },
   {

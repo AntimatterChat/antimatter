@@ -5348,10 +5348,6 @@
     "translation": "பேஜிங்கிற்கான வரம்பு மீறப்பட்டது."
   },
   {
-    "id": "app.audit.permanent_delete_by_user.app_error",
-    "translation": "ஆடிட்ஸ்-ஐ நீக்கும்போது ஒரு பிழை ஏற்பட்டது."
-  },
-  {
     "id": "app.audit.save.saving.app_error",
     "translation": "ஆடிட் சேமிக்கும் போது பிழை ஏற்பட்டது."
   },
@@ -5758,10 +5754,6 @@
   {
     "id": "app.channel.permanent_delete.app_error",
     "translation": "சேனல்களை நீக்க முடியவில்லை."
-  },
-  {
-    "id": "app.channel.permanent_delete_members_by_user.app_error",
-    "translation": "சேனல் உறுப்பினரை அகற்ற முடியவில்லை."
   },
   {
     "id": "app.channel.pinned_posts.app_error",
@@ -6664,10 +6656,6 @@
     "translation": "பிளக்-இனால் வரையவு நிராகரிக்கப்பட்டது: {{.Reason}}"
   },
   {
-    "id": "app.drafts.permanent_delete_by_user.app_error",
-    "translation": "பயனருக்கான வரையவுகளை நீக்க முடியவில்லை."
-  },
-  {
     "id": "app.email.no_rate_limiter.app_error",
     "translation": "வேகக் கட்டுப்பாட்டி அமைக்கப்படவில்லை."
   },
@@ -6832,10 +6820,6 @@
     "translation": "பாதையில் கோப்பு சேமிப்பகத்தில் கிடைக்கவில்லை."
   },
   {
-    "id": "app.file_info.permanent_delete_by_user.app_error",
-    "translation": "பயனரின் இணைப்புகளை நீக்க முடியவில்லை."
-  },
-  {
     "id": "app.file_info.permanent_delete_for_post.app_error",
     "translation": "பதிவுக்கான கோப்பை நிரந்தரமாக நீக்க முடியவில்லை."
   },
@@ -6886,10 +6870,6 @@
   {
     "id": "app.group.no_rows",
     "translation": "பொருத்தமான குழு எதுவும் கிடைக்கவில்லை"
-  },
-  {
-    "id": "app.group.permanent_delete_members_by_user.app_error",
-    "translation": "UserID \"{{.UserId}}\" உடைய குழு உறுப்பினரை அகற்ற முடியவில்லை."
   },
   {
     "id": "app.group.uniqueness_error",
@@ -7976,10 +7956,6 @@
     "translation": "OAuth2 செயலிகளைக் கண்டறியும்போது ஒரு பிழை ஏற்பட்டது."
   },
   {
-    "id": "app.oauth.permanent_delete_auth_data_by_user.app_error",
-    "translation": "அங்கீகாரக் குறியீட்டை அகற்ற முடியவில்லை."
-  },
-  {
     "id": "app.oauth.remove_access_data.app_error",
     "translation": "அணுகல் டோக்கனை அகற்ற முடியவில்லை."
   },
@@ -8656,10 +8632,6 @@
     "translation": "சேனலுக்கான பதிவுகளை நீக்க முடியவில்லை."
   },
   {
-    "id": "app.post.permanent_delete_by_user.app_error",
-    "translation": "பயனருக்கான நீக்க வேண்டிய பதிவுகளைத் தேர்ந்தெடுக்க முடியவில்லை."
-  },
-  {
     "id": "app.post.permanent_delete_post.error",
     "translation": "பதிவை நிரந்தரமாக நீக்க முடியவில்லை."
   },
@@ -8778,10 +8750,6 @@
   {
     "id": "app.preference.get_category.app_error",
     "translation": "விருப்பங்களைக் கண்டறியும்போது ஒரு பிழை ஏற்பட்டது."
-  },
-  {
-    "id": "app.preference.permanent_delete_by_user.app_error",
-    "translation": "விருப்பங்களை நீக்கும்போது ஒரு பிழை ஏற்பட்டது."
   },
   {
     "id": "app.preference.save.updating.app_error",
@@ -9144,10 +9112,6 @@
     "translation": "பதிவுக்கான வினைகளைப் பெற இயலவில்லை."
   },
   {
-    "id": "app.reaction.permanent_delete_by_user.app_error",
-    "translation": "பயனரின் வனைகளை நீக்குவதில் தோல்வி."
-  },
-  {
     "id": "app.reaction.save.save.app_error",
     "translation": "வனையை சேமிக்க முடியவில்லை."
   },
@@ -9434,10 +9398,6 @@
   {
     "id": "app.scheduled_post.error_reason.user_missing",
     "translation": "பயனர் இல்லை"
-  },
-  {
-    "id": "app.scheduled_post.permanent_delete_by_user.app_error",
-    "translation": "பயனருக்கான அட்டவணைப்படுத்தப்பட்ட பதிவுகளை நீக்க முடியவில்லை."
   },
   {
     "id": "app.scheduled_post.private_channel",
@@ -10184,10 +10144,6 @@
     "translation": "இருக்கும் கணக்கை நீக்க முடியவில்லை."
   },
   {
-    "id": "app.user.permanentdeleteuser.internal_error",
-    "translation": "பயனரை நீக்க முடியவில்லை."
-  },
-  {
     "id": "app.user.promote_guest.user_update.app_error",
     "translation": "பயனரைப் புதுப்பிக்க முடியவில்லை."
   },
@@ -10520,15 +10476,7 @@
     "translation": "வெப்குக்‌கை நீக்க முடியவில்லை."
   },
   {
-    "id": "app.webhooks.permanent_delete_incoming_by_user.app_error",
-    "translation": "வெப்குக்‌கை நீக்க முடியவில்லை."
-  },
-  {
     "id": "app.webhooks.permanent_delete_outgoing_by_channel.app_error",
-    "translation": "வெப்குக்‌கை நீக்க முடியவில்லை."
-  },
-  {
-    "id": "app.webhooks.permanent_delete_outgoing_by_user.app_error",
     "translation": "வெப்குக்‌கை நீக்க முடியவில்லை."
   },
   {

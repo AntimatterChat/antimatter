@@ -5348,10 +5348,6 @@
     "translation": "เกินขีดจำกัดสำหรับการแบ่งหน้า"
   },
   {
-    "id": "app.audit.permanent_delete_by_user.app_error",
-    "translation": "เกิดข้อผิดพลาดในการลบข้อมูลการตรวจสอบ"
-  },
-  {
     "id": "app.audit.save.saving.app_error",
     "translation": "เกิดข้อผิดพลาดในการบันทึกข้อมูลการตรวจสอบ"
   },
@@ -5758,10 +5754,6 @@
   {
     "id": "app.channel.permanent_delete.app_error",
     "translation": "ไม่สามารถลบช่องได้"
-  },
-  {
-    "id": "app.channel.permanent_delete_members_by_user.app_error",
-    "translation": "ไม่สามารถลบสมาชิกร่วมในช่องได้"
   },
   {
     "id": "app.channel.pinned_posts.app_error",
@@ -6664,10 +6656,6 @@
     "translation": "ฉบับร่างไดปัดถอยโดยปลั๊กอิน: {{.Reason}}"
   },
   {
-    "id": "app.drafts.permanent_delete_by_user.app_error",
-    "translation": "ไมสามารถลบฉบับร่างของผใขงานได้"
-  },
-  {
     "id": "app.email.no_rate_limiter.app_error",
     "translation": "ไมไดตังค่าตัวจางอัตราแล้ว"
   },
@@ -6832,10 +6820,6 @@
     "translation": "ไม่พบไฟล์ในคลังไฟล์ที่ตำแหน่งนี้"
   },
   {
-    "id": "app.file_info.permanent_delete_by_user.app_error",
-    "translation": "ไม่สามารถลบไฟล์แนบของผู้ใช้ได้"
-  },
-  {
     "id": "app.file_info.permanent_delete_for_post.app_error",
     "translation": "ล้มเหลวในการลบไฟล์ถาวรสำหรับโพสต์"
   },
@@ -6886,10 +6870,6 @@
   {
     "id": "app.group.no_rows",
     "translation": "ไม่พบกลุ่มที่ตรงกัน"
-  },
-  {
-    "id": "app.group.permanent_delete_members_by_user.app_error",
-    "translation": "ไม่สามารถลบสมาชิกลุ่่มที่มี UserID \"{{.UserId}}\" ได้"
   },
   {
     "id": "app.group.uniqueness_error",
@@ -7976,10 +7956,6 @@
     "translation": "เกิดข้อผิดพลาดขณะค้นหาแอป OAuth2"
   },
   {
-    "id": "app.oauth.permanent_delete_auth_data_by_user.app_error",
-    "translation": "ไม่สามารถลบรหัสการอนุญาตได้"
-  },
-  {
     "id": "app.oauth.remove_access_data.app_error",
     "translation": "ไม่สามารถลบโทเคนการเข้าถึงได้"
   },
@@ -8656,10 +8632,6 @@
     "translation": "ไมสามารถลบข้่าความตามชองได"
   },
   {
-    "id": "app.post.permanent_delete_by_user.app_error",
-    "translation": "ไมสามารถเลอกข้่าความท่ีจะลบสหรายผใขงานได"
-  },
-  {
     "id": "app.post.permanent_delete_post.error",
     "translation": "การลบข้่าความถาวรไมสำเร็จ"
   },
@@ -8778,10 +8750,6 @@
   {
     "id": "app.preference.get_category.app_error",
     "translation": "พบข้อผดิพลาดในระหว่่งการค้นหาการตั้่งค่า"
-  },
-  {
-    "id": "app.preference.permanent_delete_by_user.app_error",
-    "translation": "พบข้อผดิพลาดในระหว่่งการลบการตั้่งค่า"
   },
   {
     "id": "app.preference.save.updating.app_error",
@@ -9144,10 +9112,6 @@
     "translation": "ไม่สามารถดึงรีแอคชันของโพสต์นี้ได้"
   },
   {
-    "id": "app.reaction.permanent_delete_by_user.app_error",
-    "translation": "ไม่สามารถลบรีแอคชันของผู้ใช้คนนี้ถาวรได้"
-  },
-  {
     "id": "app.reaction.save.save.app_error",
     "translation": "ไม่สามารถบันทึกรีแอคชันได้"
   },
@@ -9434,10 +9398,6 @@
   {
     "id": "app.scheduled_post.error_reason.user_missing",
     "translation": "ผู้ใช้ไม่พบ"
-  },
-  {
-    "id": "app.scheduled_post.permanent_delete_by_user.app_error",
-    "translation": "ไม่สามารถลบโพสต์ที่วางแผนไว้สำหรับผู้ใช้ได้"
   },
   {
     "id": "app.scheduled_post.private_channel",
@@ -10184,10 +10144,6 @@
     "translation": "ไม่สามารถลบบัญชีที่มีอยู่ได้"
   },
   {
-    "id": "app.user.permanentdeleteuser.internal_error",
-    "translation": "ไม่สามารถลบผู้ใช้ได้"
-  },
-  {
     "id": "app.user.promote_guest.user_update.app_error",
     "translation": "ไม่สามารถอัปเดตผู้ใช้ได้"
   },
@@ -10520,15 +10476,7 @@
     "translation": "ไม่สามารถลบเว็บฮุคได้"
   },
   {
-    "id": "app.webhooks.permanent_delete_incoming_by_user.app_error",
-    "translation": "ไม่สามารถลบเว็บฮุคได้"
-  },
-  {
     "id": "app.webhooks.permanent_delete_outgoing_by_channel.app_error",
-    "translation": "ไม่สามารถลบเว็บฮุคได้"
-  },
-  {
-    "id": "app.webhooks.permanent_delete_outgoing_by_user.app_error",
     "translation": "ไม่สามารถลบเว็บฮุคได้"
   },
   {

@@ -110,6 +110,24 @@ func (_m *ModerationStore) GetTimeouts(rctx request.CTX, teamID string, now int6
 	return r0, r1
 }
 
+// PermanentDeleteTimeoutsByUser provides a mock function with given fields: rctx, userID
+func (_m *ModerationStore) PermanentDeleteTimeoutsByUser(rctx request.CTX, userID string) error {
+	ret := _m.Called(rctx, userID)
+
+	if len(ret) == 0 {
+		panic("no return value specified for PermanentDeleteTimeoutsByUser")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(request.CTX, string) error); ok {
+		r0 = rf(rctx, userID)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
 // SaveTimeout provides a mock function with given fields: rctx, timeout
 func (_m *ModerationStore) SaveTimeout(rctx request.CTX, timeout *model.MemberTimeout) (*model.MemberTimeout, error) {
 	ret := _m.Called(rctx, timeout)

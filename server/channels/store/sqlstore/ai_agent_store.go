@@ -207,6 +207,13 @@ func (s *SqlAIAgentStore) Delete(rctx request.CTX, userID string, deleteAt int64
 	return nil
 }
 
+func (s *SqlAIAgentStore) PermanentDelete(rctx request.CTX, userID string) error {
+	if _, err := s.GetMaster().ExecBuilder(s.getQueryBuilder().Delete("AIAgents").Where(sq.Eq{"UserId": userID})); err != nil {
+		return errors.Wrapf(err, "failed to permanently delete the agent user_id=%s", userID)
+	}
+	return nil
+}
+
 // agentsPluginUserAgentRow is a row of the Agents plugin's Agents_UserAgents, its lists as JSON text.
 type agentsPluginUserAgentRow struct {
 	BotUserID          string `db:"botuserid"`

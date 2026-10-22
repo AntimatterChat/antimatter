@@ -5723,10 +5723,6 @@
     "translation": "Grens bereikt voor opdelen in pagina's."
   },
   {
-    "id": "app.audit.permanent_delete_by_user.app_error",
-    "translation": "Fout opgestreden bij het verwijderen van de audit data."
-  },
-  {
     "id": "app.audit.save.saving.app_error",
     "translation": "Fout bij het bewaren van de audit data."
   },
@@ -6133,10 +6129,6 @@
   {
     "id": "app.channel.permanent_delete.app_error",
     "translation": "Kan het kanaal niet verwijderen."
-  },
-  {
-    "id": "app.channel.permanent_delete_members_by_user.app_error",
-    "translation": "Fout bij het verwijderen van het kanaallid."
   },
   {
     "id": "app.channel.pinned_posts.app_error",
@@ -7069,10 +7061,6 @@
     "translation": "Concept geweigerd door plugin: {{.Reason}}"
   },
   {
-    "id": "app.drafts.permanent_delete_by_user.app_error",
-    "translation": "Kan concepten voor gebruiker niet verwijderen."
-  },
-  {
     "id": "app.email.no_rate_limiter.app_error",
     "translation": "Snelheidsbeperkingstimer is niet ingesteld."
   },
@@ -7245,10 +7233,6 @@
     "translation": "Bestand niet gevonden in de bestandsopslag op het pad."
   },
   {
-    "id": "app.file_info.permanent_delete_by_user.app_error",
-    "translation": "Bijlagen van de gebruiker kunnen niet worden gewist."
-  },
-  {
     "id": "app.file_info.permanent_delete_for_post.app_error",
     "translation": "Fout bij het definitief verwijderen van bestand voor bericht."
   },
@@ -7303,10 +7287,6 @@
   {
     "id": "app.group.no_rows",
     "translation": "geen overeenkomende groep gevonden"
-  },
-  {
-    "id": "app.group.permanent_delete_members_by_user.app_error",
-    "translation": "Het groepslid kan niet worden verwijderd met gebruikersid \"{{.UserId}}\"."
   },
   {
     "id": "app.group.uniqueness_error",
@@ -8405,10 +8385,6 @@
     "translation": "Er is een fout opgetreden tijdens het vinden van OAuth2 applicaties."
   },
   {
-    "id": "app.oauth.permanent_delete_auth_data_by_user.app_error",
-    "translation": "Kan de machtigingscode niet verwijderen."
-  },
-  {
     "id": "app.oauth.remove_access_data.app_error",
     "translation": "Het toegangstoken kan niet worden verwijderd."
   },
@@ -9109,10 +9085,6 @@
     "translation": "Kan de berichten niet per kanaal verwijderen."
   },
   {
-    "id": "app.post.permanent_delete_by_user.app_error",
-    "translation": "Kan de te verwijderen berichten van de gebruiker niet selecteren."
-  },
-  {
     "id": "app.post.permanent_delete_post.error",
     "translation": "Fout bij het definitief verwijderen van bericht."
   },
@@ -9231,10 +9203,6 @@
   {
     "id": "app.preference.get_category.app_error",
     "translation": "Er is een probleem opgetreden tijdens het opzoeken van voorkeuren."
-  },
-  {
-    "id": "app.preference.permanent_delete_by_user.app_error",
-    "translation": "Er is een probleem opgetreden tijden het verwijderen van voorkeuren."
   },
   {
     "id": "app.preference.save.updating.app_error",
@@ -9601,10 +9569,6 @@
     "translation": "Kan de reacties op dit bericht niet ophalen."
   },
   {
-    "id": "app.reaction.permanent_delete_by_user.app_error",
-    "translation": "Reacties voor gebruiker kunnen niet worden verwijderd."
-  },
-  {
     "id": "app.reaction.save.save.app_error",
     "translation": "Fout bij het bewaren van de reactie."
   },
@@ -9909,10 +9873,6 @@
       "one": "Fout bij het verzenden {{.Count}} gepland bericht.",
       "other": "Fout bij het verzenden {{.Count}} geplande berichten."
     }
-  },
-  {
-    "id": "app.scheduled_post.permanent_delete_by_user.app_error",
-    "translation": "Kan geplande berichten voor gebruiker niet verwijderen."
   },
   {
     "id": "app.scheduled_post.private_channel",
@@ -10663,10 +10623,6 @@
     "translation": "Kan het bestaande account niet verwijderen."
   },
   {
-    "id": "app.user.permanentdeleteuser.internal_error",
-    "translation": "Gebruiker kan niet worden verwijderd."
-  },
-  {
     "id": "app.user.promote_guest.user_update.app_error",
     "translation": "Fout bij het bijwerken van de gebruiker."
   },
@@ -11007,15 +10963,7 @@
     "translation": "Fout bij het verwijderen van de webhook."
   },
   {
-    "id": "app.webhooks.permanent_delete_incoming_by_user.app_error",
-    "translation": "Fout bij het verwijderen van de webhook."
-  },
-  {
     "id": "app.webhooks.permanent_delete_outgoing_by_channel.app_error",
-    "translation": "Fout bij het verwijderen van de webhook."
-  },
-  {
-    "id": "app.webhooks.permanent_delete_outgoing_by_user.app_error",
     "translation": "Fout bij het verwijderen van de webhook."
   },
   {

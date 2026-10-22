@@ -5348,10 +5348,6 @@
     "translation": "পেজিংয়ের জন্য সীমা অতিক্রম হয়েছে।"
   },
   {
-    "id": "app.audit.permanent_delete_by_user.app_error",
-    "translation": "অডিটসমূহ মুছে ফেলার সময় একটি ত্রুটি ঘটেছে।"
-  },
-  {
     "id": "app.audit.save.saving.app_error",
     "translation": "অডিট সংরক্ষণ করার সময় একটি ত্রুটি দেখা দিয়েছে।"
   },
@@ -5758,10 +5754,6 @@
   {
     "id": "app.channel.permanent_delete.app_error",
     "translation": "চ্যানেলটি মুছে ফেলা যায়নি।"
-  },
-  {
-    "id": "app.channel.permanent_delete_members_by_user.app_error",
-    "translation": "চ্যানেলের সদস্যকে সরানো যায়নি।"
   },
   {
     "id": "app.channel.pinned_posts.app_error",
@@ -6664,10 +6656,6 @@
     "translation": "প্লাগইন দ্বারা ড্রাফট প্রত্যাখ্যান করা হয়েছে: {{.Reason}}"
   },
   {
-    "id": "app.drafts.permanent_delete_by_user.app_error",
-    "translation": "ইউজারের জন্য ড্রাফটসমূহ মুছে ফেলা যায়নি।"
-  },
-  {
     "id": "app.email.no_rate_limiter.app_error",
     "translation": "রেট লিমিটার সেটআপ করা হয়নি।"
   },
@@ -6832,10 +6820,6 @@
     "translation": "ফাইল স্টোরে-তে পাথ-এ ফাইল পাওয়া যায়নি।"
   },
   {
-    "id": "app.file_info.permanent_delete_by_user.app_error",
-    "translation": "ব্যবহারকারীর আটাচমেন্টসমূহ মুছে ফেলা যায়নি।"
-  },
-  {
     "id": "app.file_info.permanent_delete_for_post.app_error",
     "translation": "পোস্টের জন্য ফাইল স্থায়ীভাবে মুছে ফেলা যায়নি।"
   },
@@ -6886,10 +6870,6 @@
   {
     "id": "app.group.no_rows",
     "translation": "কোনো মিলে যায় এমন গ্রুপ পাওয়া যায়নি"
-  },
-  {
-    "id": "app.group.permanent_delete_members_by_user.app_error",
-    "translation": "UserID \"{{.UserId}}\" সহ গ্রুপ সদস্যকে সরানো যায়নি।"
   },
   {
     "id": "app.group.uniqueness_error",
@@ -7976,10 +7956,6 @@
     "translation": "OAuth2 অ্যাপসমূহ খোঁজার সময় একটি ত্রুটি ঘটেছে।"
   },
   {
-    "id": "app.oauth.permanent_delete_auth_data_by_user.app_error",
-    "translation": "অথরাইজেশন কোডটি সরানো যাচ্ছে না।"
-  },
-  {
     "id": "app.oauth.remove_access_data.app_error",
     "translation": "অ্যাক্সেস টোকেনটি সরানো যাচ্ছে না।"
   },
@@ -8656,10 +8632,6 @@
     "translation": "চ্যানেল অনুযায়ী পোস্টসমূহ মুছে ফেলা যায়নি।"
   },
   {
-    "id": "app.post.permanent_delete_by_user.app_error",
-    "translation": "ব্যবহারকারীর জন্য মুছে ফেলার পোস্টসমূহ নির্বাচন করা যায়নি।"
-  },
-  {
     "id": "app.post.permanent_delete_post.error",
     "translation": "পোস্টটি স্থায়ীভাবে মুছে ফেলা যায়নি।"
   },
@@ -8778,10 +8750,6 @@
   {
     "id": "app.preference.get_category.app_error",
     "translation": "প্রেফারেন্স খোঁজার সময় একটি ত্রুটি দেখা দিয়েছে।"
-  },
-  {
-    "id": "app.preference.permanent_delete_by_user.app_error",
-    "translation": "প্রেফারেন্স মুছে ফেলার সময় একটি ত্রুটি দেখা দিয়েছে।"
   },
   {
     "id": "app.preference.save.updating.app_error",
@@ -9144,10 +9112,6 @@
     "translation": "পোস্টের জন্য প্রতিক্রিয়া পড়া যায়নি।"
   },
   {
-    "id": "app.reaction.permanent_delete_by_user.app_error",
-    "translation": "ব্যবহারকারীর প্রতিক্রিয়াগুলো মুছে ফেলা যায়নি।"
-  },
-  {
     "id": "app.reaction.save.save.app_error",
     "translation": "প্রতিক্রিয়া সংরক্ষণ করা যায়নি।"
   },
@@ -9434,10 +9398,6 @@
   {
     "id": "app.scheduled_post.error_reason.user_missing",
     "translation": "ব্যবহারকারী অস্তিত্বে নেই"
-  },
-  {
-    "id": "app.scheduled_post.permanent_delete_by_user.app_error",
-    "translation": "ব্যবহারকারীর জন্য সূচনা করা পোস্টসমূহ মুছে ফেলা যায়নি।"
   },
   {
     "id": "app.scheduled_post.private_channel",
@@ -10184,10 +10144,6 @@
     "translation": "মৌজুদ অ্যাকাউন্টটি মুছে ফেলা যাচ্ছে না।"
   },
   {
-    "id": "app.user.permanentdeleteuser.internal_error",
-    "translation": "ব্যবহারকারী মুছে ফেলা যাচ্ছে না।"
-  },
-  {
     "id": "app.user.promote_guest.user_update.app_error",
     "translation": "ব্যবহারকারী আপডেট করা যায়নি।"
   },
@@ -10520,15 +10476,7 @@
     "translation": "ওয়েবহুকটি মুছে ফেলা যায়নি।"
   },
   {
-    "id": "app.webhooks.permanent_delete_incoming_by_user.app_error",
-    "translation": "ওয়েবহুকটি মুছে ফেলা যায়নি।"
-  },
-  {
     "id": "app.webhooks.permanent_delete_outgoing_by_channel.app_error",
-    "translation": "ওয়েবহুকটি মুছে ফেলা যায়নি।"
-  },
-  {
-    "id": "app.webhooks.permanent_delete_outgoing_by_user.app_error",
     "translation": "ওয়েবহুকটি মুছে ফেলা যায়নি।"
   },
   {

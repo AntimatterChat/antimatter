@@ -5348,10 +5348,6 @@
     "translation": "Batas untuk paginasi terlampaui."
   },
   {
-    "id": "app.audit.permanent_delete_by_user.app_error",
-    "translation": "Kami mengalami kesalahan saat menghapus audit."
-  },
-  {
     "id": "app.audit.save.saving.app_error",
     "translation": "Terjadi kesalahan saat menyimpan audit."
   },
@@ -5758,10 +5754,6 @@
   {
     "id": "app.channel.permanent_delete.app_error",
     "translation": "Tidak dapat menghapus kanal."
-  },
-  {
-    "id": "app.channel.permanent_delete_members_by_user.app_error",
-    "translation": "Tidak dapat menghapus anggota kanal."
   },
   {
     "id": "app.channel.pinned_posts.app_error",
@@ -6664,10 +6656,6 @@
     "translation": "Draf ditolak oleh plugin: {{.Reason}}"
   },
   {
-    "id": "app.drafts.permanent_delete_by_user.app_error",
-    "translation": "Tidak dapat menghapus draf untuk pengguna."
-  },
-  {
     "id": "app.email.no_rate_limiter.app_error",
     "translation": "Pembatas laju tidak diatur."
   },
@@ -6832,10 +6820,6 @@
     "translation": "Berkas tidak ditemukan di penyimpanan berkas pada jalur tersebut."
   },
   {
-    "id": "app.file_info.permanent_delete_by_user.app_error",
-    "translation": "Tidak dapat menghapus lampiran milik pengguna."
-  },
-  {
     "id": "app.file_info.permanent_delete_for_post.app_error",
     "translation": "Gagal menghapus berkas untuk kiriman secara permanen."
   },
@@ -6886,10 +6870,6 @@
   {
     "id": "app.group.no_rows",
     "translation": "grup yang cocok tidak ditemukan"
-  },
-  {
-    "id": "app.group.permanent_delete_members_by_user.app_error",
-    "translation": "Tidak dapat menghapus anggota grup dengan UserID \"{{.UserId}}\"."
   },
   {
     "id": "app.group.uniqueness_error",
@@ -7976,10 +7956,6 @@
     "translation": "Terjadi kesalahan saat menemukan Aplikasi OAuth2."
   },
   {
-    "id": "app.oauth.permanent_delete_auth_data_by_user.app_error",
-    "translation": "Tidak dapat menghapus kode otorisasi."
-  },
-  {
     "id": "app.oauth.remove_access_data.app_error",
     "translation": "Tidak dapat menghapus token akses."
   },
@@ -8656,10 +8632,6 @@
     "translation": "Tidak dapat menghapus pesan berdasarkan kanal."
   },
   {
-    "id": "app.post.permanent_delete_by_user.app_error",
-    "translation": "Tidak dapat memilih pesan untuk dihapus untuk pengguna."
-  },
-  {
     "id": "app.post.permanent_delete_post.error",
     "translation": "Gagal menghapus pesan secara permanen."
   },
@@ -8778,10 +8750,6 @@
   {
     "id": "app.preference.get_category.app_error",
     "translation": "Kami mengalami kesalahan saat mencari preferensi."
-  },
-  {
-    "id": "app.preference.permanent_delete_by_user.app_error",
-    "translation": "Kami mengalami kesalahan saat menghapus preferensi."
   },
   {
     "id": "app.preference.save.updating.app_error",
@@ -9144,10 +9112,6 @@
     "translation": "Tidak dapat mengambil reaksi untuk kiriman."
   },
   {
-    "id": "app.reaction.permanent_delete_by_user.app_error",
-    "translation": "Tidak dapat menghapus reaksi untuk pengguna."
-  },
-  {
     "id": "app.reaction.save.save.app_error",
     "translation": "Tidak dapat menyimpan reaksi."
   },
@@ -9434,10 +9398,6 @@
   {
     "id": "app.scheduled_post.error_reason.user_missing",
     "translation": "Pengguna tidak ada"
-  },
-  {
-    "id": "app.scheduled_post.permanent_delete_by_user.app_error",
-    "translation": "Tidak dapat menghapus kiriman terjadwal untuk pengguna."
   },
   {
     "id": "app.scheduled_post.private_channel",
@@ -10184,10 +10144,6 @@
     "translation": "Tidak dapat menghapus akun yang ada."
   },
   {
-    "id": "app.user.permanentdeleteuser.internal_error",
-    "translation": "Tidak dapat menghapus pengguna."
-  },
-  {
     "id": "app.user.promote_guest.user_update.app_error",
     "translation": "Gagal memperbarui pengguna."
   },
@@ -10520,15 +10476,7 @@
     "translation": "Tidak dapat menghapus webhook."
   },
   {
-    "id": "app.webhooks.permanent_delete_incoming_by_user.app_error",
-    "translation": "Tidak dapat menghapus webhook."
-  },
-  {
     "id": "app.webhooks.permanent_delete_outgoing_by_channel.app_error",
-    "translation": "Tidak dapat menghapus webhook."
-  },
-  {
-    "id": "app.webhooks.permanent_delete_outgoing_by_user.app_error",
     "translation": "Tidak dapat menghapus webhook."
   },
   {

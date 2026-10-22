@@ -19,6 +19,41 @@ func TestAIConnectionStore(t *testing.T, rctx request.CTX, ss store.Store) {
 	t.Run("Scopes", func(t *testing.T) { testAIConnectionScopes(t, rctx, ss) })
 	t.Run("Delete", func(t *testing.T) { testAIConnectionDelete(t, rctx, ss) })
 	t.Run("Usage", func(t *testing.T) { testAIConnectionUsage(t, rctx, ss) })
+	t.Run("AnonymizeUsageByUser", func(t *testing.T) { testAIConnectionAnonymizeUsageByUser(t, rctx, ss) })
+}
+
+func testAIConnectionAnonymizeUsageByUser(t *testing.T, rctx request.CTX, ss store.Store) {
+	connectionID, user, other := model.NewId(), model.NewId(), model.NewId()
+	add := func(userID, purpose string, day int, in, out int64) {
+		t.Helper()
+		require.NoError(t, ss.AIConnection().AddUsage(rctx, &model.AIUsage{ConnectionId: connectionID, UserId: userID, Purpose: purpose, Day: day, Requests: 1, InputTokens: in, OutputTokens: out}))
+	}
+	add(user, "", 20261001, 10, 5)
+	add(user, "rewrite", 20261002, 7, 3)
+	add(other, "", 20261001, 100, 50)
+	add("", "", 20261001, 1, 1) // already nobody's: theirs adds to it
+
+	before, err := ss.AIConnection().GetUsageTotals(rctx, connectionID, 20261001)
+	require.NoError(t, err)
+
+	require.NoError(t, ss.AIConnection().AnonymizeUsageByUser(rctx, user))
+	require.NoError(t, ss.AIConnection().AnonymizeUsageByUser(rctx, user), "again is fine")
+
+	after, err := ss.AIConnection().GetUsageTotals(rctx, connectionID, 20261001)
+	require.NoError(t, err)
+	assert.Equal(t, before, after, "the connection's totals stay right")
+
+	theirs, err := ss.AIConnection().GetUserUsageTotals(rctx, connectionID, user, 20261001)
+	require.NoError(t, err)
+	assert.Equal(t, model.AIUsageTotals{}, theirs, "nothing is theirs any more")
+
+	nobodys, err := ss.AIConnection().GetUserUsageTotals(rctx, connectionID, "", 20261001)
+	require.NoError(t, err)
+	assert.Equal(t, model.AIUsageTotals{Requests: 3, InputTokens: 18, OutputTokens: 9}, nobodys)
+
+	others, err := ss.AIConnection().GetUserUsageTotals(rctx, connectionID, other, 20261001)
+	require.NoError(t, err)
+	assert.Equal(t, model.AIUsageTotals{Requests: 1, InputTokens: 100, OutputTokens: 50}, others)
 }
 
 func newTestAIConnection(scope string) *model.AIConnection {

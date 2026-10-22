@@ -5723,10 +5723,6 @@
     "translation": "Límite de paginación excedido."
   },
   {
-    "id": "app.audit.permanent_delete_by_user.app_error",
-    "translation": "Encontramos un error al eliminar los audits."
-  },
-  {
     "id": "app.audit.save.saving.app_error",
     "translation": "Encontramos un error guardando la auditoria."
   },
@@ -6133,10 +6129,6 @@
   {
     "id": "app.channel.permanent_delete.app_error",
     "translation": "No se pudo borrar el canal."
-  },
-  {
-    "id": "app.channel.permanent_delete_members_by_user.app_error",
-    "translation": "Error al remover los miembros del canal."
   },
   {
     "id": "app.channel.pinned_posts.app_error",
@@ -7069,10 +7061,6 @@
     "translation": "Borrador rechazado por el plugin: {{.Reason}}"
   },
   {
-    "id": "app.drafts.permanent_delete_by_user.app_error",
-    "translation": "No se pudieron eliminar los borradores del usuario."
-  },
-  {
     "id": "app.email.no_rate_limiter.app_error",
     "translation": "Limitador de tasa no es poner arriba."
   },
@@ -7245,10 +7233,6 @@
     "translation": "No se encontró el archivo en el almacén de archivos en la ruta indicada."
   },
   {
-    "id": "app.file_info.permanent_delete_by_user.app_error",
-    "translation": "No se pudo eliminar los archivos adjuntos del usuario."
-  },
-  {
     "id": "app.file_info.permanent_delete_for_post.app_error",
     "translation": "Error al eliminar permanentemente el archivo del mensaje."
   },
@@ -7303,10 +7287,6 @@
   {
     "id": "app.group.no_rows",
     "translation": "no se encontró ningún grupo que coincida"
-  },
-  {
-    "id": "app.group.permanent_delete_members_by_user.app_error",
-    "translation": "No se puede eliminar el miembro del grupo con la identificación de usuario \"{{.UserId}}\"."
   },
   {
     "id": "app.group.uniqueness_error",
@@ -8405,10 +8385,6 @@
     "translation": "Se ha producido un error mientras se buscaban las Apps de OAuth2."
   },
   {
-    "id": "app.oauth.permanent_delete_auth_data_by_user.app_error",
-    "translation": "No pudimos eliminar el código de autorización."
-  },
-  {
     "id": "app.oauth.remove_access_data.app_error",
     "translation": "No se pudo eliminar el token de acceso."
   },
@@ -9109,10 +9085,6 @@
     "translation": "No se puede eliminar los mensajes por canal."
   },
   {
-    "id": "app.post.permanent_delete_by_user.app_error",
-    "translation": "No se puede seleccionar los mensajes a eliminar del usuario."
-  },
-  {
     "id": "app.post.permanent_delete_post.error",
     "translation": "Error al eliminar el mensaje de forma permanente."
   },
@@ -9231,10 +9203,6 @@
   {
     "id": "app.preference.get_category.app_error",
     "translation": "Encontramos un error mientras buscamos las preferencias."
-  },
-  {
-    "id": "app.preference.permanent_delete_by_user.app_error",
-    "translation": "Encontramos un error mientras se eliminaban las preferencias."
   },
   {
     "id": "app.preference.save.updating.app_error",
@@ -9601,10 +9569,6 @@
     "translation": "No se puede obtener las reacciones del mensaje."
   },
   {
-    "id": "app.reaction.permanent_delete_by_user.app_error",
-    "translation": "No se pudieron eliminar las reacciones del usuario."
-  },
-  {
     "id": "app.reaction.save.save.app_error",
     "translation": "No se puede guardar la reacción."
   },
@@ -9909,10 +9873,6 @@
       "one": "Error al enviar {{.Count}} mensaje programado.",
       "other": "Error al enviar {{.Count}} mensajes programados."
     }
-  },
-  {
-    "id": "app.scheduled_post.permanent_delete_by_user.app_error",
-    "translation": "No se pudieron eliminar los mensajes programados del usuario."
   },
   {
     "id": "app.scheduled_post.private_channel",
@@ -10663,10 +10623,6 @@
     "translation": "No se puede borrar la cuenta existente."
   },
   {
-    "id": "app.user.permanentdeleteuser.internal_error",
-    "translation": "No se puede eliminar el token."
-  },
-  {
     "id": "app.user.promote_guest.user_update.app_error",
     "translation": "Error al actualizar el usuario."
   },
@@ -11007,15 +10963,7 @@
     "translation": "No se puede eliminar el webhook."
   },
   {
-    "id": "app.webhooks.permanent_delete_incoming_by_user.app_error",
-    "translation": "No se puede eliminar el webhook."
-  },
-  {
     "id": "app.webhooks.permanent_delete_outgoing_by_channel.app_error",
-    "translation": "No se puede eliminar el webhook."
-  },
-  {
-    "id": "app.webhooks.permanent_delete_outgoing_by_user.app_error",
     "translation": "No se puede eliminar el webhook."
   },
   {

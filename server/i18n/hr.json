@@ -5624,10 +5624,6 @@
     "translation": "Premašeno je ograničenje za straničenje."
   },
   {
-    "id": "app.audit.permanent_delete_by_user.app_error",
-    "translation": "Došlo je do greške pri brisanju zapisa revizije."
-  },
-  {
     "id": "app.audit.save.saving.app_error",
     "translation": "Došlo je do greške pri spremanju zapisa revizije."
   },
@@ -6026,10 +6022,6 @@
   {
     "id": "app.channel.permanent_delete.app_error",
     "translation": "Nije moguće izbrisati kanal."
-  },
-  {
-    "id": "app.channel.permanent_delete_members_by_user.app_error",
-    "translation": "Nije moguće ukloniti člana kanala."
   },
   {
     "id": "app.channel.pinned_posts.app_error",
@@ -6864,10 +6856,6 @@
     "translation": "Dodatak je odbio skicu: {{.Reason}}"
   },
   {
-    "id": "app.drafts.permanent_delete_by_user.app_error",
-    "translation": "Nije moguće izbrisati skice korisnika."
-  },
-  {
     "id": "app.email.no_rate_limiter.app_error",
     "translation": "Ograničavač broja zahtjeva nije postavljen."
   },
@@ -7040,10 +7028,6 @@
     "translation": "Datoteka nije pronađena u spremištu datoteka na navedenoj putanji."
   },
   {
-    "id": "app.file_info.permanent_delete_by_user.app_error",
-    "translation": "Nije moguće izbrisati privitke korisnika."
-  },
-  {
     "id": "app.file_info.permanent_delete_for_post.app_error",
     "translation": "Trajno brisanje datoteke za objavu nije uspjelo."
   },
@@ -7098,10 +7082,6 @@
   {
     "id": "app.group.no_rows",
     "translation": "nije pronađena odgovarajuća grupa"
-  },
-  {
-    "id": "app.group.permanent_delete_members_by_user.app_error",
-    "translation": "Nije moguće ukloniti člana grupe s UserID-om \"{{.UserId}}\"."
   },
   {
     "id": "app.group.uniqueness_error",
@@ -8004,10 +7984,6 @@
     "translation": "Došlo je do greške pri traženju OAuth2 aplikacija."
   },
   {
-    "id": "app.oauth.permanent_delete_auth_data_by_user.app_error",
-    "translation": "Nije moguće ukloniti autorizacijski kod."
-  },
-  {
     "id": "app.oauth.remove_access_data.app_error",
     "translation": "Nije moguće ukloniti token za pristup."
   },
@@ -8640,10 +8616,6 @@
     "translation": "Nije moguće izbrisati objave prema kanalu."
   },
   {
-    "id": "app.post.permanent_delete_by_user.app_error",
-    "translation": "Nije moguće odabrati objave korisnika za brisanje."
-  },
-  {
     "id": "app.post.permanent_delete_post.error",
     "translation": "Trajno brisanje objave nije uspjelo."
   },
@@ -8750,10 +8722,6 @@
   {
     "id": "app.preference.get_category.app_error",
     "translation": "Došlo je do greške pri traženju postavki."
-  },
-  {
-    "id": "app.preference.permanent_delete_by_user.app_error",
-    "translation": "Došlo je do greške pri brisanju postavki."
   },
   {
     "id": "app.preference.save.updating.app_error",
@@ -9120,10 +9088,6 @@
     "translation": "Nije moguće dohvatiti reakcije za objavu."
   },
   {
-    "id": "app.reaction.permanent_delete_by_user.app_error",
-    "translation": "Nije moguće izbrisati reakcije korisnika."
-  },
-  {
     "id": "app.reaction.save.save.app_error",
     "translation": "Nije moguće spremiti reakciju."
   },
@@ -9430,10 +9394,6 @@
       "few": "Slanje {{.Count}} zakazane poruke nije uspjelo.",
       "other": "Slanje {{.Count}} zakazanih poruka nije uspjelo."
     }
-  },
-  {
-    "id": "app.scheduled_post.permanent_delete_by_user.app_error",
-    "translation": "Nije moguće izbrisati zakazane poruke korisnika."
   },
   {
     "id": "app.scheduled_post.private_channel",
@@ -10128,10 +10088,6 @@
     "translation": "Nije moguće izbrisati postojeći račun."
   },
   {
-    "id": "app.user.permanentdeleteuser.internal_error",
-    "translation": "Nije moguće izbrisati korisnika."
-  },
-  {
     "id": "app.user.promote_guest.user_update.app_error",
     "translation": "Ažuriranje korisnika nije uspjelo."
   },
@@ -10460,15 +10416,7 @@
     "translation": "Nije moguće izbrisati webhook."
   },
   {
-    "id": "app.webhooks.permanent_delete_incoming_by_user.app_error",
-    "translation": "Nije moguće izbrisati webhook."
-  },
-  {
     "id": "app.webhooks.permanent_delete_outgoing_by_channel.app_error",
-    "translation": "Nije moguće izbrisati webhook."
-  },
-  {
-    "id": "app.webhooks.permanent_delete_outgoing_by_user.app_error",
     "translation": "Nije moguće izbrisati webhook."
   },
   {

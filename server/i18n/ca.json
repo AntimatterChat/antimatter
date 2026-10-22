@@ -5348,10 +5348,6 @@
     "translation": "S'ha superat el límit de paginació."
   },
   {
-    "id": "app.audit.permanent_delete_by_user.app_error",
-    "translation": "S'ha produït un error en suprimir les auditories."
-  },
-  {
     "id": "app.audit.save.saving.app_error",
     "translation": "S'ha produït un error en desar l'auditoria."
   },
@@ -5758,10 +5754,6 @@
   {
     "id": "app.channel.permanent_delete.app_error",
     "translation": "No s'ha pogut eliminar el canal."
-  },
-  {
-    "id": "app.channel.permanent_delete_members_by_user.app_error",
-    "translation": "No s'ha pogut eliminar el membre del canal."
   },
   {
     "id": "app.channel.pinned_posts.app_error",
@@ -6664,10 +6656,6 @@
     "translation": "Esborrany rebutjat pel connector: {{.Reason}}"
   },
   {
-    "id": "app.drafts.permanent_delete_by_user.app_error",
-    "translation": "No s'han pogut suprimir els esborranys de l'usuari."
-  },
-  {
     "id": "app.email.no_rate_limiter.app_error",
     "translation": "El limitador de freqüència no està configurat."
   },
@@ -6832,10 +6820,6 @@
     "translation": "No s'ha trobat el fitxer a la botiga de fitxers a la ruta indicada."
   },
   {
-    "id": "app.file_info.permanent_delete_by_user.app_error",
-    "translation": "No s'han pogut suprimir els adjunts de l'usuari."
-  },
-  {
     "id": "app.file_info.permanent_delete_for_post.app_error",
     "translation": "No s'ha pogut suprimir permanentment el fitxer del missatge."
   },
@@ -6886,10 +6870,6 @@
   {
     "id": "app.group.no_rows",
     "translation": "No s'ha trobat cap grup que coincideixi"
-  },
-  {
-    "id": "app.group.permanent_delete_members_by_user.app_error",
-    "translation": "No s'ha pogut eliminar el membre del grup amb l'identificador d'usuari «{{.UserId}}»."
   },
   {
     "id": "app.group.uniqueness_error",
@@ -7976,10 +7956,6 @@
     "translation": "S'ha produït un error en trobar les aplicacions OAuth2."
   },
   {
-    "id": "app.oauth.permanent_delete_auth_data_by_user.app_error",
-    "translation": "No s'ha pogut eliminar el codi d'autorització."
-  },
-  {
     "id": "app.oauth.remove_access_data.app_error",
     "translation": "No s'ha pogut eliminar el token d'accés."
   },
@@ -8656,10 +8632,6 @@
     "translation": "No s'han pogut eliminar els missatges per canal."
   },
   {
-    "id": "app.post.permanent_delete_by_user.app_error",
-    "translation": "No s'han pogut seleccionar els missatges per eliminar per a l'usuari."
-  },
-  {
     "id": "app.post.permanent_delete_post.error",
     "translation": "No s'ha pogut eliminar permanentment el missatge."
   },
@@ -8778,10 +8750,6 @@
   {
     "id": "app.preference.get_category.app_error",
     "translation": "S'ha produït un error en trobar les preferències."
-  },
-  {
-    "id": "app.preference.permanent_delete_by_user.app_error",
-    "translation": "S'ha produït un error en suprimir les preferències."
   },
   {
     "id": "app.preference.save.updating.app_error",
@@ -9144,10 +9112,6 @@
     "translation": "No s'han pogut obtenir les reaccions per a la publicació."
   },
   {
-    "id": "app.reaction.permanent_delete_by_user.app_error",
-    "translation": "No s'han pogut suprimir les reaccions de l'usuari."
-  },
-  {
     "id": "app.reaction.save.save.app_error",
     "translation": "No s'ha pogut desar la reacció."
   },
@@ -9434,10 +9398,6 @@
   {
     "id": "app.scheduled_post.error_reason.user_missing",
     "translation": "L'usuari no existeix"
-  },
-  {
-    "id": "app.scheduled_post.permanent_delete_by_user.app_error",
-    "translation": "No s'han pogut suprimir les publicacions programades de l'usuari."
   },
   {
     "id": "app.scheduled_post.private_channel",
@@ -10184,10 +10144,6 @@
     "translation": "No s'ha pogut suprimir el compte existent."
   },
   {
-    "id": "app.user.permanentdeleteuser.internal_error",
-    "translation": "No s'ha pogut suprimir l'usuari."
-  },
-  {
     "id": "app.user.promote_guest.user_update.app_error",
     "translation": "No s'ha pogut actualitzar l'usuari."
   },
@@ -10520,15 +10476,7 @@
     "translation": "No s'ha pogut suprimir el webhook."
   },
   {
-    "id": "app.webhooks.permanent_delete_incoming_by_user.app_error",
-    "translation": "No s'ha pogut suprimir el webhook."
-  },
-  {
     "id": "app.webhooks.permanent_delete_outgoing_by_channel.app_error",
-    "translation": "No s'ha pogut suprimir el webhook."
-  },
-  {
-    "id": "app.webhooks.permanent_delete_outgoing_by_user.app_error",
     "translation": "No s'ha pogut suprimir el webhook."
   },
   {

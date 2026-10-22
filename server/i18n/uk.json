@@ -5733,10 +5733,6 @@
     "translation": "Перевищено ліміт сторінок."
   },
   {
-    "id": "app.audit.permanent_delete_by_user.app_error",
-    "translation": "Виникла помилка під час видалення аудитів."
-  },
-  {
     "id": "app.audit.save.saving.app_error",
     "translation": "Ми зіткнулися з помилкою під час збереження аудитів."
   },
@@ -6143,10 +6139,6 @@
   {
     "id": "app.channel.permanent_delete.app_error",
     "translation": "Неможливо остаточно видалити канал."
-  },
-  {
-    "id": "app.channel.permanent_delete_members_by_user.app_error",
-    "translation": "Не вдалося видалити учасника каналу."
   },
   {
     "id": "app.channel.pinned_posts.app_error",
@@ -7083,10 +7075,6 @@
     "translation": "Чернетку відхилено плагіном: {{.Reason}}"
   },
   {
-    "id": "app.drafts.permanent_delete_by_user.app_error",
-    "translation": "Неможливо видалити чернетки для користувача."
-  },
-  {
     "id": "app.email.no_rate_limiter.app_error",
     "translation": "Обмежувач швидкості не налаштований."
   },
@@ -7259,10 +7247,6 @@
     "translation": "Файл не знайдено у файловому сховищі за вказаним шляхом."
   },
   {
-    "id": "app.file_info.permanent_delete_by_user.app_error",
-    "translation": "Неможливо видалити вкладення користувача."
-  },
-  {
     "id": "app.file_info.permanent_delete_for_post.app_error",
     "translation": "Не вдалося остаточно видалити файл для допису."
   },
@@ -7317,10 +7301,6 @@
   {
     "id": "app.group.no_rows",
     "translation": "не знайдено відповідної групи"
-  },
-  {
-    "id": "app.group.permanent_delete_members_by_user.app_error",
-    "translation": "Не вдається видалити учасника групи з ідентифікатором користувача \"{{.UserId}}\"."
   },
   {
     "id": "app.group.uniqueness_error",
@@ -8419,10 +8399,6 @@
     "translation": "Виникла помилка під час пошуку OAuth2 програм."
   },
   {
-    "id": "app.oauth.permanent_delete_auth_data_by_user.app_error",
-    "translation": "Не вдалося видалити код авторизації."
-  },
-  {
     "id": "app.oauth.remove_access_data.app_error",
     "translation": "Не вдалося видалити токен доступу."
   },
@@ -9123,10 +9099,6 @@
     "translation": "Неможливо видалити дописи за каналом."
   },
   {
-    "id": "app.post.permanent_delete_by_user.app_error",
-    "translation": "Не вдалося вибрати дописи, які потрібно видалити для користувача."
-  },
-  {
     "id": "app.post.permanent_delete_post.error",
     "translation": "Не вдалося остаточно видалити допис."
   },
@@ -9245,10 +9217,6 @@
   {
     "id": "app.preference.get_category.app_error",
     "translation": "Виникла помилка під час пошуку налаштувань."
-  },
-  {
-    "id": "app.preference.permanent_delete_by_user.app_error",
-    "translation": "Виникла помилка при час видалення налаштувань."
   },
   {
     "id": "app.preference.save.updating.app_error",
@@ -9615,10 +9583,6 @@
     "translation": "Не вдалося отримати реакції на публікацію."
   },
   {
-    "id": "app.reaction.permanent_delete_by_user.app_error",
-    "translation": "Неможливо видалити реакції для користувача."
-  },
-  {
     "id": "app.reaction.save.save.app_error",
     "translation": "Не вдалось зберегти реакцію."
   },
@@ -9927,10 +9891,6 @@
       "many": "Не вдалося надіслати {{.Count}} запланованих дописів.",
       "other": "Не вдалося надіслати {{.Count}} запланованого допису."
     }
-  },
-  {
-    "id": "app.scheduled_post.permanent_delete_by_user.app_error",
-    "translation": "Неможливо видалити заплановані повідомлення для користувача."
   },
   {
     "id": "app.scheduled_post.private_channel",
@@ -10681,10 +10641,6 @@
     "translation": "Не вдалось видалити існуючий обліковий запис."
   },
   {
-    "id": "app.user.permanentdeleteuser.internal_error",
-    "translation": "Неможливо видалити користувача."
-  },
-  {
     "id": "app.user.promote_guest.user_update.app_error",
     "translation": "Не вдалося оновити користувача."
   },
@@ -11025,15 +10981,7 @@
     "translation": "Не вдалося видалити вебхук."
   },
   {
-    "id": "app.webhooks.permanent_delete_incoming_by_user.app_error",
-    "translation": "Не вдалося видалити вебхук."
-  },
-  {
     "id": "app.webhooks.permanent_delete_outgoing_by_channel.app_error",
-    "translation": "Не вдалося видалити вебхук."
-  },
-  {
-    "id": "app.webhooks.permanent_delete_outgoing_by_user.app_error",
     "translation": "Не вдалося видалити вебхук."
   },
   {

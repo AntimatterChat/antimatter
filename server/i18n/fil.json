@@ -5348,10 +5348,6 @@
     "translation": "Lumampas ang limit para sa paging."
   },
   {
-    "id": "app.audit.permanent_delete_by_user.app_error",
-    "translation": "May error nang burahin ang mga audit."
-  },
-  {
     "id": "app.audit.save.saving.app_error",
     "translation": "May naregistrang error sa pag-save ng audit."
   },
@@ -5758,10 +5754,6 @@
   {
     "id": "app.channel.permanent_delete.app_error",
     "translation": "Hindi matanggal ang channel."
-  },
-  {
-    "id": "app.channel.permanent_delete_members_by_user.app_error",
-    "translation": "Hindi matanggal ang miyembro ng channel."
   },
   {
     "id": "app.channel.pinned_posts.app_error",
@@ -6664,10 +6656,6 @@
     "translation": "Tinanggihan ng plugin ang Draft: {{.Reason}}"
   },
   {
-    "id": "app.drafts.permanent_delete_by_user.app_error",
-    "translation": "Hindi mabura ang mga draft ng user."
-  },
-  {
     "id": "app.email.no_rate_limiter.app_error",
     "translation": "Hindi nakaset up ang rate limiter."
   },
@@ -6832,10 +6820,6 @@
     "translation": "Hindi nakita ang file sa file store sa ibinigay na path."
   },
   {
-    "id": "app.file_info.permanent_delete_by_user.app_error",
-    "translation": "Hindi matanggal ang mga attachment ng user."
-  },
-  {
     "id": "app.file_info.permanent_delete_for_post.app_error",
     "translation": "Hindi matanggal nang permanenteng ang file ng post."
   },
@@ -6886,10 +6870,6 @@
   {
     "id": "app.group.no_rows",
     "translation": "walang natagpuang group na tugma"
-  },
-  {
-    "id": "app.group.permanent_delete_members_by_user.app_error",
-    "translation": "Hindi matanggal ang miyembro ng group na may UserID \"{{.UserId}}\"."
   },
   {
     "id": "app.group.uniqueness_error",
@@ -7976,10 +7956,6 @@
     "translation": "May naganap na error sa paghahanap ng mga OAuth2 Apps."
   },
   {
-    "id": "app.oauth.permanent_delete_auth_data_by_user.app_error",
-    "translation": "Hindi maalis ang authorization code."
-  },
-  {
     "id": "app.oauth.remove_access_data.app_error",
     "translation": "Hindi maalis ang access token."
   },
@@ -8656,10 +8632,6 @@
     "translation": "Hindi ma-delete ang mga post ayon sa channel."
   },
   {
-    "id": "app.post.permanent_delete_by_user.app_error",
-    "translation": "Hindi ma-pili ang mga post na dadalhin para sa user."
-  },
-  {
     "id": "app.post.permanent_delete_post.error",
     "translation": "Hindi matagumpay na permanenteng ma-delete ang post."
   },
@@ -8778,10 +8750,6 @@
   {
     "id": "app.preference.get_category.app_error",
     "translation": "May naregistrang error habang hinahanap ang mga preference."
-  },
-  {
-    "id": "app.preference.permanent_delete_by_user.app_error",
-    "translation": "May naregistrang error habang tinatanggal ang mga preference."
   },
   {
     "id": "app.preference.save.updating.app_error",
@@ -9144,10 +9112,6 @@
     "translation": "Hindi makuha ang mga reaksyon para sa post."
   },
   {
-    "id": "app.reaction.permanent_delete_by_user.app_error",
-    "translation": "Hindi matanggal ang mga reaksyon ng user."
-  },
-  {
     "id": "app.reaction.save.save.app_error",
     "translation": "Hindi ma-save ang reaksyon."
   },
@@ -9434,10 +9398,6 @@
   {
     "id": "app.scheduled_post.error_reason.user_missing",
     "translation": "Hindi umiiral ang user"
-  },
-  {
-    "id": "app.scheduled_post.permanent_delete_by_user.app_error",
-    "translation": "Hindi mabura ang mga scheduled post ng user."
   },
   {
     "id": "app.scheduled_post.private_channel",
@@ -10184,10 +10144,6 @@
     "translation": "Hindi mabura ang umiiral na account."
   },
   {
-    "id": "app.user.permanentdeleteuser.internal_error",
-    "translation": "Hindi mabura ang user."
-  },
-  {
     "id": "app.user.promote_guest.user_update.app_error",
     "translation": "Hindi ma-update ang user."
   },
@@ -10520,15 +10476,7 @@
     "translation": "Hindi mabubura ang webhook."
   },
   {
-    "id": "app.webhooks.permanent_delete_incoming_by_user.app_error",
-    "translation": "Hindi mabubura ang webhook."
-  },
-  {
     "id": "app.webhooks.permanent_delete_outgoing_by_channel.app_error",
-    "translation": "Hindi mabubura ang webhook."
-  },
-  {
-    "id": "app.webhooks.permanent_delete_outgoing_by_user.app_error",
     "translation": "Hindi mabubura ang webhook."
   },
   {

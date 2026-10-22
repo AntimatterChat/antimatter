@@ -253,6 +253,35 @@ func (s *SqlAIConnectionStore) AddUsage(rctx request.CTX, usage *model.AIUsage) 
 	return nil
 }
 
+func (s *SqlAIConnectionStore) AnonymizeUsageByUser(rctx request.CTX, userID string) (err error) {
+	if userID == "" {
+		return nil
+	}
+
+	transaction, err := s.GetMaster().Begin()
+	if err != nil {
+		return errors.Wrap(err, "begin_transaction")
+	}
+	defer finalizeTransactionX(transaction, &err)
+
+	if _, err = transaction.Exec(`INSERT INTO AIUsage (ConnectionId, UserId, Purpose, Day, Requests, InputTokens, OutputTokens)
+		SELECT ConnectionId, '', Purpose, Day, Requests, InputTokens, OutputTokens FROM AIUsage WHERE UserId = ?
+		ON CONFLICT (ConnectionId, UserId, Purpose, Day) DO UPDATE SET
+			Requests = AIUsage.Requests + EXCLUDED.Requests,
+			InputTokens = AIUsage.InputTokens + EXCLUDED.InputTokens,
+			OutputTokens = AIUsage.OutputTokens + EXCLUDED.OutputTokens`, userID); err != nil {
+		return errors.Wrapf(err, "failed to move the model usage of user=%s to nobody", userID)
+	}
+	if _, err = transaction.Exec("DELETE FROM AIUsage WHERE UserId = ?", userID); err != nil {
+		return errors.Wrapf(err, "failed to delete the model usage of user=%s", userID)
+	}
+
+	if err = transaction.Commit(); err != nil {
+		return errors.Wrap(err, "commit_transaction")
+	}
+	return nil
+}
+
 func (s *SqlAIConnectionStore) totals(rctx request.CTX, where sq.Sqlizer) (model.AIUsageTotals, error) {
 	var totals model.AIUsageTotals
 	query := s.getQueryBuilder().

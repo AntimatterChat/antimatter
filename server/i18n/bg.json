@@ -5723,10 +5723,6 @@
     "translation": "Превишено е ограничението за страниране."
   },
   {
-    "id": "app.audit.permanent_delete_by_user.app_error",
-    "translation": "Възникна грешка при изтриването на проверки."
-  },
-  {
     "id": "app.audit.save.saving.app_error",
     "translation": "Възникна грешка при записването на проверката."
   },
@@ -6133,10 +6129,6 @@
   {
     "id": "app.channel.permanent_delete.app_error",
     "translation": "Каналът не може да бъде изтрит."
-  },
-  {
-    "id": "app.channel.permanent_delete_members_by_user.app_error",
-    "translation": "Членът на канала не можа да бъде премахнат."
   },
   {
     "id": "app.channel.pinned_posts.app_error",
@@ -7069,10 +7061,6 @@
     "translation": "Черновата е отхвърлена от приставка: {{.Reason}}"
   },
   {
-    "id": "app.drafts.permanent_delete_by_user.app_error",
-    "translation": "Черновите на потребителя не могат да бъдат изтрити."
-  },
-  {
     "id": "app.email.no_rate_limiter.app_error",
     "translation": "Трафик ограничителят не е настроен."
   },
@@ -7245,10 +7233,6 @@
     "translation": "Файлът не е намерен в хранилището на файлове на посочения път."
   },
   {
-    "id": "app.file_info.permanent_delete_by_user.app_error",
-    "translation": "Не може да се изтрият прикачени файлове на потребителя."
-  },
-  {
     "id": "app.file_info.permanent_delete_for_post.app_error",
     "translation": "Неуспешно окончателно изтриване на файла за публикацията."
   },
@@ -7303,10 +7287,6 @@
   {
     "id": "app.group.no_rows",
     "translation": "не е намерена съвпадаща група"
-  },
-  {
-    "id": "app.group.permanent_delete_members_by_user.app_error",
-    "translation": "Не може да се премахне членът на групата с UserID '{{.UserId}}'."
   },
   {
     "id": "app.group.uniqueness_error",
@@ -8405,10 +8385,6 @@
     "translation": "Възникна грешка при намирането на OAuth2 Apps."
   },
   {
-    "id": "app.oauth.permanent_delete_auth_data_by_user.app_error",
-    "translation": "Не може да се премахне удостоверителния код."
-  },
-  {
     "id": "app.oauth.remove_access_data.app_error",
     "translation": "Не може да се премахне маркера за достъп."
   },
@@ -9109,10 +9085,6 @@
     "translation": "Не можаха да се изтрият публикациите по канал."
   },
   {
-    "id": "app.post.permanent_delete_by_user.app_error",
-    "translation": "Не можаха да се изберат публикациите за изтриване по потребител."
-  },
-  {
     "id": "app.post.permanent_delete_post.error",
     "translation": "Неуспешно окончателно изтриване на публикацията."
   },
@@ -9231,10 +9203,6 @@
   {
     "id": "app.preference.get_category.app_error",
     "translation": "При откриването на предпочитания срещнахме грешка."
-  },
-  {
-    "id": "app.preference.permanent_delete_by_user.app_error",
-    "translation": "При изтриването на предпочитания срещнахме грешка."
   },
   {
     "id": "app.preference.save.updating.app_error",
@@ -9601,10 +9569,6 @@
     "translation": "Не може да се получат реакции за публикация."
   },
   {
-    "id": "app.reaction.permanent_delete_by_user.app_error",
-    "translation": "Реакциите на потребителя не могат да бъдат изтрити."
-  },
-  {
     "id": "app.reaction.save.save.app_error",
     "translation": "Реакцията не може да бъде запазена."
   },
@@ -9909,10 +9873,6 @@
       "one": "Неуспешно изпращане на {{.Count}} планирана публикация.",
       "other": "Неуспешно изпращане на {{.Count}} планирани публикации."
     }
-  },
-  {
-    "id": "app.scheduled_post.permanent_delete_by_user.app_error",
-    "translation": "Планираните публикации на потребителя не могат да бъдат изтрити."
   },
   {
     "id": "app.scheduled_post.private_channel",
@@ -10663,10 +10623,6 @@
     "translation": "Не можа да се изтрие съществуващ профил."
   },
   {
-    "id": "app.user.permanentdeleteuser.internal_error",
-    "translation": "Потребителят не може да бъде изтрит."
-  },
-  {
     "id": "app.user.promote_guest.user_update.app_error",
     "translation": "Неуспешно актуализиране на потребителя."
   },
@@ -11007,15 +10963,7 @@
     "translation": "Webhook не може да се изтрие."
   },
   {
-    "id": "app.webhooks.permanent_delete_incoming_by_user.app_error",
-    "translation": "Webhook не може да се изтрие."
-  },
-  {
     "id": "app.webhooks.permanent_delete_outgoing_by_channel.app_error",
-    "translation": "Webhook не може да се изтрие."
-  },
-  {
-    "id": "app.webhooks.permanent_delete_outgoing_by_user.app_error",
     "translation": "Webhook не може да се изтрие."
   },
   {

@@ -22,6 +22,27 @@ func TestOnTopPostStore(t *testing.T, rctx request.CTX, ss store.Store) {
 	t.Run("DeletedPosts", func(t *testing.T) { testOnTopPostDeleted(t, rctx, ss) })
 	t.Run("Limit", func(t *testing.T) { testOnTopPostLimit(t, rctx, ss) })
 	t.Run("DeleteForChannel", func(t *testing.T) { testOnTopPostDeleteForChannel(t, rctx, ss) })
+	t.Run("PermanentDeleteByUser", func(t *testing.T) { testOnTopPostPermanentDeleteByUser(t, rctx, ss) })
+}
+
+// A message permanently deleted with its author's messages is no longer kept on top.
+func testOnTopPostPermanentDeleteByUser(t *testing.T, rctx request.CTX, ss store.Store) {
+	channelID := model.NewId()
+	now := model.GetMillis()
+	gone := onTopTestPost(t, rctx, ss, channelID)
+	kept := onTopTestPost(t, rctx, ss, channelID)
+	for _, post := range []*model.Post{gone, kept} {
+		_, err := ss.OnTopPost().Save(rctx, &model.OnTopPost{PostId: post.Id, ChannelId: channelID, CreateAt: now}, model.OnTopPostsMaxPerChannel)
+		require.NoError(t, err)
+	}
+
+	require.NoError(t, ss.Post().PermanentDeleteByUser(rctx, gone.UserId))
+
+	var nfErr *store.ErrNotFound
+	_, err := ss.OnTopPost().Get(rctx, gone.Id)
+	assert.ErrorAs(t, err, &nfErr)
+	_, err = ss.OnTopPost().Get(rctx, kept.Id)
+	require.NoError(t, err)
 }
 
 func onTopTestPost(t *testing.T, rctx request.CTX, ss store.Store, channelID string) *model.Post {

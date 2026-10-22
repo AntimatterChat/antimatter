@@ -5718,10 +5718,6 @@
     "translation": "分页已超出限制。"
   },
   {
-    "id": "app.audit.permanent_delete_by_user.app_error",
-    "translation": "我们删除审计时遇到了错误。"
-  },
-  {
     "id": "app.audit.save.saving.app_error",
     "translation": "我们保存审计时遇到错误。"
   },
@@ -6128,10 +6124,6 @@
   {
     "id": "app.channel.permanent_delete.app_error",
     "translation": "无法删除频道。"
-  },
-  {
-    "id": "app.channel.permanent_delete_members_by_user.app_error",
-    "translation": "无法移除频道成员。"
   },
   {
     "id": "app.channel.pinned_posts.app_error",
@@ -7062,10 +7054,6 @@
     "translation": "插件拒绝草稿：{{.Reason}}"
   },
   {
-    "id": "app.drafts.permanent_delete_by_user.app_error",
-    "translation": "无法为用户删除草稿。"
-  },
-  {
     "id": "app.email.no_rate_limiter.app_error",
     "translation": "未设置频率限制。"
   },
@@ -7238,10 +7226,6 @@
     "translation": "文件存储中未找到路径对应的文件。"
   },
   {
-    "id": "app.file_info.permanent_delete_by_user.app_error",
-    "translation": "无法删除用户的附件。"
-  },
-  {
     "id": "app.file_info.permanent_delete_for_post.app_error",
     "translation": "永久删除消息中的文件失败。"
   },
@@ -7296,10 +7280,6 @@
   {
     "id": "app.group.no_rows",
     "translation": "未找到匹配的群组"
-  },
-  {
-    "id": "app.group.permanent_delete_members_by_user.app_error",
-    "translation": "无法移除 UserID 为“{{.UserId}}”的群组成员。"
   },
   {
     "id": "app.group.uniqueness_error",
@@ -8398,10 +8378,6 @@
     "translation": "寻找 OAuth2 应用时遇到错误。"
   },
   {
-    "id": "app.oauth.permanent_delete_auth_data_by_user.app_error",
-    "translation": "无法删除授权码。"
-  },
-  {
     "id": "app.oauth.remove_access_data.app_error",
     "translation": "无法移除令牌。"
   },
@@ -9102,10 +9078,6 @@
     "translation": "无法根据频道删除消息。"
   },
   {
-    "id": "app.post.permanent_delete_by_user.app_error",
-    "translation": "无法删除该用户被选择的消息。"
-  },
-  {
     "id": "app.post.permanent_delete_post.error",
     "translation": "永久删除消息失败。"
   },
@@ -9224,10 +9196,6 @@
   {
     "id": "app.preference.get_category.app_error",
     "translation": "我们在查找偏好设置时遇到错误。"
-  },
-  {
-    "id": "app.preference.permanent_delete_by_user.app_error",
-    "translation": "我们在删除偏好设置时遇到错误。"
   },
   {
     "id": "app.preference.save.updating.app_error",
@@ -9594,10 +9562,6 @@
     "translation": "无法获取消息的表情回应。"
   },
   {
-    "id": "app.reaction.permanent_delete_by_user.app_error",
-    "translation": "无法删除用户的表情回应。"
-  },
-  {
     "id": "app.reaction.save.save.app_error",
     "translation": "无法保存表情回应。"
   },
@@ -9900,10 +9864,6 @@
     "translation": {
       "other": "{{.Count}} 条计划消息发送失败。"
     }
-  },
-  {
-    "id": "app.scheduled_post.permanent_delete_by_user.app_error",
-    "translation": "无法为用户删除计划消息。"
   },
   {
     "id": "app.scheduled_post.private_channel",
@@ -10654,10 +10614,6 @@
     "translation": "无法删除现有账号。"
   },
   {
-    "id": "app.user.permanentdeleteuser.internal_error",
-    "translation": "无法删除用户。"
-  },
-  {
     "id": "app.user.promote_guest.user_update.app_error",
     "translation": "更新用户失败。"
   },
@@ -10998,15 +10954,7 @@
     "translation": "无法删除 Webhook。"
   },
   {
-    "id": "app.webhooks.permanent_delete_incoming_by_user.app_error",
-    "translation": "无法删除 Webhook。"
-  },
-  {
     "id": "app.webhooks.permanent_delete_outgoing_by_channel.app_error",
-    "translation": "无法删除 Webhook。"
-  },
-  {
-    "id": "app.webhooks.permanent_delete_outgoing_by_user.app_error",
     "translation": "无法删除 Webhook。"
   },
   {
