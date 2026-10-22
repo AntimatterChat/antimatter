@@ -1624,10 +1624,6 @@
     "translation": "安全な接続のための表示名"
   },
   {
-    "id": "api.command_remote.encrypt_invitation.error",
-    "translation": "招待を暗号化できませんでした: {{.Error}}"
-  },
-  {
     "id": "api.command_remote.fetch_status.error",
     "translation": "安全な接続を取得できませんでした: {{.Error}}"
   },

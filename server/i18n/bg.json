@@ -1626,10 +1626,6 @@
     "translation": "Показвано име за защитената връзка"
   },
   {
-    "id": "api.command_remote.encrypt_invitation.error",
-    "translation": "Неуспешно шифроване на поканата: {{.Error}}"
-  },
-  {
     "id": "api.command_remote.fetch_status.error",
     "translation": "Неуспешно извличане на сигурни връзки: {{.Error}}"
   },

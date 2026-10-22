@@ -2032,10 +2032,6 @@
     "translation": "Prikazno ime za sigurnu vezu"
   },
   {
-    "id": "api.command_remote.encrypt_invitation.error",
-    "translation": "Nije moguće šifrirati pozivnicu: {{.Error}}"
-  },
-  {
     "id": "api.command_remote.fetch_status.error",
     "translation": "Nije moguće dohvatiti sigurne veze: {{.Error}}"
   },

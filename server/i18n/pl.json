@@ -1630,10 +1630,6 @@
     "translation": "Nazwa wyświetlana dla bezpiecznego połączenia"
   },
   {
-    "id": "api.command_remote.encrypt_invitation.error",
-    "translation": "Nie można odszyfrować zaproszenia: {{.Error}}"
-  },
-  {
     "id": "api.command_remote.fetch_status.error",
     "translation": "Nie można stworzyć bezpiecznych połączeń: {{.Error}}"
   },

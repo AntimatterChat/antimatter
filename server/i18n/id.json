@@ -1576,10 +1576,6 @@
     "translation": "Nama tampilan untuk koneksi aman"
   },
   {
-    "id": "api.command_remote.encrypt_invitation.error",
-    "translation": "Tidak dapat mengenkripsi undangan: {{.Error}}"
-  },
-  {
     "id": "api.command_remote.fetch_status.error",
     "translation": "Tidak dapat mengambil koneksi aman: {{.Error}}"
   },

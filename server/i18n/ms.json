@@ -1576,10 +1576,6 @@
     "translation": "Nama paparan untuk sambungan selamat"
   },
   {
-    "id": "api.command_remote.encrypt_invitation.error",
-    "translation": "Tidak dapat mengenkripsi jemputan: {{.Error}}"
-  },
-  {
     "id": "api.command_remote.fetch_status.error",
     "translation": "Tidak dapat mendapatkan sambungan selamat: {{.Error}}"
   },

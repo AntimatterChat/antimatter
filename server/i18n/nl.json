@@ -1626,10 +1626,6 @@
     "translation": "Een weergavenaam voor de beveiligde verbinding"
   },
   {
-    "id": "api.command_remote.encrypt_invitation.error",
-    "translation": "Kon uitnodiging niet coderen: {{.Error}}"
-  },
-  {
     "id": "api.command_remote.fetch_status.error",
     "translation": "Kon beveiligde verbindingen niet ophalen: {{.Error}}"
   },

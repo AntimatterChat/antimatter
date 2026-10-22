@@ -1576,10 +1576,6 @@
     "translation": "Isang pangalan na ipapakita para sa ligtas na koneksyon"
   },
   {
-    "id": "api.command_remote.encrypt_invitation.error",
-    "translation": "Hindi ma-encrypt ang imbitasyon: {{.Error}}"
-  },
-  {
     "id": "api.command_remote.fetch_status.error",
     "translation": "Hindi makuha ang mga ligtas na koneksyon: {{.Error}}"
   },

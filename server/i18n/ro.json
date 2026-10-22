@@ -1628,10 +1628,6 @@
     "translation": "Un nume de afișare pentru clusterul la distanță"
   },
   {
-    "id": "api.command_remote.encrypt_invitation.error",
-    "translation": "Nu s-a putut cripta invitația: {{.Error}}"
-  },
-  {
     "id": "api.command_remote.fetch_status.error",
     "translation": "Nu s-au putut prelua clustere la distanță: {{.Error}}"
   },

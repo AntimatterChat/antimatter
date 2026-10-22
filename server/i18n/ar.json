@@ -1576,10 +1576,6 @@
     "translation": "اسم عرض للاتصال الآمن"
   },
   {
-    "id": "api.command_remote.encrypt_invitation.error",
-    "translation": "تعذّر تشفير الدعوة: {{.Error}}"
-  },
-  {
     "id": "api.command_remote.fetch_status.error",
     "translation": "تعذّر جلب الاتصالات الآمنة: {{.Error}}"
   },

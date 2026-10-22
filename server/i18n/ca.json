@@ -1576,10 +1576,6 @@
     "translation": "Un nom per mostrar per a la connexió segura"
   },
   {
-    "id": "api.command_remote.encrypt_invitation.error",
-    "translation": "No s'ha pogut xifrar la invitació: {{.Error}}"
-  },
-  {
     "id": "api.command_remote.fetch_status.error",
     "translation": "No s'han pogut obtenir les connexions segures: {{.Error}}"
   },

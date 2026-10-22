@@ -1576,10 +1576,6 @@
     "translation": "பாதுகாப்பான இணைப்பிற்கான ஒரு காட்சி பெயர்"
   },
   {
-    "id": "api.command_remote.encrypt_invitation.error",
-    "translation": "அழைப்பை குறியாக்க முடியவில்லை: {{.Error}}"
-  },
-  {
     "id": "api.command_remote.fetch_status.error",
     "translation": "பாதுகாப்பான இணைப்புகளை பெற முடியவில்லை: {{.Error}}"
   },

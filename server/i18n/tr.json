@@ -1626,10 +1626,6 @@
     "translation": "Güvenli bağlantı için görüntülenecek ad"
   },
   {
-    "id": "api.command_remote.encrypt_invitation.error",
-    "translation": "Davet şifrelenemedi: {{.Error}}"
-  },
-  {
     "id": "api.command_remote.fetch_status.error",
     "translation": "Güvenli bağlantılar alınamadı: {{.Error}}"
   },

@@ -1626,10 +1626,6 @@
     "translation": "Ett visningsnamn för den säkra anslutningen"
   },
   {
-    "id": "api.command_remote.encrypt_invitation.error",
-    "translation": "Kunde inte skapa inbjudan: {{.Error}}"
-  },
-  {
     "id": "api.command_remote.fetch_status.error",
     "translation": "Det gick inte att hämta säkra anslutningar: {{.Error}}"
   },

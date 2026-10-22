@@ -1624,10 +1624,6 @@
     "translation": "此安全連線的顯示名稱"
   },
   {
-    "id": "api.command_remote.encrypt_invitation.error",
-    "translation": "無法加密邀請：{{.Error}}"
-  },
-  {
     "id": "api.command_remote.fetch_status.error",
     "translation": "無法取得安全連線：{{.Error}}"
   },

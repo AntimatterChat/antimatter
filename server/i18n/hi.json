@@ -1576,10 +1576,6 @@
     "translation": "सुरक्षित कनेक्शन के लिए एक प्रदर्शित नाम"
   },
   {
-    "id": "api.command_remote.encrypt_invitation.error",
-    "translation": "आमंत्रण एन्क्रिप्ट नहीं किया जा सका: {{.Error}}"
-  },
-  {
     "id": "api.command_remote.fetch_status.error",
     "translation": "सुरक्षित कनेक्शन प्राप्त नहीं किए जा सके: {{.Error}}"
   },

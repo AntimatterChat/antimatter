@@ -1576,10 +1576,6 @@
     "translation": "ชื่อที่แสดงสำหรับการเชื่อมต่อที่ปลอดภัย"
   },
   {
-    "id": "api.command_remote.encrypt_invitation.error",
-    "translation": "ไม่สามารถเข้ารหัสคำเชิญได้: {{.Error}}"
-  },
-  {
     "id": "api.command_remote.fetch_status.error",
     "translation": "ไม่สามารถดึงข้อมูลการเชื่อมต่อที่ปลอดภัยได้: {{.Error}}"
   },

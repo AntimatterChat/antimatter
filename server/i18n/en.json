@@ -1948,7 +1948,7 @@
   {
     "id": "api.command_remote.accept_invitation.error",
     "translation": "Could not accept invitation: {{.Error}}",
-    "description": "Error response from the /secure-connection slash command when accepting a server-to-server (shared channels) invitation fails; {{.Error}} is the raw error text."
+    "description": "Error response from the /secure-connection slash command when accepting a server-to-server (shared channels) invitation fails; {{.Error}} is a translated error message, e.g. that the remote site could not be reached, returned an invalid response, or rejected the invitation."
   },
   {
     "id": "api.command_remote.add_remote.error",
@@ -1958,7 +1958,17 @@
   {
     "id": "api.command_remote.cluster_removed",
     "translation": "Secure connection {{.RemoteId}} {{.Result}}.",
-    "description": "Ephemeral result of the /secure-connection remove subcommand; {{.RemoteId}} is the connection ID and {{.Result}} is the untranslated English word 'removed' or '**NOT FOUND**'."
+    "description": "Ephemeral result of the /secure-connection remove subcommand; {{.RemoteId}} is the connection ID and {{.Result}} is the translated outcome from api.command_remote.cluster_removed.result_removed or result_not_found."
+  },
+  {
+    "id": "api.command_remote.cluster_removed.result_not_found",
+    "translation": "**NOT FOUND**",
+    "description": "Outcome inserted as {{.Result}} into api.command_remote.cluster_removed when no secure connection with the given ID exists; keep the Markdown ** bold markers."
+  },
+  {
+    "id": "api.command_remote.cluster_removed.result_removed",
+    "translation": "removed",
+    "description": "Outcome inserted as {{.Result}} into api.command_remote.cluster_removed when the secure connection was deleted (reads 'Secure connection <id> removed.')."
   },
   {
     "id": "api.command_remote.confirm_invitation.error",
@@ -1986,11 +1996,6 @@
     "description": "Autocomplete hint for the display name argument of the /secure-connection slash command."
   },
   {
-    "id": "api.command_remote.encrypt_invitation.error",
-    "translation": "Could not encrypt invitation: {{.Error}}",
-    "description": "Ephemeral error when the /secure-connection invite subcommand fails to encrypt the invitation; {{.Error}} is the underlying error text."
-  },
-  {
     "id": "api.command_remote.fetch_status.error",
     "translation": "Could not fetch secure connections: {{.Error}}",
     "description": "Ephemeral error when the /secure-connection status subcommand cannot fetch the list of connections; {{.Error}} is the underlying error text."
@@ -1999,6 +2004,11 @@
     "id": "api.command_remote.hint",
     "translation": "[action]",
     "description": "Autocomplete argument hint for the /secure-connection slash command; [action] is a placeholder for a subcommand name; keep the brackets."
+  },
+  {
+    "id": "api.command_remote.invalid_id",
+    "translation": "`{{.Value}}` is not a valid `{{.Arg}}`",
+    "description": "Ephemeral error for the /secure-connection slash command when an ID argument is malformed; {{.Value}} is the text the user entered and {{.Arg}} is the argument name, both shown in backticks."
   },
   {
     "id": "api.command_remote.invitation.help",
@@ -4422,6 +4432,31 @@
     "description": "API error when a user requests an AI-generated recap (channel activity summary) that belongs to another user."
   },
   {
+    "id": "api.remote_cluster.accept_invitation.expired.app_error",
+    "translation": "The invitation has expired. Ask the remote site for a new invitation.",
+    "description": "Error shown to an admin accepting a secure connection (remote Mattermost server) invitation when the remote site reports that the invitation has expired."
+  },
+  {
+    "id": "api.remote_cluster.accept_invitation.invalid_response.app_error",
+    "translation": "The remote site returned an invalid response.",
+    "description": "Error shown to an admin accepting a secure connection (remote Mattermost server) invitation when the remote site's reply cannot be read, e.g. a proxy returned an HTML page."
+  },
+  {
+    "id": "api.remote_cluster.accept_invitation.invalid_url.app_error",
+    "translation": "The invitation contains an invalid site address: {{.URL}}",
+    "description": "Error shown to an admin accepting a secure connection (remote Mattermost server) invitation when the remote site address in the invitation is malformed and no request can be made. {{.URL}} is the address, with special characters percent-encoded."
+  },
+  {
+    "id": "api.remote_cluster.accept_invitation.rejected.app_error",
+    "translation": "The remote site rejected the invitation.",
+    "description": "Error shown to an admin accepting a secure connection (remote Mattermost server) invitation when the remote site refuses to confirm it. The remote's reason is logged, not shown."
+  },
+  {
+    "id": "api.remote_cluster.accept_invitation.unreachable.app_error",
+    "translation": "Could not reach the remote site at {{.URL}}.",
+    "description": "Error shown to an admin accepting a secure connection (remote Mattermost server) invitation when the remote site cannot be contacted. {{.URL}} is the address that was tried."
+  },
+  {
     "id": "api.remote_cluster.accept_invitation_error",
     "translation": "Could not accept the remote cluster invitation",
     "description": "API error when accepting an invitation to connect with another Mattermost server (remote cluster) fails."
@@ -4494,7 +4529,7 @@
   {
     "id": "api.remote_cluster.save_not_unique.app_error",
     "translation": "Secure connection has already been added.",
-    "description": "API error shown to an admin when trying to add a secure connection (remote server link) that already exists."
+    "description": "API error shown to an admin when trying to add or accept an invitation for a secure connection (remote server link) that already exists."
   },
   {
     "id": "api.remote_cluster.service_not_enabled.app_error",

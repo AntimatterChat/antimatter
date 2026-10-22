@@ -1626,10 +1626,6 @@
     "translation": "Un nome visualizzato per la connessione sicura"
   },
   {
-    "id": "api.command_remote.encrypt_invitation.error",
-    "translation": "Impossibile cifrare l'invito: {{.Error}}"
-  },
-  {
     "id": "api.command_remote.fetch_status.error",
     "translation": "Impossibile recuperare le connessioni sicure: {{.Error}}"
   },

@@ -1576,10 +1576,6 @@
     "translation": "নিরাপদ সংযোগের জন্য একটি প্রদর্শন নাম"
   },
   {
-    "id": "api.command_remote.encrypt_invitation.error",
-    "translation": "আমন্ত্রণ এনক্রিপ্ট করা যায়নি: {{.Error}}"
-  },
-  {
     "id": "api.command_remote.fetch_status.error",
     "translation": "নিরাপদ সংযোগগুলি আনা যায়নি: {{.Error}}"
   },

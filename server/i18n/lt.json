@@ -1570,10 +1570,6 @@
     "translation": "Rodomas pavadinimas saugiam ryšiui"
   },
   {
-    "id": "api.command_remote.encrypt_invitation.error",
-    "translation": "Nepavyko užšifruoti kvietimo: {{.Error}}"
-  },
-  {
     "id": "api.command_remote.fetch_status.error",
     "translation": "Nepavyko gauti saugių ryšių: {{.Error}}"
   },

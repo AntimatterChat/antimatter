@@ -6122,10 +6122,6 @@
     "translation": "Could not fetch secure connections: {{.Error}}"
   },
   {
-    "id": "api.command_remote.encrypt_invitation.error",
-    "translation": "Could not encrypt invitation: {{.Error}}"
-  },
-  {
     "id": "api.command_remote.displayname.hint",
     "translation": "A display name for the secure connection"
   },

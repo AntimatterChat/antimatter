@@ -1626,10 +1626,6 @@
     "translation": "Egy megjelenítési név a biztonságos kapcsolathoz"
   },
   {
-    "id": "api.command_remote.encrypt_invitation.error",
-    "translation": "Nem sikerült titkosítani a meghívót: {{.Error}}"
-  },
-  {
     "id": "api.command_remote.fetch_status.error",
     "translation": "Nem sikerült lekérni a biztonságos kapcsolatokat: {{.Error}}"
   },

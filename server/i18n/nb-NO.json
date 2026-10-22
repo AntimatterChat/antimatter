@@ -1626,10 +1626,6 @@
     "translation": "Et visningsnavn for den sikre tilkoblingen"
   },
   {
-    "id": "api.command_remote.encrypt_invitation.error",
-    "translation": "Kunne ikke kryptere invitasjonen: {{.Error}}"
-  },
-  {
     "id": "api.command_remote.fetch_status.error",
     "translation": "Kunne ikke hente sikre tilkoblinger: {{.Error}}"
   },

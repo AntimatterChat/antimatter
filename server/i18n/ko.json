@@ -1624,10 +1624,6 @@
     "translation": "보안 연결의 표시 이름"
   },
   {
-    "id": "api.command_remote.encrypt_invitation.error",
-    "translation": "초대를 암호화할 수 없음: {{.Error}}"
-  },
-  {
     "id": "api.command_remote.fetch_status.error",
     "translation": "보안 연결을 가져올 수 없음: {{.Error}}"
   },

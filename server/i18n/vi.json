@@ -1624,10 +1624,6 @@
     "translation": "Tên hiển thị cho kết nối an toàn"
   },
   {
-    "id": "api.command_remote.encrypt_invitation.error",
-    "translation": "Không thể mã hóa lời mời: {{.Error}}"
-  },
-  {
     "id": "api.command_remote.fetch_status.error",
     "translation": "Không thể tìm nạp kết nối an toàn: {{.Error}}"
   },

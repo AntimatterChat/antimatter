@@ -1576,10 +1576,6 @@
     "translation": "Ένα εμφανιζόμενο όνομα για την ασφαλή σύνδεση"
   },
   {
-    "id": "api.command_remote.encrypt_invitation.error",
-    "translation": "Δεν ήταν δυνατή η κρυπτογράφηση της πρόσκλησης: {{.Error}}"
-  },
-  {
     "id": "api.command_remote.fetch_status.error",
     "translation": "Δεν ήταν δυνατή η λήψη των ασφαλών συνδέσεων: {{.Error}}"
   },

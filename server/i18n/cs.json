@@ -1630,10 +1630,6 @@
     "translation": "Název pro zobrazení zabezpečeného připojení"
   },
   {
-    "id": "api.command_remote.encrypt_invitation.error",
-    "translation": "Pozvánku se nepodařilo zašifrovat: {{.Error}}"
-  },
-  {
     "id": "api.command_remote.fetch_status.error",
     "translation": "Nepodařilo se načíst zabezpečená připojení: {{.Error}}"
   },

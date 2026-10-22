@@ -1576,10 +1576,6 @@
     "translation": "محفوظ کنکشن کے لیے ڈسپلے نام"
   },
   {
-    "id": "api.command_remote.encrypt_invitation.error",
-    "translation": "مدعو کو انکرپٹ نہیں کیا جا سکا: {{.Error}}"
-  },
-  {
     "id": "api.command_remote.fetch_status.error",
     "translation": "محفوظ کنکشنز حاصل نہیں کیے جا سکے: {{.Error}}"
   },

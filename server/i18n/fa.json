@@ -1626,10 +1626,6 @@
     "translation": "یک نام نمایشی برای اتصال ایمن"
   },
   {
-    "id": "api.command_remote.encrypt_invitation.error",
-    "translation": "دعوتنامه رمزگذاری نشد: {{.Error}}"
-  },
-  {
     "id": "api.command_remote.fetch_status.error",
     "translation": "اتصالات امن واکشی نشد: {{.Error}}"
   },

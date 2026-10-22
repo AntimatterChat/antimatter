@@ -1626,10 +1626,6 @@
     "translation": "Ein Anzeigenname für die sichere Verbindung"
   },
   {
-    "id": "api.command_remote.encrypt_invitation.error",
-    "translation": "Konnte Einladung nicht verschlüsseln: {{.Error}}"
-  },
-  {
     "id": "api.command_remote.fetch_status.error",
     "translation": "Konnte keine sicheren Verbindungen holen: {{.Error}}"
   },

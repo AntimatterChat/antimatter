@@ -1576,10 +1576,6 @@
     "translation": "שם תצוגה עבור החיבור המאובטח"
   },
   {
-    "id": "api.command_remote.encrypt_invitation.error",
-    "translation": "לא ניתן להצפין את ההזמנה: {{.Error}}"
-  },
-  {
     "id": "api.command_remote.fetch_status.error",
     "translation": "לא ניתן להביא את החיבורים המאובטחים: {{.Error}}"
   },

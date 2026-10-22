@@ -1626,10 +1626,6 @@
     "translation": "Um nome a exibir para a ligação segura"
   },
   {
-    "id": "api.command_remote.encrypt_invitation.error",
-    "translation": "Não foi possível encriptar o convite: {{.Error}}"
-  },
-  {
     "id": "api.command_remote.fetch_status.error",
     "translation": "Não foi possível obter as ligações seguras: {{.Error}}"
   },

@@ -1630,10 +1630,6 @@
     "translation": "Отображаемое название безопасного соединения"
   },
   {
-    "id": "api.command_remote.encrypt_invitation.error",
-    "translation": "Не удалось зашифровать приглашение: {{.Error}}"
-  },
-  {
     "id": "api.command_remote.fetch_status.error",
     "translation": "Не удалось получить безопасные соединения: {{.Error}}"
   },
