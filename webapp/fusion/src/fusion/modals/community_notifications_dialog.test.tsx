@@ -66,12 +66,13 @@ describe('fusion/modals/CommunityNotificationsDialog', () => {
         expect(screen.queryByRole('button', {name: 'Use my settings everywhere'})).not.toBeInTheDocument();
     });
 
+    // The settings are written in the order the app knows them.
     test('setting one keeps the others; back to "as in my settings" drops it', async () => {
         render(notifyPref({push: 'none', desktop: 'mention'}));
         expect(screen.getByRole('combobox', {name: 'Push notifications about'})).toHaveValue('none');
 
         await userEvent.selectOptions(screen.getByRole('combobox', {name: 'Channel-wide mentions'}), 'false');
-        expect(savePreferences).toHaveBeenCalledWith(me, [{user_id: me, category: 'community_notify', name: 't1', value: '{"push":"none","desktop":"mention","channel":"false"}'}]);
+        expect(savePreferences).toHaveBeenCalledWith(me, [{user_id: me, category: 'community_notify', name: 't1', value: '{"desktop":"mention","push":"none","channel":"false"}'}]);
 
         await userEvent.selectOptions(screen.getByRole('combobox', {name: 'Push notifications about'}), '');
         expect(savePreferences).toHaveBeenLastCalledWith(me, [{user_id: me, category: 'community_notify', name: 't1', value: '{"desktop":"mention"}'}]);
