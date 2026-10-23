@@ -18,14 +18,19 @@ jest.mock('mattermost-redux/selectors/entities/channel_categories', () => ({
 describe('fusion/sidebar/makeGetDockChannelIds', () => {
     // dm0 is the latest active, dm11 the oldest; the category lists them in its own order.
     const ids = ['dm3', 'dm0', 'dm11', 'dm7', 'dm1', 'dm10', 'dm5', 'dm2', 'dm9', 'dm6', 'dm4', 'dm8'];
-    const stateWith = ({limit, current = 'general'}: {limit?: string; current?: string} = {}) => ({
+    const stateWith = ({limit, dockRows, current = 'general'}: {limit?: string; dockRows?: string; current?: string} = {}) => ({
         entities: {
             general: {config: {}},
             channels: {
                 currentChannelId: current,
                 channels: Object.fromEntries(ids.map((id) => [id, {id, last_post_at: 1000 - Number(id.slice(2)), create_at: 1}])),
             },
-            preferences: {myPreferences: limit ? {'sidebar_settings--limit_visible_dms_gms': {user_id: 'me', category: 'sidebar_settings', name: 'limit_visible_dms_gms', value: limit}} : {}},
+            preferences: {
+                myPreferences: {
+                    ...(limit ? {'sidebar_settings--limit_visible_dms_gms': {user_id: 'me', category: 'sidebar_settings', name: 'limit_visible_dms_gms', value: limit}} : {}),
+                    ...(dockRows ? {'fusion_sidebar--dock_rows': {user_id: 'me', category: 'fusion_sidebar', name: 'dock_rows', value: dockRows}} : {}),
+                },
+            },
         },
     }) as unknown as GlobalState;
 
@@ -37,9 +42,14 @@ describe('fusion/sidebar/makeGetDockChannelIds', () => {
         expect(makeGetDockChannelIds()(stateWith())).toEqual(['dm3', 'dm0', 'dm7', 'dm1', 'dm5', 'dm2', 'dm9', 'dm6', 'dm4', 'dm8']);
     });
 
-    test('follows the Open conversations setting', () => {
+    test('starts at the old Open conversations setting, before the dock is ever dragged', () => {
         expect(makeGetDockChannelIds()(stateWith({limit: '5'}))).toEqual(['dm3', 'dm0', 'dm1', 'dm2', 'dm4']);
         expect(makeGetDockChannelIds()(stateWith({limit: '20'}))).toEqual(ids);
+    });
+
+    test('once dragged, follows its own row count instead of the old setting', () => {
+        expect(makeGetDockChannelIds()(stateWith({limit: '20', dockRows: '5'}))).toEqual(['dm3', 'dm0', 'dm1', 'dm2', 'dm4']);
+        expect(makeGetDockChannelIds()(stateWith({dockRows: '3'}))).toEqual(['dm3', 'dm0', 'dm1']);
     });
 
     test('always keeps the conversation you are in', () => {
