@@ -259,6 +259,64 @@ exports[`components/AdminSidebar Plugins should match snapshot 1`] = `
                     >
                       <li
                         class="sidebar-category"
+                        data-testid="ai"
+                      >
+                        <div
+                          class="category-title category-title--active"
+                          data-testid="sidebar-category-title"
+                        >
+                          <span
+                            class="category-icon"
+                          >
+                            <svg
+                              fill="currentColor"
+                              height="14"
+                              version="1.1"
+                              viewBox="0 0 24 24"
+                              width="14"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M12,7.534l0.84,2.519l0.277,0.83l0.83,0.277L16.466,12l-2.519,0.84l-0.83,0.277l-0.277,0.83L12,16.466l-0.84-2.519
+	l-0.277-0.83l-0.83-0.277L7.534,12l2.519-0.84l0.83-0.277l0.277-0.83L12,7.534 M12,2L9.5,9.5L2,12l7.5,2.5L12,22l2.5-7.5L22,12
+		l-7.5-2.5L12,2L12,2z M5,2L4.34,4.34L2,5l2.34,0.66L5,8l0.66-2.34L8,5L5.66,4.34L5,2L5,2z M19,16l-0.66,2.34L16,19l2.34,0.66L19,22
+		l0.66-2.34L22,19l-2.34-0.66L19,16L19,16z"
+                              />
+                            </svg>
+                          </span>
+                          <span
+                            class="category-title__text"
+                          >
+                            AI
+                          </span>
+                        </div>
+                        <ul
+                          class="sections"
+                          data-testid="sidebar-category-sections"
+                        >
+                          <li
+                            class="sidebar-section"
+                            data-testid="ai.ai_chat_app"
+                          >
+                            <a
+                              class="sidebar-section-title"
+                              href="/admin_console/ai/ai_chat_app"
+                              id="ai/ai_chat_app"
+                            >
+                              <span
+                                class="sidebar-section-title__text"
+                              >
+                                AI chat app
+                              </span>
+                            </a>
+                            <ul
+                              class="nav nav__sub-menu subsections"
+                            />
+                          </li>
+                        </ul>
+                      </li>
+                      <li
+                        class="sidebar-category"
                         data-testid="plugins"
                       >
                         <div
@@ -1526,6 +1584,83 @@ c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V4z M20,4v5H4V4H20z M22,15v5c0,1.1-0.9,2-2,2H
                       </li>
                       <li
                         class="sidebar-category"
+                        data-testid="ai"
+                      >
+                        <div
+                          class="category-title category-title--active"
+                          data-testid="sidebar-category-title"
+                        >
+                          <span
+                            class="category-icon"
+                          >
+                            <svg
+                              fill="currentColor"
+                              height="14"
+                              version="1.1"
+                              viewBox="0 0 24 24"
+                              width="14"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M12,7.534l0.84,2.519l0.277,0.83l0.83,0.277L16.466,12l-2.519,0.84l-0.83,0.277l-0.277,0.83L12,16.466l-0.84-2.519
+	l-0.277-0.83l-0.83-0.277L7.534,12l2.519-0.84l0.83-0.277l0.277-0.83L12,7.534 M12,2L9.5,9.5L2,12l7.5,2.5L12,22l2.5-7.5L22,12
+		l-7.5-2.5L12,2L12,2z M5,2L4.34,4.34L2,5l2.34,0.66L5,8l0.66-2.34L8,5L5.66,4.34L5,2L5,2z M19,16l-0.66,2.34L16,19l2.34,0.66L19,22
+		l0.66-2.34L22,19l-2.34-0.66L19,16L19,16z"
+                              />
+                            </svg>
+                          </span>
+                          <span
+                            class="category-title__text"
+                          >
+                            AI
+                          </span>
+                        </div>
+                        <ul
+                          class="sections"
+                          data-testid="sidebar-category-sections"
+                        >
+                          <li
+                            class="sidebar-section"
+                            data-testid="ai.text_to_speech"
+                          >
+                            <a
+                              class="sidebar-section-title"
+                              href="/admin_console/ai/text_to_speech"
+                              id="ai/text_to_speech"
+                            >
+                              <span
+                                class="sidebar-section-title__text"
+                              >
+                                Text to speech
+                              </span>
+                            </a>
+                            <ul
+                              class="nav nav__sub-menu subsections"
+                            />
+                          </li>
+                          <li
+                            class="sidebar-section"
+                            data-testid="ai.ai_chat_app"
+                          >
+                            <a
+                              class="sidebar-section-title"
+                              href="/admin_console/ai/ai_chat_app"
+                              id="ai/ai_chat_app"
+                            >
+                              <span
+                                class="sidebar-section-title__text"
+                              >
+                                AI chat app
+                              </span>
+                            </a>
+                            <ul
+                              class="nav nav__sub-menu subsections"
+                            />
+                          </li>
+                        </ul>
+                      </li>
+                      <li
+                        class="sidebar-category"
                         data-testid="plugins"
                       >
                         <div
@@ -1689,25 +1824,6 @@ c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V4z M20,4v5H4V4H20z M22,15v5c0,1.1-0.9,2-2,2H
                                 class="sidebar-section-title__text"
                               >
                                 GIF
-                              </span>
-                            </a>
-                            <ul
-                              class="nav nav__sub-menu subsections"
-                            />
-                          </li>
-                          <li
-                            class="sidebar-section"
-                            data-testid="integrations.text_to_speech"
-                          >
-                            <a
-                              class="sidebar-section-title"
-                              href="/admin_console/integrations/text_to_speech"
-                              id="integrations/text_to_speech"
-                            >
-                              <span
-                                class="sidebar-section-title__text"
-                              >
-                                Text to speech
                               </span>
                             </a>
                             <ul
@@ -3150,6 +3266,83 @@ c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V4z M20,4v5H4V4H20z M22,15v5c0,1.1-0.9,2-2,2H
                       </li>
                       <li
                         class="sidebar-category"
+                        data-testid="ai"
+                      >
+                        <div
+                          class="category-title category-title--active"
+                          data-testid="sidebar-category-title"
+                        >
+                          <span
+                            class="category-icon"
+                          >
+                            <svg
+                              fill="currentColor"
+                              height="14"
+                              version="1.1"
+                              viewBox="0 0 24 24"
+                              width="14"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M12,7.534l0.84,2.519l0.277,0.83l0.83,0.277L16.466,12l-2.519,0.84l-0.83,0.277l-0.277,0.83L12,16.466l-0.84-2.519
+	l-0.277-0.83l-0.83-0.277L7.534,12l2.519-0.84l0.83-0.277l0.277-0.83L12,7.534 M12,2L9.5,9.5L2,12l7.5,2.5L12,22l2.5-7.5L22,12
+		l-7.5-2.5L12,2L12,2z M5,2L4.34,4.34L2,5l2.34,0.66L5,8l0.66-2.34L8,5L5.66,4.34L5,2L5,2z M19,16l-0.66,2.34L16,19l2.34,0.66L19,22
+		l0.66-2.34L22,19l-2.34-0.66L19,16L19,16z"
+                              />
+                            </svg>
+                          </span>
+                          <span
+                            class="category-title__text"
+                          >
+                            AI
+                          </span>
+                        </div>
+                        <ul
+                          class="sections"
+                          data-testid="sidebar-category-sections"
+                        >
+                          <li
+                            class="sidebar-section"
+                            data-testid="ai.text_to_speech"
+                          >
+                            <a
+                              class="sidebar-section-title"
+                              href="/admin_console/ai/text_to_speech"
+                              id="ai/text_to_speech"
+                            >
+                              <span
+                                class="sidebar-section-title__text"
+                              >
+                                Text to speech
+                              </span>
+                            </a>
+                            <ul
+                              class="nav nav__sub-menu subsections"
+                            />
+                          </li>
+                          <li
+                            class="sidebar-section"
+                            data-testid="ai.ai_chat_app"
+                          >
+                            <a
+                              class="sidebar-section-title"
+                              href="/admin_console/ai/ai_chat_app"
+                              id="ai/ai_chat_app"
+                            >
+                              <span
+                                class="sidebar-section-title__text"
+                              >
+                                AI chat app
+                              </span>
+                            </a>
+                            <ul
+                              class="nav nav__sub-menu subsections"
+                            />
+                          </li>
+                        </ul>
+                      </li>
+                      <li
+                        class="sidebar-category"
                         data-testid="plugins"
                       >
                         <div
@@ -3313,25 +3506,6 @@ c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V4z M20,4v5H4V4H20z M22,15v5c0,1.1-0.9,2-2,2H
                                 class="sidebar-section-title__text"
                               >
                                 GIF
-                              </span>
-                            </a>
-                            <ul
-                              class="nav nav__sub-menu subsections"
-                            />
-                          </li>
-                          <li
-                            class="sidebar-section"
-                            data-testid="integrations.text_to_speech"
-                          >
-                            <a
-                              class="sidebar-section-title"
-                              href="/admin_console/integrations/text_to_speech"
-                              id="integrations/text_to_speech"
-                            >
-                              <span
-                                class="sidebar-section-title__text"
-                              >
-                                Text to speech
                               </span>
                             </a>
                             <ul
@@ -4883,6 +5057,83 @@ c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V4z M20,4v5H4V4H20z M22,15v5c0,1.1-0.9,2-2,2H
                       </li>
                       <li
                         class="sidebar-category"
+                        data-testid="ai"
+                      >
+                        <div
+                          class="category-title category-title--active"
+                          data-testid="sidebar-category-title"
+                        >
+                          <span
+                            class="category-icon"
+                          >
+                            <svg
+                              fill="currentColor"
+                              height="14"
+                              version="1.1"
+                              viewBox="0 0 24 24"
+                              width="14"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M12,7.534l0.84,2.519l0.277,0.83l0.83,0.277L16.466,12l-2.519,0.84l-0.83,0.277l-0.277,0.83L12,16.466l-0.84-2.519
+	l-0.277-0.83l-0.83-0.277L7.534,12l2.519-0.84l0.83-0.277l0.277-0.83L12,7.534 M12,2L9.5,9.5L2,12l7.5,2.5L12,22l2.5-7.5L22,12
+		l-7.5-2.5L12,2L12,2z M5,2L4.34,4.34L2,5l2.34,0.66L5,8l0.66-2.34L8,5L5.66,4.34L5,2L5,2z M19,16l-0.66,2.34L16,19l2.34,0.66L19,22
+		l0.66-2.34L22,19l-2.34-0.66L19,16L19,16z"
+                              />
+                            </svg>
+                          </span>
+                          <span
+                            class="category-title__text"
+                          >
+                            AI
+                          </span>
+                        </div>
+                        <ul
+                          class="sections"
+                          data-testid="sidebar-category-sections"
+                        >
+                          <li
+                            class="sidebar-section"
+                            data-testid="ai.text_to_speech"
+                          >
+                            <a
+                              class="sidebar-section-title"
+                              href="/admin_console/ai/text_to_speech"
+                              id="ai/text_to_speech"
+                            >
+                              <span
+                                class="sidebar-section-title__text"
+                              >
+                                Text to speech
+                              </span>
+                            </a>
+                            <ul
+                              class="nav nav__sub-menu subsections"
+                            />
+                          </li>
+                          <li
+                            class="sidebar-section"
+                            data-testid="ai.ai_chat_app"
+                          >
+                            <a
+                              class="sidebar-section-title"
+                              href="/admin_console/ai/ai_chat_app"
+                              id="ai/ai_chat_app"
+                            >
+                              <span
+                                class="sidebar-section-title__text"
+                              >
+                                AI chat app
+                              </span>
+                            </a>
+                            <ul
+                              class="nav nav__sub-menu subsections"
+                            />
+                          </li>
+                        </ul>
+                      </li>
+                      <li
+                        class="sidebar-category"
                         data-testid="plugins"
                       >
                         <div
@@ -5046,25 +5297,6 @@ c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V4z M20,4v5H4V4H20z M22,15v5c0,1.1-0.9,2-2,2H
                                 class="sidebar-section-title__text"
                               >
                                 GIF
-                              </span>
-                            </a>
-                            <ul
-                              class="nav nav__sub-menu subsections"
-                            />
-                          </li>
-                          <li
-                            class="sidebar-section"
-                            data-testid="integrations.text_to_speech"
-                          >
-                            <a
-                              class="sidebar-section-title"
-                              href="/admin_console/integrations/text_to_speech"
-                              id="integrations/text_to_speech"
-                            >
-                              <span
-                                class="sidebar-section-title__text"
-                              >
-                                Text to speech
                               </span>
                             </a>
                             <ul
@@ -6507,6 +6739,83 @@ c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V4z M20,4v5H4V4H20z M22,15v5c0,1.1-0.9,2-2,2H
                       </li>
                       <li
                         class="sidebar-category"
+                        data-testid="ai"
+                      >
+                        <div
+                          class="category-title category-title--active"
+                          data-testid="sidebar-category-title"
+                        >
+                          <span
+                            class="category-icon"
+                          >
+                            <svg
+                              fill="currentColor"
+                              height="14"
+                              version="1.1"
+                              viewBox="0 0 24 24"
+                              width="14"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M12,7.534l0.84,2.519l0.277,0.83l0.83,0.277L16.466,12l-2.519,0.84l-0.83,0.277l-0.277,0.83L12,16.466l-0.84-2.519
+	l-0.277-0.83l-0.83-0.277L7.534,12l2.519-0.84l0.83-0.277l0.277-0.83L12,7.534 M12,2L9.5,9.5L2,12l7.5,2.5L12,22l2.5-7.5L22,12
+		l-7.5-2.5L12,2L12,2z M5,2L4.34,4.34L2,5l2.34,0.66L5,8l0.66-2.34L8,5L5.66,4.34L5,2L5,2z M19,16l-0.66,2.34L16,19l2.34,0.66L19,22
+		l0.66-2.34L22,19l-2.34-0.66L19,16L19,16z"
+                              />
+                            </svg>
+                          </span>
+                          <span
+                            class="category-title__text"
+                          >
+                            AI
+                          </span>
+                        </div>
+                        <ul
+                          class="sections"
+                          data-testid="sidebar-category-sections"
+                        >
+                          <li
+                            class="sidebar-section"
+                            data-testid="ai.text_to_speech"
+                          >
+                            <a
+                              class="sidebar-section-title"
+                              href="/admin_console/ai/text_to_speech"
+                              id="ai/text_to_speech"
+                            >
+                              <span
+                                class="sidebar-section-title__text"
+                              >
+                                Text to speech
+                              </span>
+                            </a>
+                            <ul
+                              class="nav nav__sub-menu subsections"
+                            />
+                          </li>
+                          <li
+                            class="sidebar-section"
+                            data-testid="ai.ai_chat_app"
+                          >
+                            <a
+                              class="sidebar-section-title"
+                              href="/admin_console/ai/ai_chat_app"
+                              id="ai/ai_chat_app"
+                            >
+                              <span
+                                class="sidebar-section-title__text"
+                              >
+                                AI chat app
+                              </span>
+                            </a>
+                            <ul
+                              class="nav nav__sub-menu subsections"
+                            />
+                          </li>
+                        </ul>
+                      </li>
+                      <li
+                        class="sidebar-category"
                         data-testid="plugins"
                       >
                         <div
@@ -6670,25 +6979,6 @@ c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V4z M20,4v5H4V4H20z M22,15v5c0,1.1-0.9,2-2,2H
                                 class="sidebar-section-title__text"
                               >
                                 GIF
-                              </span>
-                            </a>
-                            <ul
-                              class="nav nav__sub-menu subsections"
-                            />
-                          </li>
-                          <li
-                            class="sidebar-section"
-                            data-testid="integrations.text_to_speech"
-                          >
-                            <a
-                              class="sidebar-section-title"
-                              href="/admin_console/integrations/text_to_speech"
-                              id="integrations/text_to_speech"
-                            >
-                              <span
-                                class="sidebar-section-title__text"
-                              >
-                                Text to speech
                               </span>
                             </a>
                             <ul
@@ -8150,6 +8440,83 @@ c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V4z M20,4v5H4V4H20z M22,15v5c0,1.1-0.9,2-2,2H
                       </li>
                       <li
                         class="sidebar-category"
+                        data-testid="ai"
+                      >
+                        <div
+                          class="category-title category-title--active"
+                          data-testid="sidebar-category-title"
+                        >
+                          <span
+                            class="category-icon"
+                          >
+                            <svg
+                              fill="currentColor"
+                              height="14"
+                              version="1.1"
+                              viewBox="0 0 24 24"
+                              width="14"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M12,7.534l0.84,2.519l0.277,0.83l0.83,0.277L16.466,12l-2.519,0.84l-0.83,0.277l-0.277,0.83L12,16.466l-0.84-2.519
+	l-0.277-0.83l-0.83-0.277L7.534,12l2.519-0.84l0.83-0.277l0.277-0.83L12,7.534 M12,2L9.5,9.5L2,12l7.5,2.5L12,22l2.5-7.5L22,12
+		l-7.5-2.5L12,2L12,2z M5,2L4.34,4.34L2,5l2.34,0.66L5,8l0.66-2.34L8,5L5.66,4.34L5,2L5,2z M19,16l-0.66,2.34L16,19l2.34,0.66L19,22
+		l0.66-2.34L22,19l-2.34-0.66L19,16L19,16z"
+                              />
+                            </svg>
+                          </span>
+                          <span
+                            class="category-title__text"
+                          >
+                            AI
+                          </span>
+                        </div>
+                        <ul
+                          class="sections"
+                          data-testid="sidebar-category-sections"
+                        >
+                          <li
+                            class="sidebar-section"
+                            data-testid="ai.text_to_speech"
+                          >
+                            <a
+                              class="sidebar-section-title"
+                              href="/admin_console/ai/text_to_speech"
+                              id="ai/text_to_speech"
+                            >
+                              <span
+                                class="sidebar-section-title__text"
+                              >
+                                Text to speech
+                              </span>
+                            </a>
+                            <ul
+                              class="nav nav__sub-menu subsections"
+                            />
+                          </li>
+                          <li
+                            class="sidebar-section"
+                            data-testid="ai.ai_chat_app"
+                          >
+                            <a
+                              class="sidebar-section-title"
+                              href="/admin_console/ai/ai_chat_app"
+                              id="ai/ai_chat_app"
+                            >
+                              <span
+                                class="sidebar-section-title__text"
+                              >
+                                AI chat app
+                              </span>
+                            </a>
+                            <ul
+                              class="nav nav__sub-menu subsections"
+                            />
+                          </li>
+                        </ul>
+                      </li>
+                      <li
+                        class="sidebar-category"
                         data-testid="plugins"
                       >
                         <div
@@ -8313,25 +8680,6 @@ c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V4z M20,4v5H4V4H20z M22,15v5c0,1.1-0.9,2-2,2H
                                 class="sidebar-section-title__text"
                               >
                                 GIF
-                              </span>
-                            </a>
-                            <ul
-                              class="nav nav__sub-menu subsections"
-                            />
-                          </li>
-                          <li
-                            class="sidebar-section"
-                            data-testid="integrations.text_to_speech"
-                          >
-                            <a
-                              class="sidebar-section-title"
-                              href="/admin_console/integrations/text_to_speech"
-                              id="integrations/text_to_speech"
-                            >
-                              <span
-                                class="sidebar-section-title__text"
-                              >
-                                Text to speech
                               </span>
                             </a>
                             <ul
