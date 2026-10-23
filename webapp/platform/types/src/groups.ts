@@ -28,6 +28,7 @@ export type CustomGroupPatch = {
  * Antimatter teams: the tag, lead and team channel of a group, and its description.
  */
 export type GroupTeamPatch = {
+    name?: string;
     description?: string;
     tag?: string;
     lead_id?: string;

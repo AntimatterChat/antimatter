@@ -14,7 +14,6 @@ import type {FusionTeamSettingsTab} from 'components/team_settings_modal/team_se
 import {ModalIdentifiers} from 'utils/constants';
 
 import type {ModalData} from 'types/actions';
-import type {ThunkActionFunc} from 'types/store';
 
 // Dialogs of the classic web app that the Fusion UI opens as they are, until they get their own Fusion version.
 
@@ -25,7 +24,7 @@ export const openDialog = (modalId: string, dialogType: React.ElementType<any>, 
 const DeleteCategoryModal = makeAsyncComponent('FusionDeleteCategoryModal', lazy(() => import('components/delete_category_modal')));
 const EditCategoryModal = makeAsyncComponent('FusionEditCategoryModal', lazy(() => import('components/edit_category_modal')));
 const InvitationModal = makeAsyncComponent('FusionInvitationModal', lazy(() => import('components/invitation_modal')));
-const UserGroupsModal = makeAsyncComponent('FusionUserGroupsModal', lazy(() => import('components/user_groups_modal')));
+const TeamsDialog = makeAsyncComponent('FusionTeamsDialog', lazy(() => import('fusion/teams/teams_dialog')));
 const KeyboardShortcutsModal = makeAsyncComponent('FusionKeyboardShortcutsModal', lazy(() => import('components/keyboard_shortcuts/keyboard_shortcuts_modal/keyboard_shortcuts_modal')));
 const LeaveTeamModal = makeAsyncComponent('FusionLeaveTeamModal', lazy(() => import('components/leave_team_modal')));
 const MoreDirectChannels = makeAsyncComponent('FusionMoreDirectChannels', lazy(() => import('components/more_direct_channels')));
@@ -50,14 +49,8 @@ export const openNewDirectMessage = () => openDialog(ModalIdentifiers.CREATE_DM_
 // openAddToGroup adds people to the current group message: Mattermost makes a new group with everyone.
 export const openAddToGroup = () => openDialog(ModalIdentifiers.CREATE_DM_CHANNEL, MoreDirectChannels, {isExistingChannel: true});
 
-// openUserGroups opens Mattermost's user groups as a community's Antimatter teams: it lists and creates that
-// community's teams. Its dialogs come back to it with Back.
-export function openUserGroups(communityId: string): ThunkActionFunc<void> {
-    return (dispatch) => {
-        const open = () => dispatch(openDialog(ModalIdentifiers.USER_GROUPS, UserGroupsModal, {backButtonAction: open, communityId}));
-        open();
-    };
-}
+// openTeams opens the current community's teams, for those who don't get its settings (whose Teams tab it is).
+export const openTeams = () => openDialog(ModalIdentifiers.USER_GROUPS, TeamsDialog);
 
 export const openKeyboardShortcuts = () => openDialog(ModalIdentifiers.KEYBOARD_SHORTCUTS_MODAL, KeyboardShortcutsModal);
 export const openClassicUserSettings = (activeTab?: string) => openDialog(ModalIdentifiers.USER_SETTINGS, UserSettingsModal, {isContentProductSettings: true, activeTab});

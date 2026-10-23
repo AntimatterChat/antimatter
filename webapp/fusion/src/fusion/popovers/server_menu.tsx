@@ -44,7 +44,7 @@ import {
     openLeaveTeam,
     openTeamMembers,
     openTeamSettings,
-    openUserGroups,
+    openTeams,
 } from 'fusion/utils/modals';
 
 import type {GlobalState} from 'types/store';
@@ -159,7 +159,7 @@ export default function ServerMenu({team: forTeam, anchor, point, width, onClose
                 <MenuItem
                     icon='tag'
                     label={formatMessage({id: 'fusion.serverMenu.userGroups', defaultMessage: 'Teams…'})}
-                    onClick={inTeam(() => dispatch(openUserGroups(teamId)))}
+                    onClick={inTeam(() => dispatch(openTeams()))}
                 />
             )}
             {hasOpenRoles && (

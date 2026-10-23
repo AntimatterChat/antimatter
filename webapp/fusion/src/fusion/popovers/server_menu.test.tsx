@@ -7,7 +7,7 @@ import {Permissions} from 'mattermost-redux/constants';
 
 import {CATEGORY_HIDE_MUTED, setHidingMutedChannels} from 'fusion/sidebar/team_actions';
 import {accessState} from 'fusion/teams/settings_test_utils';
-import {openTeamMembers, openTeamSettings, openUserGroups} from 'fusion/utils/modals';
+import {openTeamMembers, openTeamSettings, openTeams} from 'fusion/utils/modals';
 import {renderWithContext, screen, userEvent} from 'tests/react_testing_utils';
 
 import ServerMenu from './server_menu';
@@ -17,7 +17,7 @@ jest.mock('fusion/utils/modals', () => ({
     openLeaveTeam: jest.fn(() => ({type: 'MOCK_LEAVE'})),
     openTeamMembers: jest.fn(() => ({type: 'MOCK_MEMBERS'})),
     openTeamSettings: jest.fn(() => ({type: 'MOCK_SETTINGS'})),
-    openUserGroups: jest.fn(() => ({type: 'MOCK_TEAMS'})),
+    openTeams: jest.fn(() => ({type: 'MOCK_TEAMS'})),
 }));
 jest.mock('fusion/sidebar/team_actions', () => ({
     ...jest.requireActual('fusion/sidebar/team_actions'),
@@ -105,7 +105,7 @@ describe('fusion/popovers/ServerMenu', () => {
             await userEvent.click(screen.getByRole('menuitem', {name: 'View members'}));
             expect(openTeamMembers).toHaveBeenCalled();
             await userEvent.click(screen.getByRole('menuitem', {name: 'Teams…'}));
-            expect(openUserGroups).toHaveBeenCalledWith('t1');
+            expect(openTeams).toHaveBeenCalled();
         });
 
         test('without teams on the server, a member has no Teams entry', () => {
