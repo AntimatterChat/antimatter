@@ -89,6 +89,7 @@ export type WebSocketMessage = (
     Messages.MemberTimeoutsUpdated |
     Messages.CommunityRulesUpdated |
     Messages.CommunityRulesAccepted |
+    Messages.CommunityProfileUpdated |
     Messages.FocusEnded |
     Messages.PostPutOnTop |
     Messages.PostRemovedFromTop |

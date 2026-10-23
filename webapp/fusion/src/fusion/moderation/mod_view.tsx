@@ -165,6 +165,7 @@ export default function ModViewPanel() {
         }
         dispatch(loadTeams());
     };
+
     // A nickname or a picture for the community that breaks its rules: taken off (the person can set another).
     const resetProfile = async (reset: {nickname?: boolean; avatar?: boolean}, done: string, failed: string) => {
         try {

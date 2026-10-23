@@ -6,6 +6,7 @@ import type {ChannelBookmarkWithFileInfo, UpdateChannelBookmarkResponse} from '@
 import type {ChannelCategory} from '@mattermost/types/channel_categories';
 import type {Channel, ChannelJoinRequest, ChannelMembership, ChannelType} from '@mattermost/types/channels';
 import type {Limits, Subscription} from '@mattermost/types/cloud';
+import type {CommunityProfile} from '@mattermost/types/community_profiles';
 import type {ClientConfig, ClientLicense} from '@mattermost/types/config';
 import type {Draft} from '@mattermost/types/drafts';
 import type {CustomEmoji} from '@mattermost/types/emojis';
@@ -455,6 +456,14 @@ export type CommunityRulesUpdated = BaseWebSocketMessage<WebSocketEvents.Communi
 export type CommunityRulesAccepted = BaseWebSocketMessage<WebSocketEvents.CommunityRulesAccepted, {
     team_id: string;
     version: number;
+}>;
+
+// Antimatter: someone's profile in a community (nickname, picture) changed; the profile comes with it, empty when
+// they took everything off.
+export type CommunityProfileUpdated = BaseWebSocketMessage<WebSocketEvents.CommunityProfileUpdated, {
+    team_id: string;
+    user_id: string;
+    profile: CommunityProfile;
 }>;
 
 // Antimatter: the current user's focus mode ended (by them, on any device, by its timer, or as they picked a status).
