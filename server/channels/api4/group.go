@@ -278,8 +278,8 @@ func patchGroup(c *Context, w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Antimatter: a community's default role stays below the others, closed and not mentioned.
-	if appErr := c.App.CheckTeamDefaultRoleChange(group, &groupPatch, false, false); appErr != nil {
-		c.Err = appErr
+	if roleErr := c.App.CheckTeamDefaultRoleChange(group, &groupPatch, false, false); roleErr != nil {
+		c.Err = roleErr
 		return
 	}
 
@@ -1385,8 +1385,8 @@ func addGroupMembers(c *Context, w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Antimatter: everyone has a community's default role; nobody gives it.
-	if appErr := c.App.CheckTeamDefaultRoleChange(group, nil, false, true); appErr != nil {
-		c.Err = appErr
+	if roleErr := c.App.CheckTeamDefaultRoleChange(group, nil, false, true); roleErr != nil {
+		c.Err = roleErr
 		return
 	}
 
@@ -1456,8 +1456,8 @@ func deleteGroupMembers(c *Context, w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Antimatter: nor takes it away.
-	if appErr := c.App.CheckTeamDefaultRoleChange(group, nil, false, true); appErr != nil {
-		c.Err = appErr
+	if roleErr := c.App.CheckTeamDefaultRoleChange(group, nil, false, true); roleErr != nil {
+		c.Err = roleErr
 		return
 	}
 
