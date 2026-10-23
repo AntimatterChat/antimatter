@@ -494,63 +494,68 @@ export default function StatusPopover({anchor, onClose}: Props) {
                             )}
                         </button>
                     );
+                    // Focus mode sits between Do not disturb and Invisible: it's a timed Do not disturb, so it
+                    // belongs right after it.
+                    const focusOption = s.status === 'dnd' && (
+                        <button
+                            key='focus'
+                            className={am('sp-opt', 'sp-focus', {on: Boolean(focusUntil)})}
+                            aria-pressed={Boolean(focusUntil)}
+                            onClick={() => {
+                                if (focusUntil) {
+                                    Client4.endFocus().catch(() => toast(formatMessage({id: 'fusion.focus.endFailed', defaultMessage: 'Focus mode couldn\'t be ended', description: 'Toast when ending focus mode from the status menu failed.'})));
+                                } else {
+                                    dialogs.focus();
+                                }
+                                onClose();
+                            }}
+                        >
+                            <span className={am('status-dot', 'focus')}/>
+                            <span className={am('grow')}>
+                                <b>{focusUntil ? formatMessage({id: 'fusion.focus.end', defaultMessage: 'End focus', description: 'Status menu (your avatar), while in focus mode: ends it now.'}) : formatMessage({id: 'fusion.focus.menu', defaultMessage: 'Focus mode…', description: 'Status menu (your avatar): opens the dialog to start focus mode (Do not disturb for a while, with a reason).'})}</b>
+                                <span>{focusUntil ? `${focusLeft(focusUntil)} · ${formatMessage({id: 'fusion.focus.untilShort', defaultMessage: 'until {time}', description: 'Status menu, while in focus mode: when it ends.'}, {time: focusTime})}` : formatMessage({id: 'fusion.focus.menuSub', defaultMessage: 'Mutes notifications and hides your unread badges for a while', description: 'Status menu (your avatar): under "Focus mode…", what it does.'})}</span>
+                            </span>
+                            {focusUntil > 0 && (
+                                <Icon
+                                    name='check'
+                                    size='sm'
+                                />
+                            )}
+                        </button>
+                    );
                     if (s.status !== 'dnd') {
                         return <React.Fragment key={s.status}>{option}</React.Fragment>;
                     }
                     return (
-                        <div
-                            key={s.status}
-                            className={am('sp-item')}
-                        >
-                            {option}
-                            <div
-                                className={am('sp-sub')}
-                                role='menu'
-                                aria-label={formatMessage({id: 'fusion.status.dndFor', defaultMessage: 'Do not disturb for'})}
-                            >
-                                {DND_DURATIONS.map(([key, ms, l]) => (
-                                    <button
-                                        key={key}
-                                        role='menuitem'
-                                        onClick={() => choose('dnd', dndEnd(ms))}
-                                    >
-                                        {formatMessage(l)}
-                                    </button>
-                                ))}
-                                <button
-                                    role='menuitem'
-                                    onClick={() => setDndCustom(true)}
+                        <React.Fragment key={s.status}>
+                            <div className={am('sp-item')}>
+                                {option}
+                                <div
+                                    className={am('sp-sub')}
+                                    role='menu'
+                                    aria-label={formatMessage({id: 'fusion.status.dndFor', defaultMessage: 'Do not disturb for'})}
                                 >
-                                    {formatMessage({id: 'fusion.status.dndCustom', defaultMessage: 'Until a custom time…'})}
-                                </button>
+                                    {DND_DURATIONS.map(([key, ms, l]) => (
+                                        <button
+                                            key={key}
+                                            role='menuitem'
+                                            onClick={() => choose('dnd', dndEnd(ms))}
+                                        >
+                                            {formatMessage(l)}
+                                        </button>
+                                    ))}
+                                    <button
+                                        role='menuitem'
+                                        onClick={() => setDndCustom(true)}
+                                    >
+                                        {formatMessage({id: 'fusion.status.dndCustom', defaultMessage: 'Until a custom time…'})}
+                                    </button>
+                                </div>
                             </div>
-                        </div>
+                            {focusOption}
+                        </React.Fragment>
                     );
                 })}
-                <button
-                    className={am('sp-opt', 'sp-focus', {on: Boolean(focusUntil)})}
-                    aria-pressed={Boolean(focusUntil)}
-                    onClick={() => {
-                        if (focusUntil) {
-                            Client4.endFocus().catch(() => toast(formatMessage({id: 'fusion.focus.endFailed', defaultMessage: 'Focus mode couldn\'t be ended', description: 'Toast when ending focus mode from the status menu failed.'})));
-                        } else {
-                            dialogs.focus();
-                        }
-                        onClose();
-                    }}
-                >
-                    <span className={am('status-dot', 'focus')}/>
-                    <span className={am('grow')}>
-                        <b>{focusUntil ? formatMessage({id: 'fusion.focus.end', defaultMessage: 'End focus', description: 'Status menu (your avatar), while in focus mode: ends it now.'}) : formatMessage({id: 'fusion.focus.menu', defaultMessage: 'Focus mode…', description: 'Status menu (your avatar): opens the dialog to start focus mode (Do not disturb for a while, with a reason).'})}</b>
-                        <span>{focusUntil ? `${focusLeft(focusUntil)} · ${formatMessage({id: 'fusion.focus.untilShort', defaultMessage: 'until {time}', description: 'Status menu, while in focus mode: when it ends.'}, {time: focusTime})}` : formatMessage({id: 'fusion.focus.menuSub', defaultMessage: 'Mutes notifications and hides your unread badges for a while', description: 'Status menu (your avatar): under "Focus mode…", what it does.'})}</span>
-                    </span>
-                    {focusUntil > 0 && (
-                        <Icon
-                            name='check'
-                            size='sm'
-                        />
-                    )}
-                </button>
             </div>
             <div className={am('sp-links')}>
                 <button

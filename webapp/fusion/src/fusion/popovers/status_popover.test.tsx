@@ -126,4 +126,14 @@ describe('fusion/popovers/StatusPopover focus mode', () => {
         render(NOW + (20 * 60000));
         expect(screen.getByRole('button', {name: /^End focus/})).toHaveTextContent('20 min left');
     });
+
+    // Focus mode is a timed Do not disturb, so its row sits between Do not disturb and Invisible, not after it.
+    test('its row sits between Do not disturb and Invisible', () => {
+        render();
+        const pattern = /^(Online|Away|Do not disturb|Focus mode…|Invisible)/;
+        const order = screen.getAllByRole('button').
+            map((button) => button.textContent?.match(pattern)?.[1]).
+            filter(Boolean);
+        expect(order).toEqual(['Online', 'Away', 'Do not disturb', 'Focus mode…', 'Invisible']);
+    });
 });
