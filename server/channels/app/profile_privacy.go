@@ -110,15 +110,6 @@ func (a *App) HideProfileDetails(viewerID string, asAdmin bool, users ...*model.
 	return a.newProfileViewer(viewerID, asAdmin).apply(users)
 }
 
-// HideProfileDetailsForSession hides from the session's user what they may not see of users, system admins seeing
-// everything.
-func (a *App) HideProfileDetailsForSession(session *model.Session, users ...*model.User) map[string]bool {
-	if session == nil {
-		return a.HideProfileDetails("", false, users...)
-	}
-	return a.HideProfileDetails(session.UserId, a.SessionHasPermissionTo(*session, model.PermissionManageSystem), users...)
-}
-
 // ProfileDetailsHiddenFrom gives the details of user hidden from viewerID (nil when none).
 func (a *App) ProfileDetailsHiddenFrom(viewerID string, asAdmin bool, user *model.User) map[string]bool {
 	return a.newProfileViewer(viewerID, asAdmin).hidden(user)
