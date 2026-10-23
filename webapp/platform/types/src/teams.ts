@@ -24,7 +24,8 @@ export type TeamMemberWithError = {
 
 export type TeamType = 'O' | 'I';
 
-export type TeamKind = 'community' | 'workplace';
+// Antimatter: the kinds of community. The server still accepts their former names, community and workplace.
+export type TeamKind = 'guild' | 'workspace';
 
 export type TeamMemberListView = 'choice' | 'roles' | 'teams';
 
@@ -62,8 +63,19 @@ export type Team = {
     default_channel_id?: string;
 
     /**
-     * Antimatter: the kind of community. In a community (the default), members don't archive channels; in a workplace
-     * one, they archive those they created (whose admins they are).
+     * Antimatter: the channel of the community's join and leave messages: its Welcome channel; empty for its default
+     * channel (communities made before Welcome). disable_join_leave_messages turns them off.
+     */
+    welcome_channel_id?: string;
+    disable_join_leave_messages?: boolean;
+
+    /** Antimatter: the community's default role, which everyone in it has; empty until its roles are first managed. */
+    default_role_id?: string;
+
+    /**
+     * Antimatter: the kind of community. In a guild (the default), members don't archive channels and everyone is in
+     * all its channels; in a workspace, they archive those they created (whose admins they are) and join the channels
+     * they want.
      */
     kind?: TeamKind;
 

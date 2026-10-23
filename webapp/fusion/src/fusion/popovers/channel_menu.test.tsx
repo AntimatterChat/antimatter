@@ -94,7 +94,7 @@ const dev = ch('dev', 'dev');
 const secret = ch('secret', 'secret', {type: 'P'});
 const all = [town, offTopic, dev, secret];
 
-function state({allChannels = false, defaultChannelId = '', channels = all, kind = 'community' as TeamKind} = {}) {
+function state({allChannels = false, defaultChannelId = '', channels = all, kind = 'guild' as TeamKind} = {}) {
     return {
         entities: {
             general: {config: {}},
@@ -179,7 +179,7 @@ describe('fusion/popovers/ChannelMenu: default channels and all-channels communi
     // without the permission.
     test('in a workplace community, the channel\'s admins archive it', () => {
         mockChannelPerms = new Set(['manage_channel_roles']);
-        render(dev, state({kind: 'workplace'}));
+        render(dev, state({kind: 'workspace'}));
         expect(item('Archive channel…')).toBeInTheDocument();
     });
 

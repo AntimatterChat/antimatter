@@ -13,7 +13,7 @@ import type {GlobalState} from 'types/store';
 
 // canArchiveChannel tells whether one may archive a channel of a community, as the server does
 // (SessionCanArchiveChannel) and as Fusion's canArchiveChannel: those the permissions let (the community's admins,
-// roles that manage channels, what a system admin gave members), and in a workplace the channel's admins too, that
+// roles that manage channels, what a system admin gave members), and in a workspace the channel's admins too, that
 // is whoever created it. In a community, members don't archive channels, not even those they created.
 export function canArchiveChannel(state: GlobalState, channel: Channel | undefined): boolean {
     if (!channel || !channel.team_id || channel.delete_at || (channel.type !== Constants.OPEN_CHANNEL && channel.type !== Constants.PRIVATE_CHANNEL)) {
@@ -23,5 +23,5 @@ export function canArchiveChannel(state: GlobalState, channel: Channel | undefin
     if (haveIChannelPermission(state, channel.team_id, channel.id, permission)) {
         return true;
     }
-    return getTeam(state, channel.team_id)?.kind === 'workplace' && haveIChannelPermission(state, channel.team_id, channel.id, Permissions.MANAGE_CHANNEL_ROLES);
+    return getTeam(state, channel.team_id)?.kind === 'workspace' && haveIChannelPermission(state, channel.team_id, channel.id, Permissions.MANAGE_CHANNEL_ROLES);
 }

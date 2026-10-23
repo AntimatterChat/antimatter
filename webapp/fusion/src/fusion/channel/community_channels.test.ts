@@ -85,9 +85,10 @@ describe('fusion/channel/community_channels', () => {
         expect(getDefaultChannel(state(), 'unknown')).toBeUndefined();
     });
 
-    test('General, Off-Topic and the chosen default are the channels only admins archive', () => {
+    test('General, Welcome, Off-Topic and the chosen default are the channels only admins archive', () => {
         const chosen = state({defaultChannelId: 'dev'});
         expect(isFirstDefaultChannel(chosen, town)).toBe(true);
+        expect(isFirstDefaultChannel(chosen, {...dev, id: 'welcome', name: 'welcome'})).toBe(true);
         expect(isFirstDefaultChannel(chosen, offTopic)).toBe(true);
         expect(isFirstDefaultChannel(chosen, dev)).toBe(true);
         expect(isFirstDefaultChannel(state(), dev)).toBe(false);

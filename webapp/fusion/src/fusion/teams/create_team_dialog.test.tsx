@@ -3,40 +3,19 @@
 
 import React from 'react';
 
-import {checkIfTeamExists, createTeam} from 'mattermost-redux/actions/teams';
+import {createTeam} from 'mattermost-redux/actions/teams';
 
 import {LAYER_ID} from 'fusion/components/layer';
-import {renderWithContext, screen, userEvent, waitFor} from 'tests/react_testing_utils';
+import {renderWithContext, screen, userEvent, waitFor, within} from 'tests/react_testing_utils';
 import {getHistory} from 'utils/browser_history';
 
-import CreateTeamDialog, {teamUrlFromName, teamUrlProblem} from './create_team_dialog';
+import CreateTeamDialog from './create_team_dialog';
 
+// The server makes the address from the name.
 jest.mock('mattermost-redux/actions/teams', () => ({
     ...jest.requireActual('mattermost-redux/actions/teams'),
-    checkIfTeamExists: jest.fn((name: string) => ({type: 'CHECKED', data: name === 'taken'})),
-    createTeam: jest.fn((team: {name: string}) => ({type: 'CREATED', data: team})),
+    createTeam: jest.fn((team: {display_name: string}) => ({type: 'CREATED', data: {...team, id: 'new', name: team.display_name.toLowerCase().replace(/ /g, '-')}})),
 }));
-
-describe('team addresses', () => {
-    test('a name suggests an address', () => {
-        expect(teamUrlFromName('Detector Physics!')).toBe('detector-physics');
-        expect(teamUrlFromName('  Ops  ')).toBe('ops');
-    });
-
-    test('an address follows Mattermost\'s rules', () => {
-        expect(teamUrlProblem('detector-physics')).toBeUndefined();
-        expect(teamUrlProblem('a')).toBe('length');
-        expect(teamUrlProblem('Caps')).toBe('format');
-        expect(teamUrlProblem('9lives')).toBe('format');
-        expect(teamUrlProblem('ends-')).toBe('format');
-        expect(teamUrlProblem('admin-team')).toBe('reserved');
-    });
-
-    // The server refuses these names (they are the apps' pages, as /kanban); say so before asking it.
-    test.each(['kanban', 'kanban-team', 'boards', 'playbooks'])('%s is a reserved address', (url) => {
-        expect(teamUrlProblem(url)).toBe('reserved');
-    });
-});
 
 describe('CreateTeamDialog', () => {
     beforeEach(() => {
@@ -50,41 +29,49 @@ describe('CreateTeamDialog', () => {
         document.getElementById(LAYER_ID)?.remove();
     });
 
-    const render = () => {
+    const render = (defaultKind = '') => {
         const onClose = jest.fn();
-        renderWithContext(<CreateTeamDialog onClose={onClose}/>);
+        renderWithContext(<CreateTeamDialog onClose={onClose}/>, {entities: {general: {config: {DefaultCommunityKind: defaultKind}}}} as never);
         return onClose;
     };
 
-    test('creates an open team at the address its name suggests, and opens it', async () => {
+    test('creates an open guild with the address the server makes, and opens it', async () => {
         const push = jest.spyOn(getHistory(), 'push').mockImplementation(() => undefined);
         const onClose = render();
+        expect(screen.queryByRole('textbox', {name: 'Address'})).not.toBeInTheDocument();
         await userEvent.type(screen.getByRole('textbox', {name: 'Name'}), 'Detector Physics');
-        expect(screen.getByRole('textbox', {name: 'Address'})).toHaveValue('detector-physics');
-
-        await waitFor(() => expect(checkIfTeamExists).toHaveBeenCalledWith('detector-physics'));
+        expect(within(screen.getByRole('group', {name: 'Kind'})).getByRole('button', {name: 'Guild'})).toHaveAttribute('aria-pressed', 'true');
         await userEvent.click(screen.getByRole('button', {name: 'Create community'}));
 
         await waitFor(() => expect(onClose).toHaveBeenCalled());
-        expect(createTeam).toHaveBeenCalledWith(expect.objectContaining({display_name: 'Detector Physics', name: 'detector-physics', type: 'O', allow_open_invite: true}));
+        const sent = (createTeam as jest.Mock).mock.calls[0][0];
+        expect(sent).toEqual({display_name: 'Detector Physics', type: 'O', allow_open_invite: true, kind: 'guild'});
+        expect(sent.name).toBeUndefined();
         expect(push).toHaveBeenCalledWith('/detector-physics/channels/general');
     });
 
-    test('an address that\'s taken or malformed can\'t be used', async () => {
+    test('makes a workspace', async () => {
+        jest.spyOn(getHistory(), 'push').mockImplementation(() => undefined);
+        render();
+        await userEvent.type(screen.getByRole('textbox', {name: 'Name'}), 'Acme');
+        await userEvent.click(within(screen.getByRole('group', {name: 'Kind'})).getByRole('button', {name: 'Workspace'}));
+        expect(screen.getByText(/members join the channels they want/)).toBeInTheDocument();
+        await userEvent.click(screen.getByRole('button', {name: 'Create community'}));
+        await waitFor(() => expect(createTeam).toHaveBeenCalledWith(expect.objectContaining({kind: 'workspace'})));
+    });
+
+    test('starts from the server\'s kind of new communities', () => {
+        render('workspace');
+        expect(within(screen.getByRole('group', {name: 'Kind'})).getByRole('button', {name: 'Workspace'})).toHaveAttribute('aria-pressed', 'true');
+    });
+
+    test('a name too short can\'t be used', async () => {
         render();
         await userEvent.type(screen.getByRole('textbox', {name: 'Name'}), 'x');
-        await userEvent.clear(screen.getByRole('textbox', {name: 'Address'}));
-        await userEvent.type(screen.getByRole('textbox', {name: 'Address'}), 'taken');
-        expect(await screen.findByText('That address is taken.')).toBeInTheDocument();
-        expect(screen.getByRole('button', {name: 'Create community'})).toBeDisabled();
-
-        await userEvent.clear(screen.getByRole('textbox', {name: 'Address'}));
-        await userEvent.type(screen.getByRole('textbox', {name: 'Address'}), '9lives');
-        expect(screen.getByText(/Lower case letters, numbers and dashes/)).toBeInTheDocument();
         expect(screen.getByRole('button', {name: 'Create community'})).toBeDisabled();
     });
 
-    test('an invitation-only team', async () => {
+    test('an invitation-only community', async () => {
         jest.spyOn(getHistory(), 'push').mockImplementation(() => undefined);
         render();
         await userEvent.type(screen.getByRole('textbox', {name: 'Name'}), 'Secret lab');
@@ -92,5 +79,14 @@ describe('CreateTeamDialog', () => {
         await waitFor(() => expect(screen.getByRole('button', {name: 'Create community'})).toBeEnabled());
         await userEvent.click(screen.getByRole('button', {name: 'Create community'}));
         await waitFor(() => expect(createTeam).toHaveBeenCalledWith(expect.objectContaining({type: 'I', allow_open_invite: false})));
+    });
+
+    test('tells why the community wasn\'t created', async () => {
+        (createTeam as jest.Mock).mockReturnValueOnce({type: 'FAILED', error: {message: 'Too many communities'}});
+        const onClose = render();
+        await userEvent.type(screen.getByRole('textbox', {name: 'Name'}), 'Lumen');
+        await userEvent.click(screen.getByRole('button', {name: 'Create community'}));
+        expect(await screen.findByRole('alert')).toHaveTextContent('Too many communities');
+        expect(onClose).not.toHaveBeenCalled();
     });
 });

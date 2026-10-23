@@ -41,6 +41,9 @@ export type ClientConfig = {
     DataRetentionFileRetentionHours: string;
     DataRetentionMessageRetentionHours: string;
     DefaultClientLocale: string;
+
+    // Antimatter: the kind new communities get ('guild' or 'workspace').
+    DefaultCommunityKind: string;
     DefaultTheme: string;
     DefaultWebUI: string;
     DiagnosticId: string;
@@ -497,7 +500,7 @@ export type TeamSettings = {
     MemberListRoleGroups: boolean;
     RestrictChannelExportToAdmins: boolean;
     AllChannelsMembershipForNewTeams: boolean;
-    DefaultCommunityKind: 'community' | 'workplace';
+    DefaultCommunityKind: 'guild' | 'workspace';
 };
 
 export type ClientRequirements = {
