@@ -1774,6 +1774,18 @@ func (c *Client4) RevokeSession(ctx context.Context, userId, sessionId string) (
 	return BuildResponse(r), nil
 }
 
+// AcknowledgeSession confirms that a sign-in (a session of the user's own) was theirs, which takes its warning off
+// their other sessions (Antimatter).
+func (c *Client4) AcknowledgeSession(ctx context.Context, userId, sessionId string) (*Response, error) {
+	requestBody := map[string]string{"session_id": sessionId}
+	r, err := c.doAPIPostJSON(ctx, c.userRoute(userId).Join("sessions", "acknowledge"), requestBody)
+	if err != nil {
+		return BuildResponse(r), err
+	}
+	defer closeBody(r)
+	return BuildResponse(r), nil
+}
+
 // RevokeAllSessions revokes all sessions for the provided user id string.
 func (c *Client4) RevokeAllSessions(ctx context.Context, userId string) (*Response, error) {
 	r, err := c.doAPIPost(ctx, c.userRoute(userId).Join("sessions", "revoke", "all"), "")

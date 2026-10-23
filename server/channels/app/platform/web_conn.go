@@ -971,6 +971,13 @@ func (wc *WebConn) ShouldSendEvent(msg *model.WebSocketEvent) bool {
 		return false
 	}
 
+	// Antimatter: a sign-in's warning goes to the user's other sessions, never to the session that signed in.
+	if msg.EventType() == model.WebsocketEventSessionCreated {
+		if id, _ := msg.GetData()["session_id"].(string); id == "" || id == wc.GetSession().Id {
+			return false
+		}
+	}
+
 	// If the event is destined to a specific user
 	if msg.GetBroadcast().UserId != "" {
 		return wc.UserId == msg.GetBroadcast().UserId
