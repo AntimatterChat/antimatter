@@ -3,9 +3,9 @@
 
 import React from 'react';
 
-import CustomPluginSettings from 'components/admin_console/custom_plugin_settings';
-
 import store from 'stores/redux_store';
+
+import CustomPluginSettings from 'components/admin_console/custom_plugin_settings';
 
 import {AI_CHAT_APP_ID} from '../moved_console_routes';
 
