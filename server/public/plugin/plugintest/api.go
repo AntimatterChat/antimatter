@@ -5260,6 +5260,26 @@ func (_m *API) ReceiveSharedChannelSyncMsg(remoteID string, msg *model.SyncMsg) 
 	return r0, r1
 }
 
+// RegisterAITools provides a mock function with given fields: tools
+func (_m *API) RegisterAITools(tools []*model.AIToolDefinition) *model.AppError {
+	ret := _m.Called(tools)
+
+	if len(ret) == 0 {
+		panic("no return value specified for RegisterAITools")
+	}
+
+	var r0 *model.AppError
+	if rf, ok := ret.Get(0).(func([]*model.AIToolDefinition) *model.AppError); ok {
+		r0 = rf(tools)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*model.AppError)
+		}
+	}
+
+	return r0
+}
+
 // RegisterChannelGuard provides a mock function with given fields: channelID
 func (_m *API) RegisterChannelGuard(channelID string) *model.AppError {
 	ret := _m.Called(channelID)

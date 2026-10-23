@@ -1903,6 +1903,15 @@ type API interface {
 	// @tag AI
 	// Minimum server version: 11.11
 	AIConnectionsForUser(userID, channelID, teamID string) ([]*model.AIConnectionInfo, *model.AppError)
+
+	// RegisterAITools declares the app's tools for agents (Antimatter), replacing the ones it declared before. Each
+	// is named "<plugin id>.<name>" for agents' tool policies; the server checks its declared permissions as the
+	// person an agent acts for, asks them to confirm anything that isn't a read, and then runs it through the
+	// ExecuteAITool hook with that person: the app must act with their permissions only. Call it from OnActivate.
+	//
+	// @tag AI
+	// Minimum server version: 11.11
+	RegisterAITools(tools []*model.AIToolDefinition) *model.AppError
 }
 
 var handshake = plugin.HandshakeConfig{

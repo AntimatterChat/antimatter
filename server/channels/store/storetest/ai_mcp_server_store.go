@@ -151,6 +151,12 @@ func testAIMCPServerUserTokens(t *testing.T, rctx request.CTX, ss store.Store) {
 	_, err = ss.AIMCPServer().GetUserToken(rctx, server.Id, maya)
 	require.True(t, errors.As(err, &nf))
 
+	require.NoError(t, ss.AIMCPServer().SaveUserToken(rctx, &model.AIMCPUserToken{ServerId: server.Id, UserId: maya, TokenSealed: "maya-3"}))
+	require.NoError(t, ss.AIMCPServer().SaveUserToken(rctx, &model.AIMCPUserToken{ServerId: server.Id, UserId: sam, TokenSealed: "sam"}))
+	require.NoError(t, ss.AIMCPServer().DeleteUserTokensForServer(rctx, server.Id))
+	_, err = ss.AIMCPServer().GetUserToken(rctx, server.Id, maya)
+	require.True(t, errors.As(err, &nf), "a server's sign-ins are all forgotten")
+
 	require.NoError(t, ss.AIMCPServer().SaveUserToken(rctx, &model.AIMCPUserToken{ServerId: server.Id, UserId: sam, TokenSealed: "sam"}))
 	require.NoError(t, ss.AIMCPServer().DeleteUserTokensForUser(rctx, sam))
 	_, err = ss.AIMCPServer().GetUserToken(rctx, server.Id, sam)

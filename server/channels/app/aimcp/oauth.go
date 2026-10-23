@@ -63,6 +63,16 @@ func (t *Token) Expired(now time.Time) bool {
 	return t.ExpiresAt != 0 && now.Add(time.Minute).UnixMilli() >= t.ExpiresAt
 }
 
+// TokenRefusedError is the authorisation server refusing a token request (a code or refresh token it no longer
+// takes): the person has to sign in again. Other errors (the network) may pass.
+type TokenRefusedError struct {
+	Reason string
+}
+
+func (e *TokenRefusedError) Error() string {
+	return "the token request was refused: " + e.Reason
+}
+
 // ClientCredentials are the OAuth client the server signs people in with.
 type ClientCredentials struct {
 	ClientID     string
@@ -315,7 +325,7 @@ func tokenRequest(ctx context.Context, httpClient *http.Client, meta *AuthServer
 		if reason == "" {
 			reason = http.StatusText(resp.StatusCode)
 		}
-		return nil, errors.New(ai.SanitizeProviderErrorMessage("the token request was refused: "+reason, secrets...))
+		return nil, &TokenRefusedError{Reason: ai.SanitizeProviderErrorMessage(reason, secrets...)}
 	}
 	var out struct {
 		AccessToken  string `json:"access_token"`

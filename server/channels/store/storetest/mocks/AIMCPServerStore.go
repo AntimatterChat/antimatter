@@ -52,6 +52,24 @@ func (_m *AIMCPServerStore) DeleteUserToken(rctx request.CTX, serverID string, u
 	return r0
 }
 
+// DeleteUserTokensForServer provides a mock function with given fields: rctx, serverID
+func (_m *AIMCPServerStore) DeleteUserTokensForServer(rctx request.CTX, serverID string) error {
+	ret := _m.Called(rctx, serverID)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteUserTokensForServer")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(request.CTX, string) error); ok {
+		r0 = rf(rctx, serverID)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
 // DeleteUserTokensForUser provides a mock function with given fields: rctx, userID
 func (_m *AIMCPServerStore) DeleteUserTokensForUser(rctx request.CTX, userID string) error {
 	ret := _m.Called(rctx, userID)

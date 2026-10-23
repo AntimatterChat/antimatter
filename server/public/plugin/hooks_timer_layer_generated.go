@@ -377,6 +377,13 @@ func (hooks *hooksTimerLayer) DraftWillBeUpserted(c *Context, draft *model.Draft
 	return _returnsA, _returnsB
 }
 
+func (hooks *hooksTimerLayer) ExecuteAITool(c *Context, call *model.AIToolExecution) *model.AIToolResult {
+	startTime := timePkg.Now()
+	_returnsA := hooks.hooksImpl.ExecuteAITool(c, call)
+	hooks.recordTime(startTime, "ExecuteAITool", true)
+	return _returnsA
+}
+
 func (hooks *hooksTimerLayer) OnDeactivateWithRPCErr() (error, error) {
 	startTime := timePkg.Now()
 	_returnsA, _returnsRPCErr := hooks.hooksWithRPCErrImpl.OnDeactivateWithRPCErr()
@@ -669,4 +676,11 @@ func (hooks *hooksTimerLayer) DraftWillBeUpsertedWithRPCErr(c *Context, draft *m
 	_returnsA, _returnsB, _returnsRPCErr := hooks.hooksWithRPCErrImpl.DraftWillBeUpsertedWithRPCErr(c, draft)
 	hooks.recordTime(startTime, "DraftWillBeUpsertedWithRPCErr", _returnsRPCErr == nil)
 	return _returnsA, _returnsB, _returnsRPCErr
+}
+
+func (hooks *hooksTimerLayer) ExecuteAIToolWithRPCErr(c *Context, call *model.AIToolExecution) (*model.AIToolResult, error) {
+	startTime := timePkg.Now()
+	_returnsA, _returnsRPCErr := hooks.hooksWithRPCErrImpl.ExecuteAIToolWithRPCErr(c, call)
+	hooks.recordTime(startTime, "ExecuteAIToolWithRPCErr", _returnsRPCErr == nil)
+	return _returnsA, _returnsRPCErr
 }

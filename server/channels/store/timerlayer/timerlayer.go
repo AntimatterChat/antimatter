@@ -1108,6 +1108,22 @@ func (s *TimerLayerAIMCPServerStore) DeleteUserToken(rctx request.CTX, serverID 
 	return err
 }
 
+func (s *TimerLayerAIMCPServerStore) DeleteUserTokensForServer(rctx request.CTX, serverID string) error {
+	start := time.Now()
+
+	err := s.AIMCPServerStore.DeleteUserTokensForServer(rctx, serverID)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("AIMCPServerStore.DeleteUserTokensForServer", success, elapsed)
+	}
+	return err
+}
+
 func (s *TimerLayerAIMCPServerStore) DeleteUserTokensForUser(rctx request.CTX, userID string) error {
 	start := time.Now()
 

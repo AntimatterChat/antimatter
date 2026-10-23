@@ -1318,6 +1318,8 @@ type AIMCPServerStore interface {
 	GetUserTokenServerIds(rctx request.CTX, userID string) ([]string, error)
 	// DeleteUserToken forgets a person's sign-in to an MCP server; nothing when there's none.
 	DeleteUserToken(rctx request.CTX, serverID, userID string) error
+	// DeleteUserTokensForServer forgets everyone's sign-in to an MCP server.
+	DeleteUserTokensForServer(rctx request.CTX, serverID string) error
 	// DeleteUserTokensForUser forgets every sign-in of a person.
 	DeleteUserTokensForUser(rctx request.CTX, userID string) error
 }

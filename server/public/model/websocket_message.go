@@ -137,6 +137,8 @@ const (
 	// Antimatter: an agent's activity changed; an agent's reply grows as the model streams it.
 	WebsocketEventAgentActivityChanged WebsocketEventType = "agent_activity_changed"
 	WebsocketEventAgentPostStream      WebsocketEventType = "agent_post_stream"
+	// Antimatter: the tools a person may use with agents changed (a sign-in to an MCP server, or an MCP server).
+	WebsocketEventAIToolsChanged WebsocketEventType = "ai_tools_changed"
 
 	WebSocketMsgTypeResponse = "response"
 	WebSocketMsgTypeEvent    = "event"

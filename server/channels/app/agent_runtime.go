@@ -31,7 +31,9 @@ import (
 // posts from other servers), and streaming/streaming.go for streaming into a post (the growing text sent live, the
 // post saved at the end, a message in place of an empty answer or a failure).
 //
-// Tools wait for the tool registry (step 3): AgentToolRunner is the hook, nil until then, and an agent only talks.
+// Tools come from the tool registry (ai_tools.go): the agent's policy, minus what the person turned off, run as the
+// person; a call that isn't a read the policy lets run on its own waits for the person's confirmation, shown on the
+// reply, and the agent goes on in the thread once they answer.
 //
 // One node runs a turn: the one that saved the post. A claim per post and agent keeps a retried post from starting
 // a second turn, and a cluster mutex per agent and thread runs a thread's turns one after the other.
@@ -73,19 +75,23 @@ type AgentTurnContext struct {
 	Channel   *model.Channel
 	RootID    string
 	PostID    string
+
+	// tools are the turn's tools, as the registry gave them.
+	tools *aiTurnToolSet
 }
 
-// AgentToolRunner gives an agent's tools in a turn and runs them for the person who asked: the tool registry of step
-// 3 implements it (with its call and confirmation tokens). A result the person must confirm first comes back as
-// needsConfirmation, and the turn ends waiting for them.
+// AgentToolRunner gives an agent's tools in a turn and runs them for the person who asked: the tool registry. A call
+// the person must confirm first comes back as Pending, and the turn ends waiting for them.
 type AgentToolRunner interface {
 	Tools(rctx request.CTX, turn *AgentTurnContext) []ai.Tool
-	Run(rctx request.CTX, turn *AgentTurnContext, call ai.ToolCall) (result string, needsConfirmation bool, err error)
+	// Instructions tells the model how the turn's tools work.
+	Instructions(turn *AgentTurnContext) string
+	Run(rctx request.CTX, turn *AgentTurnContext, call ai.ToolCall) AgentToolOutcome
 }
 
-// agentToolRunner is the runtime's tool runner: none until the tool registry lands.
+// agentToolRunner is the runtime's tool runner: the tool registry.
 func (a *App) agentToolRunner() AgentToolRunner {
-	return nil
+	return &aiAgentToolRunner{a: a}
 }
 
 var (
@@ -282,7 +288,12 @@ func (a *App) runAgentTurn(rctx request.CTX, agent *model.AIAgent, asker *model.
 	if !a.claimAgentTurn(agent.UserId, post.Id) {
 		return
 	}
+	a.runAgentTurnLocked(rctx, agent, agentUser, asker, post, channel, T, nil)
+}
 
+// runAgentTurnLocked runs a turn once the thread is the agent's: extra are messages the turn goes on from (a tool's
+// result the person confirmed).
+func (a *App) runAgentTurnLocked(rctx request.CTX, agent *model.AIAgent, agentUser, asker *model.User, post *model.Post, channel *model.Channel, T i18n.TranslateFunc, extra []ai.Message) {
 	rootID := post.RootId
 	if rootID == "" {
 		rootID = post.Id
@@ -314,8 +325,40 @@ func (a *App) runAgentTurn(rctx request.CTX, agent *model.AIAgent, asker *model.
 		},
 		channel: channel,
 		rootID:  rootID,
+		extra:   extra,
 	}
 	turn.run()
+}
+
+// continueAgentTurnAfterTool lets an agent go on, in the thread, once the person confirmed a tool call: the
+// conversation up to the post that asked, the call, and its result. Everything is checked again as for any turn.
+func (a *App) continueAgentTurnAfterTool(rctx request.CTX, agent *model.AIAgent, asker *model.User, channel *model.Channel, postID string, call ai.ToolCall, result string) {
+	if agent.External || !agent.Tools.Enabled {
+		return
+	}
+	post, appErr := a.GetSinglePost(rctx, postID, false)
+	if appErr != nil || post.DeleteAt != 0 || post.ChannelId != channel.Id || post.UserId != asker.Id {
+		return
+	}
+	bot, appErr := a.GetBot(rctx, agent.UserId, false)
+	if appErr != nil || a.agentAnsweredByAIChat(bot) {
+		return
+	}
+	agentUser, appErr := a.GetUser(rctx, agent.UserId)
+	if appErr != nil || agentUser.DeleteAt != 0 {
+		return
+	}
+	if a.aiAgentAllows(rctx, agent, asker, channel) != nil {
+		return
+	}
+	if ok, _ := a.HasPermissionToChannel(rctx, asker.Id, channel.Id, model.PermissionReadChannelContent); !ok {
+		return
+	}
+	extra := []ai.Message{
+		{Role: ai.RoleAssistant, ToolCalls: []ai.ToolCall{call}},
+		{Role: ai.RoleTool, ToolCallID: call.ID, Content: result},
+	}
+	a.runAgentTurnLocked(rctx, agent, agentUser, asker, post, channel, i18n.GetUserTranslations(asker.Locale), extra)
 }
 
 // agentTurn is one answer of an agent to a person.
@@ -330,8 +373,12 @@ type agentTurn struct {
 	channel *model.Channel
 	rootID  string
 	info    *AgentTurnContext
+	// extra are messages after the conversation that the turn goes on from.
+	extra []ai.Message
 
 	reply *agentReply
+	// pending are the tool calls waiting for the person's confirmation.
+	pending []*model.AIToolCallSummary
 }
 
 func (t *agentTurn) setActivity(state string) {
@@ -356,7 +403,12 @@ func (t *agentTurn) aiCall() AICall {
 
 func (t *agentTurn) run() {
 	t.setActivity(model.AgentStateThinking)
-	defer t.setActivity(model.AgentStateIdle)
+	defer func() {
+		// An agent waiting for the person stays so until they answer (or the state expires).
+		if len(t.pending) == 0 {
+			t.setActivity(model.AgentStateIdle)
+		}
+	}()
 	t.reply = &agentReply{turn: t, started: time.Now()}
 
 	messages := t.a.buildAgentConversation(t.rctx, t.agent, t.bot, t.asker, t.post, t.channel)
@@ -364,7 +416,11 @@ func (t *agentTurn) run() {
 	var tools []ai.Tool
 	if runner != nil && t.agent.Tools.Enabled {
 		tools = runner.Tools(t.rctx, t.info)
+		if instructions := runner.Instructions(t.info); instructions != "" && len(messages) > 0 && messages[0].Role == ai.RoleSystem {
+			messages[0].Content += "\n\n" + instructions
+		}
 	}
+	messages = append(messages, t.extra...)
 	req := ai.ChatRequest{
 		ConnectionID: t.agent.ConnectionId,
 		Model:        t.agent.Model,
@@ -414,24 +470,43 @@ func (t *agentTurn) run() {
 			t.failText(streamErr)
 			return
 		}
-		if len(toolCalls) == 0 || runner == nil || round >= t.agent.EffectiveMaxToolTurns() {
+		if len(toolCalls) == 0 || runner == nil || len(tools) == 0 || round >= t.agent.EffectiveMaxToolTurns() {
 			break
 		}
-		// The tool registry's hook (step 3): run each call for the person, and give the model the results.
+		// The tool registry: each call runs for the person (or waits for them), and the model gets the results.
 		req.Messages = append(req.Messages, ai.Message{Role: ai.RoleAssistant, Content: roundText.String(), ToolCalls: toolCalls})
-		waiting := false
-		for _, call := range toolCalls {
-			result, needsConfirmation, err := runner.Run(t.rctx, t.info, call)
-			if err != nil {
-				result = "The tool failed: " + ai.SanitizeProviderErrorMessage(err.Error())
-			}
-			waiting = waiting || needsConfirmation
-			req.Messages = append(req.Messages, ai.Message{Role: ai.RoleTool, ToolCallID: call.ID, Content: result})
+		if !working {
+			working = true
+			t.setActivity(model.AgentStateWorking)
 		}
-		if waiting {
+		for _, call := range toolCalls {
+			outcome := runner.Run(t.rctx, t.info, call)
+			if outcome.Pending != nil {
+				t.pending = append(t.pending, outcome.Pending)
+			}
+			req.Messages = append(req.Messages, ai.Message{Role: ai.RoleTool, ToolCallID: call.ID, Content: outcome.Result})
+		}
+		if len(t.pending) > 0 {
 			t.setActivity(model.AgentStateWaiting)
 			break
 		}
+	}
+	if len(t.pending) > 0 {
+		// The reply shows the calls for the person to confirm or decline.
+		t.reply.props = map[string]any{model.PostPropAgentToolCalls: t.pending}
+		waiting := aiToolCallText(t.T, t.asker.Username, t.pending)
+		if strings.TrimSpace(t.reply.text.String()) != "" {
+			t.reply.text.WriteString("\n\n" + waiting)
+		}
+		t.reply.finish(AgentStreamEnd, waiting)
+		if t.reply.post != nil {
+			ids := make([]string, 0, len(t.pending))
+			for _, p := range t.pending {
+				ids = append(ids, p.Id)
+			}
+			t.a.attachPendingAIToolCalls(t.rctx, ids, t.reply.post.Id)
+		}
+		return
 	}
 	t.reply.finish(AgentStreamEnd, t.T("app.ai.agent.turn.empty"))
 }
@@ -457,6 +532,8 @@ type agentReply struct {
 	post     *model.Post
 	lastSent time.Time
 	failed   bool
+	// props are set on the reply when it's saved (the tool calls waiting for the person).
+	props map[string]any
 }
 
 func (r *agentReply) publish(control string) {
@@ -486,6 +563,9 @@ func (r *agentReply) create(streaming bool) bool {
 	}
 	if streaming {
 		post.AddProp(PostPropAgentStreaming, true)
+	}
+	for key, value := range r.props {
+		post.AddProp(key, value)
 	}
 	saved, _, appErr := t.a.CreatePost(t.rctx, post, t.channel, model.CreatePostFlags{})
 	if appErr != nil {
@@ -529,6 +609,9 @@ func (r *agentReply) save(control string) {
 	updated := r.post.Clone()
 	updated.Message = r.text.String()
 	updated.DelProp(PostPropAgentStreaming)
+	for key, value := range r.props {
+		updated.AddProp(key, value)
+	}
 	if _, _, appErr := t.a.UpdatePost(t.rctx, updated, &model.UpdatePostOptions{StreamedReply: true}); appErr != nil {
 		t.rctx.Logger().Warn("Couldn't save an agent's reply", mlog.String("agent_id", t.agent.UserId), mlog.String("post_id", r.post.Id), mlog.Err(appErr))
 	}

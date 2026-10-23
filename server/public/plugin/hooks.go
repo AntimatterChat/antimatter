@@ -75,6 +75,7 @@ const (
 	DraftWillBeUpsertedID                     = 55
 	MessagesWillBeConsumedWithContextID       = 56
 	OnLicenseChangedID                        = 57
+	ExecuteAIToolID                           = 58
 	TotalHooksID                              = iota
 )
 
@@ -533,4 +534,13 @@ type Hooks interface {
 	//
 	// Minimum server version: 11.9
 	DraftWillBeUpserted(c *Context, draft *model.Draft) (*model.Draft, string)
+
+	// ExecuteAITool runs one of the app's tools (declared with RegisterAITools) for an agent (Antimatter). The
+	// server verified call.UserId, the person the agent acts for, checked the tool's declared permissions as them and,
+	// for a tool that changes something, got their confirmation of these exact arguments. The app must act with that
+	// person's permissions only (never its own or an admin's), and with their own account in other services. The
+	// arguments come from a model: check them like any input. The result's text goes back to the model.
+	//
+	// Minimum server version: 11.11
+	ExecuteAITool(c *Context, call *model.AIToolExecution) *model.AIToolResult
 }

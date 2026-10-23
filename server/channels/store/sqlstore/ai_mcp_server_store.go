@@ -275,6 +275,13 @@ func (s *SqlAIMCPServerStore) DeleteUserToken(rctx request.CTX, serverID, userID
 	return nil
 }
 
+func (s *SqlAIMCPServerStore) DeleteUserTokensForServer(rctx request.CTX, serverID string) error {
+	if _, err := s.GetMaster().ExecBuilder(s.getQueryBuilder().Delete("AIMCPUserTokens").Where(sq.Eq{"ServerId": serverID})); err != nil {
+		return errors.Wrapf(err, "failed to forget the sign-ins to the MCP server id=%s", serverID)
+	}
+	return nil
+}
+
 func (s *SqlAIMCPServerStore) DeleteUserTokensForUser(rctx request.CTX, userID string) error {
 	if _, err := s.GetMaster().ExecBuilder(s.getQueryBuilder().Delete("AIMCPUserTokens").Where(sq.Eq{"UserId": userID})); err != nil {
 		return errors.Wrap(err, "failed to forget a person's sign-ins to MCP servers")
