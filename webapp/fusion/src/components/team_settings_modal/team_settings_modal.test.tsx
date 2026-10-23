@@ -3,12 +3,13 @@
 
 import React from 'react';
 
+import {patchTeam} from 'mattermost-redux/actions/teams';
 import {Client4} from 'mattermost-redux/client';
 import {Permissions} from 'mattermost-redux/constants';
 
 import TeamSettingsModal from 'components/team_settings_modal/team_settings_modal';
 
-import {openInvitePeople, openUserGroups} from 'fusion/utils/modals';
+import {openInvitePeople} from 'fusion/utils/modals';
 import {renderWithContext, screen, userEvent, waitFor} from 'tests/react_testing_utils';
 import {getHistory} from 'utils/browser_history';
 
@@ -20,12 +21,17 @@ jest.mock('mattermost-redux/actions/teams', () => ({
     setTeamIcon: jest.fn(() => async () => ({data: {}, error: null})),
 }));
 
+// General loads the community's public channels.
+jest.mock('mattermost-redux/actions/channels', () => ({
+    ...jest.requireActual('mattermost-redux/actions/channels'),
+    getChannels: jest.fn(() => ({type: 'MOCK_GET_CHANNELS'})),
+}));
+
 // The Members page shows the classic member list, which loads people from the server.
 jest.mock('components/member_list_team', () => ({teamId}: {teamId: string}) => jest.requireActual('react').createElement('div', null, `Member list of ${teamId}`));
 jest.mock('fusion/utils/modals', () => ({
     ...jest.requireActual('fusion/utils/modals'),
     openInvitePeople: jest.fn(() => ({type: 'MOCK_INVITE'})),
-    openUserGroups: jest.fn(() => ({type: 'MOCK_TEAMS'})),
 }));
 
 describe('components/team_settings_modal', () => {
@@ -36,6 +42,9 @@ describe('components/team_settings_modal', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
+
+        // The Roles tab sets up the community's default role.
+        jest.spyOn(Client4, 'ensureTeamDefaultRole').mockResolvedValue({id: 'default-role'} as never);
 
         // The Fusion dialog is drawn in the Fusion layer.
         if (!document.getElementById('am-layer')) {
@@ -91,9 +100,9 @@ describe('components/team_settings_modal', () => {
             />,
             baseState,
         );
-        const modal = screen.getByRole('dialog', {name: 'Team Settings'});
+        const modal = screen.getByRole('dialog', {name: 'Community settings'});
         expect(modal).toBeInTheDocument();
-        const closeButton = screen.getByLabelText('Close team settings');
+        const closeButton = screen.getByLabelText('Close the community settings');
         await userEvent.click(closeButton);
 
         await waitFor(() => {
@@ -108,7 +117,7 @@ describe('components/team_settings_modal', () => {
             />,
             baseState,
         );
-        const infoButton = screen.getByRole('tab', {name: 'Overview'});
+        const infoButton = screen.getByRole('tab', {name: 'General'});
         expect(infoButton).toBeDefined();
         const accessButton = screen.getByRole('tab', {name: 'Access'});
         expect(accessButton).toBeDefined();
@@ -135,7 +144,7 @@ describe('components/team_settings_modal', () => {
             />,
             stateWithoutPermission,
         );
-        expect(screen.getAllByRole('tab').map((tab) => tab.textContent)).toEqual(['Overview', 'Members', 'Channels', 'Rules', 'Autolinks', 'Agents']);
+        expect(screen.getAllByRole('tab').map((tab) => tab.textContent)).toEqual(['General', 'Members', 'Onboarding and rules', 'AI', 'Autolinks']);
     });
 
     test('should warn on first close attempt with unsaved changes and stay open', async () => {
@@ -146,7 +155,7 @@ describe('components/team_settings_modal', () => {
             baseState,
         );
 
-        const modal = screen.getByRole('dialog', {name: 'Team Settings'});
+        const modal = screen.getByRole('dialog', {name: 'Community settings'});
         expect(modal).toBeInTheDocument();
 
         // Create unsaved changes by modifying team name
@@ -155,7 +164,7 @@ describe('components/team_settings_modal', () => {
         await userEvent.type(nameInput, 'Modified Team Name');
 
         // Attempt to close modal with unsaved changes
-        const closeButton = screen.getByLabelText('Close team settings');
+        const closeButton = screen.getByLabelText('Close the community settings');
         await userEvent.click(closeButton);
 
         // Verify modal remains open
@@ -182,7 +191,7 @@ describe('components/team_settings_modal', () => {
         await userEvent.clear(nameInput);
         await userEvent.type(nameInput, 'Modified Team Name');
 
-        const closeButton = screen.getByLabelText('Close team settings');
+        const closeButton = screen.getByLabelText('Close the community settings');
 
         // First close attempt triggers warning
         await userEvent.click(closeButton);
@@ -207,11 +216,11 @@ describe('components/team_settings_modal', () => {
             baseState,
         );
 
-        const modal = screen.getByRole('dialog', {name: 'Team Settings'});
+        const modal = screen.getByRole('dialog', {name: 'Community settings'});
         expect(modal).toBeInTheDocument();
 
         // Close modal with no unsaved changes
-        const closeButton = screen.getByLabelText('Close team settings');
+        const closeButton = screen.getByLabelText('Close the community settings');
         await userEvent.click(closeButton);
 
         // Verify modal closes normally
@@ -234,16 +243,11 @@ describe('components/team_settings_modal', () => {
         await userEvent.type(nameInput, 'Modified Team Name');
 
         // Save changes immediately (without triggering warning first)
-        const saveButton = screen.getByText('Save');
-        await userEvent.click(saveButton);
-
-        // Wait for save to complete and "Settings saved" message
-        await waitFor(() => {
-            expect(screen.getByText('Settings saved')).toBeInTheDocument();
-        });
+        await userEvent.click(screen.getByRole('button', {name: 'Save'}));
+        await waitFor(() => expect(patchTeam).toHaveBeenCalledWith({id: 'team-id', display_name: 'Modified Team Name', description: 'Team Description'}));
 
         // After saving, close modal - should work immediately (single click)
-        const closeButton = screen.getByLabelText('Close team settings');
+        const closeButton = screen.getByLabelText('Close the community settings');
         await userEvent.click(closeButton);
 
         // Verify modal closes successfully without warning
@@ -251,6 +255,36 @@ describe('components/team_settings_modal', () => {
             expect(baseProps.onExited).toHaveBeenCalled();
         });
     });
+
+    // Antimatter: General holds what members do with the community's channels and categories: its kind, the
+    // channels everyone is in, where people land, the join and leave messages, and its layout.
+    test('General has the community, its channels and its layout', () => {
+        renderWithContext(<TeamSettingsModal {...baseProps}/>, withPermissions([Permissions.MANAGE_TEAM]));
+        expect(screen.getByRole('heading', {name: 'General'})).toBeInTheDocument();
+        expect(screen.getByRole('textbox', {name: 'Name'})).toHaveValue('Team Name');
+        expect(screen.getByRole('group', {name: 'Kind of community'})).toBeInTheDocument();
+        expect(screen.getByRole('switch', {name: 'Members are in every channel'})).toBeInTheDocument();
+        expect(screen.getByRole('combobox', {name: 'Default channel'})).toBeInTheDocument();
+        expect(screen.getByRole('combobox', {name: 'Join and leave messages'})).toBeInTheDocument();
+        expect(screen.getByRole('button', {name: 'Export as a template'})).toBeInTheDocument();
+        expect(screen.queryByRole('tab', {name: 'Channels'})).not.toBeInTheDocument();
+        expect(screen.queryByRole('tab', {name: 'Community layout'})).not.toBeInTheDocument();
+    });
+
+    test('the former tabs open where they went', () => {
+        for (const [tab, now] of [['channels', 'General'], ['layout', 'General'], ['rules', 'Onboarding and rules'], ['agents', 'AI']]) {
+            const {unmount} = renderWithContext(
+                <TeamSettingsModal
+                    {...baseProps}
+                    initialTab={tab}
+                />,
+                withPermissions([Permissions.MANAGE_TEAM]),
+            );
+            expect(screen.getByRole('tab', {name: now})).toHaveAttribute('aria-selected', 'true');
+            unmount();
+        }
+    });
+
     test('shows the Autolinks tab to those who manage the team', async () => {
         const state = {
             ...baseState,
@@ -275,7 +309,7 @@ describe('components/team_settings_modal', () => {
             entities: {...baseState.entities, roles: {roles: {team_user: {permissions: [Permissions.MANAGE_TEAM]}}}},
         };
         renderWithContext(<TeamSettingsModal {...baseProps}/>, state);
-        await userEvent.click(screen.getByRole('tab', {name: 'Rules'}));
+        await userEvent.click(screen.getByRole('tab', {name: 'Onboarding and rules'}));
         expect(await screen.findByRole('switch', {name: 'Members must agree to the rules'})).toHaveAttribute('aria-checked', 'true');
         expect(await screen.findByText('3 of 5 members agreed to the current rules.')).toBeInTheDocument();
         rules.mockRestore();
@@ -285,7 +319,7 @@ describe('components/team_settings_modal', () => {
     test('hides the Rules tab from the others', () => {
         // Members who don't manage the community (the base state's user does).
         renderWithContext(<TeamSettingsModal {...baseProps}/>, withPermissions([Permissions.INVITE_USER]));
-        expect(screen.queryByRole('tab', {name: 'Rules'})).not.toBeInTheDocument();
+        expect(screen.queryByRole('tab', {name: 'Onboarding and rules'})).not.toBeInTheDocument();
     });
 
     // Antimatter: the community's roles, onboarding, attributes and layout are tabs of its settings, which the
@@ -299,9 +333,9 @@ describe('components/team_settings_modal', () => {
         },
     });
 
-    test('shows the roles, onboarding, attributes and layout tabs to the community\'s admins', () => {
+    test('shows the roles, onboarding, attributes and AI tabs to the community\'s admins', () => {
         renderWithContext(<TeamSettingsModal {...baseProps}/>, withPermissions([Permissions.MANAGE_TEAM, Permissions.MANAGE_TEAM_ROLES]));
-        for (const name of ['Overview', 'Channels', 'Roles', 'Onboarding', 'Member attributes', 'Community layout', 'Autolinks']) {
+        for (const name of ['General', 'Roles', 'Onboarding and rules', 'Member attributes', 'AI', 'Autolinks']) {
             expect(screen.getByRole('tab', {name})).toBeInTheDocument();
         }
     });
@@ -314,10 +348,13 @@ describe('components/team_settings_modal', () => {
             />,
             withPermissions([Permissions.MANAGE_TEAM, Permissions.MANAGE_TEAM_ROLES]),
         );
-        expect(screen.getByRole('tab', {name: 'Onboarding'})).toHaveAttribute('aria-selected', 'true');
-        expect(screen.getByRole('heading', {name: 'Onboarding'})).toBeInTheDocument();
-        expect(screen.getByRole('button', {name: 'Cancel'})).toBeInTheDocument();
-        expect(screen.getByRole('button', {name: 'Save'})).toBeInTheDocument();
+        expect(screen.getByRole('tab', {name: 'Onboarding and rules'})).toHaveAttribute('aria-selected', 'true');
+        expect(screen.getByRole('heading', {name: 'Onboarding and rules'})).toBeInTheDocument();
+
+        // The rules first, then the onboarding: one panel, each with its own Save.
+        const sections = screen.getAllByRole('heading', {level: 3}).map((h) => h.textContent);
+        expect(sections).toEqual(['Rules', 'Onboarding']);
+        expect(screen.getAllByRole('button', {name: 'Save'}).length).toBeGreaterThanOrEqual(1);
     });
 
     test('those who only manage the roles get the members, the teams and the roles', () => {
@@ -330,7 +367,7 @@ describe('components/team_settings_modal', () => {
         );
 
         // Inviting without managing the community isn't changing its invitations (Access).
-        expect(screen.getAllByRole('tab').map((tab) => tab.textContent)).toEqual(['Members', 'Teams', 'Roles']);
+        expect(screen.getAllByRole('tab').map((tab) => tab.textContent)).toEqual(['Roles', 'Members', 'Teams']);
         expect(screen.getByRole('tab', {name: 'Roles'})).toHaveAttribute('aria-selected', 'true');
     });
 
@@ -338,11 +375,11 @@ describe('components/team_settings_modal', () => {
         renderWithContext(
             <TeamSettingsModal
                 {...baseProps}
-                initialTab='layout'
+                initialTab='teams'
             />,
             baseState,
         );
-        expect(screen.getByRole('tab', {name: 'Overview'})).toHaveAttribute('aria-selected', 'true');
+        expect(screen.getByRole('tab', {name: 'General'})).toHaveAttribute('aria-selected', 'true');
     });
 
     test('Close in the Roles tab closes the settings', async () => {
@@ -361,22 +398,35 @@ describe('components/team_settings_modal', () => {
 
     // Antimatter: a community's own model connections, for those who may manage them (its admins, and the roles
     // granted it).
-    describe('Model connections tab', () => {
+    // AI: the model connections and the agents in one tab.
+    describe('AI tab', () => {
         let list: jest.SpyInstance;
+        let agents: jest.SpyInstance;
         beforeEach(() => {
             list = jest.spyOn(Client4, 'getAIConnections').mockResolvedValue([]);
+            agents = jest.spyOn(Client4, 'getAIAgents').mockResolvedValue([] as never);
         });
         afterEach(() => {
             list.mockRestore();
+            agents.mockRestore();
         });
 
-        test('is hidden without the permission, even from the community\'s admins', () => {
-            renderWithContext(<TeamSettingsModal {...baseProps}/>, withPermissions([Permissions.MANAGE_TEAM, Permissions.MANAGE_TEAM_ROLES]));
-            expect(screen.queryByRole('tab', {name: 'Model connections'})).not.toBeInTheDocument();
+        test('the community\'s admins without the permission get its agents only', async () => {
+            renderWithContext(
+                <TeamSettingsModal
+                    {...baseProps}
+                    initialTab='ai'
+                />,
+                withPermissions([Permissions.MANAGE_TEAM, Permissions.MANAGE_TEAM_ROLES]),
+            );
+            expect(screen.getByRole('tab', {name: 'AI'})).toHaveAttribute('aria-selected', 'true');
+            expect(screen.getByRole('heading', {name: 'Agents'})).toBeInTheDocument();
+            expect(screen.queryByRole('heading', {name: 'Model connections'})).not.toBeInTheDocument();
+            await waitFor(() => expect(agents).toHaveBeenCalled());
             expect(list).not.toHaveBeenCalled();
         });
 
-        test('a tab asked for without the permission opens another one', () => {
+        test('the former Model connections tab opens the AI tab', () => {
             renderWithContext(
                 <TeamSettingsModal
                     {...baseProps}
@@ -384,11 +434,11 @@ describe('components/team_settings_modal', () => {
                 />,
                 baseState,
             );
-            expect(screen.getByRole('tab', {name: 'Overview'})).toHaveAttribute('aria-selected', 'true');
+            expect(screen.getByRole('tab', {name: 'AI'})).toHaveAttribute('aria-selected', 'true');
             expect(list).not.toHaveBeenCalled();
         });
 
-        test('lists the community\'s own connections for those who may manage them', async () => {
+        test('lists the community\'s own connections, then its agents, for those who may manage them', async () => {
             renderWithContext(
                 <TeamSettingsModal
                     {...baseProps}
@@ -396,7 +446,8 @@ describe('components/team_settings_modal', () => {
                 />,
                 withPermissions([Permissions.MANAGE_TEAM, Permissions.MANAGE_TEAM_AI_CONNECTIONS]),
             );
-            expect(screen.getByRole('tab', {name: 'Model connections'})).toHaveAttribute('aria-selected', 'true');
+            expect(screen.getByRole('tab', {name: 'AI'})).toHaveAttribute('aria-selected', 'true');
+            expect(screen.getAllByRole('heading', {level: 3}).map((h) => h.textContent)).toEqual(['Model connections', 'Agents']);
             expect(await screen.findByText('No model connections yet.')).toBeInTheDocument();
             expect(list).toHaveBeenCalledWith('team-id');
         });
@@ -409,7 +460,8 @@ describe('components/team_settings_modal', () => {
                 />,
                 withPermissions([Permissions.MANAGE_TEAM_AI_CONNECTIONS]),
             );
-            expect(screen.getAllByRole('tab').map((tab) => tab.textContent)).toEqual(['Members', 'Teams', 'Model connections']);
+            expect(screen.getAllByRole('tab').map((tab) => tab.textContent)).toEqual(['Members', 'Teams', 'AI']);
+            expect(agents).not.toHaveBeenCalled();
             expect(await screen.findByRole('button', {name: 'Add a connection'})).toBeInTheDocument();
         });
     });
@@ -421,7 +473,7 @@ describe('components/team_settings_modal', () => {
         test('the admins\' tabs, in order', () => {
             renderWithContext(<TeamSettingsModal {...baseProps}/>, withPermissions(admin));
             expect(screen.getAllByRole('tab').map((tab) => tab.textContent)).toEqual([
-                'Overview', 'Access', 'Members', 'Teams', 'Channels', 'Roles', 'Onboarding', 'Rules', 'Member attributes', 'Community layout', 'Autolinks', 'Agents',
+                'General', 'Roles', 'Members', 'Access', 'Member attributes', 'Teams', 'Onboarding and rules', 'AI', 'Autolinks',
             ]);
         });
 
@@ -453,7 +505,7 @@ describe('components/team_settings_modal', () => {
             expect(screen.queryByRole('button', {name: 'Invite people'})).not.toBeInTheDocument();
         });
 
-        test('the Teams page lists the community\'s teams, and leads to the teams dialog', async () => {
+        test('the Teams page lists the community\'s teams, and creates them in place', async () => {
             const state = withPermissions(admin) as typeof baseState & {entities: Record<string, unknown>};
             const group = (id: string, name: string, teamId: string) => ({id, name: id, display_name: name, tag: name.slice(0, 3).toUpperCase(), source: 'custom', is_team: true, team_id: teamId, delete_at: 0, member_ids: ['user-id']});
             (state.entities as Record<string, unknown>).groups = {groups: {g1: group('g1', 'Design', 'team-id'), g2: group('g2', 'Ops', 'other-team')}};
@@ -467,10 +519,12 @@ describe('components/team_settings_modal', () => {
             expect(screen.getByRole('heading', {name: 'Teams'})).toBeInTheDocument();
             expect(screen.getByRole('button', {name: /Design/})).toBeInTheDocument();
             expect(screen.queryByRole('button', {name: /Ops/})).not.toBeInTheDocument();
+            expect(screen.getByRole('switch', {name: 'Everyone shows a team badge'})).toBeInTheDocument();
 
-            await userEvent.click(screen.getByRole('button', {name: 'Find and create teams…'}));
-            expect(openUserGroups).toHaveBeenCalledWith('team-id');
-            await waitFor(() => expect(baseProps.onExited).toHaveBeenCalled());
+            // No separate dialog: the editor opens under the list.
+            await userEvent.click(screen.getByRole('button', {name: 'Create team'}));
+            expect(screen.getByRole('textbox', {name: /Mention/})).toBeInTheDocument();
+            expect(baseProps.onExited).not.toHaveBeenCalled();
         });
 
         test('no Teams page when the server has no teams', () => {

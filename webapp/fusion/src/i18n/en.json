@@ -15659,13 +15659,13 @@
     "defaultMessage": "Teams",
     "description": "Used both as the Teams page title in the System Console and as the 'Teams' filter group name in admin channel lists; plural noun."
   },
-  "admin.team.allChannelsMembershipDescription": {
-    "defaultMessage": "When true, communities created from now on have their members in all the channels they may see: they mute channels instead of leaving them. Each community can turn this off in its settings. Existing communities are not changed.",
-    "description": "Help text of the System Console setting deciding whether new communities have all their members in every channel (Antimatter)."
+  "admin.team.allChannelsMembershipGuildsDescription": {
+    "defaultMessage": "When true, guilds created from now on have their members in all the channels they may see: they mute channels instead of leaving them. Workspaces never do. Each community can change this in its settings, and changing a community's kind changes it too. Existing communities are not changed.",
+    "description": "Help text of the System Console setting that makes new guilds put everyone in every channel. Guild and workspace are the two kinds of community."
   },
-  "admin.team.allChannelsMembershipTitle": {
-    "defaultMessage": "New communities put everyone in every channel: ",
-    "description": "Label of the System Console setting deciding whether new communities have all their members in every channel; a colon and the toggle follow."
+  "admin.team.allChannelsMembershipGuildsTitle": {
+    "defaultMessage": "New guilds put everyone in every channel: ",
+    "description": "System Console setting label (Users and teams): whether guilds (one of the two kinds of community, where everyone is in every channel) created from now on put all their members in every channel. Keep the trailing colon and space."
   },
   "admin.team.brandDesc": {
     "defaultMessage": "Enable custom branding to show an image of your choice, uploaded below, and some help text, written below, on the login page.",
@@ -15715,17 +15715,17 @@
     "defaultMessage": "Enable Custom Statuses: ",
     "description": "Admin console label for a true/false setting enabling user-set custom status messages; ends with a colon and trailing space before the radio buttons."
   },
-  "admin.team.defaultCommunityKind.community": {
-    "defaultMessage": "Community",
-    "description": "Option of the System Console setting for the kind of new communities: a public or hobby community, as on Discord."
+  "admin.team.defaultCommunityKind.guild": {
+    "defaultMessage": "Guild",
+    "description": "Option of the System Console setting for the kind of new communities: a guild, a public or hobby community where everyone is in every channel."
   },
-  "admin.team.defaultCommunityKind.workplace": {
-    "defaultMessage": "Workplace",
-    "description": "Option of the System Console setting for the kind of new communities: a company's or an organisation's workspace."
+  "admin.team.defaultCommunityKind.workspace": {
+    "defaultMessage": "Workspace",
+    "description": "Option of the System Console setting for the kind of new communities: a workspace, a company's or organisation's community where members join the channels they want."
   },
-  "admin.team.defaultCommunityKindDescription": {
-    "defaultMessage": "The kind of the communities created from now on, unless their layout preset chooses another; on upgrade, communities that have no kind yet get it once. In a community, only its admins (and roles that manage channels) archive channels; in a workplace, members also archive the channels they created. Each community's admins can change its kind in its settings.",
-    "description": "Help text of the System Console setting for the kind of new communities; 'layout preset' is one of the community layouts (Hybrid, Community, Workplace)."
+  "admin.team.defaultCommunityKindGuildHelp": {
+    "defaultMessage": "The kind of the communities created from now on, unless their creator or their layout preset chooses another; on upgrade, communities that have no kind yet get it once. In a guild, everyone is in all the channels and only its admins (and roles that manage channels) archive channels; in a workspace, members join the channels they want and also archive the channels they created. Each community's admins can change its kind in its settings.",
+    "description": "Help text of the System Console setting choosing the kind of new communities: guild (everyone in every channel, admins archive channels) or workspace (members join channels and archive those they created)."
   },
   "admin.team.defaultCommunityKindTitle": {
     "defaultMessage": "Kind of new communities:",
@@ -24595,6 +24595,50 @@
     "defaultMessage": "Thread · {where}",
     "description": ""
   },
+  "fusion.communityAccess.allowedDomains": {
+    "defaultMessage": "Allow only people with a specific email domain to join this community",
+    "description": "Label of the community settings' Access tab switch restricting who may join to some email domains."
+  },
+  "fusion.communityAccess.allowedDomainsInfo": {
+    "defaultMessage": "When on, people can only join the community if their email matches one of these domains (e.g. \"example.com\")",
+    "description": "Help text of the community settings' Access tab setting restricting who may join to some email domains; keep \"example.com\" as it is."
+  },
+  "fusion.communityAccess.codeLongDesc": {
+    "defaultMessage": "The invite code is part of the community's invitation link, sent to the people you invite. Regenerating it makes a new link and invalidates the previous one.",
+    "description": "Help text of the invite code in the community settings' Access tab; regenerating it invalidates the old invitation link."
+  },
+  "fusion.communityAccess.discoverabilityDescription": {
+    "defaultMessage": "Public communities are listed for everyone on the server, so anyone with an account can find and join them. Making a public community private regenerates its invitation code: a new invitation link, and the old one stops working.",
+    "description": "Help text under the public/private cards of the community settings' Access tab."
+  },
+  "fusion.communityAccess.flipConfirmTitle": {
+    "defaultMessage": "Make the community private?",
+    "description": "Title of the confirmation asked before making a public community private, in its Access settings."
+  },
+  "fusion.communityAccess.flipSelfExclusionMessage": {
+    "defaultMessage": "You don't meet the current membership rules, so making it private would remove you from the community at the next sync. Change the rules to include yourself, or ask another admin to make it private.",
+    "description": "Message explaining that making the community private would remove the admin doing it, who doesn't meet its membership rules."
+  },
+  "fusion.communityAccess.flipSelfExclusionTitle": {
+    "defaultMessage": "The community can't be made private",
+    "description": "Title of the message saying a community can't be made private because its membership rules would remove the admin doing it."
+  },
+  "fusion.communityAccess.groupConstrained": {
+    "defaultMessage": "Members of this community are added and removed by linked groups. <link>Learn more</link>",
+    "description": "Text in the community settings' Access tab when the community's members come from linked groups; keep the <link></link> tags around the link text."
+  },
+  "fusion.communityAccess.privateTitle": {
+    "defaultMessage": "Private community",
+    "description": "Title of the card choosing a private community (people join by invitation), in the community settings' Access tab."
+  },
+  "fusion.communityAccess.publicDescription": {
+    "defaultMessage": "Public communities are listed for everyone on the server, so anyone with an account can find and join them.",
+    "description": "Help text in the community settings' Access tab: what a public community is."
+  },
+  "fusion.communityAccess.publicTitle": {
+    "defaultMessage": "Public community",
+    "description": "Title of the card choosing a public community (anyone on the server can find and join it), in the community settings' Access tab."
+  },
   "fusion.communityAttributes.addOption": {
     "defaultMessage": "Add a choice",
     "description": ""
@@ -24778,6 +24822,74 @@
   "fusion.communityAttributes.up": {
     "defaultMessage": "Move up",
     "description": ""
+  },
+  "fusion.communityMembers.admin": {
+    "defaultMessage": "Community admin",
+    "description": "Role shown in the community settings' Members tab for a member who is an admin of the community."
+  },
+  "fusion.communityMembers.makeAdmin": {
+    "defaultMessage": "Make community admin",
+    "description": "Menu item in the community settings' Members tab: makes the person an admin of the community."
+  },
+  "fusion.communityMembers.makeMember": {
+    "defaultMessage": "Make community member",
+    "description": "Menu item in the community settings' Members tab: makes an admin of the community a plain member again."
+  },
+  "fusion.communityMembers.menuAriaLabel": {
+    "defaultMessage": "Change the role of a community member",
+    "description": "Screen reader label of the menu that changes a member's role, in the community settings' Members tab."
+  },
+  "fusion.communityMembers.policyAdvisoryTitle": {
+    "defaultMessage": "This community has membership requirements",
+    "description": "Title of the notice in the community's member list when the community has (advisory) membership requirements."
+  },
+  "fusion.communityMembers.policyEnforcedDescription": {
+    "defaultMessage": "Only people who meet the membership requirements can be members of this community.",
+    "description": "Text of the notice in the community's member list when an access policy restricts who may be a member."
+  },
+  "fusion.communityMembers.policyEnforcedTitle": {
+    "defaultMessage": "Who joins the community is restricted by user attributes",
+    "description": "Title of the notice in the community's member list when an access policy restricts who may join the community, by user attributes."
+  },
+  "fusion.communityMembers.remove": {
+    "defaultMessage": "Remove from the community",
+    "description": "Menu item in the community settings' Members tab: removes the person from the community."
+  },
+  "fusion.communityMembership.advisoryNote": {
+    "defaultMessage": "This community is public, so these rules are advisory: no one is blocked or removed. People who qualify can be added automatically and are shown as recommended.",
+    "description": "Note in the confirmation of a public community's membership rules: they're advisory only."
+  },
+  "fusion.communityMembership.autoAddDisabled": {
+    "defaultMessage": "Access rules restrict who can join the community, but people who qualify aren't added automatically.",
+    "description": "Help text of the community's membership rules (by user attributes) when people who qualify aren't added automatically."
+  },
+  "fusion.communityMembership.confirmTitle": {
+    "defaultMessage": "Save the membership rules?",
+    "description": "Title of the confirmation before saving a community's membership rules."
+  },
+  "fusion.communityMembership.emptyWarning": {
+    "defaultMessage": "Warning: nobody matches these rules. Saving leaves an empty private community.",
+    "description": "Warning in the confirmation of a community's membership rules when nobody matches them."
+  },
+  "fusion.communityMembership.remove": {
+    "defaultMessage": "This community will no longer be restricted by user attributes. Current members keep their access, and anyone who can normally join the community will be able to.",
+    "description": "Confirmation text when removing the membership rules (by user attributes) of a community."
+  },
+  "fusion.communityMembership.removeAdvisory": {
+    "defaultMessage": "This community will no longer have membership requirements. Auto-add and the \"Recommended\" tag stop; current members are unaffected.",
+    "description": "Confirmation text when removing the advisory membership requirements of a public community; keep \"Recommended\" in quotes as the tag's name."
+  },
+  "fusion.communityMembership.selfExclusion": {
+    "defaultMessage": "You can't set these rules: they would remove you from the community.",
+    "description": "Error when an admin's membership rules for a community would remove the admin themselves."
+  },
+  "fusion.communityMembership.subtitle": {
+    "defaultMessage": "Who can be a member of this community, by user attributes.",
+    "description": "Subtitle of the community's membership rules (by user attributes), in its settings."
+  },
+  "fusion.communityMembership.title": {
+    "defaultMessage": "Membership rules",
+    "description": "Title of the community's membership rules (who may be a member, by user attributes), in its settings; also the tab's name."
   },
   "fusion.communityRules.agree": {
     "defaultMessage": "I agree",
@@ -25171,6 +25283,14 @@
     "defaultMessage": "The community couldn't be created.",
     "description": ""
   },
+  "fusion.createTeam.guildDesc": {
+    "defaultMessage": "A guild, for a public or hobby community: everyone is in all its channels, and only its admins archive them.",
+    "description": "Explanation shown when creating a community and the guild kind is chosen."
+  },
+  "fusion.createTeam.kind": {
+    "defaultMessage": "Kind",
+    "description": "Label of the choice between the two kinds of community (guild or workspace) when creating one."
+  },
   "fusion.createTeam.lead": {
     "defaultMessage": "A community has its own channels and people. You can set it up from a preset once it's made.",
     "description": ""
@@ -25195,29 +25315,9 @@
     "defaultMessage": "Create a community",
     "description": ""
   },
-  "fusion.createTeam.url": {
-    "defaultMessage": "Address",
-    "description": ""
-  },
-  "fusion.createTeam.urlFormat": {
-    "defaultMessage": "Lower case letters, numbers and dashes; it starts with a letter and doesn't end with a dash.",
-    "description": ""
-  },
-  "fusion.createTeam.urlLength": {
-    "defaultMessage": "Between {min} and {max} characters.",
-    "description": ""
-  },
-  "fusion.createTeam.urlNote": {
-    "defaultMessage": "Where the community is found; it can't change later.",
-    "description": ""
-  },
-  "fusion.createTeam.urlReserved": {
-    "defaultMessage": "It can't start with a reserved word.",
-    "description": ""
-  },
-  "fusion.createTeam.urlTaken": {
-    "defaultMessage": "That address is taken.",
-    "description": ""
+  "fusion.createTeam.workspaceDesc": {
+    "defaultMessage": "A workspace, for a company or an organisation: members join the channels they want, and archive those they created.",
+    "description": "Explanation shown when creating a community and the workspace kind is chosen."
   },
   "fusion.customEmoji.addButton": {
     "defaultMessage": "Add custom emoji",
@@ -26271,14 +26371,6 @@
     "defaultMessage": "Apply",
     "description": ""
   },
-  "fusion.layout.community": {
-    "defaultMessage": "Community",
-    "description": ""
-  },
-  "fusion.layout.communityDesc": {
-    "defaultMessage": "Categories the admins keep, and a Moderators role. Only the community's admins archive channels. To stop members creating channels, change the community's permissions in the System Console.",
-    "description": "Description of the Community layout preset in the Community layout settings."
-  },
   "fusion.layout.export": {
     "defaultMessage": "Export as a template",
     "description": ""
@@ -26287,13 +26379,21 @@
     "defaultMessage": "Set up {team}",
     "description": ""
   },
+  "fusion.layout.guild": {
+    "defaultMessage": "Guild",
+    "description": "Name of the Guild layout preset of a community (categories the admins keep, everyone in every channel)."
+  },
+  "fusion.layout.guildDesc": {
+    "defaultMessage": "Categories the admins keep, and a Moderators role; everyone is in all the channels, and only the community's admins archive them. To stop members creating channels, change what the roles may do.",
+    "description": "Description of the Guild layout preset of a community."
+  },
   "fusion.layout.hybrid": {
     "defaultMessage": "Hybrid (recommended)",
     "description": ""
   },
-  "fusion.layout.hybridDesc": {
-    "defaultMessage": "Curated categories for everyone, an open Community one where members file their channels, and a Moderators role. Only the community's admins archive channels.",
-    "description": "Description of the Hybrid layout preset in the Community layout settings."
+  "fusion.layout.hybridGuildDesc": {
+    "defaultMessage": "A guild with curated categories for everyone, an open Community one where members file their channels, and a Moderators role. Only the community's admins archive channels.",
+    "description": "Description of the Hybrid layout preset of a community (a guild with curated categories and an open one)."
   },
   "fusion.layout.import": {
     "defaultMessage": "Apply a template…",
@@ -26319,13 +26419,13 @@
     "defaultMessage": "Community layout",
     "description": ""
   },
-  "fusion.layout.workplace": {
-    "defaultMessage": "Workplace",
-    "description": ""
+  "fusion.layout.workspace": {
+    "defaultMessage": "Workspace",
+    "description": "Name of the Workspace layout preset of a community (everyone keeps their own categories)."
   },
-  "fusion.layout.workplaceDesc": {
-    "defaultMessage": "Like Mattermost: everyone keeps their own categories, and archives the channels they created. Removes the categories for everyone; roles stay.",
-    "description": "Description of the Workplace layout preset in the Community layout settings (it makes a workplace community); Mattermost is a name."
+  "fusion.layout.workspaceDesc": {
+    "defaultMessage": "Everyone keeps their own categories, joins the channels they want and archives the channels they created. Removes the categories for everyone; roles stay.",
+    "description": "Description of the Workspace layout preset of a community."
   },
   "fusion.lightbox.close": {
     "defaultMessage": "Close image",
@@ -27766,6 +27866,14 @@
   "fusion.roles.createIt": {
     "defaultMessage": "Create role",
     "description": ""
+  },
+  "fusion.roles.defaultMembers": {
+    "defaultMessage": "Everyone in the community has this role, but guests and bots: what it grants, every member may do, and its colour is that of the members with no other coloured role.",
+    "description": "Text in the editor of the community's default role, in place of its members: everyone has it, but guests and bots."
+  },
+  "fusion.roles.defaultRole": {
+    "defaultMessage": "Default role: everyone in the community has it",
+    "description": "Description of the community's default role in the list of roles: everyone in the community has it (as Discord's @everyone)."
   },
   "fusion.roles.delete": {
     "defaultMessage": "Delete the role",
@@ -29395,13 +29503,13 @@
     "defaultMessage": "Default channel",
     "description": "Title of the community setting choosing its default channel."
   },
-  "fusion.teamChannels.defaultDesc": {
-    "defaultMessage": "Where newcomers land, and where the community's join and leave messages go. Everyone is in it and can't leave it. Archive it and people land in the first channel they're in.",
-    "description": "Description of the community setting choosing its default channel, where newcomers land."
-  },
   "fusion.teamChannels.defaultGone": {
     "defaultMessage": "An archived channel",
     "description": "Choice shown when the chosen default channel is archived or not found."
+  },
+  "fusion.teamChannels.defaultLandDesc": {
+    "defaultMessage": "Where people land. Everyone is in it and can't leave it. Archive it and people land in the first channel they're in.",
+    "description": "Help text of the community's default channel setting: where people land when they open the community."
   },
   "fusion.teamChannels.defaultNone": {
     "defaultMessage": "None: the first channel each person is in",
@@ -29419,29 +29527,137 @@
     "defaultMessage": "The setting couldn't be saved.",
     "description": "Toast when a community channel setting couldn't be saved and the server gave no reason."
   },
+  "fusion.teamChannels.joinLeave": {
+    "defaultMessage": "Join and leave messages",
+    "description": "Title of the community setting choosing the channel that tells who joins and leaves the community (or none)."
+  },
+  "fusion.teamChannels.joinLeaveDefault": {
+    "defaultMessage": "In the default channel",
+    "description": "Option of the community setting choosing the channel of its join and leave messages: its default channel, as communities did before they had a Welcome channel."
+  },
+  "fusion.teamChannels.joinLeaveDesc": {
+    "defaultMessage": "The channel that tells who joins and leaves the community: new communities' Welcome channel. Everyone is in it. Where members are in every channel, the channels themselves don't tell who joins or leaves them.",
+    "description": "Help text of the community setting choosing the channel of its join and leave messages; Welcome is the name of the channel new communities get for them."
+  },
+  "fusion.teamChannels.joinLeaveOff": {
+    "defaultMessage": "Off",
+    "description": "Option of the community setting choosing the channel of its join and leave messages: no such messages."
+  },
+  "fusion.teamChannels.joinLeaveOffSaved": {
+    "defaultMessage": "Nobody is told who joins and leaves",
+    "description": "Notice after an admin turned the community's join and leave messages off."
+  },
+  "fusion.teamChannels.joinLeaveSaved": {
+    "defaultMessage": "Join and leave messages saved",
+    "description": "Notice after an admin chose the channel of the community's join and leave messages."
+  },
   "fusion.teamChannels.kind": {
     "defaultMessage": "Kind of community",
     "description": "Title of the community setting (Channels tab of the community settings) choosing between a community and a workplace community."
   },
-  "fusion.teamChannels.kind.community": {
-    "defaultMessage": "Community",
-    "description": "Option of the kind of community setting: a public or hobby community, as on Discord."
+  "fusion.teamChannels.kind.guild": {
+    "defaultMessage": "Guild",
+    "description": "Kind of community: a guild, a public or hobby community where everyone is in every channel (as a Discord server)."
   },
-  "fusion.teamChannels.kind.workplace": {
-    "defaultMessage": "Workplace",
-    "description": "Option of the kind of community setting: a company's or an organisation's workspace."
+  "fusion.teamChannels.kind.workspace": {
+    "defaultMessage": "Workspace",
+    "description": "Kind of community: a workspace, a company's or an organisation's community where members join the channels they want."
   },
-  "fusion.teamChannels.kindCommunity": {
-    "defaultMessage": "Only the community's admins archive channels now",
-    "description": "Toast shown when a community admin makes a workplace a community again."
+  "fusion.teamChannels.kindGuildDesc": {
+    "defaultMessage": "Guild: everyone is in all its channels, and only its admins (and roles that manage channels) archive them. Workspace, for a company or an organisation: members join the channels they want, and also archive the channels they created. Changing the kind turns \"Members are in every channel\" on for a guild, off for a workspace. In both, only the channels' admins, the community's admins and moderators put messages on top.",
+    "description": "Help text of the community setting choosing its kind, guild or workspace; keep \"Members are in every channel\" as the other setting's name."
   },
-  "fusion.teamChannels.kindDesc": {
-    "defaultMessage": "Community: only its admins (and roles that manage channels) archive channels. Workplace, for a company's or an organisation's workspace: members also archive the channels they created. In both, only the channels' admins, the community's admins and moderators put messages on top.",
-    "description": "Description of the kind of community setting; 'put messages on top' is the feature that pins a message above a channel's messages for a while."
+  "fusion.teamChannels.kindNowGuild": {
+    "defaultMessage": "It's a guild: everyone is being added to the channels they may see",
+    "description": "Notice after an admin made the community a guild: everyone is being added to the channels."
   },
-  "fusion.teamChannels.kindWorkplace": {
-    "defaultMessage": "Members now archive the channels they created",
-    "description": "Toast shown when a community admin makes the community a workplace."
+  "fusion.teamChannels.kindNowWorkspace": {
+    "defaultMessage": "It's a workspace: members join the channels they want and archive those they created",
+    "description": "Notice after an admin made the community a workspace."
+  },
+  "fusion.teamGeneral.channels": {
+    "defaultMessage": "Channels",
+    "description": "Section title in the community settings' General tab: what members do with the community's channels."
+  },
+  "fusion.teamGeneral.description": {
+    "defaultMessage": "Description",
+    "description": "Label of the community's short description field, in its General settings."
+  },
+  "fusion.teamGeneral.descriptionPlaceholder": {
+    "defaultMessage": "What the community is about, in a few words",
+    "description": "Placeholder of the community's short description field."
+  },
+  "fusion.teamGeneral.failed": {
+    "defaultMessage": "The community couldn't be saved.",
+    "description": "Error when the community's name or description couldn't be saved."
+  },
+  "fusion.teamGeneral.icon": {
+    "defaultMessage": "Icon",
+    "description": "Label of the community's icon (its picture in the list of communities), in its General settings."
+  },
+  "fusion.teamGeneral.iconChange": {
+    "defaultMessage": "Change",
+    "description": "Button replacing the community's icon with another image; verb."
+  },
+  "fusion.teamGeneral.iconDesc": {
+    "defaultMessage": "Shown in the list of communities. A square BMP, JPG or PNG image.",
+    "description": "Help text of the community's icon in its General settings."
+  },
+  "fusion.teamGeneral.iconFailed": {
+    "defaultMessage": "The icon couldn't be saved.",
+    "description": "Error when the community's icon couldn't be uploaded or removed."
+  },
+  "fusion.teamGeneral.iconRemove": {
+    "defaultMessage": "Remove",
+    "description": "Button removing the community's icon; verb."
+  },
+  "fusion.teamGeneral.iconSize": {
+    "defaultMessage": "That image is too large.",
+    "description": "Error when the picked community icon is larger than the server allows."
+  },
+  "fusion.teamGeneral.iconType": {
+    "defaultMessage": "The icon must be a BMP, JPG or PNG image.",
+    "description": "Error when the picked community icon isn't a BMP, JPG or PNG image."
+  },
+  "fusion.teamGeneral.iconUpload": {
+    "defaultMessage": "Upload",
+    "description": "Button uploading an image as the community's icon; verb."
+  },
+  "fusion.teamGeneral.name": {
+    "defaultMessage": "Name",
+    "description": "Label of the community's name field, in its General settings."
+  },
+  "fusion.teamGeneral.nameLength": {
+    "defaultMessage": "The name needs {min} to {max} characters.",
+    "description": "Error when a community's name is too short; {min} and {max} are numbers of characters."
+  },
+  "fusion.teamGeneral.save": {
+    "defaultMessage": "Save",
+    "description": "Button saving the community's name and description; verb."
+  },
+  "fusion.teamGeneral.saved": {
+    "defaultMessage": "Saved",
+    "description": "Notice after saving the community's name and description."
+  },
+  "fusion.teamGeneral.undo": {
+    "defaultMessage": "Undo changes",
+    "description": "Button taking back the unsaved changes of the community's name and description."
+  },
+  "fusion.teams.addPeople": {
+    "defaultMessage": "Add people of the community…",
+    "description": "Placeholder of the search adding people of the community to a team."
+  },
+  "fusion.teams.archive": {
+    "defaultMessage": "Archive the team",
+    "description": "Button (and its label) archiving a team of the community."
+  },
+  "fusion.teams.archived": {
+    "defaultMessage": "Archived {team}",
+    "description": "Notice after archiving a team of the community; {team} is its name."
+  },
+  "fusion.teams.badge": {
+    "defaultMessage": "Badge",
+    "description": "Label of a team's badge: the short tag (up to 8 characters) its members can show next to their name."
   },
   "fusion.teams.cancel": {
     "defaultMessage": "Cancel",
@@ -29455,6 +29671,14 @@
     "defaultMessage": "Team channel",
     "description": ""
   },
+  "fusion.teams.create": {
+    "defaultMessage": "Create team",
+    "description": "Button creating the team being edited; verb."
+  },
+  "fusion.teams.createTeam": {
+    "defaultMessage": "Create team",
+    "description": "Button under the list of the community's teams opening the editor of a new team."
+  },
   "fusion.teams.description": {
     "defaultMessage": "What the team does",
     "description": ""
@@ -29463,13 +29687,25 @@
     "defaultMessage": "Edit the team",
     "description": ""
   },
-  "fusion.teams.editLead": {
-    "defaultMessage": "Members can show the team's tag next to their name. The card lists the lead and links the team's channel.",
-    "description": ""
-  },
   "fusion.teams.editTitle": {
     "defaultMessage": "Edit {team}",
     "description": ""
+  },
+  "fusion.teams.filter": {
+    "defaultMessage": "Show",
+    "description": "Screen reader label of the filters of the community's teams (all, yours, archived)."
+  },
+  "fusion.teams.filterAll": {
+    "defaultMessage": "All",
+    "description": "Filter of the community's teams (groups inside the community): all of them, but the archived ones."
+  },
+  "fusion.teams.filterArchived": {
+    "defaultMessage": "Archived",
+    "description": "Filter of the community's teams (groups inside the community): the archived ones."
+  },
+  "fusion.teams.filterMine": {
+    "defaultMessage": "Yours",
+    "description": "Filter of the community's teams (groups inside the community): those you're a member of."
   },
   "fusion.teams.jump": {
     "defaultMessage": "Jump to #{channel}",
@@ -29487,9 +29723,29 @@
     "defaultMessage": "{count, plural, one {# member} other {# members}}",
     "description": ""
   },
+  "fusion.teams.membersTitle": {
+    "defaultMessage": "Members",
+    "description": "Label of a team's members, in the team editor."
+  },
+  "fusion.teams.mention": {
+    "defaultMessage": "Mention",
+    "description": "Label of a team's @mention name, which notifies its members, in the team editor."
+  },
+  "fusion.teams.mentionHelp": {
+    "defaultMessage": "@{name} notifies its members",
+    "description": "Help under a team's mention name; {name} is the mention name, without the @."
+  },
   "fusion.teams.messageLead": {
     "defaultMessage": "Message {name}, the lead",
     "description": ""
+  },
+  "fusion.teams.name": {
+    "defaultMessage": "Name",
+    "description": "Label of a team's name, in the team editor (teams are groups of people inside a community)."
+  },
+  "fusion.teams.namePlaceholder": {
+    "defaultMessage": "e.g. Detector team",
+    "description": "Example name of a team, in the team editor."
   },
   "fusion.teams.noChannel": {
     "defaultMessage": "No team channel yet",
@@ -29503,9 +29759,25 @@
     "defaultMessage": "No lead",
     "description": ""
   },
+  "fusion.teams.noMatch": {
+    "defaultMessage": "No team matches.",
+    "description": "Shown when no team of the community matches the search."
+  },
   "fusion.teams.otherChannel": {
     "defaultMessage": "The current channel (you aren't in it)",
     "description": ""
+  },
+  "fusion.teams.removePerson": {
+    "defaultMessage": "Remove from the team",
+    "description": "Screen reader label of the button removing someone from a team, in the team editor."
+  },
+  "fusion.teams.restore": {
+    "defaultMessage": "Restore",
+    "description": "Button restoring an archived team of the community."
+  },
+  "fusion.teams.restored": {
+    "defaultMessage": "Restored {team}",
+    "description": "Notice after restoring an archived team of the community; {team} is its name."
   },
   "fusion.teams.save": {
     "defaultMessage": "Save",
@@ -29515,9 +29787,9 @@
     "defaultMessage": "The team couldn't be saved.",
     "description": ""
   },
-  "fusion.teams.tag": {
-    "defaultMessage": "Tag",
-    "description": ""
+  "fusion.teams.search": {
+    "defaultMessage": "Find a team",
+    "description": "Placeholder and label of the search field of the community's teams."
   },
   "fusion.teams.tagHelp": {
     "defaultMessage": "Up to {max} characters",
@@ -29535,29 +29807,33 @@
     "defaultMessage": "Agents",
     "description": "Tab of the community settings: the community's own agents."
   },
+  "fusion.teamSettings.ai": {
+    "defaultMessage": "AI",
+    "description": "Name of the community settings' tab holding its AI model connections and its agents; AI stands for artificial intelligence."
+  },
   "fusion.teamSettings.aiConnections": {
     "defaultMessage": "Model connections",
     "description": "Tab name in the community settings: the community's own model connections (AI providers' addresses and keys)."
-  },
-  "fusion.teamSettings.allTeams": {
-    "defaultMessage": "Find and create teams…",
-    "description": "Button of the Teams tab of the community settings opening the teams dialog, to search, create and archive teams; the ellipsis means a dialog opens."
   },
   "fusion.teamSettings.autolinks": {
     "defaultMessage": "Autolinks",
     "description": ""
   },
-  "fusion.teamSettings.channels": {
-    "defaultMessage": "Channels",
-    "description": "Tab of the community settings holding its channel settings (everyone in every channel, default channel)."
-  },
-  "fusion.teamSettings.close": {
-    "defaultMessage": "Close team settings",
-    "description": ""
+  "fusion.teamSettings.channelMembership": {
+    "defaultMessage": "Channel membership",
+    "description": "Name of the community settings' tab with the membership policies of its channels (by user attributes)."
   },
   "fusion.teamSettings.closeButton": {
     "defaultMessage": "Close",
     "description": "Button at the bottom of a tab of the community settings (Roles, Member attributes, Community layout) that closes the community settings."
+  },
+  "fusion.teamSettings.closeLabel": {
+    "defaultMessage": "Close the community settings",
+    "description": "Screen reader label of the button closing the community settings."
+  },
+  "fusion.teamSettings.general": {
+    "defaultMessage": "General",
+    "description": "Name of the first tab of the community settings: the community's name, icon, kind, channels and layout."
   },
   "fusion.teamSettings.integrations": {
     "defaultMessage": "Integrations",
@@ -29567,21 +29843,29 @@
     "defaultMessage": "Members",
     "description": "Tab of the community settings listing the community's members; those who manage roles change a member's role or remove them there."
   },
+  "fusion.teamSettings.membershipRules": {
+    "defaultMessage": "Membership rules",
+    "description": "Name of the community settings' tab with the community's membership rules (who may be a member, by user attributes)."
+  },
   "fusion.teamSettings.noTeams": {
     "defaultMessage": "No teams yet.",
     "description": "Shown in the Teams tab of the community settings when the community has no teams."
   },
-  "fusion.teamSettings.overview": {
-    "defaultMessage": "Overview",
-    "description": ""
+  "fusion.teamSettings.onboardingRules": {
+    "defaultMessage": "Onboarding and rules",
+    "description": "Name of the community settings' tab holding the community's rules (members agree to them) and its onboarding (what newcomers are asked)."
   },
   "fusion.teamSettings.teams": {
     "defaultMessage": "Teams",
     "description": "Tab of the community settings listing the community's teams (groups of people with a tag, a lead and a channel)."
   },
-  "fusion.teamSettings.teamsDesc": {
-    "defaultMessage": "Teams have a tag people show next to their name, a lead and a channel.",
-    "description": "Introduction of the Teams tab of the community settings."
+  "fusion.teamSettings.teamsLead": {
+    "defaultMessage": "Teams have a badge their members can show next to their name, a lead, a channel and an @mention.",
+    "description": "Introduction of the Teams tab of the community settings; teams are groups of people inside the community."
+  },
+  "fusion.teamSettings.title": {
+    "defaultMessage": "Community settings",
+    "description": "Title (screen reader label) of the community settings dialog."
   },
   "fusion.theme.code": {
     "defaultMessage": "Theme code",
@@ -30135,10 +30419,6 @@
     "defaultMessage": "Esc",
     "description": "Name of the Escape keyboard key, shown as the shortcut hint in tooltips (e.g. for closing a toast); very compact."
   },
-  "general_tab.allowedDomains": {
-    "defaultMessage": "Allow only users with a specific email domain to join this team",
-    "description": "Checkbox label in team settings enabling the email-domain restriction for joining the team."
-  },
   "general_tab.allowedDomains.ariaLabel": {
     "defaultMessage": "Allowed Domains",
     "description": "Accessibility label for the allowed email domains setting in the team settings General tab."
@@ -30147,10 +30427,6 @@
     "defaultMessage": "corp.example.com, example.com",
     "description": "Placeholder in the allowed email domains input showing example domain values; the domains can stay untranslated."
   },
-  "general_tab.AllowedDomainsInfo": {
-    "defaultMessage": "When enabled, users can only join the team if their email matches a specific domain (e.g. \"example.com\")",
-    "description": "Description under the team setting that restricts joining to specific email domains."
-  },
   "general_tab.AllowedDomainsTip": {
     "defaultMessage": "Separate multiple domains with a space, comma, tab or enter.",
     "description": "Help text under the allowed domains input explaining how to enter multiple domains."
@@ -30158,10 +30434,6 @@
   "general_tab.AllowedDomainsTitle": {
     "defaultMessage": "Users with a specific email domain",
     "description": "Title of the team settings checkbox section for restricting membership by email domain."
-  },
-  "general_tab.codeLongDesc": {
-    "defaultMessage": "The Invite Code is part of the unique team invitation link which is sent to members you’re inviting to this team. Regenerating the code creates a new invitation link and invalidates the previous link.",
-    "description": "Description of the Invite Code setting in team settings, explaining what the code is and what regenerating does."
   },
   "general_tab.codeTitle": {
     "defaultMessage": "Invite Code",
@@ -30367,10 +30639,6 @@
     "defaultMessage": "Antimatter Logo",
     "description": "Accessibility title for the Antimatter logo; Antimatter is the product name."
   },
-  "generic_icons.member": {
-    "defaultMessage": "Member Icon",
-    "description": "Accessible title of the member/person icon on the Access tab in the team settings sidebar."
-  },
   "generic_icons.mention": {
     "defaultMessage": "Mention Icon",
     "description": "Accessible label (aria-label/title) of the '@' mentions icon used in the header and empty-state illustrations."
@@ -30426,10 +30694,6 @@
   "generic_icons.success": {
     "defaultMessage": "Success Icon",
     "description": "Accessibility title for a success (checkmark) icon."
-  },
-  "generic_icons.team_membership": {
-    "defaultMessage": "Team Membership Icon",
-    "description": "Accessible title of the icon on the Team Membership tab in the team settings sidebar."
   },
   "generic_icons.user_groups": {
     "defaultMessage": "User Groups Icon",
@@ -37431,18 +37695,6 @@
     "defaultMessage": "People who do not meet them can still join, but will not be automatically added.",
     "description": "Info banner body in the team members modal when attribute-based membership rules are advisory (public team); 'them' refers to the requirements."
   },
-  "team_member_modal.policy_advisory.title": {
-    "defaultMessage": "This team has membership requirements",
-    "description": "Info banner title in the team members modal when the team has advisory (non-blocking) membership requirements."
-  },
-  "team_member_modal.policy_enforced.description": {
-    "defaultMessage": "Only people who meet the membership requirements can be members of this team.",
-    "description": "Info banner body in the team members modal when attribute-based membership rules are strictly enforced."
-  },
-  "team_member_modal.policy_enforced.title": {
-    "defaultMessage": "Team access is restricted by user attributes",
-    "description": "Info banner title in the team members modal when team access is strictly restricted by user attributes."
-  },
   "team_members_dropdown.confirmDemoteDescription": {
     "defaultMessage": "If you demote yourself from the System Admin role and there is not another user with System Admin privileges, you'll need to re-assign a System Admin by accessing the Antimatter server through a terminal and running the following command.",
     "description": "Warning body in the dialog when a System Admin demotes themselves; followed by a CLI command to restore the role."
@@ -37499,10 +37751,6 @@
     "defaultMessage": "System Admin",
     "description": "Role label for a System Administrator in the team members list dropdown."
   },
-  "team_members_dropdown.teamAdmin": {
-    "defaultMessage": "Team Admin",
-    "description": "Role label shown for a user in the team members list dropdown; 'Team Admin' is a role name."
-  },
   "team_members_dropdown.teamAdmins": {
     "defaultMessage": "Team Admins",
     "description": "Label for the team administrators role/filter in the team members management list."
@@ -37511,21 +37759,9 @@
     "defaultMessage": "Team Members",
     "description": "Role label in the team groups modal for groups whose users have the regular member role."
   },
-  "team_settings_modal.accessPoliciesTab": {
-    "defaultMessage": "Channel Membership",
-    "description": "Sidebar tab name in the team settings dialog for channel membership policies; compact space."
-  },
   "team_settings_modal.accessTab": {
     "defaultMessage": "Access",
     "description": "Sidebar tab name in the team settings dialog for access/invitation settings; compact space, noun."
-  },
-  "team_settings_modal.teamMembershipTab": {
-    "defaultMessage": "Team Membership",
-    "description": "Sidebar tab name in the team settings dialog for attribute-based team membership rules; compact space."
-  },
-  "team_settings_modal.title": {
-    "defaultMessage": "Team Settings",
-    "description": "Title of the team settings dialog."
   },
   "team_settings.access_policies.add_policy": {
     "defaultMessage": "Add policy",
@@ -37535,29 +37771,13 @@
     "defaultMessage": "Channel membership policies",
     "description": "Heading of the team settings tab listing attribute-based channel membership policies."
   },
-  "team_settings.discoverability.description": {
-    "defaultMessage": "Public teams appear on the server landing page so anyone with an account can find and join them. Switching a team from Public to Private regenerates its invitation code, which creates a new invitation link and invalidates the old one.",
-    "description": "Description paragraph of the Discoverability section in the Team Settings > Access tab, above the Public/Private team selector. \"Public\" and \"Private\" refer to the two selector options and should match their labels."
-  },
-  "team_settings.discoverability.group_constrained_description": {
-    "defaultMessage": "Public teams appear on the server landing page so anyone with an account can find and join them.",
-    "description": "Shorter variant of the Discoverability description in Team Settings > Access, used when the team's membership is managed by AD/LDAP groups so the Public/Private selector is not offered."
-  },
   "team_settings.discoverability.private_description": {
     "defaultMessage": "Only invited members can join",
     "description": "Short description under the Private Team option in the team discoverability selector."
   },
-  "team_settings.discoverability.private_title": {
-    "defaultMessage": "Private Team",
-    "description": "Title of the Private option in the team discoverability selector in team settings."
-  },
   "team_settings.discoverability.public_description": {
     "defaultMessage": "Anyone on the server can find and join",
     "description": "Short description under the Public Team option in the team discoverability selector."
-  },
-  "team_settings.discoverability.public_title": {
-    "defaultMessage": "Public Team",
-    "description": "Title of the Public option in the team discoverability selector in team settings."
   },
   "team_settings.discoverability.title": {
     "defaultMessage": "Discoverability",
@@ -37587,10 +37807,6 @@
     "defaultMessage": "{count} {count, plural, one {user matches} other {users match}} the current rules.",
     "description": "Line in the save membership rules dialog for public teams; {count} is the number of users matching the rules."
   },
-  "team_settings.membership_tab.confirm.advisory_note": {
-    "defaultMessage": "This team is public, so these rules are advisory: no one is blocked or removed. Qualifying users can be auto-added and are shown as recommended.",
-    "description": "Note in the save membership rules dialog explaining that on a public team the rules are advisory and remove no one."
-  },
   "team_settings.membership_tab.confirm.allowed_count": {
     "defaultMessage": "{count} {count, plural, one {user matches} other {users match}} the current rules and will have access.",
     "description": "Line in the save membership rules dialog for private teams; {count} is the number of users who match the rules and keep access."
@@ -37599,21 +37815,9 @@
     "defaultMessage": "Cancel",
     "description": "Cancel button of the save team membership rules dialog."
   },
-  "team_settings.membership_tab.confirm.empty_team_warning": {
-    "defaultMessage": "Warning: No users match these rules. Saving will result in an empty private team.",
-    "description": "Warning in the save membership rules dialog when no user matches the rules, which would empty the private team."
-  },
   "team_settings.membership_tab.confirm.remove_confirm": {
     "defaultMessage": "Remove rules",
     "description": "Confirm button of the dialog when deleting all team membership rules."
-  },
-  "team_settings.membership_tab.confirm.remove_message": {
-    "defaultMessage": "This team will no longer be restricted by user attributes. Current members keep their access, and anyone who can normally join the team will be able to.",
-    "description": "Dialog body explaining the effect of removing all attribute-based membership rules from a private team."
-  },
-  "team_settings.membership_tab.confirm.remove_message_advisory": {
-    "defaultMessage": "This team will no longer have membership requirements. Auto-add and the \"Recommended\" tag stop; current members are unaffected.",
-    "description": "Body of the confirmation dialog when removing membership access rules from an open team; explains that auto-add and the 'Recommended' tag stop working."
   },
   "team_settings.membership_tab.confirm.remove_title": {
     "defaultMessage": "Remove membership rules?",
@@ -37631,17 +37835,9 @@
     "defaultMessage": "Saving...",
     "description": "In-progress button text while team membership rules are being saved."
   },
-  "team_settings.membership_tab.confirm.title": {
-    "defaultMessage": "Save team membership rules?",
-    "description": "Title of the confirmation dialog for saving team membership rules."
-  },
   "team_settings.membership_tab.error.back_to_editing": {
     "defaultMessage": "Back to editing",
     "description": "Only button of the error dialog blocking a rules save; returns the admin to the editor."
-  },
-  "team_settings.membership_tab.error.self_exclusion_message": {
-    "defaultMessage": "You cannot set these rules because that will remove you from the team.",
-    "description": "Error dialog body when the admin's membership rules would remove themselves from the team."
   },
   "team_settings.membership_tab.error.self_exclusion_title": {
     "defaultMessage": "Cannot save access rules",
@@ -37663,14 +37859,6 @@
     "defaultMessage": "Failed to save access rules",
     "description": "Error shown when saving the team's attribute-based access rules fails."
   },
-  "team_settings.membership_tab.subtitle": {
-    "defaultMessage": "Define who can be a member of this team based on user attributes.",
-    "description": "Subtitle under the Team Membership Rules heading in team settings."
-  },
-  "team_settings.membership_tab.title": {
-    "defaultMessage": "Team Membership Rules",
-    "description": "Heading of the team settings tab for defining attribute-based membership rules."
-  },
   "team_settings.mode_flip_confirm.cancel": {
     "defaultMessage": "Cancel",
     "description": "Cancel button of the dialog confirming a switch from public to private team."
@@ -37691,29 +37879,13 @@
     "defaultMessage": "Switching to Private will activate strict ABAC enforcement. {count} current {count, plural, one {member does} other {members do}} not meet criteria and will be removed at the next sync.",
     "description": "Confirmation body when switching a team to private; {count} is the number of members that will be removed for not meeting policy criteria."
   },
-  "team_settings.mode_flip_confirm.title": {
-    "defaultMessage": "Switch to Private Team?",
-    "description": "Title of the confirmation dialog for switching a team from public to private."
-  },
   "team_settings.mode_flip_self_exclusion.confirm": {
     "defaultMessage": "Back to editing",
     "description": "Only button of the dialog blocking a public-to-private switch; returns the admin to editing the rules."
   },
-  "team_settings.mode_flip_self_exclusion.message": {
-    "defaultMessage": "You do not meet the current membership rules, so switching to Private would remove you from the team at the next sync. Update the rules to include yourself, or ask another admin to make the switch.",
-    "description": "Dialog body explaining the team admin cannot switch the team to private because the membership rules would remove them."
-  },
-  "team_settings.mode_flip_self_exclusion.title": {
-    "defaultMessage": "Cannot switch to Private Team",
-    "description": "Title of the dialog blocking a public-to-private team switch that would remove the current admin."
-  },
   "team_settings.openInviteDescription.error": {
     "defaultMessage": "There was an error generating the invite code, please try again",
     "description": "Error shown in team settings when regenerating the team invite code fails."
-  },
-  "team_settings.openInviteDescription.groupConstrained": {
-    "defaultMessage": "Members of this team are added and removed by linked groups. <link>Learn More</link>",
-    "description": "Notice in team settings when team membership is managed by linked LDAP/AD groups; <link> tags wrap a documentation link."
   },
   "team_settings.policy_editor.channel_selector.subtitle": {
     "defaultMessage": "Add channels that this membership policy will apply to.",

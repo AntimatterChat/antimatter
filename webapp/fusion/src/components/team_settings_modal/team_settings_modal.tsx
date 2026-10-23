@@ -9,22 +9,19 @@ import {getCurrentTeam, getCurrentTeamId} from 'mattermost-redux/selectors/entit
 
 import TeamSettings from 'components/team_settings';
 
-import AgentsSettings from 'fusion/agents/agents_settings';
-import ModelConnections from 'fusion/ai/model_connections';
 import CommunityAttributesSettings from 'fusion/attributes/community_attributes_dialog';
 import Icon from 'fusion/components/icon';
 import {Dialog} from 'fusion/components/layer';
+import AISettings from 'fusion/teams/ai_settings';
 import AutolinksSettings from 'fusion/teams/autolinks_settings';
-import ChannelsSettings from 'fusion/teams/channels_settings';
-import CommunityRulesSettings from 'fusion/teams/community_rules_settings';
 import {getCommunitySettingsAccess} from 'fusion/teams/community_settings_access';
+import GeneralSettings from 'fusion/teams/general_settings';
 import MembersSettings from 'fusion/teams/members_settings';
-import OnboardingSettings from 'fusion/teams/onboarding_editor';
+import OnboardingRulesSettings from 'fusion/teams/onboarding_rules_settings';
 import RolesSettings from 'fusion/teams/roles_dialog';
-import {TeamLayoutSettings} from 'fusion/teams/team_layout_dialog';
 import TeamsSettings from 'fusion/teams/teams_settings';
 import {am} from 'fusion/utils/class_names';
-import {openInvitePeople, openUserGroups} from 'fusion/utils/modals';
+import {openInvitePeople} from 'fusion/utils/modals';
 import {focusElement} from 'utils/a11y_utils';
 import {getHistory} from 'utils/browser_history';
 
@@ -35,8 +32,13 @@ import './team_settings_modal.scss';
 const SHOW_PANEL_ERROR_STATE_TAB_SWITCH_TIMEOUT = 3000;
 
 // The tabs the Fusion UI draws itself; the others are the classic web app's.
-export type FusionTeamSettingsTab = 'members' | 'teams' | 'channels' | 'roles' | 'onboarding' | 'rules' | 'layout' | 'attributes' | 'autolinks' | 'ai_connections' | 'agents';
-const FUSION_TABS = new Set<string>(['members', 'teams', 'channels', 'roles', 'onboarding', 'rules', 'layout', 'attributes', 'autolinks', 'ai_connections', 'agents']);
+export type FusionTeamSettingsTab = 'info' | 'roles' | 'members' | 'attributes' | 'teams' | 'onboarding' | 'ai' | 'autolinks';
+const FUSION_TABS = new Set<string>(['info', 'roles', 'members', 'attributes', 'teams', 'onboarding', 'ai', 'autolinks']);
+
+// The tabs that became parts of others: the channels and the layout are in General, the rules with the onboarding,
+// the model connections with the agents.
+const MERGED_TABS: Record<string, string> = {channels: 'info', layout: 'info', rules: 'onboarding', ai_connections: 'ai', agents: 'ai'};
+const tabOf = (tab?: string) => (tab && MERGED_TABS[tab]) || tab || 'info';
 
 type Props = {
     isOpen: boolean;
@@ -48,7 +50,7 @@ type Props = {
 };
 
 const TeamSettingsModal = ({isOpen, onExited, focusOriginElement, initialTab}: Props) => {
-    const [activeTab, setActiveTab] = useState(initialTab || 'info');
+    const [activeTab, setActiveTab] = useState(tabOf(initialTab));
     const [show, setShow] = useState(isOpen);
     const [areThereUnsavedChanges, setAreThereUnsavedChanges] = useState(false);
     const [showTabSwitchError, setShowTabSwitchError] = useState(false);
@@ -116,7 +118,7 @@ const TeamSettingsModal = ({isOpen, onExited, focusOriginElement, initialTab}: P
 
     const handleExited = useCallback(() => {
         // Reset all state
-        setActiveTab(initialTab || 'info');
+        setActiveTab(tabOf(initialTab));
         setAreThereUnsavedChanges(false);
         setShowTabSwitchError(false);
         setHasBeenWarned(false);
@@ -130,120 +132,70 @@ const TeamSettingsModal = ({isOpen, onExited, focusOriginElement, initialTab}: P
         onExited();
     }, [onExited, focusOriginElement, initialTab]);
 
+    // The tabs: General, Roles, Members (then who may join: its invitations, member attributes and membership rules),
+    // Teams, Onboarding and rules, AI, Autolinks; then the integrations' pages.
     const tabs = [
         {
             name: 'info',
-            uiName: formatMessage({id: 'fusion.teamSettings.overview', defaultMessage: 'Overview'}),
-            icon: 'icon icon-information-outline',
-            iconTitle: formatMessage({id: 'generic_icons.info', defaultMessage: 'Info Icon'}),
+            uiName: formatMessage({id: 'fusion.teamSettings.general', defaultMessage: 'General'}),
             display: access.manage,
         },
         {
-            name: 'access',
-            uiName: formatMessage({id: 'team_settings_modal.accessTab', defaultMessage: 'Access'}),
-            icon: 'icon icon-account-multiple-outline',
-            iconTitle: formatMessage({id: 'generic_icons.member', defaultMessage: 'Member Icon'}),
-
-            // The community's invitations: changing them takes managing it (the server checks manage_team).
-            display: access.access,
-        },
-        {
-            name: 'team_membership',
-            uiName: formatMessage({id: 'team_settings_modal.teamMembershipTab', defaultMessage: 'Team Membership'}),
-            icon: 'icon icon-iframe-list-outline',
-            iconTitle: formatMessage({id: 'generic_icons.team_membership', defaultMessage: 'Team Membership Icon'}),
-            display: access.teamMembership,
-        },
-        {
-            name: 'access_policies',
-            uiName: formatMessage({id: 'team_settings_modal.accessPoliciesTab', defaultMessage: 'Channel Membership'}),
-            icon: 'icon icon-message-check-outline',
-            iconTitle: formatMessage({id: 'generic_icons.access_rules', defaultMessage: 'Membership Policy Icon'}),
-            display: access.accessPolicies,
+            name: 'roles',
+            uiName: formatMessage({id: 'fusion.roles.title', defaultMessage: 'Roles'}),
+            display: access.roles,
         },
         {
 
             // Antimatter: the members (the menu's former Manage members), for everyone who opens the settings.
             name: 'members',
             uiName: formatMessage({id: 'fusion.teamSettings.members', defaultMessage: 'Members'}),
-            icon: 'icon icon-account-multiple-outline',
-            iconTitle: formatMessage({id: 'fusion.teamSettings.members', defaultMessage: 'Members'}),
             display: true,
+        },
+        {
+            name: 'access',
+            uiName: formatMessage({id: 'team_settings_modal.accessTab', defaultMessage: 'Access'}),
+
+            // The community's invitations: changing them takes managing it (the server checks manage_team).
+            display: access.access,
+        },
+        {
+            name: 'attributes',
+            uiName: formatMessage({id: 'fusion.communityAttributes.title', defaultMessage: 'Member attributes'}),
+            display: access.manage && access.teams,
+        },
+        {
+            name: 'team_membership',
+            uiName: formatMessage({id: 'fusion.teamSettings.membershipRules', defaultMessage: 'Membership rules'}),
+            display: access.teamMembership,
+        },
+        {
+            name: 'access_policies',
+            uiName: formatMessage({id: 'fusion.teamSettings.channelMembership', defaultMessage: 'Channel membership'}),
+            display: access.accessPolicies,
         },
         {
 
             // And its teams (the menu's former Teams…), when the server has them.
             name: 'teams',
             uiName: formatMessage({id: 'fusion.teamSettings.teams', defaultMessage: 'Teams'}),
-            icon: 'icon icon-account-group-outline',
-            iconTitle: formatMessage({id: 'fusion.teamSettings.teams', defaultMessage: 'Teams'}),
             display: access.teams,
         },
         {
-            name: 'channels',
-            uiName: formatMessage({id: 'fusion.teamSettings.channels', defaultMessage: 'Channels'}),
-            icon: 'icon icon-globe',
-            iconTitle: formatMessage({id: 'fusion.teamSettings.channels', defaultMessage: 'Channels'}),
-            display: access.manage,
-        },
-        {
-            name: 'roles',
-            uiName: formatMessage({id: 'fusion.roles.title', defaultMessage: 'Roles'}),
-            icon: 'icon icon-shield-outline',
-            iconTitle: formatMessage({id: 'fusion.roles.title', defaultMessage: 'Roles'}),
-            display: access.roles,
-        },
-        {
             name: 'onboarding',
-            uiName: formatMessage({id: 'fusion.onboarding.editTitle', defaultMessage: 'Onboarding'}),
-            icon: 'icon icon-message-text-outline',
-            iconTitle: formatMessage({id: 'fusion.onboarding.editTitle', defaultMessage: 'Onboarding'}),
-            display: access.manage && access.teams,
-        },
-        {
-            name: 'rules',
-            uiName: formatMessage({id: 'fusion.communityRules.tab', defaultMessage: 'Rules'}),
-            icon: 'icon icon-format-list-numbered',
-            iconTitle: formatMessage({id: 'fusion.communityRules.tab', defaultMessage: 'Rules'}),
+            uiName: formatMessage({id: 'fusion.teamSettings.onboardingRules', defaultMessage: 'Onboarding and rules'}),
             display: access.manage,
         },
         {
-            name: 'attributes',
-            uiName: formatMessage({id: 'fusion.communityAttributes.title', defaultMessage: 'Member attributes'}),
-            icon: 'icon icon-tag-outline',
-            iconTitle: formatMessage({id: 'fusion.communityAttributes.title', defaultMessage: 'Member attributes'}),
-            display: access.manage && access.teams,
-        },
-        {
-            name: 'layout',
-            uiName: formatMessage({id: 'fusion.layout.title', defaultMessage: 'Community layout'}),
-            icon: 'icon icon-view-grid-outline',
-            iconTitle: formatMessage({id: 'fusion.layout.title', defaultMessage: 'Community layout'}),
-            display: access.manage && access.teams,
+
+            // Antimatter: the community's own model connections (its admins, and the roles granted it) and agents.
+            name: 'ai',
+            uiName: formatMessage({id: 'fusion.teamSettings.ai', defaultMessage: 'AI'}),
+            display: access.aiConnections || access.manage,
         },
         {
             name: 'autolinks',
             uiName: formatMessage({id: 'fusion.teamSettings.autolinks', defaultMessage: 'Autolinks'}),
-            icon: 'icon icon-link-variant',
-            iconTitle: formatMessage({id: 'fusion.teamSettings.autolinks', defaultMessage: 'Autolinks'}),
-            display: access.manage,
-        },
-        {
-            name: 'ai_connections',
-            uiName: formatMessage({id: 'fusion.teamSettings.aiConnections', defaultMessage: 'Model connections'}),
-            icon: 'icon icon-creation-outline',
-            iconTitle: formatMessage({id: 'fusion.teamSettings.aiConnections', defaultMessage: 'Model connections'}),
-
-            // Antimatter: the community's own model connections, for its admins (and the roles granted it).
-            display: access.aiConnections,
-        },
-        {
-
-            // Antimatter: the community's own agents, for its admins.
-            name: 'agents',
-            uiName: formatMessage({id: 'fusion.teamSettings.agents', defaultMessage: 'Agents'}),
-            icon: 'icon icon-creation-outline',
-            iconTitle: formatMessage({id: 'fusion.teamSettings.agents', defaultMessage: 'Agents'}),
             display: access.manage,
         },
     ];
@@ -259,7 +211,7 @@ const TeamSettingsModal = ({isOpen, onExited, focusOriginElement, initialTab}: P
         return null;
     }
 
-    const modalTitle = formatMessage({id: 'team_settings_modal.title', defaultMessage: 'Team Settings'});
+    const modalTitle = formatMessage({id: 'fusion.teamSettings.title', defaultMessage: 'Community settings'});
     const visibleTabs = tabs.filter((tab) => tab.display !== false);
 
     // A tab one may not see (asked for by an opener, or no longer allowed) falls back to the first one.
@@ -327,32 +279,30 @@ const TeamSettingsModal = ({isOpen, onExited, focusOriginElement, initialTab}: P
                         {formatMessage({id: 'saveChangesPanel.message', defaultMessage: 'You have unsaved changes'})}
                     </p>
                 )}
-                {shownTab === 'members' && <MembersSettings onInvite={() => leaveFor(() => dispatch(openInvitePeople()))}/>}
-                {shownTab === 'teams' && <TeamsSettings onOpenAll={() => leaveFor(() => dispatch(openUserGroups(teamId)))}/>}
-                {shownTab === 'channels' && <ChannelsSettings/>}
+                {shownTab === 'info' && <GeneralSettings setUnsaved={setAreThereUnsavedChanges}/>}
                 {shownTab === 'roles' && <RolesSettings onClose={handleHide}/>}
-                {shownTab === 'onboarding' && <OnboardingSettings setUnsaved={setAreThereUnsavedChanges}/>}
-                {shownTab === 'rules' && <CommunityRulesSettings setUnsaved={setAreThereUnsavedChanges}/>}
+                {shownTab === 'members' && <MembersSettings onInvite={() => leaveFor(() => dispatch(openInvitePeople()))}/>}
                 {shownTab === 'attributes' && (
                     <CommunityAttributesSettings
                         teamId={teamId}
                         onClose={handleHide}
                     />
                 )}
-                {shownTab === 'layout' && <TeamLayoutSettings onClose={handleHide}/>}
+                {shownTab === 'teams' && <TeamsSettings setUnsaved={setAreThereUnsavedChanges}/>}
+                {shownTab === 'onboarding' && (
+                    <OnboardingRulesSettings
+                        setUnsaved={setAreThereUnsavedChanges}
+                        onboarding={access.teams}
+                    />
+                )}
+                {shownTab === 'ai' && team && (
+                    <AISettings
+                        team={team}
+                        connections={access.aiConnections}
+                        agents={access.manage}
+                    />
+                )}
                 {shownTab === 'autolinks' && <AutolinksSettings setUnsaved={setAreThereUnsavedChanges}/>}
-                {shownTab === 'ai_connections' && teamId && (
-                    <ModelConnections
-                        scope={teamId}
-                        listScope={teamId}
-                    />
-                )}
-                {shownTab === 'agents' && team && (
-                    <AgentsSettings
-                        scope={team.id}
-                        teamName={team.name}
-                    />
-                )}
                 {shownTab && !FUSION_TABS.has(shownTab) && (
 
                     // The tabs' classic styles are scoped to the classic dialog's class.
@@ -369,7 +319,7 @@ const TeamSettingsModal = ({isOpen, onExited, focusOriginElement, initialTab}: P
                 <button
                     type='button'
                     className={am('icon-btn', 'close')}
-                    aria-label={formatMessage({id: 'fusion.teamSettings.close', defaultMessage: 'Close team settings'})}
+                    aria-label={formatMessage({id: 'fusion.teamSettings.closeLabel', defaultMessage: 'Close the community settings'})}
                     onClick={handleHide}
                 >
                     <Icon name='x'/>

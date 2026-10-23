@@ -10,7 +10,7 @@ exports[`components/team_members_dropdown should match snapshot for a bot with g
     id="teamMembersDropdown_bot"
   >
     <span>
-      Team Admin
+      Community admin
        
     </span>
     <i
@@ -31,7 +31,7 @@ exports[`components/team_members_dropdown should match snapshot for team_members
     id="teamMembersDropdown_username2"
   >
     <span>
-      Team Admin
+      Community admin
        
     </span>
     <i
@@ -52,7 +52,7 @@ exports[`components/team_members_dropdown should match snapshot opening dropdown
     id="teamMembersDropdown_username2"
   >
     <span>
-      Team Admin
+      Community admin
        
     </span>
     <i
@@ -73,7 +73,7 @@ exports[`components/team_members_dropdown should match snapshot with group-const
     id="teamMembersDropdown_username2"
   >
     <span>
-      Team Admin
+      Community admin
        
     </span>
     <i

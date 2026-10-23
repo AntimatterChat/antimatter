@@ -33,10 +33,10 @@ const channels = [
     ch('old', 'old', 'Old', {delete_at: 4}),
 ];
 
-function state({allChannels = false, defaultChannelId = '', list = channels, kind = 'community' as TeamKind} = {}) {
+function state({allChannels = false, defaultChannelId = '', list = channels, kind = 'guild' as TeamKind, welcome = '', joinLeaveOff = false} = {}) {
     return {
         entities: {
-            teams: {currentTeamId: 't1', teams: {t1: TestHelper.getTeamMock({id: 't1', all_channels_membership: allChannels, default_channel_id: defaultChannelId, kind})}},
+            teams: {currentTeamId: 't1', teams: {t1: TestHelper.getTeamMock({id: 't1', all_channels_membership: allChannels, default_channel_id: defaultChannelId, kind, welcome_channel_id: welcome, disable_join_leave_messages: joinLeaveOff})}},
             channels: {
                 channels: Object.fromEntries(list.map((c) => [c.id, c])),
                 channelsInTeam: {t1: new Set(list.map((c) => c.id))},
@@ -48,21 +48,27 @@ function state({allChannels = false, defaultChannelId = '', list = channels, kin
 const options = () => within(screen.getByRole('combobox', {name: 'Default channel'})).getAllByRole('option').map((o) => o.textContent);
 
 describe('fusion/teams/ChannelsSettings', () => {
-    test('makes the community a workplace, and back', async () => {
+    test('makes the guild a workspace, and back', async () => {
         renderWithContext(<ChannelsSettings/>, state() as never);
         const kind = screen.getByRole('group', {name: 'Kind of community'});
-        expect(within(kind).getByRole('button', {name: 'Community'})).toHaveAttribute('aria-pressed', 'true');
-        await userEvent.click(within(kind).getByRole('button', {name: 'Workplace'}));
-        expect(patchTeam).toHaveBeenCalledWith({id: 't1', kind: 'workplace'});
-        await waitFor(() => expect(mockToast).toHaveBeenCalledWith('Members now archive the channels they created'));
+        expect(within(kind).getByRole('button', {name: 'Guild'})).toHaveAttribute('aria-pressed', 'true');
+        await userEvent.click(within(kind).getByRole('button', {name: 'Workspace'}));
+        expect(patchTeam).toHaveBeenCalledWith({id: 't1', kind: 'workspace'});
+        await waitFor(() => expect(mockToast).toHaveBeenCalledWith('It\'s a workspace: members join the channels they want and archive those they created'));
     });
 
-    test('shows a workplace community as such', async () => {
-        renderWithContext(<ChannelsSettings/>, state({kind: 'workplace'}) as never);
+    test('shows a workspace as such', async () => {
+        renderWithContext(<ChannelsSettings/>, state({kind: 'workspace'}) as never);
         const kind = screen.getByRole('group', {name: 'Kind of community'});
-        expect(within(kind).getByRole('button', {name: 'Workplace'})).toHaveAttribute('aria-pressed', 'true');
-        await userEvent.click(within(kind).getByRole('button', {name: 'Community'}));
-        expect(patchTeam).toHaveBeenCalledWith({id: 't1', kind: 'community'});
+        expect(within(kind).getByRole('button', {name: 'Workspace'})).toHaveAttribute('aria-pressed', 'true');
+        await userEvent.click(within(kind).getByRole('button', {name: 'Guild'}));
+        expect(patchTeam).toHaveBeenCalledWith({id: 't1', kind: 'guild'});
+        await waitFor(() => expect(mockToast).toHaveBeenCalledWith('It\'s a guild: everyone is being added to the channels they may see'));
+    });
+
+    test('a community stored with a former kind name shows as its kind', () => {
+        renderWithContext(<ChannelsSettings/>, state({kind: 'community' as TeamKind}) as never);
+        expect(within(screen.getByRole('group', {name: 'Kind of community'})).getByRole('button', {name: 'Guild'})).toHaveAttribute('aria-pressed', 'true');
     });
 
     test('turns on "everyone in every channel"', async () => {
@@ -107,5 +113,31 @@ describe('fusion/teams/ChannelsSettings', () => {
         renderWithContext(<ChannelsSettings/>, state() as never);
         await userEvent.click(screen.getByRole('switch', {name: 'Members are in every channel'}));
         await waitFor(() => expect(mockToast).toHaveBeenCalledWith('Not allowed'));
+    });
+
+    test('the join and leave messages go to the Welcome channel, another public channel, or nowhere', async () => {
+        const list = [...channels, ch('wel', 'welcome', 'Welcome')];
+        renderWithContext(<ChannelsSettings/>, state({list, welcome: 'wel'}) as never);
+        const menu = screen.getByRole('combobox', {name: 'Join and leave messages'});
+        expect(menu).toHaveValue('wel');
+        expect(within(menu).getAllByRole('option').map((o) => o.textContent)).toEqual(['Off', 'In the default channel', '#Announcements', '#Dev', '#General', '#Welcome']);
+
+        await userEvent.selectOptions(menu, 'dev');
+        expect(patchTeam).toHaveBeenCalledWith({id: 't1', disable_join_leave_messages: false, welcome_channel_id: 'dev'});
+        await waitFor(() => expect(mockToast).toHaveBeenCalledWith('Join and leave messages saved'));
+
+        await userEvent.selectOptions(menu, 'off');
+        expect(patchTeam).toHaveBeenCalledWith({id: 't1', disable_join_leave_messages: true});
+        await waitFor(() => expect(mockToast).toHaveBeenCalledWith('Nobody is told who joins and leaves'));
+    });
+
+    test('a community made before Welcome tells them in its default channel', () => {
+        renderWithContext(<ChannelsSettings/>, state() as never);
+        expect(screen.getByRole('combobox', {name: 'Join and leave messages'})).toHaveValue('');
+    });
+
+    test('turned off, they show as off', () => {
+        renderWithContext(<ChannelsSettings/>, state({welcome: 'dev', joinLeaveOff: true}) as never);
+        expect(screen.getByRole('combobox', {name: 'Join and leave messages'})).toHaveValue('off');
     });
 });

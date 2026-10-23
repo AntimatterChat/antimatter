@@ -136,7 +136,7 @@ describe('components/team_settings/TeamMembershipTab', () => {
         );
 
         await waitFor(() => {
-            expect(screen.getByText('Team Membership Rules')).toBeInTheDocument();
+            expect(screen.getByText('Membership rules')).toBeInTheDocument();
             expect(screen.getByTestId('table-editor')).toBeInTheDocument();
         });
     });
@@ -253,7 +253,7 @@ describe('components/team_settings/TeamMembershipTab', () => {
         await userEvent.click(screen.getByText('Save'));
 
         // Confirm modal
-        await waitFor(() => expect(screen.getByText('Save team membership rules?')).toBeInTheDocument());
+        await waitFor(() => expect(screen.getByText('Save the membership rules?')).toBeInTheDocument());
         const confirmButtons = screen.getAllByText('Save');
         await userEvent.click(confirmButtons[confirmButtons.length - 1]);
 
@@ -287,7 +287,7 @@ describe('components/team_settings/TeamMembershipTab', () => {
         // Trigger save
         await userEvent.click(screen.getByText('Save'));
 
-        await waitFor(() => expect(screen.getByText('Save team membership rules?')).toBeInTheDocument());
+        await waitFor(() => expect(screen.getByText('Save the membership rules?')).toBeInTheDocument());
 
         const confirmButtons = screen.getAllByText('Save');
         await userEvent.click(confirmButtons[confirmButtons.length - 1]);
@@ -324,7 +324,7 @@ describe('components/team_settings/TeamMembershipTab', () => {
 
         await userEvent.click(screen.getByText('Save'));
 
-        await waitFor(() => expect(screen.getByText('Save team membership rules?')).toBeInTheDocument());
+        await waitFor(() => expect(screen.getByText('Save the membership rules?')).toBeInTheDocument());
 
         const confirmButtons = screen.getAllByText('Save');
         await userEvent.click(confirmButtons[confirmButtons.length - 1]);
@@ -427,7 +427,7 @@ describe('components/team_settings/TeamMembershipTab', () => {
         await userEvent.click(screen.getByTestId('table-editor-clear'));
         await userEvent.click(screen.getByText('Save'));
 
-        await waitFor(() => expect(screen.getByText('Save team membership rules?')).toBeInTheDocument());
+        await waitFor(() => expect(screen.getByText('Save the membership rules?')).toBeInTheDocument());
         expect(screen.queryByText('Remove membership rules?')).not.toBeInTheDocument();
     });
 
@@ -484,7 +484,7 @@ describe('components/team_settings/TeamMembershipTab', () => {
         await userEvent.click(await screen.findByText('Save'));
 
         // Confirm the modal to start the save
-        await waitFor(() => expect(screen.getByText('Save team membership rules?')).toBeInTheDocument());
+        await waitFor(() => expect(screen.getByText('Save the membership rules?')).toBeInTheDocument());
         const confirmButtons = screen.getAllByText('Save');
         await userEvent.click(confirmButtons[confirmButtons.length - 1]);
 
@@ -518,7 +518,7 @@ describe('components/team_settings/TeamMembershipTab', () => {
         await userEvent.click(screen.getByTestId('table-editor-change'));
         await userEvent.click(screen.getByText('Save'));
 
-        await waitFor(() => expect(screen.getByText('Save team membership rules?')).toBeInTheDocument());
+        await waitFor(() => expect(screen.getByText('Save the membership rules?')).toBeInTheDocument());
         expect(screen.queryByText('Cannot save access rules')).not.toBeInTheDocument();
         expect(mockActions.validateExpressionAgainstRequester).not.toHaveBeenCalled();
     });
@@ -552,7 +552,7 @@ describe('components/team_settings/TeamMembershipTab', () => {
 
         await waitFor(() => {
             expect(screen.getByText('Cannot save access rules')).toBeInTheDocument();
-            expect(screen.getByText('You cannot set these rules because that will remove you from the team.')).toBeInTheDocument();
+            expect(screen.getByText("You can't set these rules: they would remove you from the community.")).toBeInTheDocument();
         });
     });
 
@@ -578,7 +578,7 @@ describe('components/team_settings/TeamMembershipTab', () => {
         await userEvent.click(screen.getByText('Save'));
 
         await waitFor(() => {
-            expect(screen.getByText(/empty private team/i)).toBeInTheDocument();
+            expect(screen.getByText(/empty private community/i)).toBeInTheDocument();
         });
     });
 

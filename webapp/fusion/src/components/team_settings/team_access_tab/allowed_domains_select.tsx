@@ -43,8 +43,8 @@ const AllowedDomainsSelect = ({allowedDomains, setAllowedDomains, setHasChanges,
             <CheckboxSettingItem
                 inputFieldTitle={
                     <FormattedMessage
-                        id='general_tab.allowedDomains'
-                        defaultMessage='Allow only users with a specific email domain to join this team'
+                        id='fusion.communityAccess.allowedDomains'
+                        defaultMessage='Allow only people with a specific email domain to join this community'
                     />
                 }
                 data-testid='allowedDomainsCheckbox'
@@ -54,8 +54,8 @@ const AllowedDomainsSelect = ({allowedDomains, setAllowedDomains, setHasChanges,
                     defaultMessage: 'Users with a specific email domain',
                 })}
                 description={formatMessage({
-                    id: 'general_tab.AllowedDomainsInfo',
-                    defaultMessage: 'When enabled, users can only join the team if their email matches a specific domain (e.g. "example.com")',
+                    id: 'fusion.communityAccess.allowedDomainsInfo',
+                    defaultMessage: 'When on, people can only join the community if their email matches one of these domains (e.g. "example.com")',
                 })}
                 descriptionAboveContent={true}
                 inputFieldData={{name: 'showAllowedDomains'}}

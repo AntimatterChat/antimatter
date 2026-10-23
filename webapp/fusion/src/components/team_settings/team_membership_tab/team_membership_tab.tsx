@@ -519,8 +519,8 @@ function TeamMembershipTab({
             id: 'team_settings.membership_tab.auto_add_enabled_description',
             defaultMessage: 'Qualifying users are automatically added as members, and members who no longer match will be removed.',
         }) : formatMessage({
-            id: 'team_settings.membership_tab.auto_add_disabled_description',
-            defaultMessage: 'Access rules will restrict who can join the team, but qualifying users will not be added automatically.',
+            id: 'fusion.communityMembership.autoAddDisabled',
+            defaultMessage: 'Access rules restrict who can join the community, but people who qualify aren\'t added automatically.',
         });
     }
 
@@ -529,13 +529,13 @@ function TeamMembershipTab({
             <p>
                 {team.allow_open_invite ? (
                     <FormattedMessage
-                        id='team_settings.membership_tab.confirm.remove_message_advisory'
-                        defaultMessage='This team will no longer have membership requirements. Auto-add and the "Recommended" tag stop; current members are unaffected.'
+                        id='fusion.communityMembership.removeAdvisory'
+                        defaultMessage='This community will no longer have membership requirements. Auto-add and the "Recommended" tag stop; current members are unaffected.'
                     />
                 ) : (
                     <FormattedMessage
-                        id='team_settings.membership_tab.confirm.remove_message'
-                        defaultMessage='This team will no longer be restricted by user attributes. Current members keep their access, and anyone who can normally join the team will be able to.'
+                        id='fusion.communityMembership.remove'
+                        defaultMessage='This community will no longer be restricted by user attributes. Current members keep their access, and anyone who can normally join the community will be able to.'
                     />
                 )}
             </p>
@@ -549,8 +549,8 @@ function TeamMembershipTab({
         <div className='TeamMembershipTab__confirmMessage'>
             <p>
                 <FormattedMessage
-                    id='team_settings.membership_tab.confirm.advisory_note'
-                    defaultMessage='This team is public, so these rules are advisory: no one is blocked or removed. Qualifying users can be auto-added and are shown as recommended.'
+                    id='fusion.communityMembership.advisoryNote'
+                    defaultMessage='This community is public, so these rules are advisory: no one is blocked or removed. People who qualify can be added automatically and are shown as recommended.'
                 />
             </p>
             {allowedCount !== null && (
@@ -588,8 +588,8 @@ function TeamMembershipTab({
             {isEmptyTeamWarning && (
                 <p className='TeamMembershipTab__emptyTeamWarning'>
                     <FormattedMessage
-                        id='team_settings.membership_tab.confirm.empty_team_warning'
-                        defaultMessage='Warning: No users match these rules. Saving will result in an empty private team.'
+                        id='fusion.communityMembership.emptyWarning'
+                        defaultMessage='Warning: nobody matches these rules. Saving leaves an empty private community.'
                     />
                 </p>
             )}
@@ -643,14 +643,14 @@ function TeamMembershipTab({
             <div className='TeamMembershipTab__header'>
                 <h3 className='TeamMembershipTab__title'>
                     {formatMessage({
-                        id: 'team_settings.membership_tab.title',
-                        defaultMessage: 'Team Membership Rules',
+                        id: 'fusion.communityMembership.title',
+                        defaultMessage: 'Membership rules',
                     })}
                 </h3>
                 <p className='TeamMembershipTab__subtitle'>
                     {formatMessage({
-                        id: 'team_settings.membership_tab.subtitle',
-                        defaultMessage: 'Define who can be a member of this team based on user attributes.',
+                        id: 'fusion.communityMembership.subtitle',
+                        defaultMessage: 'Who can be a member of this community, by user attributes.',
                     })}
                 </p>
             </div>
@@ -752,8 +752,8 @@ function TeamMembershipTab({
                 }
                 message={
                     <FormattedMessage
-                        id='team_settings.membership_tab.error.self_exclusion_message'
-                        defaultMessage='You cannot set these rules because that will remove you from the team.'
+                        id='fusion.communityMembership.selfExclusion'
+                        defaultMessage="You can't set these rules: they would remove you from the community."
                     />
                 }
                 confirmButtonText={
@@ -777,8 +777,8 @@ function TeamMembershipTab({
                     />
                 ) : (
                     <FormattedMessage
-                        id='team_settings.membership_tab.confirm.title'
-                        defaultMessage='Save team membership rules?'
+                        id='fusion.communityMembership.confirmTitle'
+                        defaultMessage='Save the membership rules?'
                     />
                 )}
                 message={confirmModalMessage}

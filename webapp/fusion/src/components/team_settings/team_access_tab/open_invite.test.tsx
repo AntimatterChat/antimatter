@@ -32,8 +32,8 @@ describe('components/TeamSettings/OpenInvite', () => {
 
     test('renders Public and Private option buttons when not group-constrained', () => {
         renderWithContext(<OpenInvite {...defaultProps}/>);
-        expect(screen.getByText('Public Team')).toBeInTheDocument();
-        expect(screen.getByText('Private Team')).toBeInTheDocument();
+        expect(screen.getByText('Public community')).toBeInTheDocument();
+        expect(screen.getByText('Private community')).toBeInTheDocument();
     });
 
     test('renders the updated discoverability help text, not the stale checkbox copy', () => {
@@ -49,7 +49,7 @@ describe('components/TeamSettings/OpenInvite', () => {
                 isPublic={false}
             />,
         );
-        await userEvent.click(screen.getByText('Public Team'));
+        await userEvent.click(screen.getByText('Public community'));
         expect(onChange).toHaveBeenCalledWith(true);
     });
 
@@ -60,7 +60,7 @@ describe('components/TeamSettings/OpenInvite', () => {
                 isPublic={true}
             />,
         );
-        await userEvent.click(screen.getByText('Private Team'));
+        await userEvent.click(screen.getByText('Private community'));
         expect(onChange).toHaveBeenCalledWith(false);
     });
 
@@ -76,7 +76,7 @@ describe('components/TeamSettings/OpenInvite', () => {
         const privateBtn = screen.getByRole('button', {name: /private team/i});
         expect(publicBtn.className).not.toMatch(/disabled/);
         expect(privateBtn.className).not.toMatch(/disabled/);
-        await userEvent.click(screen.getByText('Private Team'));
+        await userEvent.click(screen.getByText('Private community'));
         expect(onChange).toHaveBeenCalledWith(false);
     });
 });

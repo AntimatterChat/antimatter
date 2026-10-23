@@ -287,8 +287,8 @@ const AccessTab = ({showTabSwitchError, areThereUnsavedChanges, setShowTabSwitch
                 show={showModeFlipModal}
                 title={
                     <FormattedMessage
-                        id='team_settings.mode_flip_confirm.title'
-                        defaultMessage='Switch to Private Team?'
+                        id='fusion.communityAccess.flipConfirmTitle'
+                        defaultMessage='Make the community private?'
                     />
                 }
                 message={modeFlipMessage}
@@ -313,14 +313,14 @@ const AccessTab = ({showTabSwitchError, areThereUnsavedChanges, setShowTabSwitch
                 show={showSelfExclusionModal}
                 title={
                     <FormattedMessage
-                        id='team_settings.mode_flip_self_exclusion.title'
-                        defaultMessage='Cannot switch to Private Team'
+                        id='fusion.communityAccess.flipSelfExclusionTitle'
+                        defaultMessage="The community can't be made private"
                     />
                 }
                 message={
                     <FormattedMessage
-                        id='team_settings.mode_flip_self_exclusion.message'
-                        defaultMessage='You do not meet the current membership rules, so switching to Private would remove you from the team at the next sync. Update the rules to include yourself, or ask another admin to make the switch.'
+                        id='fusion.communityAccess.flipSelfExclusionMessage'
+                        defaultMessage="You don't meet the current membership rules, so making it private would remove you from the community at the next sync. Change the rules to include yourself, or ask another admin to make it private."
                     />
                 }
                 confirmButtonText={
