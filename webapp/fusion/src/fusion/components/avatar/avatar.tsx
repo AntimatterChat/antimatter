@@ -5,8 +5,8 @@ import React, {useState} from 'react';
 
 import {useFocusLabel, useFocusUntil} from 'fusion/focus/focus';
 import {useDisplayName, useUser, useUserStatus, initials} from 'fusion/hooks/users';
+import {avatarURLIn, useCommunityProfile} from 'fusion/profiles/community_profiles';
 import {am} from 'fusion/utils/class_names';
-import {imageURLForUser} from 'utils/utils';
 
 export type AvatarSize = '' | 'sm' | 'xs' | 'lg' | 'xl' | 'rail' | 'me';
 
@@ -16,6 +16,9 @@ type Props = {
     status?: boolean;
     speaking?: boolean;
     className?: string;
+
+    /** The community whose picture of theirs shows ('' for the global one); by default, the community scope. */
+    teamId?: string;
 };
 
 // A stable hue per user, for the initials shown until (or instead of) the profile picture.
@@ -27,11 +30,12 @@ export function hueFor(id: string) {
     return h;
 }
 
-// Avatar shows a user's profile picture, with their status dot when asked for: purple while they focus (focus mode),
-// with its end in its tooltip.
-export default function Avatar({userId, size = '', status = false, speaking = false, className}: Props) {
+// Avatar shows a user's profile picture (in a community, theirs for it when they set one), with their status dot when
+// asked for: purple while they focus (focus mode), with its end in its tooltip.
+export default function Avatar({userId, size = '', status = false, speaking = false, className, teamId}: Props) {
     const user = useUser(userId);
-    const name = useDisplayName(user);
+    const name = useDisplayName(user, teamId);
+    const [profile, scope] = useCommunityProfile(userId, teamId);
     const userStatus = useUserStatus(status ? userId : undefined);
     const focusLabel = useFocusLabel(useFocusUntil(status ? userId : undefined));
     const [failed, setFailed] = useState(false);
@@ -45,7 +49,7 @@ export default function Avatar({userId, size = '', status = false, speaking = fa
         >
             {user && !failed ? (
                 <img
-                    src={imageURLForUser(user.id, user.last_picture_update)}
+                    src={avatarURLIn(user, profile, scope)}
                     alt=''
                     loading='lazy'
                     onError={() => setFailed(true)}

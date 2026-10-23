@@ -732,6 +732,12 @@ export function handleEvent(msg: WebSocketMessage) {
         // Antimatter: who's timed out in a team changed.
         dispatch(TeamActions.fetchTeamTimeouts(msg.data.team_id));
         break;
+    case WebSocketEvents.CommunityProfileUpdated:
+        // Antimatter: someone's profile in a community changed; the event has it.
+        if (msg.data.profile) {
+            dispatch({type: TeamTypes.RECEIVED_COMMUNITY_PROFILE, data: msg.data.profile});
+        }
+        break;
     case WebSocketEvents.CommunityRulesUpdated:
     case WebSocketEvents.CommunityRulesAccepted:
         // Antimatter: a team's rules changed, or the current user agreed to them (maybe elsewhere): whether they must

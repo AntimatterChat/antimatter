@@ -1,6 +1,7 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
+import type {CommunityNameDisplay, CommunityProfile} from './community_profiles';
 import type {CommunityRules} from './community_rules';
 import type {ServerError} from './errors';
 import type {MemberTimeout} from './moderation';
@@ -82,6 +83,14 @@ export type Team = {
     /** Antimatter: how the member list groups the community's members: as each chooses, by role, or by team. */
     member_list_view?: TeamMemberListView;
 
+    /**
+     * Antimatter: how the community shows people in its channels, member list, mentions and cards, as its admins chose;
+     * empty for the server's default (TeammateNameDisplay). Each member's own choice applies to direct and group
+     * messages. Whoever hides their full name and nickname from the community (its privacy settings) shows as their
+     * username there.
+     */
+    name_display?: CommunityNameDisplay | '';
+
     /** Data Retention Policy id. Unrelated to access-control policies below. */
     policy_id?: string | null;
     last_team_icon_update?: number;
@@ -132,6 +141,9 @@ export type TeamsState = {
 
     // Antimatter: the rules of each team whose rules were loaded, as the current user sees them.
     communityRules?: RelationOneToOne<Team, CommunityRules>;
+
+    // Antimatter: the profiles set in each team whose profiles were loaded, by user.
+    communityProfiles?: RelationOneToOne<Team, Record<string, CommunityProfile>>;
 };
 
 export type TeamUnread = {

@@ -29,6 +29,7 @@ import Icon from 'fusion/components/icon';
 import {useDisplayName, useUser} from 'fusion/hooks/users';
 import FileMenu from 'fusion/messages/content/file_menu';
 import {useWhen} from 'fusion/messages/time';
+import {scopeOfChannel} from 'fusion/profiles/community_profiles';
 import {useToast} from 'fusion/shell/toast_context';
 import {am} from 'fusion/utils/class_names';
 import {openDialog} from 'fusion/utils/modals';
@@ -59,8 +60,10 @@ function Result({post, terms}: {post: Post; terms: string}) {
     const toast = useToast();
     const when = useWhen();
     const user = useUser(post.user_id);
-    const name = useDisplayName(user);
     const channel = useSelector((state: GlobalState) => getAllChannels(state)[post.channel_id]);
+
+    // As the message's community shows its author.
+    const name = useDisplayName(user, scopeOfChannel(channel));
     const team = useSelector(getCurrentTeam);
     const saved = useSelector((state: GlobalState) => isPostFlagged(state, post.id));
     const canPin = Boolean(channel) && channel.delete_at === 0;

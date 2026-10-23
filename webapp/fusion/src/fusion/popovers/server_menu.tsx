@@ -167,6 +167,13 @@ export default function ServerMenu({team: forTeam, anchor, point, width, onClose
                     onClick={inTeam(() => dialogs.selfRoles())}
                 />
             )}
+
+            {/* One's picture, nickname, name and team badge in this community (My account has the global ones). */}
+            <MenuItem
+                icon='pen'
+                label={formatMessage({id: 'fusion.serverMenu.communityProfile', defaultMessage: 'Your profile in {community}…'}, {community: team?.display_name || ''})}
+                onClick={inTeam(() => dialogs.communityProfile())}
+            />
             <MenuSeparator/>
 
             {/* Its channels. */}

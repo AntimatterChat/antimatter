@@ -37,6 +37,7 @@ import {useUserMenu} from 'fusion/popovers/user_menu';
 import UserPopover from 'fusion/popovers/user_popover';
 import {useBlockLevel, useRevealed} from 'fusion/privacy/blocking';
 import FoldedMessage from 'fusion/privacy/folded_message';
+import {CommunityScope, scopeOfChannel} from 'fusion/profiles/community_profiles';
 import {getOneClickEmoji} from 'fusion/selectors';
 import {useRoleColor} from 'fusion/teams/roles';
 import {TeamTag} from 'fusion/teams/team_card';
@@ -143,7 +144,10 @@ export default function Message({postId, previousPostId, inThread = false, highl
     const post = useSelector((state: GlobalState) => getPost(state, postId));
     const previous = useSelector((state: GlobalState) => (previousPostId ? getPost(state, previousPostId) : undefined));
     const user = useSelector((state: GlobalState) => (post ? getUser(state, post.user_id) : undefined));
-    const name = useDisplayName(user);
+
+    // People show as the message's community shows them (the global profile in direct and group messages).
+    const scope = useSelector((state: GlobalState) => (post ? scopeOfChannel(getChannel(state, post.channel_id)) : undefined));
+    const name = useDisplayName(user, scope);
     const me = useSelector(getCurrentUserId);
     const config = useSelector(getConfig);
     const saved = useSelector((state: GlobalState) => isPostFlagged(state, postId));
@@ -619,72 +623,74 @@ export default function Message({postId, previousPostId, inThread = false, highl
     }
 
     return (
-        <div
-            className={rowClass}
-            id={`post_${post.id}`}
-            data-self={post.user_id === me || undefined}
-        >
-            {replyRef && (
-                <>
-                    <span
-                        className={am('ref-spine')}
-                        aria-hidden='true'
-                    />
-                    <ReplyRef
-                        post={post}
-                        quotedId={quotedId}
-                        threadReply={threadReply}
-                    />
-                </>
-            )}
-            {picture}
-            <div>
-                <div className={am('msg-head')}>
-                    <button
-                        ref={nameRef}
-                        className={am('author')}
-                        style={authorStyle(roleColor, prefs.colorize, post.user_id, Boolean(webhook || bot))}
-                        onClick={toggleProfile}
-                        onContextMenu={(e) => openUserMenu(post.user_id, e)}
-                    >
-                        {authorName}
-                    </button>
-
-                    {/* While an agent works, only a dot by its name: what it's doing shows in the member list and its card. */}
-                    {agent && !webhook && <AgentNameDot user={user}/>}
-                    {!bot && !webhook && <StatusEmoji userId={post.user_id}/>}
-                    {user?.remote_id && (
+        <CommunityScope value={scope}>
+            <div
+                className={rowClass}
+                id={`post_${post.id}`}
+                data-self={post.user_id === me || undefined}
+            >
+                {replyRef && (
+                    <>
                         <span
-                            className={am('remote-tag')}
-                            title={formatMessage({id: 'fusion.message.remote', defaultMessage: 'From another server, through a shared channel'})}
-                        >
-                            <Icon
-                                name='globe'
-                                size='xs'
-                            />
-                        </span>
-                    )}
-                    {(bot || webhook) && <IntegrationTag agent={agent && !webhook}/>}
-                    {!bot && !webhook && (
-                        <TeamTag
-                            user={user}
-                            communityId={communityId}
+                            className={am('ref-spine')}
+                            aria-hidden='true'
                         />
-                    )}
-                    {!bot && !webhook && user && isGuest(user.roles) && <span className={am('bot-tag', 'guest-tag')}>{formatMessage({id: 'fusion.message.guest', defaultMessage: 'GUEST'})}</span>}
-                    {webhook && <span className={am('via')}>{formatMessage({id: 'fusion.message.viaWebhook', defaultMessage: 'via webhook'})}</span>}
-                    <MessageTime timestamp={post.create_at}/>
-                    {streaming && <span className={am('agent-writing-note')}>{formatMessage({id: 'fusion.agents.writing', defaultMessage: 'Writing…'})}</span>}
-                    <Pluggable
-                        pluggableName='PostHeader'
-                        post={post}
-                    />
-                    {tags}
+                        <ReplyRef
+                            post={post}
+                            quotedId={quotedId}
+                            threadReply={threadReply}
+                        />
+                    </>
+                )}
+                {picture}
+                <div>
+                    <div className={am('msg-head')}>
+                        <button
+                            ref={nameRef}
+                            className={am('author')}
+                            style={authorStyle(roleColor, prefs.colorize, post.user_id, Boolean(webhook || bot))}
+                            onClick={toggleProfile}
+                            onContextMenu={(e) => openUserMenu(post.user_id, e)}
+                        >
+                            {authorName}
+                        </button>
+
+                        {/* While an agent works, only a dot by its name: what it's doing shows in the member list and its card. */}
+                        {agent && !webhook && <AgentNameDot user={user}/>}
+                        {!bot && !webhook && <StatusEmoji userId={post.user_id}/>}
+                        {user?.remote_id && (
+                            <span
+                                className={am('remote-tag')}
+                                title={formatMessage({id: 'fusion.message.remote', defaultMessage: 'From another server, through a shared channel'})}
+                            >
+                                <Icon
+                                    name='globe'
+                                    size='xs'
+                                />
+                            </span>
+                        )}
+                        {(bot || webhook) && <IntegrationTag agent={agent && !webhook}/>}
+                        {!bot && !webhook && (
+                            <TeamTag
+                                user={user}
+                                communityId={communityId}
+                            />
+                        )}
+                        {!bot && !webhook && user && isGuest(user.roles) && <span className={am('bot-tag', 'guest-tag')}>{formatMessage({id: 'fusion.message.guest', defaultMessage: 'GUEST'})}</span>}
+                        {webhook && <span className={am('via')}>{formatMessage({id: 'fusion.message.viaWebhook', defaultMessage: 'via webhook'})}</span>}
+                        <MessageTime timestamp={post.create_at}/>
+                        {streaming && <span className={am('agent-writing-note')}>{formatMessage({id: 'fusion.agents.writing', defaultMessage: 'Writing…'})}</span>}
+                        <Pluggable
+                            pluggableName='PostHeader'
+                            post={post}
+                        />
+                        {tags}
+                    </div>
+                    {body}
                 </div>
-                {body}
+                {tools}
+                {popovers}
             </div>
-            {tools}
-            {popovers}
-        </div>
+        </CommunityScope>
     );
 }

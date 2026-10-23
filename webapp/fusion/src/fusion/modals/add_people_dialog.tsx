@@ -11,13 +11,12 @@ import type {UserProfile} from '@mattermost/types/users';
 import {addChannelMembers} from 'mattermost-redux/actions/channels';
 import {getProfilesNotInChannel, searchProfiles} from 'mattermost-redux/actions/users';
 import {Permissions} from 'mattermost-redux/constants';
-import {getTeammateNameDisplaySetting} from 'mattermost-redux/selectors/entities/preferences';
 import {haveITeamPermission} from 'mattermost-redux/selectors/entities/roles';
-import {displayUsername} from 'mattermost-redux/utils/user_utils';
 
 import Avatar from 'fusion/components/avatar';
 import Icon from 'fusion/components/icon';
 import {Dialog} from 'fusion/components/layer';
+import {useDisplayNames} from 'fusion/profiles/community_profiles';
 import {useToast} from 'fusion/shell/toast_context';
 import {am} from 'fusion/utils/class_names';
 
@@ -37,7 +36,7 @@ export default function AddPeopleDialog({channel, onInvite, onClose}: Props) {
     const {formatMessage} = useIntl();
     const dispatch = useDispatch();
     const toast = useToast();
-    const nameDisplay = useSelector(getTeammateNameDisplaySetting);
+    const nameOf = useDisplayNames(channel.team_id || '');
     const canInvite = useSelector((state: GlobalState) => haveITeamPermission(state, channel.team_id, Permissions.ADD_USER_TO_TEAM) || haveITeamPermission(state, channel.team_id, Permissions.INVITE_GUEST));
     const [query, setQuery] = useState('');
     const [people, setPeople] = useState<UserProfile[] | null>(null);
@@ -90,7 +89,7 @@ export default function AddPeopleDialog({channel, onInvite, onClose}: Props) {
             setError((result.error as {message?: string}).message || formatMessage({id: 'fusion.addPeople.failed', defaultMessage: 'Could not add them. Try again.'}));
             return;
         }
-        const names = [...picked.values()].map((u) => displayUsername(u, nameDisplay));
+        const names = [...picked.values()].map((u) => nameOf(u));
         toast(formatMessage({id: 'fusion.toast.addedCount', defaultMessage: '{count, plural, one {Added {names} to {where}} other {Added {names} to {where}}}'}, {count: names.length, names: names.join(', '), where}));
         onClose();
     };
@@ -120,7 +119,7 @@ export default function AddPeopleDialog({channel, onInvite, onClose}: Props) {
                     status={true}
                 />
                 <span className={am('who')}>
-                    <b>{displayUsername(u, nameDisplay)}</b>
+                    <b>{nameOf(u)}</b>
                     <span>{[`@${u.username}`, u.position].filter(Boolean).join(' · ')}</span>
                 </span>
                 <span className={am('box')}>

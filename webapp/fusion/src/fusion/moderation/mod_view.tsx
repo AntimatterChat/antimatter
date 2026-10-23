@@ -30,6 +30,7 @@ import {Popover} from 'fusion/components/layer';
 import {MenuItem, MenuKeys, rovingKeyDown} from 'fusion/components/menu';
 import {useDisplayName, useUser, useUserStatus} from 'fusion/hooks/users';
 import {STATUS_LABELS} from 'fusion/popovers/user_popover';
+import {useCommunityProfile} from 'fusion/profiles/community_profiles';
 import {useDialogs} from 'fusion/shell/dialogs_context';
 import {useToast} from 'fusion/shell/toast_context';
 import {getGivenRolesOf, getGivenTeamRoles, useRoleColor} from 'fusion/teams/roles';
@@ -91,6 +92,7 @@ export default function ModViewPanel() {
     const canManageRoles = useSelector((state: GlobalState) => haveITeamPermission(state, teamId, Permissions.MANAGE_TEAM_ROLES));
     const systemAdmin = useSelector((state: GlobalState) => isSystemAdmin(getCurrentUser(state)?.roles || ''));
     const timeout = useSelector((state: GlobalState) => getMemberTimeout(state, teamId, userId));
+    const [communityProfile] = useCommunityProfile(userId, teamId);
     const member = useSelector((state: GlobalState) => selectTeamMember(state, teamId, userId));
 
     // The roles given to some (not the default role, which everyone has).
@@ -163,6 +165,15 @@ export default function ModViewPanel() {
         }
         dispatch(loadTeams());
     };
+    // A nickname or a picture for the community that breaks its rules: taken off (the person can set another).
+    const resetProfile = async (reset: {nickname?: boolean; avatar?: boolean}, done: string, failed: string) => {
+        try {
+            await Client4.resetCommunityProfile(teamId, userId, reset);
+            toast(done);
+        } catch (error) {
+            fail(error, failed);
+        }
+    };
     const deactivate = () => dialogs.confirm({
         title: formatMessage({id: 'fusion.modView.deactivateTitle', defaultMessage: 'Deactivate {name}?'}, {name}),
         message: formatMessage({id: 'fusion.modView.deactivateMessage', defaultMessage: 'They\'re signed out everywhere and can\'t sign in again until a system admin reactivates their account. Their messages stay.'}),
@@ -188,6 +199,12 @@ export default function ModViewPanel() {
     actions.push({id: 'search-messages', icon: 'search', label: formatMessage({id: 'fusion.modView.searchMessages', defaultMessage: 'Search their messages'}), run: theirMessages});
     if (canRemove && actionable) {
         actions.push(timeout ? {id: 'lift-timeout', icon: 'timer', label: formatMessage({id: 'fusion.userMenu.liftTimeout', defaultMessage: 'Remove timeout'}), run: liftTimeout} : {id: 'time-out', icon: 'timer', label: formatMessage({id: 'fusion.userMenu.timeOut', defaultMessage: 'Time out…'}), run: () => dialogs.timeOut(userId)});
+        if (communityProfile?.nickname) {
+            actions.push({id: 'reset-nickname', icon: 'undo', label: formatMessage({id: 'fusion.modView.resetNickname', defaultMessage: 'Reset nickname'}), run: () => resetProfile({nickname: true}, formatMessage({id: 'fusion.modView.nicknameReset', defaultMessage: 'Nickname reset'}), formatMessage({id: 'fusion.modView.resetFailed', defaultMessage: 'The profile couldn\'t be reset.'}))});
+        }
+        if (communityProfile?.avatar_update_at) {
+            actions.push({id: 'reset-picture', icon: 'image', label: formatMessage({id: 'fusion.modView.resetPicture', defaultMessage: 'Reset picture'}), run: () => resetProfile({avatar: true}, formatMessage({id: 'fusion.modView.pictureReset', defaultMessage: 'Picture reset'}), formatMessage({id: 'fusion.modView.resetFailed', defaultMessage: 'The profile couldn\'t be reset.'}))});
+        }
         destructive.push({id: 'remove-from-community', icon: 'leave', danger: true, label: formatMessage({id: 'fusion.userMenu.removeTeam', defaultMessage: 'Remove from community…'}), run: () => dialogs.removeFromTeam(userId)});
     }
     if (systemAdmin && !isMe && !isSystemAdmin(user.roles || '') && user.delete_at === 0) {

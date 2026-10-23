@@ -11,13 +11,12 @@ import type {UserProfile} from '@mattermost/types/users';
 import {addUsersToGroup, createGroupWithUserIds, patchGroup, removeUsersFromGroup} from 'mattermost-redux/actions/groups';
 import {getMissingProfilesByIds} from 'mattermost-redux/actions/users';
 import {getMyChannels} from 'mattermost-redux/selectors/entities/channels';
-import {getTeammateNameDisplaySetting} from 'mattermost-redux/selectors/entities/preferences';
 import {getUser} from 'mattermost-redux/selectors/entities/users';
-import {displayUsername} from 'mattermost-redux/utils/user_utils';
 
 import Avatar from 'fusion/components/avatar';
 import Icon from 'fusion/components/icon';
 import PeopleSearch, {PersonName} from 'fusion/members/people_search';
+import {useDisplayNames} from 'fusion/profiles/community_profiles';
 import {am} from 'fusion/utils/class_names';
 
 import type {GlobalState} from 'types/store';
@@ -94,11 +93,12 @@ export default function TeamEditor({team, communityId, onDone, onCancel, setUnsa
         dispatch(getMissingProfilesByIds(draft.member_ids));
     }, [draft.member_ids, dispatch]);
 
-    const nameSetting = useSelector(getTeammateNameDisplaySetting);
+    // As the community shows its people.
+    const nameOf = useDisplayNames(communityId);
     const users = useSelector((state: GlobalState) => draft.member_ids.map((id) => getUser(state, id)), shallowEqual);
     const members = useMemo(() => draft.member_ids.
-        map((id, i) => ({id, name: displayUsername(users[i], nameSetting) || id})).
-        sort((a, b) => a.name.localeCompare(b.name)), [draft.member_ids, users, nameSetting]);
+        map((id, i) => ({id, name: (users[i] && nameOf(users[i])) || id})).
+        sort((a, b) => a.name.localeCompare(b.name)), [draft.member_ids, users, nameOf]);
 
     // The team's channel is one of its community's.
     const myChannels = useSelector(getMyChannels);

@@ -681,6 +681,18 @@ export function fetchCommunityRules(teamId: string) {
     });
 }
 
+// fetchCommunityProfiles loads the profiles set in a team (Antimatter): its members' nicknames and pictures there. The
+// community_profile_updated events keep them up to date.
+export function fetchCommunityProfiles(teamId: string) {
+    return bindClientFunc({
+        clientFunc: async () => {
+            const profiles = await Client4.getCommunityProfiles(teamId);
+            return {teamId, profiles};
+        },
+        onSuccess: TeamTypes.RECEIVED_COMMUNITY_PROFILES,
+    });
+}
+
 export function checkIfTeamExists(teamName: string): ActionFuncAsync<boolean> {
     return async (dispatch, getState) => {
         let data;

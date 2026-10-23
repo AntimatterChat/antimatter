@@ -4,6 +4,7 @@
 import type {AnyAction} from 'redux';
 import {combineReducers} from 'redux';
 
+import type {CommunityProfile} from '@mattermost/types/community_profiles';
 import type {CommunityRules} from '@mattermost/types/community_rules';
 import type {MemberTimeout} from '@mattermost/types/moderation';
 import type {Team, TeamMembership, TeamUnread} from '@mattermost/types/teams';
@@ -533,6 +534,40 @@ export function communityRules(state: RelationOneToOne<Team, CommunityRules> = {
     }
 }
 
+// communityProfiles are the profiles set in each team whose profiles were loaded, by user (Antimatter): one
+// request per community, then the community_profile_updated events, each with its profile.
+export function communityProfiles(state: RelationOneToOne<Team, Record<string, CommunityProfile>> = {}, action: MMReduxAction) {
+    switch (action.type) {
+    case TeamTypes.RECEIVED_COMMUNITY_PROFILES: {
+        const byUser: Record<string, CommunityProfile> = {};
+        for (const profile of action.data.profiles as CommunityProfile[]) {
+            byUser[profile.user_id] = profile;
+        }
+        return {...state, [action.data.teamId]: byUser};
+    }
+    case TeamTypes.RECEIVED_COMMUNITY_PROFILE: {
+        const profile = action.data as CommunityProfile;
+        const team = state[profile.team_id];
+
+        // Teams whose profiles weren't loaded load them all when they're opened.
+        if (!team) {
+            return state;
+        }
+        const next = {...team};
+        if (profile.nickname || profile.avatar_update_at) {
+            next[profile.user_id] = profile;
+        } else {
+            delete next[profile.user_id];
+        }
+        return {...state, [profile.team_id]: next};
+    }
+    case UserTypes.LOGOUT_SUCCESS:
+        return {};
+    default:
+        return state;
+    }
+}
+
 export default combineReducers({
 
     // the current selected team
@@ -561,4 +596,7 @@ export default combineReducers({
 
     // Antimatter: the community rules, by team
     communityRules,
+
+    // Antimatter: the community profiles, by team and user
+    communityProfiles,
 });

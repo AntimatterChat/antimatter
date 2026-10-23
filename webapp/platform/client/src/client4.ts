@@ -49,6 +49,7 @@ import type {
     Installation,
     PreviewModalContentData,
 } from '@mattermost/types/cloud';
+import type {CommunityProfile, CommunityProfilePatch, CommunityProfileReset} from '@mattermost/types/community_profiles';
 import type {CommunityRules, CommunityRulesRequest, CommunityRulesStats} from '@mattermost/types/community_rules';
 import type {Compliance} from '@mattermost/types/compliance';
 import type {
@@ -4942,6 +4943,43 @@ export default class Client4 {
             `${this.getTeamMemberRoute(teamId, userId)}/user_attributes`,
             {method: 'patch', body: JSON.stringify(values)},
         );
+    };
+
+    // Antimatter: the profiles set in a community (nicknames, pictures); one's own profile there, which only oneself
+    // changes; taking a nickname or a picture off (oneself, or moderators).
+    getCommunityProfiles = (teamId: string) => {
+        return this.doFetch<CommunityProfile[]>(
+            `${this.getTeamRoute(teamId)}/profiles`,
+            {method: 'get'},
+        );
+    };
+
+    patchCommunityProfile = (teamId: string, userId: string, patch: CommunityProfilePatch) => {
+        return this.doFetch<CommunityProfile>(
+            `${this.getTeamMemberRoute(teamId, userId)}/profile`,
+            {method: 'patch', body: JSON.stringify(patch)},
+        );
+    };
+
+    resetCommunityProfile = (teamId: string, userId: string, reset: CommunityProfileReset) => {
+        return this.doFetch<CommunityProfile>(
+            `${this.getTeamMemberRoute(teamId, userId)}/profile/reset`,
+            {method: 'post', body: JSON.stringify(reset)},
+        );
+    };
+
+    uploadCommunityAvatar = (teamId: string, userId: string, imageData: File) => {
+        const formData = new FormData();
+        formData.append('image', imageData);
+        return this.doFetch<CommunityProfile>(
+            `${this.getTeamMemberRoute(teamId, userId)}/profile/image`,
+            {method: 'post', body: formData},
+        );
+    };
+
+    // The picture someone set for a community, at its version (avatar_update_at).
+    getCommunityAvatarUrl = (teamId: string, userId: string, avatarUpdateAt: number) => {
+        return `${this.getTeamMemberRoute(teamId, userId)}/profile/image${buildQueryString({_: avatarUpdateAt})}`;
     };
 
     // Antimatter: what a team's autolinks (as edited, not saved) make of a text; refuses invalid autolinks.

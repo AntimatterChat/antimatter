@@ -56,6 +56,7 @@ const state: GlobalState = {
             totalCount: 0,
             contentFlaggingStatus: {},
             timeouts: {},
+            communityProfiles: {},
         },
         channels: {
             currentChannelId: '',

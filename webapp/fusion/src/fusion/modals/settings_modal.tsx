@@ -1,7 +1,7 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import React, {useEffect, useMemo, useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {useIntl} from 'react-intl';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -16,7 +16,6 @@ import {getConfig, getFeatureFlagValue, getPasswordConfig} from 'mattermost-redu
 import {getCollapsedThreadsPreference, getTheme, isCollapsedThreadsAllowed, shouldShowUnreadsCategory, DEFAULT_VISIBLE_DM_GM_LIMIT} from 'mattermost-redux/selectors/entities/preferences';
 import type {Theme} from 'mattermost-redux/selectors/entities/preferences';
 import {haveISystemPermission} from 'mattermost-redux/selectors/entities/roles';
-import {getCurrentTeamId} from 'mattermost-redux/selectors/entities/teams';
 import {getCurrentTimezoneLabel} from 'mattermost-redux/selectors/entities/timezone';
 import {getCurrentUser} from 'mattermost-redux/selectors/entities/users';
 
@@ -32,8 +31,6 @@ import {useDisplayPrefs} from 'fusion/hooks/display';
 import {WALLTIME_PREFERENCE} from 'fusion/messages/walltime/walltime_text';
 import {canVisitSystemConsole} from 'fusion/popovers/admin_links';
 import PrivacyPane from 'fusion/privacy/privacy_pane';
-import {useToast} from 'fusion/shell/toast_context';
-import {badgeChoice, badgesRequired, getTeamsByUser, TEAM_BADGE_PROP, withBadgeChoice} from 'fusion/teams/teams';
 import {am} from 'fusion/utils/class_names';
 import {openClassicUserSettings} from 'fusion/utils/modals';
 import {getLanguages} from 'i18n/i18n';
@@ -179,55 +176,6 @@ function ProfilePicture({me, locked}: {me: UserProfile; locked: boolean}) {
     );
 }
 
-// TeamBadgeField picks the team whose tag shows next to your name in the current community, among your teams of that
-// community that have one, as in the mockup. Each community keeps its own choice.
-function TeamBadgeField() {
-    const {formatMessage} = useIntl();
-    const dispatch = useDispatch();
-    const toast = useToast();
-    const me = useSelector(getCurrentUser);
-    const communityId = useSelector(getCurrentTeamId);
-    const allMyTeams = useSelector((state: GlobalState) => getTeamsByUser(state)[me.id]);
-    const myTeams = useMemo(() => (allMyTeams || []).filter((t) => t.tag), [allMyTeams]);
-    const required = useSelector(badgesRequired);
-    const groups = useSelector((state: GlobalState) => state.entities.groups.groups);
-    if (!myTeams.length) {
-        return null;
-    }
-
-    // Where the community asks everyone to show a badge, there's no "None": without a choice, the first team shows.
-    const choice = badgeChoice(me, communityId);
-    let chosen = myTeams.some((t) => t.id === choice) ? choice! : '';
-    if (required && !chosen) {
-        chosen = myTeams[0]?.id || '';
-    }
-    return (
-        <label className={am('field')}>
-            <span>{formatMessage({id: 'fusion.settings.teamBadge', defaultMessage: 'Team badge'})}</span>
-            <select
-                value={chosen}
-                onChange={async (e) => {
-                    const team = myTeams.find((t) => t.id === e.target.value);
-                    const badges = withBadgeChoice(me.props?.[TEAM_BADGE_PROP], communityId, team?.id || '', (id) => groups[id]?.team_id);
-                    await dispatch(updateMe({props: {...me.props, [TEAM_BADGE_PROP]: badges}}));
-                    toast(team ? formatMessage({id: 'fusion.toast.teamBadge', defaultMessage: 'Team badge: {tag}'}, {tag: team.tag}) : formatMessage({id: 'fusion.toast.teamBadgeHidden', defaultMessage: 'Team badge hidden'}));
-                }}
-            >
-                {!required && <option value=''>{formatMessage({id: 'fusion.settings.teamBadgeNone', defaultMessage: 'None'})}</option>}
-                {myTeams.map((t) => (
-                    <option
-                        key={t.id}
-                        value={t.id}
-                    >
-                        {`${t.tag} — ${t.display_name}`}
-                    </option>
-                ))}
-            </select>
-            <small>{required ? formatMessage({id: 'fusion.settings.teamBadgeRequired', defaultMessage: 'Shown next to your name in this community, which asks everyone to show one. Only its teams you belong to are listed; each community keeps its own badge.'}) : formatMessage({id: 'fusion.settings.teamBadgeHelp', defaultMessage: 'Shown next to your name in this community, like a server tag. Only its teams you belong to are listed; each community keeps its own badge.'})}</small>
-        </label>
-    );
-}
-
 function AccountPane() {
     const {formatMessage} = useIntl();
     const dispatch = useDispatch();
@@ -287,7 +235,6 @@ function AccountPane() {
             {field('username', 'username', formatMessage({id: 'fusion.settings.username', defaultMessage: 'Username'}), usernameError ? formatMessage({id: 'fusion.settings.usernameRules', defaultMessage: 'Use {min} to {max} lowercase letters, numbers, periods, dashes and underscores, starting with a letter.'}, {min: Constants.MIN_USERNAME_LENGTH, max: Constants.MAX_USERNAME_LENGTH}) : undefined)}
             {field('nickname', 'nickname', formatMessage({id: 'fusion.settings.nickname', defaultMessage: 'Nickname'}))}
             {field('position', 'position', formatMessage({id: 'fusion.settings.position', defaultMessage: 'Position'}))}
-            <TeamBadgeField/>
             {error && <p className={am('field-error')}>{error}</p>}
             <div className={am('modal-actions')}>
                 {me.auth_service === '' && !changingEmail && (
@@ -573,6 +520,7 @@ function AppearancePane() {
             {config.LockTeammateNameDisplay !== 'true' && (
                 <Choice
                     title={formatMessage({id: 'fusion.settings.names', defaultMessage: 'Show people as'})}
+                    desc={formatMessage({id: 'fusion.settings.namesDesc', defaultMessage: 'In direct and group messages. Each community chooses how people show in its channels.'})}
                     value={nameFormat}
                     options={[
                         [Preferences.DISPLAY_PREFER_USERNAME, formatMessage({id: 'fusion.settings.namesUsername', defaultMessage: 'Username'})],

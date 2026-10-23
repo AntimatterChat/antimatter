@@ -5,12 +5,14 @@ import React, {useEffect, useRef, useState} from 'react';
 import {useIntl} from 'react-intl';
 import {useDispatch, useSelector} from 'react-redux';
 
+import type {CommunityNameDisplay} from '@mattermost/types/community_profiles';
+
 import {patchTeam, removeTeamIcon, setTeamIcon} from 'mattermost-redux/actions/teams';
 import {getConfig} from 'mattermost-redux/selectors/entities/general';
 import {isCustomGroupsEnabled} from 'mattermost-redux/selectors/entities/preferences';
 import {getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
 
-import {Section} from 'fusion/modals/settings_controls';
+import {Choice, Section} from 'fusion/modals/settings_controls';
 import {useToast} from 'fusion/shell/toast_context';
 import {am} from 'fusion/utils/class_names';
 import Constants from 'utils/constants';
@@ -36,6 +38,8 @@ export default function GeneralSettings({setUnsaved}: Props) {
     return (
         <div className={am('general-pane')}>
             <CommunityInfo setUnsaved={setUnsaved}/>
+            <Section title={formatMessage({id: 'fusion.teamGeneral.people', defaultMessage: 'People'})}/>
+            <NameDisplaySetting/>
             <Section title={formatMessage({id: 'fusion.teamGeneral.channels', defaultMessage: 'Channels'})}/>
             <ChannelsSettings/>
             {customGroups && (
@@ -45,6 +49,43 @@ export default function GeneralSettings({setUnsaved}: Props) {
                 </>
             )}
         </div>
+    );
+}
+
+// NameDisplaySetting is how the community shows people in its channels, member list, mentions and cards: by
+// username, nickname (their nickname there, else their global one, else their full name) or full name, for everyone
+// in it. Each member's own choice still applies to direct and group messages. Until the admins choose, the server's
+// default applies. Whoever hides their full name and nickname from the community (its privacy settings) shows as their
+// username there whatever this is.
+export function NameDisplaySetting() {
+    const {formatMessage} = useIntl();
+    const dispatch = useDispatch();
+    const toast = useToast();
+    const team = useSelector(getCurrentTeam);
+    const serverDefault = useSelector((state: GlobalState) => getConfig(state).TeammateNameDisplay) || 'username';
+    if (!team) {
+        return null;
+    }
+    const value = (team.name_display || serverDefault) as CommunityNameDisplay;
+    return (
+        <Choice<CommunityNameDisplay>
+            title={formatMessage({id: 'fusion.teamGeneral.nameDisplay', defaultMessage: 'Show people as'})}
+            desc={formatMessage({id: 'fusion.teamGeneral.nameDisplayDesc', defaultMessage: 'For everyone, in this community\'s channels, member list, mentions and cards; a nickname set for the community comes first. Members choose for their direct and group messages. Those who hide their name from the community show as their username.'})}
+            value={value}
+            options={[
+                ['username', formatMessage({id: 'fusion.settings.namesUsername', defaultMessage: 'Username'})],
+                ['nickname_full_name', formatMessage({id: 'fusion.settings.namesNickname', defaultMessage: 'Nickname'})],
+                ['full_name', formatMessage({id: 'fusion.settings.namesFull', defaultMessage: 'Full name'})],
+            ]}
+            onChange={async (next) => {
+                const result = await dispatch(patchTeam({id: team.id, name_display: next}));
+                if ('error' in result && result.error) {
+                    toast((result.error as {message?: string}).message || formatMessage({id: 'fusion.teamChannels.failed', defaultMessage: 'The setting couldn\'t be saved.'}));
+                } else {
+                    toast(formatMessage({id: 'fusion.teamGeneral.nameDisplaySaved', defaultMessage: 'People show {display, select, username {by username} nickname_full_name {by nickname} other {by full name}} in this community'}, {display: next}));
+                }
+            }}
+        />
     );
 }
 

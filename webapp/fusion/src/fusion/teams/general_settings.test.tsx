@@ -8,7 +8,7 @@ import {patchTeam, removeTeamIcon, setTeamIcon} from 'mattermost-redux/actions/t
 import {renderWithContext, screen, userEvent, waitFor} from 'tests/react_testing_utils';
 import {TestHelper} from 'utils/test_helper';
 
-import GeneralSettings, {CommunityInfo} from './general_settings';
+import GeneralSettings, {CommunityInfo, NameDisplaySetting} from './general_settings';
 
 jest.mock('mattermost-redux/actions/channels', () => ({
     ...jest.requireActual('mattermost-redux/actions/channels'),
@@ -23,11 +23,11 @@ jest.mock('mattermost-redux/actions/teams', () => ({
 const mockToast = jest.fn();
 jest.mock('fusion/shell/toast_context', () => ({useToast: () => mockToast}));
 
-function state({customGroups = true, icon = 0} = {}) {
+function state({customGroups = true, icon = 0, nameDisplay = ''} = {}) {
     return {
         entities: {
-            general: {config: {EnableCustomGroups: customGroups ? 'true' : 'false', MaxFileSize: '1000'}},
-            teams: {currentTeamId: 't1', teams: {t1: TestHelper.getTeamMock({id: 't1', name: 'lumen', display_name: 'Lumen Labs', description: 'Optics', last_team_icon_update: icon})}},
+            general: {config: {EnableCustomGroups: customGroups ? 'true' : 'false', MaxFileSize: '1000', TeammateNameDisplay: 'full_name'}},
+            teams: {currentTeamId: 't1', teams: {t1: TestHelper.getTeamMock({id: 't1', name: 'lumen', display_name: 'Lumen Labs', description: 'Optics', last_team_icon_update: icon, name_display: nameDisplay as never})}},
             channels: {channels: {}, channelsInTeam: {}},
         },
     } as never;
@@ -51,6 +51,27 @@ describe('fusion/teams/GeneralSettings', () => {
     test('no layout without roles on the server', () => {
         renderWithContext(<GeneralSettings/>, state({customGroups: false}));
         expect(screen.queryByRole('heading', {name: 'Community layout'})).not.toBeInTheDocument();
+    });
+});
+
+// Antimatter: the community's admins choose how it shows people (feedback of 2026-10-23).
+describe('fusion/teams/NameDisplaySetting', () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    test('is in General, showing the server\'s default until the admins choose', () => {
+        renderWithContext(<GeneralSettings/>, state());
+        expect(screen.getByRole('heading', {name: 'People'})).toBeInTheDocument();
+        expect(screen.getByRole('button', {name: 'Full name'})).toHaveAttribute('aria-pressed', 'true');
+    });
+
+    test('saves the admins\' choice for the community', async () => {
+        renderWithContext(<NameDisplaySetting/>, state({nameDisplay: 'nickname_full_name'}));
+        expect(screen.getByRole('button', {name: 'Nickname'})).toHaveAttribute('aria-pressed', 'true');
+        await userEvent.click(screen.getByRole('button', {name: 'Username'}));
+        expect(patchTeam).toHaveBeenCalledWith({id: 't1', name_display: 'username'});
+        expect(mockToast).toHaveBeenCalledWith('People show by username in this community');
     });
 });
 

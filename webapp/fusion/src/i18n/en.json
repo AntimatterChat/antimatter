@@ -24951,6 +24951,66 @@
     "defaultMessage": "Use my defaults",
     "description": "Community privacy settings: button that drops this community's own choice of profile details, so that it follows the defaults again."
   },
+  "fusion.communityProfile.close": {
+    "defaultMessage": "Close",
+    "description": "Button closing the community profile dialog."
+  },
+  "fusion.communityProfile.failed": {
+    "defaultMessage": "Your profile in this community couldn't be saved.",
+    "description": "Error in the community profile dialog when the server doesn't save a change and gives no message."
+  },
+  "fusion.communityProfile.globalPicture": {
+    "defaultMessage": "Use my profile picture",
+    "description": "Button in the community profile dialog: drop your picture for this community, so your profile picture (from My account) shows there again."
+  },
+  "fusion.communityProfile.lead": {
+    "defaultMessage": "How you appear in this community's channels, member list, mentions and cards. Direct and group messages show your profile from My account.",
+    "description": "Introduction of the community profile dialog. \"My account\" is the settings tab with the global profile."
+  },
+  "fusion.communityProfile.nickname": {
+    "defaultMessage": "Nickname in this community",
+    "description": "Label of the field where you set a nickname shown in one community only."
+  },
+  "fusion.communityProfile.nicknameHelp": {
+    "defaultMessage": "Shown instead of your name in this community. Empty: your nickname from My account.",
+    "description": "Help under the community nickname field, when the community shows people by nickname."
+  },
+  "fusion.communityProfile.nicknameHelpNotShown": {
+    "defaultMessage": "This community shows people by {display, select, username {username} other {full name}}: your nickname here only shows next to it in mention suggestions.",
+    "description": "Help under the community nickname field when the community's admins chose to show people by username or full name; the select picks which (keep the select key username as it is)."
+  },
+  "fusion.communityProfile.nicknameRemoved": {
+    "defaultMessage": "Nickname removed from this community",
+    "description": "Toast after you saved an empty nickname for one community: your global nickname shows there again."
+  },
+  "fusion.communityProfile.nicknameSaved": {
+    "defaultMessage": "Nickname saved for this community",
+    "description": "Toast after you saved your nickname for one community."
+  },
+  "fusion.communityProfile.ownPicture": {
+    "defaultMessage": "Use another picture here",
+    "description": "Button in the community profile dialog: pick a picture shown instead of your profile picture in this community only."
+  },
+  "fusion.communityProfile.picture": {
+    "defaultMessage": "Picture in this community",
+    "description": "Accessible label of the hidden file input picking your picture for this community."
+  },
+  "fusion.communityProfile.pictureRemoved": {
+    "defaultMessage": "Your profile picture shows here again",
+    "description": "Toast after you dropped your picture for one community: your profile picture shows there again."
+  },
+  "fusion.communityProfile.pictureSaved": {
+    "defaultMessage": "Picture saved for this community",
+    "description": "Toast after you set your picture for one community."
+  },
+  "fusion.communityProfile.save": {
+    "defaultMessage": "Save nickname",
+    "description": "Button saving the nickname typed for this community (the picture and team badge save as soon as they're picked)."
+  },
+  "fusion.communityProfile.title": {
+    "defaultMessage": "Your profile in {community}",
+    "description": "Title of the dialog where you set your picture, nickname and team badge for one community; {community} is its name."
+  },
   "fusion.communityRules.agree": {
     "defaultMessage": "I agree",
     "description": "Button of the community rules dialog: agrees to the community's rules, after which one can post in its channels."
@@ -26967,6 +27027,10 @@
     "defaultMessage": "Messages in the community",
     "description": ""
   },
+  "fusion.modView.nicknameReset": {
+    "defaultMessage": "Nickname reset",
+    "description": "Toast after a moderator took off a member's nickname for the community (mod view)."
+  },
   "fusion.modView.noPerms": {
     "defaultMessage": "No permissions beyond a member's",
     "description": ""
@@ -27007,9 +27071,25 @@
     "defaultMessage": "Notable permissions",
     "description": ""
   },
+  "fusion.modView.pictureReset": {
+    "defaultMessage": "Picture reset",
+    "description": "Toast after a moderator took off a member's picture for the community (mod view)."
+  },
   "fusion.modView.removeRole": {
     "defaultMessage": "Remove the role {role}",
     "description": ""
+  },
+  "fusion.modView.resetFailed": {
+    "defaultMessage": "The profile couldn't be reset.",
+    "description": "Toast when taking off a member's nickname or picture for the community fails (mod view)."
+  },
+  "fusion.modView.resetNickname": {
+    "defaultMessage": "Reset nickname",
+    "description": "Mod view action (a community moderator's view of a member): takes off the nickname the member set for this community, when it breaks the community's rules. The member can set another."
+  },
+  "fusion.modView.resetPicture": {
+    "defaultMessage": "Reset picture",
+    "description": "Mod view action: takes off the picture a member set for this community (their profile picture shows again there), when it breaks the community's rules."
   },
   "fusion.modView.roleFailed": {
     "defaultMessage": "The role couldn't be changed.",
@@ -27570,6 +27650,10 @@
   "fusion.profile.editProfile": {
     "defaultMessage": "Edit profile",
     "description": ""
+  },
+  "fusion.profile.globalName": {
+    "defaultMessage": "Outside this community: {name}",
+    "description": "Line on someone's profile card, in a community where they set a nickname or picture of their own: {name} is how they show elsewhere (direct messages, other communities)."
   },
   "fusion.profile.localTime": {
     "defaultMessage": "{time} local time",
@@ -28283,6 +28367,10 @@
     "defaultMessage": "You're in every channel: archived ones, and those to ask for",
     "description": "Explanation under 'Browse channels' in a community whose members are already in all its channels."
   },
+  "fusion.serverMenu.communityProfile": {
+    "defaultMessage": "Your profile in {community}…",
+    "description": "Community menu entry opening the dialog where you set your picture, nickname and team badge for this community only; {community} is the community's name. The ellipsis means it opens a dialog."
+  },
   "fusion.serverMenu.createCategory": {
     "defaultMessage": "Create category",
     "description": ""
@@ -28918,6 +29006,10 @@
   "fusion.settings.names": {
     "defaultMessage": "Show people as",
     "description": ""
+  },
+  "fusion.settings.namesDesc": {
+    "defaultMessage": "In direct and group messages. Each community chooses how people show in its channels.",
+    "description": "Description under the personal \"Show people as\" setting (Settings › Appearance): it applies to direct and group messages; each community's admins choose for its channels (Antimatter)."
   },
   "fusion.settings.namesFull": {
     "defaultMessage": "Full name",
@@ -29743,9 +29835,25 @@
     "defaultMessage": "Name",
     "description": "Label of the community's name field, in its General settings."
   },
+  "fusion.teamGeneral.nameDisplay": {
+    "defaultMessage": "Show people as",
+    "description": "Setting in Community settings › General: how the community shows everyone in its channels, member list, mentions and cards (username, nickname or full name). The community's admins choose it for everyone."
+  },
+  "fusion.teamGeneral.nameDisplayDesc": {
+    "defaultMessage": "For everyone, in this community's channels, member list, mentions and cards; a nickname set for the community comes first. Members choose for their direct and group messages. Those who hide their name from the community show as their username.",
+    "description": "Description of the community's \"Show people as\" setting (Community settings › General). \"A nickname set for the community\" is the nickname a member chose for this community only; hiding one's name is a member's privacy setting for the community."
+  },
+  "fusion.teamGeneral.nameDisplaySaved": {
+    "defaultMessage": "People show {display, select, username {by username} nickname_full_name {by nickname} other {by full name}} in this community",
+    "description": "Toast after an admin changed how the community shows people; the select picks the way chosen (keep the select keys username and nickname_full_name as they are)."
+  },
   "fusion.teamGeneral.nameLength": {
     "defaultMessage": "The name needs {min} to {max} characters.",
     "description": "Error when a community's name is too short; {min} and {max} are numbers of characters."
+  },
+  "fusion.teamGeneral.people": {
+    "defaultMessage": "People",
+    "description": "Section title in Community settings › General, above how the community shows people."
   },
   "fusion.teamGeneral.save": {
     "defaultMessage": "Save",
