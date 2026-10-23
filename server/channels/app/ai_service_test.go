@@ -35,6 +35,11 @@ type fakeLLM struct {
 	failMessage string
 	// chunks, when set, are streamed (server-sent events) to the chats that ask for a stream.
 	chunks []string
+	// unavailable makes every request fail with 503, the list of models too (an endpoint that's down).
+	unavailable bool
+	// modelLists counts the requests for the list of models (a connection's test, also the agents' status checks
+	// that run in the background); they aren't in requests.
+	modelLists int
 }
 
 type fakeLLMRequest struct {
@@ -50,10 +55,18 @@ func newFakeLLM(t *testing.T, answer string) *fakeLLM {
 		var body map[string]any
 		_ = json.Unmarshal(raw, &body)
 		f.mu.Lock()
-		f.requests = append(f.requests, fakeLLMRequest{Path: r.URL.Path, Authorization: r.Header.Get("Authorization"), Body: body})
-		answer, failStatus, failMessage, chunks := f.answer, f.failStatus, f.failMessage, f.chunks
+		if strings.HasSuffix(r.URL.Path, "/models") {
+			f.modelLists++
+		} else {
+			f.requests = append(f.requests, fakeLLMRequest{Path: r.URL.Path, Authorization: r.Header.Get("Authorization"), Body: body})
+		}
+		answer, failStatus, failMessage, chunks, unavailable := f.answer, f.failStatus, f.failMessage, f.chunks, f.unavailable
 		f.mu.Unlock()
 		switch {
+		case unavailable:
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusServiceUnavailable)
+			fmt.Fprint(w, `{"error":{"message":"down for maintenance"}}`)
 		case failStatus == 0 && len(chunks) > 0 && body["stream"] == true:
 			w.Header().Set("Content-Type", "text/event-stream")
 			flusher, _ := w.(http.Flusher)
@@ -150,6 +163,20 @@ func setupAIFeatureModel(t *testing.T, answer string) (*TestHelper, *fakeLLM, *m
 		cfg.AISettings.AutoTranslation.ConnectionId = model.NewPointer(c.Id)
 	})
 	return th, f, c
+}
+
+// setUnavailable makes the endpoint down (every request fails) or up again.
+func (f *fakeLLM) setUnavailable(down bool) {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	f.unavailable = down
+}
+
+// modelListCount gives how many times the list of models was asked for.
+func (f *fakeLLM) modelListCount() int {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	return f.modelLists
 }
 
 func (f *fakeLLM) calls() []fakeLLMRequest {

@@ -379,6 +379,11 @@ func (t *agentTurn) run() {
 	working := false
 	for round := 0; ; round++ {
 		stream, appErr := t.a.AIChatStream(t.rctx, t.aiCall(), req)
+		if reachable, known := aiCallReachedEndpoint(appErr); known {
+			// What the call says of the endpoint is the agent's status (online or away), and its connection's other
+			// agents'.
+			t.a.noteAIConnectionAnswers(t.rctx, t.agent.ConnectionId, reachable)
+		}
 		if appErr != nil {
 			t.fail(appErr)
 			return

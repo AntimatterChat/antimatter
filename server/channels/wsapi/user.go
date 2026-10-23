@@ -53,6 +53,11 @@ func (api *API) userUpdateActiveStatus(req *model.WebSocketRequest) (map[string]
 		manual = false
 	}
 
+	// Antimatter: a built-in agent's status is the server's, even through its own websocket.
+	if appErr := api.App.SessionMaySetUserStatus(request.EmptyContext(api.App.Log()), req.Session, req.Session.UserId); appErr != nil {
+		return nil, appErr
+	}
+
 	if userIsActive {
 		api.App.SetStatusOnline(req.Session.UserId, manual)
 	} else {

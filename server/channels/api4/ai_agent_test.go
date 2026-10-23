@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -306,4 +307,39 @@ func TestCreateBotIsNeverAnAgent(t *testing.T) {
 	user, appErr := th.App.GetUser(th.Context, bot.UserId)
 	require.Nil(t, appErr)
 	assert.False(t, user.IsAgent)
+}
+
+// An agent's status is the server's: nobody sets it through the API, not even a system admin, while people still set
+// their own.
+func TestAgentStatusIsTheServers(t *testing.T) {
+	th, clients, connection := setupAIAgentsAPI(t)
+	ctx := context.Background()
+	agent, _, err := clients.systemAdmin.CreateAIAgent(ctx, aiAgentRequest(model.AIAgentScopeServer, connection.Id))
+	require.NoError(t, err)
+
+	// The server sets it from its connection, which answers.
+	require.Eventually(t, func() bool {
+		status, appErr := th.App.GetStatus(agent.UserId)
+		return appErr == nil && status.Status == model.StatusOnline
+	}, 10*time.Second, 20*time.Millisecond)
+
+	for _, status := range []string{model.StatusOffline, model.StatusAway, model.StatusDnd, model.StatusOnline} {
+		_, resp, err := clients.systemAdmin.UpdateUserStatus(ctx, agent.UserId, &model.Status{UserId: agent.UserId, Status: status})
+		require.Error(t, err, status)
+		CheckForbiddenStatus(t, resp)
+	}
+	_, resp, err := clients.systemAdmin.UpdateUserCustomStatus(ctx, agent.UserId, &model.CustomStatus{Emoji: "robot", Text: "On a break"})
+	require.Error(t, err)
+	CheckForbiddenStatus(t, resp)
+	resp, err = clients.systemAdmin.RemoveUserCustomStatus(ctx, agent.UserId)
+	require.Error(t, err)
+	CheckForbiddenStatus(t, resp)
+
+	status, appErr := th.App.GetStatus(agent.UserId)
+	require.Nil(t, appErr)
+	assert.Equal(t, model.StatusOnline, status.Status, "unchanged")
+
+	// People still set their own.
+	_, _, err = clients.member.UpdateUserStatus(ctx, th.BasicUser.Id, &model.Status{UserId: th.BasicUser.Id, Status: model.StatusDnd})
+	require.NoError(t, err)
 }

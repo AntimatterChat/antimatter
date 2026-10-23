@@ -4662,6 +4662,11 @@
     "description": "API error when removing a remote (connected Mattermost server) from a shared channel fails; 'uninvite' means revoking the share."
   },
   {
+    "id": "api.status.agent.app_error",
+    "translation": "An agent's status is set by the server: it shows whether the agent can answer.",
+    "description": "API error when someone tries to set an AI agent's online/away/do not disturb status or custom status; the server sets it from whether the agent's model connection answers."
+  },
+  {
     "id": "api.status.user_not_found.app_error",
     "translation": "User not found.",
     "description": "API error when the user whose online/away status was requested does not exist."
