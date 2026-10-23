@@ -65,7 +65,7 @@ describe('components/TeamMembersModal', () => {
 
         renderWithContext(<TeamMembersModal {...props}/>);
 
-        expect(screen.getByText('Only people who meet the membership requirements can be members of this team.')).toBeInTheDocument();
+        expect(screen.getByText('Only people who meet the membership requirements can be members of this community.')).toBeInTheDocument();
         expect(screen.getByText('Department: Engineering')).toBeInTheDocument();
         expect(screen.getAllByRole('status').length).toBeGreaterThanOrEqual(1);
     });
@@ -78,15 +78,15 @@ describe('components/TeamMembersModal', () => {
 
         renderWithContext(<TeamMembersModal {...props}/>);
 
-        expect(screen.getByText('This team has membership requirements')).toBeInTheDocument();
+        expect(screen.getByText('This community has membership requirements')).toBeInTheDocument();
         expect(screen.getByText('People who do not meet them can still join, but will not be automatically added.')).toBeInTheDocument();
         expect(screen.getByText('Department: Engineering')).toBeInTheDocument();
-        expect(screen.queryByText('Only people who meet the membership requirements can be members of this team.')).not.toBeInTheDocument();
+        expect(screen.queryByText('Only people who meet the membership requirements can be members of this community.')).not.toBeInTheDocument();
     });
 
     test('does not show the membership requirements notice on a non-governed team', () => {
         renderWithContext(<TeamMembersModal {...baseProps}/>);
 
-        expect(screen.queryByText('Only people who meet the membership requirements can be members of this team.')).not.toBeInTheDocument();
+        expect(screen.queryByText('Only people who meet the membership requirements can be members of this community.')).not.toBeInTheDocument();
     });
 });

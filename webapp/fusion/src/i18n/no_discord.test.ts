@@ -54,7 +54,16 @@ describe('the web UI does not name Discord', () => {
     });
 
     test('the Channels page of the community settings explains itself without Discord', () => {
-        for (const id of ['fusion.teamChannels.kindDesc', 'fusion.teamChannels.allDesc', 'fusion.layout.communityDesc', 'admin.team.allChannelsMembershipDescription']) {
+        const ids = [
+            'fusion.teamChannels.kindGuildDesc',
+            'fusion.teamChannels.allDesc',
+            'fusion.layout.guildDesc',
+            'fusion.layout.hybridGuildDesc',
+            'fusion.layout.workspaceDesc',
+            'admin.team.allChannelsMembershipGuildsDescription',
+        ];
+        for (const id of ids) {
+            expect(en[id]).toBeDefined();
             expect(en[id].defaultMessage).not.toMatch(DISCORD);
         }
         expect(en['fusion.teamChannels.allDesc'].defaultMessage).toMatch(/^Everyone in the community is in all its public channels/);
