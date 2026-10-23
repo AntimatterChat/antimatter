@@ -17,6 +17,7 @@ import {am} from 'fusion/utils/class_names';
 import ConnectionForm from './connection_form';
 import ConnectionUsage from './connection_usage';
 import {AI_CONNECTION_SCOPE_SERVER, errorMessage, totalTokens} from './connections';
+import MCPServers from './mcp_servers';
 
 type Props = {
 
@@ -30,8 +31,8 @@ type Props = {
 type View = {kind: 'list'} | {kind: 'new'} | {kind: 'edit'; id: string} | {kind: 'usage'; id: string};
 
 // ModelConnections lists model connections, with this month's usage of each and what needs attention, and adds,
-// edits, tests and deletes them (deleting asks first, in the page). The System Console shows the server's and every
-// community's; a community's settings its own.
+// edits, tests and deletes them (deleting asks first, in the page); then the MCP servers agents may use. The System
+// Console shows the server's and every community's; a community's settings its own.
 export default function ModelConnections({scope, listScope}: Props) {
     const {formatMessage, formatNumber} = useIntl();
     const dispatch = useDispatch();
@@ -338,6 +339,12 @@ export default function ModelConnections({scope, listScope}: Props) {
                     {formatMessage({id: 'fusion.aiConnections.add', defaultMessage: 'Add a connection'})}
                 </button>
             </div>
+
+            {/* The services whose tools agents may use, set up the same way. */}
+            <MCPServers
+                scope={scope}
+                listScope={listScope}
+            />
         </div>
     );
 }

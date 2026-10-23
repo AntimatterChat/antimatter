@@ -77,6 +77,7 @@ describe('fusion/ai/ModelConnections', () => {
     beforeEach(() => {
         spies = [];
         spy('getAIConnectionUsage', async () => usage);
+        spy('getAIMCPServers', async () => []);
     });
     afterEach(() => {
         spies.forEach((s) => s.mockRestore());

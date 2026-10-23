@@ -22271,9 +22271,57 @@
     "defaultMessage": "Tools",
     "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"Tools\"."
   },
-  "fusion.agents.toolsSoon": {
-    "defaultMessage": "Coming soon: the tools of Antimatter and its apps the agent may use, always with the rights of the person asking.",
-    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"Coming soon: the tools of Antimatter and its apps the agent may use, always with the rights of the person asking.\"."
+  "fusion.agents.toolsAll": {
+    "defaultMessage": "All",
+    "description": "Agents settings, agent form, a source of tools: the agent may use all its tools, including those it adds later. Short."
+  },
+  "fusion.agents.toolsAuthNone": {
+    "defaultMessage": "no sign-in",
+    "description": "Agents settings, agent form, a source of tools (an MCP server) that needs no sign-in. Lower-case: follows the tool names."
+  },
+  "fusion.agents.toolsAuthOAuth": {
+    "defaultMessage": "each person signs in",
+    "description": "Agents settings, agent form, a source of tools (an MCP server): each person signs in with their own account. Lower-case: follows the source's tool names and a dot."
+  },
+  "fusion.agents.toolsAuthService": {
+    "defaultMessage": "a shared account: reads only",
+    "description": "Agents settings, agent form, a source of tools (an MCP server) set up with one shared account: only its tools that read. Lower-case: follows the tool names."
+  },
+  "fusion.agents.toolsAutoRun": {
+    "defaultMessage": "Its reads run without asking",
+    "description": "Agents settings, agent form, a source of tools: switch that lets its tools that only read run on their own."
+  },
+  "fusion.agents.toolsAutoRunDesc": {
+    "defaultMessage": "Tools that only look something up run on their own. Any other tool always waits for the person to confirm.",
+    "description": "Agents settings, agent form: description of the 'Its reads run without asking' switch."
+  },
+  "fusion.agents.toolsChosen": {
+    "defaultMessage": "{name}: tools chosen",
+    "description": "Agents settings, agent form: accessible label of the group of a source's tools to choose. {name} is the source."
+  },
+  "fusion.agents.toolsDesc": {
+    "defaultMessage": "What the agent may do besides answering, always with the rights of the person asking. A tool that changes something asks them first.",
+    "description": "Agents settings, agent form: description of the Tools switch (Antimatter). An agent's tools act as the person who asked it, never with more rights."
+  },
+  "fusion.agents.toolsLoadFailed": {
+    "defaultMessage": "The tools couldn't be loaded.",
+    "description": "Agents settings, agent form: error when the list of tools the agent may be given can't be read."
+  },
+  "fusion.agents.toolsOff": {
+    "defaultMessage": "Off",
+    "description": "Agents settings, agent form, a source of tools: the agent may use none of its tools. Short: segmented control."
+  },
+  "fusion.agents.toolsSome": {
+    "defaultMessage": "Chosen",
+    "description": "Agents settings, agent form, a source of tools: the agent may use the tools chosen below. Short."
+  },
+  "fusion.agents.toolsUnknown": {
+    "defaultMessage": "Also allowed, not available now: {names}",
+    "description": "Agents settings, agent form: the agent's tool names that no current source has (a server removed, an app not running), kept. {names} is the list."
+  },
+  "fusion.agents.toolsUnlisted": {
+    "defaultMessage": "Its tools are listed here once you sign in to it yourself, from the AI chat's Tools menu. Meanwhile, choose All.",
+    "description": "Agents settings, agent form: under an MCP server where each person signs in, whose tools can't be listed until the admin signs in."
   },
   "fusion.agents.username": {
     "defaultMessage": "Username",
@@ -26410,6 +26458,158 @@
   "fusion.lightbox.zoomOut": {
     "defaultMessage": "Zoom out (−)",
     "description": ""
+  },
+  "fusion.mcpServers.add": {
+    "defaultMessage": "Add an MCP server",
+    "description": "AI settings, MCP servers: button that opens the form to add a server."
+  },
+  "fusion.mcpServers.allTeamsDesc": {
+    "defaultMessage": "Server-wide agents may use it in every community, and in direct and group messages. Otherwise only in the communities chosen, where their own agents may use it too.",
+    "description": "AI settings, MCP server form (System Console): description of the 'All communities' switch."
+  },
+  "fusion.mcpServers.auth": {
+    "defaultMessage": "Account",
+    "description": "AI settings, MCP server form: title of the choice of whose account the server's tools use."
+  },
+  "fusion.mcpServers.auth.none": {
+    "defaultMessage": "No sign-in",
+    "description": "AI settings, MCP servers list: the server needs no sign-in."
+  },
+  "fusion.mcpServers.auth.noneShort": {
+    "defaultMessage": "None",
+    "description": "AI settings, MCP server form, account choice: no sign-in. Short."
+  },
+  "fusion.mcpServers.auth.oauth": {
+    "defaultMessage": "Each person signs in",
+    "description": "AI settings, MCP servers list: each person signs in to the server with their own account (OAuth)."
+  },
+  "fusion.mcpServers.auth.oauthShort": {
+    "defaultMessage": "Each person",
+    "description": "AI settings, MCP server form, account choice: each person signs in with their own account (OAuth). Short: it's a segmented control."
+  },
+  "fusion.mcpServers.auth.service": {
+    "defaultMessage": "Shared account (reads only)",
+    "description": "AI settings, MCP servers list: an admin gave the server one shared account; only its tools that read are offered to agents."
+  },
+  "fusion.mcpServers.auth.serviceShort": {
+    "defaultMessage": "Shared",
+    "description": "AI settings, MCP server form, account choice: one shared service account an admin sets up. Short."
+  },
+  "fusion.mcpServers.authDesc": {
+    "defaultMessage": "Whose account its tools use. A shared account acts for everyone: only its tools that read are offered.",
+    "description": "AI settings, MCP server form: description of the account choice (each person's own, none, or one shared account)."
+  },
+  "fusion.mcpServers.clientId": {
+    "defaultMessage": "OAuth client ID",
+    "description": "AI settings, MCP server form: label of the OAuth client ID people sign in with."
+  },
+  "fusion.mcpServers.clientIdDesc": {
+    "defaultMessage": "Left empty, Antimatter registers itself with the server's sign-in the first time someone signs in. People are sent back to {path}.",
+    "description": "AI settings, MCP server form: note under the OAuth client ID. {path} is the callback path to register with the provider."
+  },
+  "fusion.mcpServers.clientSecret": {
+    "defaultMessage": "OAuth client secret",
+    "description": "AI settings, MCP server form: label (and accessible name) of the OAuth client's secret."
+  },
+  "fusion.mcpServers.confirm": {
+    "defaultMessage": "Delete {name}? Its secrets and everyone's sign-in to it are forgotten, and agents lose its tools. This can't be undone.",
+    "description": "AI settings, MCP servers: question shown in the row before a server is deleted. {name} is the server."
+  },
+  "fusion.mcpServers.confirmDelete": {
+    "defaultMessage": "Delete server",
+    "description": "AI settings, MCP servers: button that confirms deleting a server."
+  },
+  "fusion.mcpServers.create": {
+    "defaultMessage": "Add server",
+    "description": "AI settings, MCP server form: button that adds the server."
+  },
+  "fusion.mcpServers.deleted": {
+    "defaultMessage": "{name} deleted, with everyone's sign-in to it.",
+    "description": "AI settings, MCP servers: confirmation after a server was deleted. {name} is the server."
+  },
+  "fusion.mcpServers.deleteFailed": {
+    "defaultMessage": "The MCP server couldn't be deleted.",
+    "description": "AI settings, MCP servers: error when deleting a server failed."
+  },
+  "fusion.mcpServers.editTitle": {
+    "defaultMessage": "Edit {name}",
+    "description": "AI settings, MCP servers: heading of the form that edits a server. {name} is the server."
+  },
+  "fusion.mcpServers.headers": {
+    "defaultMessage": "The shared account's headers",
+    "description": "AI settings, MCP server form: label of the HTTP headers (e.g. Authorization) of the shared service account."
+  },
+  "fusion.mcpServers.headersDesc": {
+    "defaultMessage": "Sent with every call, for everyone: give it an account that can only read. Stored encrypted; saved values are never shown, type them all again to change them.",
+    "description": "AI settings, MCP server form: note under the shared account's headers."
+  },
+  "fusion.mcpServers.lead": {
+    "defaultMessage": "Services whose tools agents may use, as their settings allow. The tools always act as the person who asked: each person signs in with their own account, from the AI chat's Tools menu.",
+    "description": "AI settings, MCP servers section: what it is. 'AI chat' is the app's name; 'Tools menu' is its menu."
+  },
+  "fusion.mcpServers.loadFailed": {
+    "defaultMessage": "The MCP servers couldn't be loaded.",
+    "description": "AI settings (System Console › AI › Connections and agents, or a community's AI settings), MCP servers section (Antimatter): error when the list can't be read. An MCP server is a service whose tools agents may use."
+  },
+  "fusion.mcpServers.namePlaceholder": {
+    "defaultMessage": "e.g. Issue tracker",
+    "description": "AI settings, MCP server form: example in the Name field."
+  },
+  "fusion.mcpServers.newTitle": {
+    "defaultMessage": "Add an MCP server",
+    "description": "AI settings, MCP servers: heading of the form that adds a server."
+  },
+  "fusion.mcpServers.none": {
+    "defaultMessage": "No MCP servers yet.",
+    "description": "AI settings, MCP servers: the list is empty."
+  },
+  "fusion.mcpServers.saveFailed": {
+    "defaultMessage": "The MCP server couldn't be saved.",
+    "description": "AI settings, MCP server form: error when saving failed (the server's own reason may be shown instead)."
+  },
+  "fusion.mcpServers.scopes": {
+    "defaultMessage": "Scopes",
+    "description": "AI settings, MCP server form: label of the OAuth scopes asked for (space-separated)."
+  },
+  "fusion.mcpServers.secretDesc": {
+    "defaultMessage": "Stored encrypted and never shown again. People's own sign-ins are never shown either, to anyone.",
+    "description": "AI settings, MCP server form: note under the OAuth client secret."
+  },
+  "fusion.mcpServers.secretRemove": {
+    "defaultMessage": "Remove",
+    "description": "AI settings, MCP server form: button that removes the OAuth client secret."
+  },
+  "fusion.mcpServers.secretReplace": {
+    "defaultMessage": "Replace",
+    "description": "AI settings, MCP server form: button to type a new OAuth client secret."
+  },
+  "fusion.mcpServers.secretSet": {
+    "defaultMessage": "Set",
+    "description": "AI settings, MCP server form: the OAuth client secret is set (it's never shown)."
+  },
+  "fusion.mcpServers.slug": {
+    "defaultMessage": "Short name",
+    "description": "AI settings, MCP server form: label of the short name that names the server's tools (mcp.<short name>.<tool>)."
+  },
+  "fusion.mcpServers.slugDesc": {
+    "defaultMessage": "Its tools are named {namespace}.tool_name in agents' settings. Lower-case letters, digits, - and _; it can't change later.",
+    "description": "AI settings, MCP server form: note under the short name. {namespace} is e.g. mcp.jira; keep 'tool_name' as is."
+  },
+  "fusion.mcpServers.title": {
+    "defaultMessage": "MCP servers",
+    "description": "AI settings: heading (and list label) of the section of MCP servers, the services whose tools agents may use. 'MCP' (Model Context Protocol) stays as is."
+  },
+  "fusion.mcpServers.url": {
+    "defaultMessage": "Address",
+    "description": "AI settings, MCP server form: label of the server's URL."
+  },
+  "fusion.mcpServers.urlDesc": {
+    "defaultMessage": "Its Streamable HTTP endpoint. Changing it signs everyone out.",
+    "description": "AI settings, MCP server form (System Console): note under the address. 'Streamable HTTP' is the MCP transport's name."
+  },
+  "fusion.mcpServers.urlDescCommunity": {
+    "defaultMessage": "Its Streamable HTTP endpoint, on the internet (not the server's own network). Changing it signs everyone out.",
+    "description": "AI settings, MCP server form (a community's settings): note under the address; a community's server can't reach the server's internal network."
   },
   "fusion.members.add": {
     "defaultMessage": "Add people or invite",

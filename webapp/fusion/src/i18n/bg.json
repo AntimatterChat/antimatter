@@ -5629,7 +5629,6 @@
   "fusion.agents.title": "Агенти",
   "fusion.agents.toggleFailed": "Агентът не може да бъде променен.",
   "fusion.agents.tools": "Инструменти",
-  "fusion.agents.toolsSoon": "Очаквайте скоро: инструментите на Antimatter и неговите приложения, които агентът може да използва, винаги с правата на запитващия.",
   "fusion.agents.username": "Потребителско име",
   "fusion.agents.usernameDesc": "Как хората го споменават: от 3 до 22 малки букви, цифри, точки, тирета или долни черти, започващо с буква.",
   "fusion.agents.usernamePlaceholder": "напр. researcher",

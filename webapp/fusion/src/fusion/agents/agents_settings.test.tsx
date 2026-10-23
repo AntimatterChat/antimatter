@@ -69,6 +69,7 @@ describe('fusion/agents/AgentsSettings', () => {
         spies = [];
         spy('getAIAgentConnections', async () => connections);
         spy('getAIAgentConnectionModels', async () => [{id: 'gpt-5'}, {id: 'gpt-5-mini'}]);
+        spy('getAIToolCatalogue', async () => ({sources: []}));
     });
     afterEach(() => {
         spies.forEach((s) => s.mockRestore());
