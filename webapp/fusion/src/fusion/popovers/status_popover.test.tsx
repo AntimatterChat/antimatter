@@ -5,7 +5,7 @@ import React from 'react';
 
 import {Client4} from 'mattermost-redux/client';
 
-import {renderWithContext, screen, userEvent} from 'tests/react_testing_utils';
+import {renderWithContext, screen, userEvent, within} from 'tests/react_testing_utils';
 
 import StatusPopover from './status_popover';
 
@@ -135,5 +135,52 @@ describe('fusion/popovers/StatusPopover focus mode', () => {
             map((button) => button.textContent?.match(pattern)?.[1]).
             filter(Boolean);
         expect(order).toEqual(['Online', 'Away', 'Do not disturb', 'Focus mode…', 'Invisible']);
+    });
+});
+
+// dndDurationLabel and clearAfterLabel (literal formatMessage calls per choice, not a lookup into a stored message
+// descriptor) replace DND_DURATIONS/CLEAR_AFTER tuples that held the descriptor itself: those ids were missing from
+// en.json and never translated. These tests would have caught that regressing back.
+describe('fusion/popovers/StatusPopover duration labels', () => {
+    beforeEach(() => {
+        if (!document.getElementById('am-layer')) {
+            const layer = document.createElement('div');
+            layer.id = 'am-layer';
+            document.body.appendChild(layer);
+        }
+    });
+
+    const render = () => renderWithContext(
+        <StatusPopover
+            anchor={null}
+            onClose={jest.fn()}
+        />,
+        {
+            entities: {
+                teams: {currentTeamId: 't1', teams: {t1: {id: 't1', name: 'one', display_name: 'One', delete_at: 0}}, myMembers: {t1: {team_id: 't1', user_id: 'me', roles: 'team_user'}}},
+                users: {currentUserId: 'me', profiles: {me: {id: 'me', username: 'me', roles: 'system_user', notify_props: {}}}},
+                roles: {roles: {system_user: {name: 'system_user', permissions: []}, team_user: {name: 'team_user', permissions: []}}},
+            },
+        } as never,
+    );
+
+    test('the Do not disturb durations are correctly worded, in order', () => {
+        render();
+        const sub = screen.getByRole('menu', {name: 'Do not disturb for'});
+        const items = within(sub).getAllByRole('menuitem');
+        expect(items.map((item) => item.textContent)).toEqual([
+            'For 15 minutes', 'For 1 hour', 'For 1 day', 'For 1 week', 'Forever', 'Until a custom time…',
+        ]);
+    });
+
+    test('the custom status\'s "clear after" choices are correctly worded, in order', async () => {
+        render();
+        await userEvent.type(screen.getByPlaceholderText('Set a custom status'), 'Away from keyboard');
+        await userEvent.click(screen.getByRole('button', {name: /^Clear after:/}));
+        const menu = screen.getByRole('menu', {name: 'Clear after'});
+        const items = within(menu).getAllByRole('menuitemradio');
+        expect(items.map((item) => item.textContent)).toEqual([
+            '30 minutes', '1 hour', '4 hours', 'Today', 'This week', "Don't clear", 'Choose date and time…',
+        ]);
     });
 });

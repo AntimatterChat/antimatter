@@ -29287,6 +29287,18 @@
     "defaultMessage": "Clear custom status",
     "description": ""
   },
+  "fusion.status.clear1h": {
+    "defaultMessage": "1 hour",
+    "description": "A \"clear custom status after\" choice."
+  },
+  "fusion.status.clear30": {
+    "defaultMessage": "30 minutes",
+    "description": "A \"clear custom status after\" choice."
+  },
+  "fusion.status.clear4h": {
+    "defaultMessage": "4 hours",
+    "description": "A \"clear custom status after\" choice."
+  },
   "fusion.status.clearAfter": {
     "defaultMessage": "Clear after",
     "description": ""
@@ -29306,6 +29318,18 @@
   "fusion.status.clearCustom": {
     "defaultMessage": "Choose date and time…",
     "description": ""
+  },
+  "fusion.status.clearNever": {
+    "defaultMessage": "Don't clear",
+    "description": "A \"clear custom status after\" choice: never, until you clear it yourself."
+  },
+  "fusion.status.clearToday": {
+    "defaultMessage": "Today",
+    "description": "A \"clear custom status after\" choice."
+  },
+  "fusion.status.clearWeek": {
+    "defaultMessage": "This week",
+    "description": "A \"clear custom status after\" choice."
   },
   "fusion.status.console": {
     "defaultMessage": "System Console",
@@ -29342,6 +29366,26 @@
   "fusion.status.emoji": {
     "defaultMessage": "Choose an emoji",
     "description": ""
+  },
+  "fusion.status.for15": {
+    "defaultMessage": "For 15 minutes",
+    "description": "A Do not disturb duration choice."
+  },
+  "fusion.status.for1d": {
+    "defaultMessage": "For 1 day",
+    "description": "A Do not disturb duration choice."
+  },
+  "fusion.status.for1h": {
+    "defaultMessage": "For 1 hour",
+    "description": "A Do not disturb duration choice."
+  },
+  "fusion.status.for1w": {
+    "defaultMessage": "For 1 week",
+    "description": "A Do not disturb duration choice."
+  },
+  "fusion.status.forever": {
+    "defaultMessage": "Forever",
+    "description": "A Do not disturb duration choice: until turned off."
   },
   "fusion.status.forget": {
     "defaultMessage": "Remove from recents",
