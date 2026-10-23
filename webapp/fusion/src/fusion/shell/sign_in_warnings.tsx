@@ -67,7 +67,7 @@ function SignInCard({signIn, onItsMe, onDisconnect}: {signIn: SignIn; onItsMe: (
         <div
             className={am('signin')}
             role='alertdialog'
-            aria-label={`${title}: ${device}`}
+            aria-label={formatMessage({id: 'fusion.signIn.label', defaultMessage: 'New sign-in to your account: {device}', description: 'Screen reader label of a sign-in warning: the title, then the device that signed in, e.g. "Firefox on Linux".'}, {device})}
         >
             <div className={am('signin-top')}>
                 <Icon
