@@ -280,8 +280,9 @@ export default function BrowseChannelsDialog({onClose}: {onClose: () => void}) {
                                         </small>
                                     </span>
                                 </button>
-                                {member && <span className={am('browse-joined')}>{formatMessage({id: 'fusion.browse.joined', defaultMessage: 'Joined'})}</span>}
-                                {!member && !archived && !requestable && (
+                                {/* Where everyone is in every channel, nobody joins or leaves them: no Join, no Joined. */}
+                                {member && !allChannels && <span className={am('browse-joined')}>{formatMessage({id: 'fusion.browse.joined', defaultMessage: 'Joined'})}</span>}
+                                {!member && !archived && !requestable && !allChannels && (
                                     <button
                                         type='button'
                                         className={am('btn', 'small', 'primary')}
