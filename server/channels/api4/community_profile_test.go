@@ -5,6 +5,7 @@ package api4
 
 import (
 	"context"
+	"encoding/json"
 	"strings"
 	"testing"
 
@@ -197,6 +198,64 @@ func TestCommunityNicknameAutocomplete(t *testing.T) {
 		outside = outside || u.Id == person.Id
 	}
 	assert.True(t, outside, "not in the channel: listed out of it")
+}
+
+// Antimatter: refusing to be shown by name in a community is hiding one's full name and nickname from it (its privacy
+// settings): its members get the person by their username only, everywhere (privacy regression), while a nickname
+// chosen for the community still shows and still finds them.
+func TestCommunityProfileWithHiddenName(t *testing.T) {
+	mainHelper.Parallel(t)
+	h := newRightsHelper(t, "")
+	ctx := context.Background()
+	h.th.App.UpdateConfig(func(cfg *model.Config) { *cfg.PrivacySettings.ShowFullName = true })
+	person, personClient := h.member(t)
+	_, otherClient := h.member(t)
+
+	privacy, err := json.Marshal(model.ProfilePrivacy{h.team.Id: {model.ProfileFieldFullName, model.ProfileFieldNickname}})
+	require.NoError(t, err)
+	me, appErr := h.th.App.GetUser(h.th.Context, person.Id)
+	require.Nil(t, appErr)
+	me = me.DeepCopy()
+	me.FirstName, me.LastName, me.Nickname = "Zoë", "Marchetti", "Zo"
+	me.Props = model.StringMap{model.UserPropsKeyProfilePrivacy: string(privacy)}
+	_, appErr = h.th.App.UpdateUser(h.th.Context, me, false)
+	require.Nil(t, appErr)
+	_, _, err = personClient.PatchCommunityProfile(ctx, h.team.Id, person.Id, &model.CommunityProfilePatch{Nickname: model.NewPointer("Quillfeather")})
+	require.NoError(t, err)
+
+	hidden := func(t *testing.T, u *model.User) {
+		t.Helper()
+		require.NotNil(t, u)
+		assert.Empty(t, u.FirstName)
+		assert.Empty(t, u.LastName)
+		assert.Empty(t, u.Nickname)
+		assert.Equal(t, person.Username, u.Username)
+	}
+
+	u, _, err := otherClient.GetUser(ctx, person.Id, "")
+	require.NoError(t, err)
+	hidden(t, u)
+
+	// Found by the nickname chosen for the community, never by a hidden name.
+	ac, _, err := otherClient.AutocompleteUsersInTeam(ctx, h.team.Id, "quill", 100, "")
+	require.NoError(t, err)
+	var found *model.User
+	for _, user := range ac.Users {
+		if user.Id == person.Id {
+			found = user
+		}
+	}
+	hidden(t, found)
+	ac, _, err = otherClient.AutocompleteUsersInTeam(ctx, h.team.Id, "marchetti", 100, "")
+	require.NoError(t, err)
+	for _, user := range ac.Users {
+		assert.NotEqual(t, person.Id, user.Id, "not by the hidden last name")
+	}
+
+	profiles, _, err := otherClient.GetCommunityProfiles(ctx, h.team.Id)
+	require.NoError(t, err)
+	require.Len(t, profiles, 1)
+	assert.Equal(t, "Quillfeather", profiles[0].Nickname)
 }
 
 // Antimatter: a community's admins choose how it shows people; its members don't.
