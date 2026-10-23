@@ -116,6 +116,7 @@ export function sendDesktopNotification(post: Post, msgProps: NewPostMessageProp
             display_name: msgProps.channel_display_name,
             type: msgProps.channel_type,
         } as Channel;
+
         // Antimatter: your notification settings for the channel's community over your own (none for direct and group
         // messages); the channel's own preferences still come first.
         const communityId = channel.team_id ?? (channel.type === 'O' || channel.type === 'P' ? teamId : '');
