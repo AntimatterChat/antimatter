@@ -89,7 +89,7 @@ describe('fusion/channel/usePermalinkAnchor', () => {
         expect(probe()).toHaveAttribute('data-anchor', '');
     });
 
-    test('while a permalink resolves, the conversation shown keeps its anchor; another conversation has none', () => {
+    test('while a permalink resolves, the conversation shown keeps its anchor; another conversation anchors on the post resolving into it', () => {
         const {history, rerender} = setup('/lumen/channels/ops-oncall', {permalinkAnchor: 'newroot'});
 
         // ChannelIdentifierRouter tells the view from the address; here, the two in turn.
@@ -98,9 +98,11 @@ describe('fusion/channel/usePermalinkAnchor', () => {
         expect(probe()).toHaveAttribute('data-linked', '');
         expect(probe()).toHaveAttribute('data-anchor', 'newroot');
 
-        // focusPost selected the post's conversation.
+        // focusPost selects the post's conversation before the address itself moves there: in that gap, the
+        // channel shown is already "general", so it must anchor on "pointer" (still in the /pl/ address) rather
+        // than nothing, or the view flashes to "general"'s newest messages before jumping to the post.
         rerender(view('general', true));
-        expect(probe()).toHaveAttribute('data-anchor', '');
+        expect(probe()).toHaveAttribute('data-anchor', 'pointer');
     });
 
     test('sending a message while the list is around an older one brings back the newest messages', () => {
