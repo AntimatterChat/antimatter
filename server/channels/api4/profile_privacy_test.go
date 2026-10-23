@@ -34,7 +34,8 @@ func TestProfilePrivacyRoutes(t *testing.T) {
 		model.ProfileFieldFullName, model.ProfileFieldNickname, model.ProfileFieldPosition, model.ProfileFieldEmail, model.ProfileFieldLocalTime,
 	}})
 	require.NoError(t, err)
-	hider := th.BasicUser2
+	// A copy: updating it clears its password, which the logins below need.
+	hider := th.BasicUser2.DeepCopy()
 	hider.FirstName, hider.LastName, hider.Nickname, hider.Position = "Leonie", "Quartermaine", "Leo", "Captain"
 	hider.Timezone = model.StringMap{"useAutomaticTimezone": "false", "manualTimezone": "Europe/Paris"}
 	hider.Props = model.StringMap{model.UserPropsKeyProfilePrivacy: string(privacy)}
@@ -223,7 +224,7 @@ func TestProfilePrivacyRoutes(t *testing.T) {
 		client := th.CreateClient()
 		th.LoginBasic2WithClient(t, client)
 		props := model.StringMap{model.UserPropsKeyProfilePrivacy: `{"default":["password"]}`}
-		_, resp, err := client.PatchUser(ctx, hider.Id, &model.UserPatch{Props: &props})
+		_, resp, err := client.PatchUser(ctx, hider.Id, &model.UserPatch{Props: props})
 		require.Error(t, err)
 		CheckBadRequestStatus(t, resp)
 	})
