@@ -54,7 +54,7 @@ export function CommunityInfo({setUnsaved}: Props) {
     const dispatch = useDispatch();
     const toast = useToast();
     const team = useSelector(getCurrentTeam);
-    const maxFileSize = useSelector((state: GlobalState) => parseInt(getConfig(state).MaxFileSize || '', 10));
+    const maxFileSize = parseInt(useSelector((state: GlobalState) => getConfig(state).MaxFileSize) || '', 10);
     const [name, setName] = useState(team?.display_name || '');
     const [description, setDescription] = useState(team?.description || '');
     const [busy, setBusy] = useState(false);
@@ -62,8 +62,11 @@ export function CommunityInfo({setUnsaved}: Props) {
     const [iconBusy, setIconBusy] = useState(false);
     const fileRef = useRef<HTMLInputElement>(null);
 
-    const savedName = team?.display_name || '';
-    const savedDescription = team?.description || '';
+    // What was saved, until the community comes back changed from the server.
+    const [justSaved, setJustSaved] = useState<{name: string; description: string} | null>(null);
+    useEffect(() => setJustSaved(null), [team?.display_name, team?.description]);
+    const savedName = justSaved ? justSaved.name : team?.display_name || '';
+    const savedDescription = justSaved ? justSaved.description : team?.description || '';
     const changed = name !== savedName || description !== savedDescription;
     useEffect(() => {
         setUnsaved?.(changed);
@@ -92,6 +95,7 @@ export function CommunityInfo({setUnsaved}: Props) {
         }
         setName(trimmed);
         setDescription(description.trim());
+        setJustSaved({name: trimmed, description: description.trim()});
         toast(formatMessage({id: 'fusion.teamGeneral.saved', defaultMessage: 'Saved'}));
     };
 

@@ -38,6 +38,9 @@ export type TeamTemplate = {
 
 export type Preset = 'hybrid' | 'guild' | 'workspace';
 
+// The channel new communities get for their join and leave messages (the server's model.WelcomeChannelName).
+export const WELCOME_CHANNEL = 'welcome';
+
 // What the presets' moderators may do: manage messages (edit and delete others', put them on top), rename channels
 // and manage their members, and remove people, which timeouts take too (the server's CheckCanModerateMember). The
 // server brings the presets' roles made before "Remove people" was in it up to this (doModeratorPresetMigration).
@@ -78,9 +81,6 @@ export const PRESETS: Record<Preset, TeamTemplate> = {
         kind: 'workspace',
     },
 };
-
-// The channel new communities get for their join and leave messages (the server's model.WelcomeChannelName).
-export const WELCOME_CHANNEL = 'welcome';
 
 // templateKind reads a template's kind, the kinds' former names (community, workplace) standing for them.
 export function templateKind(kind: unknown): TeamKind | undefined {

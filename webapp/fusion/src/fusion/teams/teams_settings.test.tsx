@@ -70,7 +70,7 @@ function state(permissions = ['manage_team', 'manage_team_roles'], badges = fals
     } as never;
 }
 
-const names = () => screen.getAllByRole('button', {name: /members/}).map((b) => within(b).getByText(/^(Design|Ops|Old)$/).textContent);
+const names = () => screen.getAllByRole('button', {name: /\d+ members?/}).map((b) => within(b).getByText(/^(Design|Ops|Old)$/).textContent);
 
 describe('teamsShown', () => {
     test('all those not archived, yours, or the archived ones, matching a search', () => {

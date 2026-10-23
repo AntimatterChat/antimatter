@@ -24,10 +24,10 @@ describe('components/TeamSettings/OpenInvite', () => {
                 isGroupConstrained={true}
             />,
         );
-        expect(screen.getByText(/members of this team are added and removed by linked groups/i)).toBeInTheDocument();
-        expect(screen.getByText('Learn More')).toBeInTheDocument();
-        expect(screen.getByText(/Public teams appear on the server landing page/i)).toBeInTheDocument();
-        expect(screen.queryByText(/Switching a team from Public to Private/i)).not.toBeInTheDocument();
+        expect(screen.getByText(/members of this community are added and removed by linked groups/i)).toBeInTheDocument();
+        expect(screen.getByText('Learn more')).toBeInTheDocument();
+        expect(screen.getByText(/Public communities are listed for everyone on the server/i)).toBeInTheDocument();
+        expect(screen.queryByText(/Making a public community private/i)).not.toBeInTheDocument();
     });
 
     test('renders Public and Private option buttons when not group-constrained', () => {
@@ -38,7 +38,7 @@ describe('components/TeamSettings/OpenInvite', () => {
 
     test('renders the updated discoverability help text, not the stale checkbox copy', () => {
         renderWithContext(<OpenInvite {...defaultProps}/>);
-        expect(screen.getByText(/Switching a team from Public to Private regenerates its invitation code/i)).toBeInTheDocument();
+        expect(screen.getByText(/Making a public community private regenerates its invitation code/i)).toBeInTheDocument();
         expect(screen.queryByText(/Changing from 'Yes' to 'No'/i)).not.toBeInTheDocument();
     });
 
@@ -72,8 +72,8 @@ describe('components/TeamSettings/OpenInvite', () => {
             />,
         );
         expect(screen.queryByText(/membership is managed by a policy/i)).not.toBeInTheDocument();
-        const publicBtn = screen.getByRole('button', {name: /public team/i});
-        const privateBtn = screen.getByRole('button', {name: /private team/i});
+        const publicBtn = screen.getByRole('button', {name: /public community/i});
+        const privateBtn = screen.getByRole('button', {name: /private community/i});
         expect(publicBtn.className).not.toMatch(/disabled/);
         expect(privateBtn.className).not.toMatch(/disabled/);
         await userEvent.click(screen.getByText('Private community'));
