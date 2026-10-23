@@ -1118,6 +1118,7 @@ func getGroups(c *Context, w http.ResponseWriter, r *http.Request) {
 		OnlySyncableSources:       onlySyncableSources,
 		FilterTeamId:              filterTeamID,
 		FilterIsTeam:              filterIsTeam,
+		IncludeTeamRoles:          !c.Params.FilterAllowReference,
 	}
 
 	if teamID != "" {

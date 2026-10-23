@@ -204,6 +204,13 @@ func TestTeamDefaultRoleAPI(t *testing.T) {
 	}
 	assert.True(t, found)
 
+	// But not with the groups to mention.
+	mentionable, _, err := memberClient.GetGroups(ctx, model.GroupSearchOpts{Source: model.GroupSourceCustom, FilterAllowReference: true, PageOpts: &model.PageOpts{Page: 0, PerPage: 200}})
+	require.NoError(t, err)
+	for _, g := range mentionable {
+		assert.NotEqual(t, role.Id, g.Id, "nobody mentions everyone through the default role")
+	}
+
 	for _, client := range []*model.Client4{adminClient, h.th.SystemAdminClient} {
 		_, resp, err = client.DeleteGroup(ctx, role.Id)
 		require.Error(t, err, "it can't be deleted")
