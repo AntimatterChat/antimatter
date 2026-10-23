@@ -13,6 +13,7 @@ import ChannelExportDialog from 'fusion/channel/channel_export_dialog';
 import ChannelPermissionsDialog from 'fusion/channel/channel_permissions_dialog';
 import FocusDialog from 'fusion/focus/focus_dialog';
 import AddPeopleDialog from 'fusion/modals/add_people_dialog';
+import CommunityNotificationsDialog from 'fusion/modals/community_notifications_dialog';
 import ConfirmDialog from 'fusion/modals/confirm_dialog';
 import type {ConfirmOptions} from 'fusion/modals/confirm_dialog';
 import CreateCategoryDialog from 'fusion/modals/create_category_dialog';
@@ -80,11 +81,14 @@ type Dialogs = {
 
     // Start focus mode (from the status menu).
     focus: () => void;
+
+    // A community's own notification settings (from its menu), over your own.
+    communityNotifications: (teamId: string) => void;
 };
 
-const DialogsContext = createContext<Dialogs>({createChannel: () => {}, addPeople: () => {}, invite: () => {}, deleteMessage: () => {}, createCategory: () => {}, renameServerCategory: () => {}, channelPermissions: () => {}, exportChannel: () => {}, categoryPermissions: () => {}, selfRoles: () => {}, confirm: () => {}, help: () => {}, createTeam: () => {}, timeOut: () => {}, removeFromTeam: () => {}, browseChannels: () => {}, blockPrompt: () => {}, focus: () => {}});
+const DialogsContext = createContext<Dialogs>({createChannel: () => {}, addPeople: () => {}, invite: () => {}, deleteMessage: () => {}, createCategory: () => {}, renameServerCategory: () => {}, channelPermissions: () => {}, exportChannel: () => {}, categoryPermissions: () => {}, selfRoles: () => {}, confirm: () => {}, help: () => {}, createTeam: () => {}, timeOut: () => {}, removeFromTeam: () => {}, browseChannels: () => {}, blockPrompt: () => {}, focus: () => {}, communityNotifications: () => {}});
 
-type Open = {kind: 'create'; categoryId?: string} | {kind: 'add'; channel: Channel} | {kind: 'delete'; post: Post} | {kind: 'category'; renaming?: string} | {kind: 'permissions'; channel: Channel} | {kind: 'export'; channel: Channel} | {kind: 'selfRoles'} | {kind: 'confirm'; options: ConfirmOptions} | {kind: 'help'; page?: HelpPage} | {kind: 'categoryPermissions'; teamId: string; name: string} | {kind: 'createTeam'} | {kind: 'timeOut'; userId: string} | {kind: 'removeFromTeam'; userId: string} | {kind: 'browse'} | {kind: 'blockPrompt'; userId: string} | {kind: 'focus'} | null;
+type Open = {kind: 'create'; categoryId?: string} | {kind: 'add'; channel: Channel} | {kind: 'delete'; post: Post} | {kind: 'category'; renaming?: string} | {kind: 'permissions'; channel: Channel} | {kind: 'export'; channel: Channel} | {kind: 'selfRoles'} | {kind: 'confirm'; options: ConfirmOptions} | {kind: 'help'; page?: HelpPage} | {kind: 'categoryPermissions'; teamId: string; name: string} | {kind: 'createTeam'} | {kind: 'timeOut'; userId: string} | {kind: 'removeFromTeam'; userId: string} | {kind: 'browse'} | {kind: 'blockPrompt'; userId: string} | {kind: 'focus'} | {kind: 'communityNotifications'; teamId: string} | null;
 
 // DialogsProvider owns the Fusion UI's own dialogs that menus and buttons open, outliving the menu that opened them.
 export function DialogsProvider({children}: {children: React.ReactNode}) {
@@ -110,6 +114,7 @@ export function DialogsProvider({children}: {children: React.ReactNode}) {
         removeFromTeam: (userId) => setOpen({kind: 'removeFromTeam', userId}),
         blockPrompt: (userId) => setOpen({kind: 'blockPrompt', userId}),
         focus: () => setOpen({kind: 'focus'}),
+        communityNotifications: (teamId) => setOpen({kind: 'communityNotifications', teamId}),
     }), [dispatch]);
 
     const close = () => setOpen(null);
@@ -146,6 +151,12 @@ export function DialogsProvider({children}: {children: React.ReactNode}) {
             {open?.kind === 'createTeam' && <CreateTeamDialog onClose={close}/>}
             {open?.kind === 'browse' && <BrowseChannelsDialog onClose={close}/>}
             {open?.kind === 'focus' && <FocusDialog onClose={close}/>}
+            {open?.kind === 'communityNotifications' && (
+                <CommunityNotificationsDialog
+                    teamId={open.teamId}
+                    onClose={close}
+                />
+            )}
             {open?.kind === 'timeOut' && (
                 <TimeoutDialog
                     userId={open.userId}

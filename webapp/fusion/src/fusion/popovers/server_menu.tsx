@@ -25,7 +25,6 @@ import {addToFolder, folderOfTeam, makeFolder, placeAfter, railItems, removeFrom
 import {getSortedMyTeams} from 'fusion/selectors';
 import {useDialogs} from 'fusion/shell/dialogs_context';
 import {comboKeys, comboLabel, getKeybinds} from 'fusion/shell/keybinds';
-import {useSettings} from 'fusion/shell/settings_context';
 import {useToast} from 'fusion/shell/toast_context';
 import {
     getUnreadChannelIdsInTeam,
@@ -88,7 +87,6 @@ export default function ServerMenu({team: forTeam, anchor, point, width, onClose
     const pluginItems = useSelector(getMainMenuPluginComponents);
     const addChannelItems = useSelector(getSidebarBrowseOrAddChannelMenuPluginComponents);
     const plugins = useSelector((state: GlobalState) => state.plugins.plugins);
-    const settings = useSettings();
     const allChannels = useSelector((state: GlobalState) => isAllChannelsCommunity(state, teamId));
     const [folders, saveFolders] = useFolders();
     const myTeams = useSelector(getSortedMyTeams);
@@ -236,7 +234,7 @@ export default function ServerMenu({team: forTeam, anchor, point, width, onClose
             <MenuItem
                 icon='bell'
                 label={formatMessage({id: 'fusion.serverMenu.notifications', defaultMessage: 'Notification settings'})}
-                onClick={run(() => settings.open('notifications'))}
+                onClick={run(() => dialogs.communityNotifications(teamId))}
             />
             {pluginItems.length > 0 && (
                 <>

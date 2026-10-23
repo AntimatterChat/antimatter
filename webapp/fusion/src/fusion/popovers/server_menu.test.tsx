@@ -23,7 +23,8 @@ jest.mock('fusion/sidebar/team_actions', () => ({
     ...jest.requireActual('fusion/sidebar/team_actions'),
     setHidingMutedChannels: jest.fn(() => ({type: 'MOCK_HIDE_MUTED'})),
 }));
-jest.mock('fusion/shell/dialogs_context', () => ({useDialogs: () => ({browseChannels: jest.fn(), createChannel: jest.fn(), createCategory: jest.fn(), selfRoles: jest.fn()})}));
+const mockDialogs = {browseChannels: jest.fn(), createChannel: jest.fn(), createCategory: jest.fn(), selfRoles: jest.fn(), communityNotifications: jest.fn(), communityPrivacy: jest.fn()};
+jest.mock('fusion/shell/dialogs_context', () => ({useDialogs: () => mockDialogs}));
 jest.mock('fusion/shell/settings_context', () => ({useSettings: () => ({open: jest.fn()})}));
 jest.mock('fusion/shell/toast_context', () => ({useToast: () => jest.fn()}));
 
@@ -87,6 +88,12 @@ describe('fusion/popovers/ServerMenu', () => {
             expect(screen.queryByRole('menuitem', {name: gone})).not.toBeInTheDocument();
             expect(screen.queryByText(gone)).not.toBeInTheDocument();
         }
+    });
+
+    test('Notification settings opens the community\'s own, not the global settings', async () => {
+        render(MEMBER);
+        await userEvent.click(screen.getByRole('menuitem', {name: 'Notification settings'}));
+        expect(mockDialogs.communityNotifications).toHaveBeenCalledWith('t1');
     });
 
     test('Community settings opens the settings of the menu\'s community', async () => {

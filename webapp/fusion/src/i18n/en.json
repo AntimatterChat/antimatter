@@ -24891,6 +24891,38 @@
     "defaultMessage": "Membership rules",
     "description": "Title of the community's membership rules (who may be a member, by user attributes), in its settings; also the tab's name."
   },
+  "fusion.communityNotifications.asMine": {
+    "defaultMessage": "As in my settings ({choice})",
+    "description": "Community notification settings: first option of each setting, which follows the person's own notification settings. {choice} is what those say, e.g. \"Mentions\" or \"On\"."
+  },
+  "fusion.communityNotifications.done": {
+    "defaultMessage": "Done",
+    "description": "Community notification settings: button closing the dialog (settings are saved as they change)."
+  },
+  "fusion.communityNotifications.everyReply": {
+    "defaultMessage": "Every reply",
+    "description": "Community notification settings: option for replies to followed threads: notify for every reply (the other option is Mentions)."
+  },
+  "fusion.communityNotifications.lead": {
+    "defaultMessage": "Its channels notify you as chosen here, and as in your Notifications settings for the rest. A channel's own notification preferences still come first; direct and group messages follow your settings.",
+    "description": "Community notification settings: explanation under the title. \"Notifications settings\" is the name of the pane in the user settings."
+  },
+  "fusion.communityNotifications.off": {
+    "defaultMessage": "Off",
+    "description": "Community notification settings: option turning a setting (sound, email, channel-wide mentions) off in this community."
+  },
+  "fusion.communityNotifications.on": {
+    "defaultMessage": "On",
+    "description": "Community notification settings: option turning a setting (sound, email, channel-wide mentions) on in this community."
+  },
+  "fusion.communityNotifications.reset": {
+    "defaultMessage": "Use my settings everywhere",
+    "description": "Community notification settings: button that drops all this community's own settings, so that its channels follow the person's own notification settings again."
+  },
+  "fusion.communityNotifications.title": {
+    "defaultMessage": "Notifications in {community}",
+    "description": "Title of the dialog of one community's own notification settings, opened from its menu. {community} is the community's name."
+  },
   "fusion.communityRules.agree": {
     "defaultMessage": "I agree",
     "description": "Button of the community rules dialog: agrees to the community's rules, after which one can post in its channels."
@@ -28225,7 +28257,7 @@
   },
   "fusion.serverMenu.notifications": {
     "defaultMessage": "Notification settings",
-    "description": ""
+    "description": "Community menu: opens this community's own notification settings, over the person's own."
   },
   "fusion.serverMenu.otherPlugins": {
     "defaultMessage": "Other",

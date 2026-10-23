@@ -302,6 +302,45 @@ describe('notification_actions', () => {
             });
         });
 
+        describe('notification settings per community', () => {
+            const setCommunity = (teamId: string, value: Record<string, string>) => {
+                (baseState.entities.preferences.myPreferences as Record<string, unknown>)[`community_notify--${teamId}`] = {user_id: 'current_user_id', category: 'community_notify', name: teamId, value: JSON.stringify(value)};
+            };
+
+            test('the community\'s settings over yours: nothing from its channels', async () => {
+                channelSettings.desktop = undefined;
+                setCommunity('team_id', {desktop: NotificationLevels.NONE});
+                const store = testConfigureStore(baseState);
+                await store.dispatch(sendDesktopNotification(post, msgProps));
+                expect(spy).not.toHaveBeenCalled();
+            });
+
+            test('another community\'s settings don\'t apply', async () => {
+                channelSettings.desktop = undefined;
+                setCommunity('other_team_id', {desktop: NotificationLevels.NONE});
+                const store = testConfigureStore(baseState);
+                await store.dispatch(sendDesktopNotification(post, msgProps));
+                expect(spy).toHaveBeenCalled();
+            });
+
+            test('a channel\'s own setting still wins', async () => {
+                channelSettings.desktop = NotificationLevels.ALL;
+                setCommunity('team_id', {desktop: NotificationLevels.NONE});
+                const store = testConfigureStore(baseState);
+                await store.dispatch(sendDesktopNotification(post, msgProps));
+                expect(spy).toHaveBeenCalled();
+            });
+
+            test('the community can turn its sound on', async () => {
+                channelSettings.desktop = undefined;
+                (userSettings as Record<string, unknown>).desktop_sound = 'false';
+                setCommunity('team_id', {desktop_sound: 'true'});
+                const store = testConfigureStore(baseState);
+                await store.dispatch(sendDesktopNotification(post, msgProps));
+                expect(spy).toHaveBeenCalledWith(expect.objectContaining({silent: false}));
+            });
+        });
+
         test('should not notify user on user\'s webhook', async () => {
             const store = testConfigureStore(baseState);
             post.props.from_webhook = true;
