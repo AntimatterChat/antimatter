@@ -75,8 +75,10 @@ func (n *idLoadedNotification) GetNotificationMessage(rctx request.CTX, ack *mod
 	}
 
 	nameFormat := a.GetNotificationNameFormat(user)
-	channelName := notification.GetChannelName(nameFormat, user.Id)
-	senderName := notification.GetSenderName(nameFormat, model.SafeDereference(a.Config().ServiceSettings.EnablePostUsernameOverride))
+	// Antimatter: the names as this person may see them (profile privacy).
+	seen := notification.seenBy(a, user)
+	channelName := seen.GetChannelName(nameFormat, user.Id)
+	senderName := seen.GetSenderName(nameFormat, model.SafeDereference(a.Config().ServiceSettings.EnablePostUsernameOverride))
 
 	replyToThreadType := ""
 	if post.RootId != "" && a.IsCRTEnabledForUser(rctx, user.Id) {

@@ -782,6 +782,7 @@ func getGroupMembers(c *Context, w http.ResponseWriter, r *http.Request) {
 		c.Err = appErr
 		return
 	}
+	hideProfileDetails(c, members...)
 
 	b, err := json.Marshal(model.GroupMemberList{
 		Members: members,

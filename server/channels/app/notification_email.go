@@ -49,8 +49,10 @@ func (a *App) buildEmailNotification(
 		useMilitaryTime = data.Value == "true"
 	}
 
-	channelName := notification.GetChannelName(nameFormat, "")
-	senderName := notification.GetSenderName(nameFormat,
+	// Antimatter: the names as this person may see them (profile privacy).
+	seen := notification.seenBy(a, user)
+	channelName := seen.GetChannelName(nameFormat, "")
+	senderName := seen.GetSenderName(nameFormat,
 		*a.Config().ServiceSettings.EnablePostUsernameOverride)
 
 	emailNotificationContentsType := a.emailNotificationContentsType()

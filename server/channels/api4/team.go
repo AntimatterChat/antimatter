@@ -2112,6 +2112,9 @@ func teamMembersMinusGroupMembers(c *Context, w http.ResponseWriter, r *http.Req
 		c.Err = appErr
 		return
 	}
+	for _, u := range users {
+		hideProfileDetails(c, &u.User)
+	}
 
 	b, err := json.Marshal(&model.UsersWithGroupsAndCount{
 		Users: users,

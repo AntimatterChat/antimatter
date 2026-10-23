@@ -19358,6 +19358,11 @@
     "description": "API error when a user's position (job title shown on their profile) is longer than 128 characters; 'position' means job role, not location."
   },
   {
+    "id": "model.user.is_valid.profile_privacy.app_error",
+    "translation": "Invalid choice of the profile details shown in communities.",
+    "description": "API error when someone saves which of their profile details (full name, nickname, position, email, local time, attributes) the people of their communities see, and the choice names an unknown community or detail."
+  },
+  {
     "id": "model.user.is_valid.pwd_lowercase.app_error",
     "translation": "Your password must contain at least {{.Min}} characters made up of at least one lowercase letter.",
     "description": "Password requirement error shown on signup/password change when lowercase letters are required; {{.Min}} is the minimum password length."

@@ -485,6 +485,15 @@ func listCPAValues(c *Context, w http.ResponseWriter, r *http.Request) {
 	}
 
 	rctx := app.RequestContextWithCallerID(c.AppContext, sessionCallerID(c))
+
+	// Antimatter: someone who hides their attributes from this person (profile privacy) shows them none.
+	if c.App.AttributesHiddenFromSession(rctx, *c.AppContext.Session(), c.Params.UserId) {
+		if err := json.NewEncoder(w).Encode(map[string]json.RawMessage{}); err != nil {
+			c.Logger.Warn("Error while writing response", mlog.Err(err))
+		}
+		return
+	}
+
 	group, appErr := c.App.GetPropertyGroup(rctx, model.AccessControlPropertyGroupName)
 	if appErr != nil {
 		c.Err = appErr

@@ -1031,7 +1031,7 @@ func (a *App) SetDefaultProfileImage(rctx request.CTX, user *model.User) *model.
 	updatedUser.SanitizeProfile(options, false)
 
 	message := model.NewWebSocketEvent(model.WebsocketEventUserUpdated, "", "", "", nil, "")
-	message.Add("user", updatedUser)
+	a.publishUserProfile(message, updatedUser)
 	a.Publish(message)
 
 	return nil
@@ -1473,7 +1473,7 @@ func (a *App) sendUpdatedUserEvent(user *model.User) {
 
 	a.SanitizeProfile(user, false)
 	message := model.NewWebSocketEvent(model.WebsocketEventUserUpdated, "", "", "", omitUsers, "")
-	message.Add("user", user)
+	a.publishUserProfile(message, user)
 	message.GetBroadcast().ContainsSanitizedData = true
 	a.Publish(message)
 
@@ -2971,7 +2971,7 @@ func (a *App) invalidateUserCacheAndPublish(rctx request.CTX, userID string) {
 	user.SanitizeProfile(options, false)
 
 	message := model.NewWebSocketEvent(model.WebsocketEventUserUpdated, "", "", "", nil, "")
-	message.Add("user", user)
+	a.publishUserProfile(message, user)
 	a.Publish(message)
 }
 
@@ -3111,7 +3111,7 @@ func (a *App) GetThreadsForUser(rctx request.CTX, userID, teamID string, options
 		Posts: make(map[string]*model.Post, len(result.Threads)),
 	}
 	for _, thread := range result.Threads {
-		a.sanitizeProfiles(thread.Participants, false)
+		a.sanitizeParticipants(thread.Participants, userID)
 		thread.Post.SanitizeNonIdentityProps()
 		thread.Post.StripActionIntegrations()
 		list.AddPost(thread.Post)
@@ -3148,7 +3148,7 @@ func (a *App) GetThreadForUser(rctx request.CTX, threadMembership *model.ThreadM
 		}
 	}
 
-	a.sanitizeProfiles(thread.Participants, false)
+	a.sanitizeParticipants(thread.Participants, threadMembership.UserId)
 	thread.Post.SanitizeNonIdentityProps()
 	thread.Post.StripActionIntegrations()
 	a.populatePostListTranslations(rctx, &model.PostList{Posts: map[string]*model.Post{thread.Post.Id: thread.Post}})
@@ -3234,7 +3234,7 @@ func (a *App) UpdateThreadFollowForUserFromChannelAdd(rctx request.CTX, userID, 
 		}
 		return model.NewAppError("UpdateThreadFollowForUserFromChannelAdd", "app.user.update_thread_follow_for_user.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
 	}
-	a.sanitizeProfiles(userThread.Participants, false)
+	a.sanitizeParticipants(userThread.Participants, userID)
 	userThread.Post.SanitizeNonIdentityProps()
 	userThread.Post.StripActionIntegrations()
 	sanitizedPost, isMemberForPreviews, appErr := a.SanitizePostMetadataForUser(rctx, userThread.Post, userID)

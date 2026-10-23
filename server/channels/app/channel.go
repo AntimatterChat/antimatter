@@ -3490,7 +3490,7 @@ func (a *App) markChannelAsUnreadFromPostCRTUnsupported(rctx request.CTX, postID
 		if mErr != nil {
 			return nil, model.NewAppError("MarkChannelAsUnreadFromPost", "app.channel.update_last_viewed_at_post.app_error", nil, "", http.StatusInternalServerError).Wrap(mErr)
 		}
-		a.sanitizeProfiles(thread.Participants, false)
+		a.sanitizeParticipants(thread.Participants, threadMembership.UserId)
 		thread.Post.SanitizeNonIdentityProps()
 		thread.Post.StripActionIntegrations()
 

@@ -465,6 +465,10 @@ func (u *User) IsValid() *AppError {
 			return NewAppError("User.IsValid", "model.user.is_valid.invalidProperty.app_error",
 				map[string]any{"Props": u.Props}, "user_id="+u.Id, http.StatusBadRequest)
 		}
+		// Antimatter: which details the user shows in each community (see profile_privacy.go).
+		if _, ok := u.GetProfilePrivacy(); !ok {
+			return InvalidUserError("profile_privacy", u.Id, u.Props[UserPropsKeyProfilePrivacy])
+		}
 	}
 
 	if MentionKeysExceedLimits(u.NotifyProps[MentionKeysNotifyProp]) {

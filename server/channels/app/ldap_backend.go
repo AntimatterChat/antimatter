@@ -84,7 +84,7 @@ func (b *ldapBackend) publishUserUpdated(user *model.User) {
 	publicCopy := user.DeepCopy()
 	b.a.SanitizeProfile(publicCopy, false)
 	message := model.NewWebSocketEvent(model.WebsocketEventUserUpdated, "", "", "", omit, "")
-	message.Add("user", publicCopy)
+	b.a.publishUserProfile(message, publicCopy)
 	message.GetBroadcast().ContainsSanitizedData = true
 	b.a.Publish(message)
 

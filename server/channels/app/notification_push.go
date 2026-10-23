@@ -299,8 +299,10 @@ func (a *App) sendPushNotification(notification *PostNotification, user *model.U
 
 	nameFormat := a.GetNotificationNameFormat(user)
 
-	channelName := notification.GetChannelName(nameFormat, user.Id)
-	senderName := notification.GetSenderName(nameFormat, *cfg.ServiceSettings.EnablePostUsernameOverride)
+	// Antimatter: the names as this person may see them (profile privacy).
+	seen := notification.seenBy(a, user)
+	channelName := seen.GetChannelName(nameFormat, user.Id)
+	senderName := seen.GetSenderName(nameFormat, *cfg.ServiceSettings.EnablePostUsernameOverride)
 
 	select {
 	case a.Srv().PushNotificationsHub.notificationsChan <- PushNotification{
