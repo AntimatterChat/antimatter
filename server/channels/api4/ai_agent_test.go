@@ -324,8 +324,8 @@ func TestAgentStatusIsTheServers(t *testing.T) {
 	}, 10*time.Second, 20*time.Millisecond)
 
 	for _, status := range []string{model.StatusOffline, model.StatusAway, model.StatusDnd, model.StatusOnline} {
-		_, resp, err := clients.systemAdmin.UpdateUserStatus(ctx, agent.UserId, &model.Status{UserId: agent.UserId, Status: status})
-		require.Error(t, err, status)
+		_, resp, updateErr := clients.systemAdmin.UpdateUserStatus(ctx, agent.UserId, &model.Status{UserId: agent.UserId, Status: status})
+		require.Error(t, updateErr, status)
 		CheckForbiddenStatus(t, resp)
 	}
 	_, resp, err := clients.systemAdmin.UpdateUserCustomStatus(ctx, agent.UserId, &model.CustomStatus{Emoji: "robot", Text: "On a break"})
