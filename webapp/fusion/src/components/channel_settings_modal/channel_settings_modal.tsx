@@ -152,6 +152,7 @@ function ChannelSettingsModal({channelId, isOpen, onExited, focusOriginElement}:
         }
         return haveISystemPermission(state, {permission: Permissions.MANAGE_SHARED_CHANNELS});
     });
+
     // Antimatter: where everyone is in every channel, channels tell nobody joining or leaving them: nothing to hide.
     const everyoneIn = useSelector((state: GlobalState) => !isDMorGM && isAllChannelsCommunity(state, channel.team_id));
     const canManageJoinLeaveMessages = !isDMorGM && canManageChannelProperties && !everyoneIn;

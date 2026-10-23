@@ -1,4 +1,4 @@
-// Copyright (c) 2026-present Antimatter contributors.
+// Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
 import React from 'react';
@@ -41,8 +41,19 @@ const mockToast = jest.fn();
 jest.mock('fusion/shell/toast_context', () => ({useToast: () => mockToast}));
 
 const team = (id: string, name: string, extra: Partial<Group> = {}) => ({
-    id, name: name.toLowerCase(), display_name: name, tag: name.slice(0, 3).toUpperCase(), source: 'custom', is_team: true,
-    team_id: 'c1', delete_at: 0, member_ids: ['me', 'ann'], lead_id: '', channel_id: '', description: '', ...extra,
+    id,
+    name: name.toLowerCase(),
+    display_name: name,
+    tag: name.slice(0, 3).toUpperCase(),
+    source: 'custom',
+    is_team: true,
+    team_id: 'c1',
+    delete_at: 0,
+    member_ids: ['me', 'ann'],
+    lead_id: '',
+    channel_id: '',
+    description: '',
+    ...extra,
 }) as unknown as Group;
 
 const design = team('design', 'Design');

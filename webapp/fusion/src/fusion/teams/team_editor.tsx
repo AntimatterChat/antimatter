@@ -1,4 +1,4 @@
-// Copyright (c) 2026-present Antimatter contributors.
+// Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
 import React, {useEffect, useMemo, useState} from 'react';
@@ -132,19 +132,7 @@ export default function TeamEditor({team, communityId, onDone, onCancel, setUnsa
             description: draft.description.trim(),
         };
         try {
-            if (!team) {
-                const result = await dispatch(createGroupWithUserIds({
-                    ...fields,
-                    source: 'custom',
-                    allow_reference: true,
-                    team_id: communityId,
-                    is_team: true,
-                    user_ids: draft.member_ids,
-                }));
-                if (failed(result)) {
-                    return;
-                }
-            } else {
+            if (team) {
                 const added = draft.member_ids.filter((id) => !saved.member_ids.includes(id));
                 const removed = saved.member_ids.filter((id) => !draft.member_ids.includes(id));
                 if (added.length && failed(await dispatch(addUsersToGroup(team.id, added)))) {
@@ -155,6 +143,18 @@ export default function TeamEditor({team, communityId, onDone, onCancel, setUnsa
                     return;
                 }
                 if (removed.length && failed(await dispatch(removeUsersFromGroup(team.id, removed)))) {
+                    return;
+                }
+            } else {
+                const result = await dispatch(createGroupWithUserIds({
+                    ...fields,
+                    source: 'custom',
+                    allow_reference: true,
+                    team_id: communityId,
+                    is_team: true,
+                    user_ids: draft.member_ids,
+                }));
+                if (failed(result)) {
                     return;
                 }
             }

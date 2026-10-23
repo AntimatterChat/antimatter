@@ -92,6 +92,7 @@ export default function ModViewPanel() {
     const systemAdmin = useSelector((state: GlobalState) => isSystemAdmin(getCurrentUser(state)?.roles || ''));
     const timeout = useSelector((state: GlobalState) => getMemberTimeout(state, teamId, userId));
     const member = useSelector((state: GlobalState) => selectTeamMember(state, teamId, userId));
+
     // The roles given to some (not the default role, which everyone has).
     const teamRoles = useSelector((state: GlobalState) => getGivenTeamRoles(state, teamId));
     const theirRoles = useSelector((state: GlobalState) => getGivenRolesOf(state, userId));
