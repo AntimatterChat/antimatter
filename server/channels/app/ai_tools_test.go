@@ -425,7 +425,8 @@ func TestAIMCPToolsUseTheAskersOwnSignIn(t *testing.T) {
 	})
 
 	t.Run("the panel says who signed in", func(t *testing.T) {
-		sources, appErr := th.App.GetAIAgentToolsForUser(th.Context, th.BasicUser2.Id, agent.UserId, th.BasicChannel.Id)
+		// Outside any channel (BasicUser2 isn't in the basic channel): the server is shared with every community.
+		sources, appErr := th.App.GetAIAgentToolsForUser(th.Context, th.BasicUser2.Id, agent.UserId, "")
 		require.Nil(t, appErr)
 		var found *model.AIToolSourceInfo
 		for _, source := range sources {
