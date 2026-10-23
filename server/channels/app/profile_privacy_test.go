@@ -114,8 +114,9 @@ func TestProfilePrivacy(t *testing.T) {
 
 		assert.Equal(t, []*model.User{other}, FilterHiddenSearchMatches("rossi", users, changed))
 		assert.Equal(t, []*model.User{other}, FilterHiddenSearchMatches("@Sofia", users, changed))
-		assert.Len(t, FilterHiddenSearchMatches(sofia.Username[:4], users, changed), 1, "her username still finds her")
-		assert.Len(t, FilterHiddenSearchMatches("sof", users, changed), 1, "her nickname too")
+		// The others found are kept, whatever they matched by: only what's hidden from the viewer counts.
+		assert.Contains(t, FilterHiddenSearchMatches(sofia.Username, users, changed), user, "her username still finds her")
+		assert.Contains(t, FilterHiddenSearchMatches("sof", users, changed), user, "her nickname too")
 		assert.Len(t, FilterHiddenSearchMatches("rossi", users, nil), 2, "nothing hidden, nothing dropped")
 	})
 
