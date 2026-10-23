@@ -50,6 +50,7 @@ import PolicyDetails from './access_control/policy_details';
 import * as DefinitionConstants from './admin_definition_constants';
 import {it, usesLegacyOauth, validators} from './admin_definition_helpers';
 import AIBuiltInFeatures, {searchableStrings as aiBuiltInFeaturesSearchableStrings} from './ai/builtin_features';
+import AIChatAppPage, {isAIChatAppMissing} from './ai/ai_chat_app_page';
 import AIModelConnectionsPage, {searchableStrings as aiModelConnectionsSearchableStrings} from './ai/model_connections_page';
 import Audits from './audits';
 import {searchableStrings as auditSearchableStrings} from './audits/audits';
@@ -5307,9 +5308,10 @@ const AdminDefinition: AdminDefinitionType = {
     },
 
     // Antimatter: the server's AI, every setting in one place. Model connections (the providers' addresses and keys)
-    // and the server-wide agents on one page, the connection and model of each built-in feature, recaps' limits and
-    // text to speech. Their old pages (Site Configuration › Recaps, Integrations › Text to speech, Integrations ›
-    // Agents) send here (MOVED_CONSOLE_ROUTES, and the backstage's agents route).
+    // and the server-wide agents on one page, the connection and model of each built-in feature, recaps' limits, text
+    // to speech, and the AI chat app's own settings page. Their old pages (Site Configuration › Recaps, Integrations ›
+    // Text to speech, Plugins › AI chat, Integrations › Agents) send here (MOVED_CONSOLE_ROUTES, and the backstage's
+    // agents route).
     ai: {
         icon: (
             <CreationOutlineIcon
@@ -5323,6 +5325,7 @@ const AdminDefinition: AdminDefinitionType = {
             it.not(it.userHasSystemPermission(Permissions.MANAGE_AI_CONNECTIONS)),
             it.not(it.userHasReadPermissionOnResource(RESOURCE_KEYS.SITE.AI_RECAPS)),
             it.not(it.userHasReadPermissionOnResource(RESOURCE_KEYS.INTEGRATIONS.INTEGRATION_MANAGEMENT)),
+            it.not(it.userHasReadPermissionOnResource('plugins')),
         ),
         subsections: {
             model_connections: {
@@ -5533,6 +5536,20 @@ const AdminDefinition: AdminDefinitionType = {
                             isDisabled: it.any(it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.INTEGRATIONS.INTEGRATION_MANAGEMENT)), it.stateIsFalse('TextToSpeechSettings.Enable')),
                         },
                     ],
+                },
+            },
+            ai_chat_app: {
+                url: 'ai/ai_chat_app',
+                title: defineMessage({id: 'admin.sidebar.aiChatApp', defaultMessage: 'AI chat app'}),
+                isHidden: it.any(
+                    it.not(it.userHasReadPermissionOnResource('plugins')),
+                    it.configIsFalse('PluginSettings', 'Enable'),
+                    isAIChatAppMissing,
+                ),
+                isDisabled: it.not(it.userHasWritePermissionOnResource('plugins')),
+                schema: {
+                    id: 'AIChatAppSettings',
+                    component: AIChatAppPage,
                 },
             },
         },

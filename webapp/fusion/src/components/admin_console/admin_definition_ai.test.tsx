@@ -5,8 +5,10 @@ import type {AdminConfig} from '@mattermost/types/config';
 
 import {RESOURCE_KEYS} from 'mattermost-redux/constants/permissions_sysconsole';
 
+import store from 'stores/redux_store';
+
 import AdminDefinition from './admin_definition';
-import {MOVED_CONSOLE_ROUTES} from './moved_console_routes';
+import {MOVED_CONSOLE_ROUTES, listedUnderPlugins} from './moved_console_routes';
 import type {AdminDefinitionSection, Check, ConsoleAccess} from './types';
 
 let mockManagesAIConnections = false;
@@ -14,6 +16,12 @@ jest.mock('mattermost-redux/selectors/entities/roles', () => ({
     ...jest.requireActual('mattermost-redux/selectors/entities/roles'),
     haveISystemPermission: (_state: unknown, {permission}: {permission: string}) => permission === 'manage_ai_connections' && mockManagesAIConnections,
 }));
+
+// The apps the server has (System Console › Plugins), for the AI chat app's page.
+function withPlugins(plugins: Record<string, unknown>) {
+    const real = store.getState();
+    jest.spyOn(store, 'getState').mockReturnValue({...real, entities: {...real.entities, admin: {...real.entities.admin, plugins}}} as never);
+}
 
 const access = (...read: string[]) => ({read: Object.fromEntries(read.map((key) => [key, true])), write: {}} as ConsoleAccess);
 
@@ -28,15 +36,19 @@ const sections = Object.values(AdminDefinition) as AdminDefinitionSection[];
 const urls = sections.flatMap((section) => Object.values(section.subsections).map((sub) => sub.url));
 
 // Every AI setting is in the System Console's AI section: model connections and agents on one page, the built-in
-// features, recaps and text to speech.
+// features, recaps, text to speech and the AI chat app's own settings.
 describe('AdminDefinition - AI', () => {
     beforeEach(() => {
         mockManagesAIConnections = false;
     });
 
+    afterEach(() => {
+        jest.restoreAllMocks();
+    });
+
     test('has every AI page, and only there', () => {
         const ai = AdminDefinition.ai.subsections;
-        expect(Object.values(ai).map((sub) => sub.url)).toEqual(['ai/model_connections', 'ai/builtin_features', 'ai/recaps', 'ai/text_to_speech']);
+        expect(Object.values(ai).map((sub) => sub.url)).toEqual(['ai/model_connections', 'ai/builtin_features', 'ai/recaps', 'ai/text_to_speech', 'ai/ai_chat_app']);
         expect(urls.filter((url) => url.endsWith('/recaps') || url.endsWith('/text_to_speech'))).toEqual(['ai/recaps', 'ai/text_to_speech']);
         expect((AdminDefinition.site.subsections as Record<string, unknown>).recaps).toBeUndefined();
         expect((AdminDefinition.integrations.subsections as Record<string, unknown>).text_to_speech).toBeUndefined();
@@ -50,6 +62,7 @@ describe('AdminDefinition - AI', () => {
         expect(MOVED_CONSOLE_ROUTES).toEqual({
             'site_config/recaps': 'ai/recaps',
             'integrations/text_to_speech': 'ai/text_to_speech',
+            'plugins/plugin_mattermost-ai': 'ai/ai_chat_app',
         });
     });
 
@@ -79,5 +92,32 @@ describe('AdminDefinition - AI', () => {
         expect(hidden(section, access())).toBe(false);
         expect(hidden(connections.isHidden, access())).toBe(false);
         expect(hidden(features.isHidden, access())).toBe(false);
+    });
+
+    // The AI chat app's own settings page (its services, embeddings, web search, MCP) is under AI, not Plugins.
+    test('the AI chat app\'s page: under AI for who may see apps\' settings, when the app is there', () => {
+        const page = AdminDefinition.ai.subsections.ai_chat_app;
+        const pluginsOn = {PluginSettings: {Enable: true}} as Partial<AdminConfig>;
+        const pluginsRead = access('plugins');
+
+        expect(hidden(AdminDefinition.ai.isHidden, pluginsRead)).toBe(false);
+        expect(hidden(page.isHidden, access(), pluginsOn)).toBe(true);
+        expect(hidden(page.isHidden, pluginsRead, {PluginSettings: {Enable: false}} as Partial<AdminConfig>)).toBe(true);
+
+        // Before the apps are loaded, and with the app: shown.
+        withPlugins({});
+        expect(hidden(page.isHidden, pluginsRead, pluginsOn)).toBe(false);
+        withPlugins({'mattermost-ai': {id: 'mattermost-ai'}, playbooks: {id: 'playbooks'}});
+        expect(hidden(page.isHidden, pluginsRead, pluginsOn)).toBe(false);
+
+        // The apps are loaded, without the AI chat app: hidden.
+        withPlugins({playbooks: {id: 'playbooks'}});
+        expect(hidden(page.isHidden, pluginsRead, pluginsOn)).toBe(true);
+    });
+
+    test('the sidebar\'s Plugins list leaves the AI chat app out, and only it', () => {
+        expect(listedUnderPlugins('mattermost-ai')).toBe(false);
+        expect(listedUnderPlugins('playbooks')).toBe(true);
+        expect(listedUnderPlugins('focalboard')).toBe(true);
     });
 });

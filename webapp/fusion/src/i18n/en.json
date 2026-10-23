@@ -13783,6 +13783,10 @@
     "defaultMessage": "Built-in features",
     "description": "System Console sidebar entry, under AI: the page where each built-in AI feature (rewrite, recaps, auto-translation, text to speech) gets a model connection."
   },
+  "admin.sidebar.aiChatApp": {
+    "defaultMessage": "AI chat app",
+    "description": "System Console sidebar entry, under AI: the settings page of the AI chat app (the side panel for talking to agents): its AI services, embeddings, web search and MCP servers. It used to be under Plugins."
+  },
   "admin.sidebar.aiModelConnections": {
     "defaultMessage": "Connections and agents",
     "description": "System Console sidebar entry, under AI: the page of the model connections (AI providers' addresses and API keys) and the server-wide agents."
