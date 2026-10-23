@@ -3961,7 +3961,7 @@ export default class Client4 {
     patchAIConnection = (connectionId: string, patch: AIConnectionPatch) => {
         return this.doFetch<AIConnection>(
             this.getAIConnectionRoute(connectionId),
-            {method: 'patch', body: JSON.stringify(patch)},
+            {method: 'PATCH', body: JSON.stringify(patch)},
         );
     };
 
@@ -4037,7 +4037,7 @@ export default class Client4 {
     patchAIAgent = (userId: string, patch: AIAgentPatch) => {
         return this.doFetch<AIAgentDetails>(
             this.getAIAgentRoute(userId),
-            {method: 'patch', body: JSON.stringify(patch)},
+            {method: 'PATCH', body: JSON.stringify(patch)},
         );
     };
 
@@ -4148,7 +4148,7 @@ export default class Client4 {
     patchAIMCPServer = (serverId: string, patch: AIMCPServerPatch) => {
         return this.doFetch<AIMCPServer>(
             `${this.getAIMCPServersRoute()}/${encodeURIComponent(serverId)}`,
-            {method: 'patch', body: JSON.stringify(patch)},
+            {method: 'PATCH', body: JSON.stringify(patch)},
         );
     };
 
@@ -5003,7 +5003,7 @@ export default class Client4 {
     patchCommunityAttribute = (teamId: string, fieldId: string, patch: CommunityAttributeFieldPatch) => {
         return this.doFetch<CommunityAttributeField>(
             `${this.getTeamRoute(teamId)}/user_attributes/fields/${fieldId}`,
-            {method: 'patch', body: JSON.stringify(patch)},
+            {method: 'PATCH', body: JSON.stringify(patch)},
         );
     };
 
@@ -5024,7 +5024,7 @@ export default class Client4 {
     patchCommunityAttributeValues = (teamId: string, userId: string, values: Record<string, UserAttributeValue | null>) => {
         return this.doFetch<Record<string, UserAttributeValue>>(
             `${this.getTeamMemberRoute(teamId, userId)}/user_attributes`,
-            {method: 'patch', body: JSON.stringify(values)},
+            {method: 'PATCH', body: JSON.stringify(values)},
         );
     };
 
@@ -5040,7 +5040,7 @@ export default class Client4 {
     patchCommunityProfile = (teamId: string, userId: string, patch: CommunityProfilePatch) => {
         return this.doFetch<CommunityProfile>(
             `${this.getTeamMemberRoute(teamId, userId)}/profile`,
-            {method: 'patch', body: JSON.stringify(patch)},
+            {method: 'PATCH', body: JSON.stringify(patch)},
         );
     };
 

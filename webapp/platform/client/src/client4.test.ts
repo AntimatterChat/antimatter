@@ -515,6 +515,43 @@ describe('Client4', () => {
         });
     });
 
+    // Browsers upper-case only DELETE, GET, HEAD, OPTIONS, POST and PUT (the Fetch standard): a 'patch' goes out as
+    // written, matches none of the server's PATCH routes and gets a 404. node-fetch, which the tests use, upper-cases
+    // every method, so nock alone can't see it: these check what Client4 hands to fetch.
+    describe('PATCH routes', () => {
+        let client: Client4;
+        let fetchSpy: jest.SpyInstance;
+
+        beforeEach(() => {
+            client = new Client4();
+            client.setUrl('http://mattermost.example.com');
+            fetchSpy = jest.spyOn(globalThis, 'fetch');
+        });
+
+        afterEach(() => {
+            fetchSpy.mockRestore();
+            nock.cleanAll();
+        });
+
+        test.each([
+            ['patchCommunityProfile', '/teams/t1/members/u1/profile', (c: Client4) => c.patchCommunityProfile('t1', 'u1', {nickname: 'Mayo'})],
+            ['patchCommunityAttribute', '/teams/t1/user_attributes/fields/f1', (c: Client4) => c.patchCommunityAttribute('t1', 'f1', {name: 'Role'})],
+            ['patchCommunityAttributeValues', '/teams/t1/members/u1/user_attributes', (c: Client4) => c.patchCommunityAttributeValues('t1', 'u1', {f1: 'x'})],
+            ['patchAIConnection', '/ai/connections/c1', (c: Client4) => c.patchAIConnection('c1', {name: 'Local'})],
+            ['patchAIAgent', '/ai/agents/a1', (c: Client4) => c.patchAIAgent('a1', {})],
+            ['patchAIMCPServer', '/ai/mcp_servers/s1', (c: Client4) => c.patchAIMCPServer('s1', {})],
+        ])('%s sends PATCH to %s', async (_name, path, call) => {
+            const scope = nock(client.getBaseRoute()).patch(path).reply(200, {}, {'Content-Type': 'application/json'});
+
+            await call(client);
+
+            expect(scope.isDone()).toBe(true);
+            expect(fetchSpy).toHaveBeenCalledTimes(1);
+            expect(fetchSpy.mock.calls[0][0]).toBe(client.getBaseRoute() + path);
+            expect(fetchSpy.mock.calls[0][1].method).toBe('PATCH');
+        });
+    });
+
     describe('doFetchWithResponse', () => {
         test('serverVersion should be set from response header', async () => {
             const client = new Client4();
