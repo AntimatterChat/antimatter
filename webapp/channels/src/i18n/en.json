@@ -14132,8 +14132,8 @@
     "description": "Button that switches auto-translation from the older provider to 'Model connection'."
   },
   "admin.site.localization.autoTranslationConnectionHelp": {
-    "defaultMessage": "A server-wide model connection, set up in the System Console of the Fusion web app (AI › Model connections). A dedicated translation model (such as HY-MT) is fast and accurate; a general LLM works too.",
-    "description": "Help text under the auto-translation model connection picker. HY-MT is the name of a translation model; 'AI › Model connections' is a System Console page path."
+    "defaultMessage": "A server-wide model connection, set up in the System Console of the Fusion web app (AI › Connections and agents). A dedicated translation model (such as HY-MT) is fast and accurate; a general LLM works too.",
+    "description": "Help text under the auto-translation model connection picker. HY-MT is the name of a translation model; 'AI › Connections and agents' is a System Console page path (the page of model connections and agents)."
   },
   "admin.site.localization.autoTranslationConnectionTitle": {
     "defaultMessage": "Model connection",

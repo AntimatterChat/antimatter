@@ -39,8 +39,3 @@
 :is(.am-app, .am-layer) .am-agents .am-agent-avatar { display: flex; align-items: center; gap: 12px; }
 :is(.am-app, .am-layer) .am-agents .am-agent-avatar img { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; background: var(--am-raise); }
 :is(.am-app, .am-layer) .am-agents textarea.am-agent-prompt { min-height: 140px; resize: vertical; font: 400 13px/1.45 var(--am-font-mono); }
-
-/* Integrations › Agents, a Fusion page in the integrations frame. */
-.am-bs-page .am-agents-page { max-width: 760px; padding: 24px 32px 48px; }
-.am-bs-page .am-agents-page > h2 { margin: 0 0 12px; font: 700 20px var(--am-font-display); color: var(--am-text); }
-.am-bs-page .am-agents-page section + section { margin-top: 28px; }

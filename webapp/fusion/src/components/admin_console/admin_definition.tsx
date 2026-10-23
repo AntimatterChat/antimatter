@@ -3658,132 +3658,6 @@ const AdminDefinition: AdminDefinitionType = {
                     ],
                 },
             },
-            recaps: {
-                url: 'site_config/recaps',
-                title: defineMessage({id: 'admin.sidebar.recaps', defaultMessage: 'Recaps'}),
-                isHidden: it.any(
-                    it.not(it.userHasReadPermissionOnResource(RESOURCE_KEYS.SITE.AI_RECAPS)),
-                    it.configIsFalse('FeatureFlags', 'EnableAIRecaps'),
-                ),
-                schema: {
-                    id: 'RecapSettings',
-                    name: defineMessage({id: 'admin.site.recaps', defaultMessage: 'Recaps'}),
-                    sections: [
-                        {
-                            key: 'AIRecapSettings.Global',
-                            title: '',
-                            settings: [
-                                {
-                                    type: 'bool',
-                                    key: 'AIRecapSettings.Enable',
-                                    label: defineMessage({id: 'admin.recaps.enable.title', defaultMessage: 'Enable AI Recaps:'}),
-                                    help_text: defineMessage({id: 'admin.recaps.enable.desc', defaultMessage: 'When enabled, users can create and schedule AI recaps subject to the configured limits.'}),
-                                    isDisabled: it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.SITE.AI_RECAPS)),
-                                },
-                            ],
-                        },
-                        {
-                            key: 'AIRecapSettings.QuotaLimits',
-                            title: defineMessage({id: 'admin.recaps.sections.quota.title', defaultMessage: 'Quota Limits'}),
-                            description: defineMessage({id: 'admin.recaps.sections.quota.description', defaultMessage: 'Control how many recaps users can create.'}),
-                            settings: [
-                                {
-                                    type: 'custom',
-                                    key: 'AIRecapSettings.DefaultLimits.MaxScheduledRecaps',
-                                    component: UnlimitedNumberSetting,
-                                    label: defineMessage({id: 'admin.recaps.maxScheduledRecaps.title', defaultMessage: 'Maximum Scheduled Recaps:'}),
-                                    help_text: defineMessage({id: 'admin.recaps.maxScheduledRecaps.desc', defaultMessage: 'Maximum number of scheduled recaps a user can have active at once.'}),
-                                    isDisabled: it.any(
-                                        it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.SITE.AI_RECAPS)),
-                                        it.stateIsFalse('AIRecapSettings.Enable'),
-                                    ),
-                                },
-                                {
-                                    type: 'custom',
-                                    key: 'AIRecapSettings.DefaultLimits.MaxRecapsPerDay',
-                                    component: UnlimitedNumberSetting,
-                                    label: defineMessage({id: 'admin.recaps.maxRecapsPerDay.title', defaultMessage: 'Maximum Recaps Per Day:'}),
-                                    help_text: defineMessage({id: 'admin.recaps.maxRecapsPerDay.desc', defaultMessage: 'Maximum number of recaps a user can generate per day. Resets at midnight in the user\'s timezone.'}),
-                                    isDisabled: it.any(
-                                        it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.SITE.AI_RECAPS)),
-                                        it.stateIsFalse('AIRecapSettings.Enable'),
-                                    ),
-                                },
-                                {
-                                    type: 'custom',
-                                    key: 'AIRecapSettings.DefaultLimits.MaxPostsPerDay',
-                                    component: UnlimitedNumberSetting,
-                                    label: defineMessage({id: 'admin.recaps.maxPostsPerDay.title', defaultMessage: 'Maximum Posts Per Day:'}),
-                                    help_text: defineMessage({id: 'admin.recaps.maxPostsPerDay.desc', defaultMessage: 'Maximum total posts that can be processed for recaps per user per day.'}),
-                                    isDisabled: it.any(
-                                        it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.SITE.AI_RECAPS)),
-                                        it.stateIsFalse('AIRecapSettings.Enable'),
-                                    ),
-                                },
-                            ],
-                        },
-                        {
-                            key: 'AIRecapSettings.ContentLimits',
-                            title: defineMessage({id: 'admin.recaps.sections.content.title', defaultMessage: 'Content Limits'}),
-                            description: defineMessage({id: 'admin.recaps.sections.content.description', defaultMessage: 'Control how much content can be included in each recap.'}),
-                            settings: [
-                                {
-                                    type: 'custom',
-                                    key: 'AIRecapSettings.DefaultLimits.MaxChannelsPerRecap',
-                                    component: UnlimitedNumberSetting,
-                                    label: defineMessage({id: 'admin.recaps.maxChannelsPerRecap.title', defaultMessage: 'Maximum Channels Per Recap:'}),
-                                    help_text: defineMessage({id: 'admin.recaps.maxChannelsPerRecap.desc', defaultMessage: 'Maximum number of channels that can be included in a single recap.'}),
-                                    isDisabled: it.any(
-                                        it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.SITE.AI_RECAPS)),
-                                        it.stateIsFalse('AIRecapSettings.Enable'),
-                                    ),
-                                },
-                                {
-                                    type: 'custom',
-                                    key: 'AIRecapSettings.DefaultLimits.MaxPostsPerRecap',
-                                    component: UnlimitedNumberSetting,
-                                    label: defineMessage({id: 'admin.recaps.maxPostsPerRecap.title', defaultMessage: 'Maximum Posts Per Recap:'}),
-                                    help_text: defineMessage({id: 'admin.recaps.maxPostsPerRecap.desc', defaultMessage: 'Maximum number of posts to include when generating a recap.'}),
-                                    isDisabled: it.any(
-                                        it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.SITE.AI_RECAPS)),
-                                        it.stateIsFalse('AIRecapSettings.Enable'),
-                                    ),
-                                },
-                                {
-                                    type: 'custom',
-                                    key: 'AIRecapSettings.DefaultLimits.MaxTokensPerRecap',
-                                    component: UnlimitedNumberSetting,
-                                    label: defineMessage({id: 'admin.recaps.maxTokensPerRecap.title', defaultMessage: 'Maximum Tokens Per Recap:'}),
-                                    help_text: defineMessage({id: 'admin.recaps.maxTokensPerRecap.desc', defaultMessage: 'Maximum estimated token count for LLM context when generating a recap.'}),
-                                    isDisabled: it.any(
-                                        it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.SITE.AI_RECAPS)),
-                                        it.stateIsFalse('AIRecapSettings.Enable'),
-                                    ),
-                                },
-                            ],
-                        },
-                        {
-                            key: 'AIRecapSettings.TimeLimits',
-                            title: defineMessage({id: 'admin.recaps.sections.time.title', defaultMessage: 'Time Limits'}),
-                            description: defineMessage({id: 'admin.recaps.sections.time.description', defaultMessage: 'Control timing between recap requests.'}),
-                            settings: [
-                                {
-                                    type: 'number',
-                                    key: 'AIRecapSettings.DefaultLimits.CooldownMinutes',
-                                    label: defineMessage({id: 'admin.recaps.cooldownMinutes.title', defaultMessage: 'Cooldown Between Recaps (minutes):'}),
-                                    help_text: defineMessage({id: 'admin.recaps.cooldownMinutes.desc', defaultMessage: 'Minimum time in minutes between recap generations for each user. Set to 0 to disable cooldown.'}),
-                                    placeholder: defineMessage({id: 'admin.recaps.cooldownMinutes.placeholder', defaultMessage: 'E.g.: "60"'}),
-                                    isDisabled: it.any(
-                                        it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.SITE.AI_RECAPS)),
-                                        it.stateIsFalse('AIRecapSettings.Enable'),
-                                    ),
-                                    validate: validators.minValue(0, defineMessage({id: 'admin.recaps.cooldownMinutes.minValue', defaultMessage: 'Cooldown must be 0 or greater'})),
-                                },
-                            ],
-                        },
-                    ],
-                },
-            },
             content_flagging: {
                 url: 'site_config/data_spillage',
                 title: defineMessage({id: 'admin.sidebar.dataSpillage', defaultMessage: 'Data Spillage Handling'}),
@@ -5432,8 +5306,10 @@ const AdminDefinition: AdminDefinitionType = {
         },
     },
 
-    // Antimatter: the server's AI. Model connections (the providers' addresses and keys) and the connection and model
-    // of each built-in feature, for those who manage the server-wide connections.
+    // Antimatter: the server's AI, every setting in one place. Model connections (the providers' addresses and keys)
+    // and the server-wide agents on one page, the connection and model of each built-in feature, recaps' limits and
+    // text to speech. Their old pages (Site Configuration › Recaps, Integrations › Text to speech, Integrations ›
+    // Agents) send here (MOVED_CONSOLE_ROUTES, and the backstage's agents route).
     ai: {
         icon: (
             <CreationOutlineIcon
@@ -5443,12 +5319,17 @@ const AdminDefinition: AdminDefinitionType = {
         ),
         sectionTitle: defineMessage({id: 'admin.sidebar.ai', defaultMessage: 'AI'}),
         id: 'ai',
-        isHidden: it.not(it.userHasSystemPermission(Permissions.MANAGE_AI_CONNECTIONS)),
+        isHidden: it.all(
+            it.not(it.userHasSystemPermission(Permissions.MANAGE_AI_CONNECTIONS)),
+            it.not(it.userHasReadPermissionOnResource(RESOURCE_KEYS.SITE.AI_RECAPS)),
+            it.not(it.userHasReadPermissionOnResource(RESOURCE_KEYS.INTEGRATIONS.INTEGRATION_MANAGEMENT)),
+        ),
         subsections: {
             model_connections: {
                 url: 'ai/model_connections',
-                title: defineMessage({id: 'admin.sidebar.aiModelConnections', defaultMessage: 'Model connections'}),
+                title: defineMessage({id: 'admin.sidebar.aiModelConnections', defaultMessage: 'Connections and agents'}),
                 searchableStrings: aiModelConnectionsSearchableStrings,
+                isHidden: it.not(it.userHasSystemPermission(Permissions.MANAGE_AI_CONNECTIONS)),
                 schema: {
                     id: 'AIModelConnections',
                     component: AIModelConnectionsPage,
@@ -5458,6 +5339,7 @@ const AdminDefinition: AdminDefinitionType = {
                 url: 'ai/builtin_features',
                 title: defineMessage({id: 'admin.sidebar.aiBuiltInFeatures', defaultMessage: 'Built-in features'}),
                 searchableStrings: aiBuiltInFeaturesSearchableStrings,
+                isHidden: it.not(it.userHasSystemPermission(Permissions.MANAGE_AI_CONNECTIONS)),
                 isDisabled: it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.INTEGRATIONS.INTEGRATION_MANAGEMENT)),
                 schema: {
                     id: 'AISettings',
@@ -5468,6 +5350,187 @@ const AdminDefinition: AdminDefinitionType = {
                             key: 'AISettings',
                             component: AIBuiltInFeatures,
                             isDisabled: it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.INTEGRATIONS.INTEGRATION_MANAGEMENT)),
+                        },
+                    ],
+                },
+            },
+            recaps: {
+                url: 'ai/recaps',
+                title: defineMessage({id: 'admin.sidebar.recaps', defaultMessage: 'Recaps'}),
+                isHidden: it.any(
+                    it.not(it.userHasReadPermissionOnResource(RESOURCE_KEYS.SITE.AI_RECAPS)),
+                    it.configIsFalse('FeatureFlags', 'EnableAIRecaps'),
+                ),
+                schema: {
+                    id: 'RecapSettings',
+                    name: defineMessage({id: 'admin.site.recaps', defaultMessage: 'Recaps'}),
+                    sections: [
+                        {
+                            key: 'AIRecapSettings.Global',
+                            title: '',
+                            settings: [
+                                {
+                                    type: 'bool',
+                                    key: 'AIRecapSettings.Enable',
+                                    label: defineMessage({id: 'admin.recaps.enable.title', defaultMessage: 'Enable AI Recaps:'}),
+                                    help_text: defineMessage({id: 'admin.recaps.enable.desc', defaultMessage: 'When enabled, users can create and schedule AI recaps subject to the configured limits.'}),
+                                    isDisabled: it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.SITE.AI_RECAPS)),
+                                },
+                            ],
+                        },
+                        {
+                            key: 'AIRecapSettings.QuotaLimits',
+                            title: defineMessage({id: 'admin.recaps.sections.quota.title', defaultMessage: 'Quota Limits'}),
+                            description: defineMessage({id: 'admin.recaps.sections.quota.description', defaultMessage: 'Control how many recaps users can create.'}),
+                            settings: [
+                                {
+                                    type: 'custom',
+                                    key: 'AIRecapSettings.DefaultLimits.MaxScheduledRecaps',
+                                    component: UnlimitedNumberSetting,
+                                    label: defineMessage({id: 'admin.recaps.maxScheduledRecaps.title', defaultMessage: 'Maximum Scheduled Recaps:'}),
+                                    help_text: defineMessage({id: 'admin.recaps.maxScheduledRecaps.desc', defaultMessage: 'Maximum number of scheduled recaps a user can have active at once.'}),
+                                    isDisabled: it.any(
+                                        it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.SITE.AI_RECAPS)),
+                                        it.stateIsFalse('AIRecapSettings.Enable'),
+                                    ),
+                                },
+                                {
+                                    type: 'custom',
+                                    key: 'AIRecapSettings.DefaultLimits.MaxRecapsPerDay',
+                                    component: UnlimitedNumberSetting,
+                                    label: defineMessage({id: 'admin.recaps.maxRecapsPerDay.title', defaultMessage: 'Maximum Recaps Per Day:'}),
+                                    help_text: defineMessage({id: 'admin.recaps.maxRecapsPerDay.desc', defaultMessage: 'Maximum number of recaps a user can generate per day. Resets at midnight in the user\'s timezone.'}),
+                                    isDisabled: it.any(
+                                        it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.SITE.AI_RECAPS)),
+                                        it.stateIsFalse('AIRecapSettings.Enable'),
+                                    ),
+                                },
+                                {
+                                    type: 'custom',
+                                    key: 'AIRecapSettings.DefaultLimits.MaxPostsPerDay',
+                                    component: UnlimitedNumberSetting,
+                                    label: defineMessage({id: 'admin.recaps.maxPostsPerDay.title', defaultMessage: 'Maximum Posts Per Day:'}),
+                                    help_text: defineMessage({id: 'admin.recaps.maxPostsPerDay.desc', defaultMessage: 'Maximum total posts that can be processed for recaps per user per day.'}),
+                                    isDisabled: it.any(
+                                        it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.SITE.AI_RECAPS)),
+                                        it.stateIsFalse('AIRecapSettings.Enable'),
+                                    ),
+                                },
+                            ],
+                        },
+                        {
+                            key: 'AIRecapSettings.ContentLimits',
+                            title: defineMessage({id: 'admin.recaps.sections.content.title', defaultMessage: 'Content Limits'}),
+                            description: defineMessage({id: 'admin.recaps.sections.content.description', defaultMessage: 'Control how much content can be included in each recap.'}),
+                            settings: [
+                                {
+                                    type: 'custom',
+                                    key: 'AIRecapSettings.DefaultLimits.MaxChannelsPerRecap',
+                                    component: UnlimitedNumberSetting,
+                                    label: defineMessage({id: 'admin.recaps.maxChannelsPerRecap.title', defaultMessage: 'Maximum Channels Per Recap:'}),
+                                    help_text: defineMessage({id: 'admin.recaps.maxChannelsPerRecap.desc', defaultMessage: 'Maximum number of channels that can be included in a single recap.'}),
+                                    isDisabled: it.any(
+                                        it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.SITE.AI_RECAPS)),
+                                        it.stateIsFalse('AIRecapSettings.Enable'),
+                                    ),
+                                },
+                                {
+                                    type: 'custom',
+                                    key: 'AIRecapSettings.DefaultLimits.MaxPostsPerRecap',
+                                    component: UnlimitedNumberSetting,
+                                    label: defineMessage({id: 'admin.recaps.maxPostsPerRecap.title', defaultMessage: 'Maximum Posts Per Recap:'}),
+                                    help_text: defineMessage({id: 'admin.recaps.maxPostsPerRecap.desc', defaultMessage: 'Maximum number of posts to include when generating a recap.'}),
+                                    isDisabled: it.any(
+                                        it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.SITE.AI_RECAPS)),
+                                        it.stateIsFalse('AIRecapSettings.Enable'),
+                                    ),
+                                },
+                                {
+                                    type: 'custom',
+                                    key: 'AIRecapSettings.DefaultLimits.MaxTokensPerRecap',
+                                    component: UnlimitedNumberSetting,
+                                    label: defineMessage({id: 'admin.recaps.maxTokensPerRecap.title', defaultMessage: 'Maximum Tokens Per Recap:'}),
+                                    help_text: defineMessage({id: 'admin.recaps.maxTokensPerRecap.desc', defaultMessage: 'Maximum estimated token count for LLM context when generating a recap.'}),
+                                    isDisabled: it.any(
+                                        it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.SITE.AI_RECAPS)),
+                                        it.stateIsFalse('AIRecapSettings.Enable'),
+                                    ),
+                                },
+                            ],
+                        },
+                        {
+                            key: 'AIRecapSettings.TimeLimits',
+                            title: defineMessage({id: 'admin.recaps.sections.time.title', defaultMessage: 'Time Limits'}),
+                            description: defineMessage({id: 'admin.recaps.sections.time.description', defaultMessage: 'Control timing between recap requests.'}),
+                            settings: [
+                                {
+                                    type: 'number',
+                                    key: 'AIRecapSettings.DefaultLimits.CooldownMinutes',
+                                    label: defineMessage({id: 'admin.recaps.cooldownMinutes.title', defaultMessage: 'Cooldown Between Recaps (minutes):'}),
+                                    help_text: defineMessage({id: 'admin.recaps.cooldownMinutes.desc', defaultMessage: 'Minimum time in minutes between recap generations for each user. Set to 0 to disable cooldown.'}),
+                                    placeholder: defineMessage({id: 'admin.recaps.cooldownMinutes.placeholder', defaultMessage: 'E.g.: "60"'}),
+                                    isDisabled: it.any(
+                                        it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.SITE.AI_RECAPS)),
+                                        it.stateIsFalse('AIRecapSettings.Enable'),
+                                    ),
+                                    validate: validators.minValue(0, defineMessage({id: 'admin.recaps.cooldownMinutes.minValue', defaultMessage: 'Cooldown must be 0 or greater'})),
+                                },
+                            ],
+                        },
+                    ],
+                },
+            },
+            text_to_speech: {
+                url: 'ai/text_to_speech',
+                title: defineMessage({id: 'admin.sidebar.textToSpeech', defaultMessage: 'Text to speech'}),
+                isHidden: it.not(it.userHasReadPermissionOnResource(RESOURCE_KEYS.INTEGRATIONS.INTEGRATION_MANAGEMENT)),
+                schema: {
+                    id: 'TextToSpeechSettings',
+                    name: defineMessage({id: 'admin.integrations.textToSpeech', defaultMessage: 'Text to speech'}),
+                    settings: [
+                        {
+                            type: 'banner',
+                            label: defineMessage({id: 'admin.textToSpeech.connectionBanner', defaultMessage: 'Messages are read aloud with the model connection picked in AI › Built-in features: the API base URL and key below aren\'t used. The voice still is, and the model when the connection names none.'}),
+                            banner_type: 'info',
+                            isHidden: (config) => !config.AISettings?.TextToSpeech?.ConnectionId,
+                        },
+                        {
+                            type: 'bool',
+                            key: 'TextToSpeechSettings.Enable',
+                            label: defineMessage({id: 'admin.textToSpeech.enableTitle', defaultMessage: 'Read messages aloud:'}),
+                            help_text: defineMessage({id: 'admin.textToSpeech.enableDesc', defaultMessage: 'Adds "Read aloud" to the menu of messages: their text is read by an OpenAI-compatible text-to-speech API (its /audio/speech endpoint).'}),
+                            isDisabled: it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.INTEGRATIONS.INTEGRATION_MANAGEMENT)),
+                        },
+                        {
+                            type: 'text',
+                            key: 'TextToSpeechSettings.URL',
+                            label: defineMessage({id: 'admin.textToSpeech.urlTitle', defaultMessage: 'API base URL:'}),
+                            placeholder: defineMessage({id: 'admin.textToSpeech.urlExample', defaultMessage: 'e.g.: "https://tts.yourdomain.com/v1"'}),
+                            help_text: defineMessage({id: 'admin.textToSpeech.urlDesc', defaultMessage: 'The base URL of the API, up to and including /v1.'}),
+                            isDisabled: it.any(it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.INTEGRATIONS.INTEGRATION_MANAGEMENT)), it.stateIsFalse('TextToSpeechSettings.Enable')),
+                        },
+                        {
+                            type: 'text',
+                            key: 'TextToSpeechSettings.Model',
+                            label: defineMessage({id: 'admin.textToSpeech.modelTitle', defaultMessage: 'Model:'}),
+                            placeholder: defineMessage({id: 'admin.textToSpeech.modelExample', defaultMessage: 'e.g.: "tts-1"'}),
+                            help_text: defineMessage({id: 'admin.textToSpeech.modelDesc', defaultMessage: 'The model as the API names it.'}),
+                            isDisabled: it.any(it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.INTEGRATIONS.INTEGRATION_MANAGEMENT)), it.stateIsFalse('TextToSpeechSettings.Enable')),
+                        },
+                        {
+                            type: 'text',
+                            key: 'TextToSpeechSettings.Voice',
+                            label: defineMessage({id: 'admin.textToSpeech.voiceTitle', defaultMessage: 'Voice:'}),
+                            placeholder: defineMessage({id: 'admin.textToSpeech.voiceExample', defaultMessage: 'e.g.: "alloy"'}),
+                            help_text: defineMessage({id: 'admin.textToSpeech.voiceDesc', defaultMessage: 'One of the model\'s voices. Leave it blank for the model\'s default.'}),
+                            isDisabled: it.any(it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.INTEGRATIONS.INTEGRATION_MANAGEMENT)), it.stateIsFalse('TextToSpeechSettings.Enable')),
+                        },
+                        {
+                            type: 'text',
+                            key: 'TextToSpeechSettings.APIKey',
+                            label: defineMessage({id: 'admin.textToSpeech.apiKeyTitle', defaultMessage: 'API key:'}),
+                            help_text: defineMessage({id: 'admin.textToSpeech.apiKeyDesc', defaultMessage: 'Sent as a bearer token. Leave it blank if the API needs none.'}),
+                            isDisabled: it.any(it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.INTEGRATIONS.INTEGRATION_MANAGEMENT)), it.stateIsFalse('TextToSpeechSettings.Enable')),
                         },
                     ],
                 },
@@ -5800,61 +5863,6 @@ const AdminDefinition: AdminDefinitionType = {
                             label: defineMessage({id: 'admin.customization.enableGifPickerTitle', defaultMessage: 'Enable GIF Picker:'}),
                             help_text: defineMessage({id: 'admin.customization.enableGifPickerDesc', defaultMessage: 'Allows users to select GIFs from Giphy in the emoji picker. A plugin with its own GIF tab, such as the GIFs plugin, replaces it while enabled.'}),
                             isDisabled: it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.INTEGRATIONS.GIF)),
-                        },
-                    ],
-                },
-            },
-            text_to_speech: {
-                url: 'integrations/text_to_speech',
-                title: defineMessage({id: 'admin.sidebar.textToSpeech', defaultMessage: 'Text to speech'}),
-                isHidden: it.not(it.userHasReadPermissionOnResource(RESOURCE_KEYS.INTEGRATIONS.INTEGRATION_MANAGEMENT)),
-                schema: {
-                    id: 'TextToSpeechSettings',
-                    name: defineMessage({id: 'admin.integrations.textToSpeech', defaultMessage: 'Text to speech'}),
-                    settings: [
-                        {
-                            type: 'banner',
-                            label: defineMessage({id: 'admin.textToSpeech.connectionBanner', defaultMessage: 'Messages are read aloud with the model connection picked in AI › Built-in features: the API base URL and key below aren\'t used. The voice still is, and the model when the connection names none.'}),
-                            banner_type: 'info',
-                            isHidden: (config) => !config.AISettings?.TextToSpeech?.ConnectionId,
-                        },
-                        {
-                            type: 'bool',
-                            key: 'TextToSpeechSettings.Enable',
-                            label: defineMessage({id: 'admin.textToSpeech.enableTitle', defaultMessage: 'Read messages aloud:'}),
-                            help_text: defineMessage({id: 'admin.textToSpeech.enableDesc', defaultMessage: 'Adds "Read aloud" to the menu of messages: their text is read by an OpenAI-compatible text-to-speech API (its /audio/speech endpoint).'}),
-                            isDisabled: it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.INTEGRATIONS.INTEGRATION_MANAGEMENT)),
-                        },
-                        {
-                            type: 'text',
-                            key: 'TextToSpeechSettings.URL',
-                            label: defineMessage({id: 'admin.textToSpeech.urlTitle', defaultMessage: 'API base URL:'}),
-                            placeholder: defineMessage({id: 'admin.textToSpeech.urlExample', defaultMessage: 'e.g.: "https://tts.yourdomain.com/v1"'}),
-                            help_text: defineMessage({id: 'admin.textToSpeech.urlDesc', defaultMessage: 'The base URL of the API, up to and including /v1.'}),
-                            isDisabled: it.any(it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.INTEGRATIONS.INTEGRATION_MANAGEMENT)), it.stateIsFalse('TextToSpeechSettings.Enable')),
-                        },
-                        {
-                            type: 'text',
-                            key: 'TextToSpeechSettings.Model',
-                            label: defineMessage({id: 'admin.textToSpeech.modelTitle', defaultMessage: 'Model:'}),
-                            placeholder: defineMessage({id: 'admin.textToSpeech.modelExample', defaultMessage: 'e.g.: "tts-1"'}),
-                            help_text: defineMessage({id: 'admin.textToSpeech.modelDesc', defaultMessage: 'The model as the API names it.'}),
-                            isDisabled: it.any(it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.INTEGRATIONS.INTEGRATION_MANAGEMENT)), it.stateIsFalse('TextToSpeechSettings.Enable')),
-                        },
-                        {
-                            type: 'text',
-                            key: 'TextToSpeechSettings.Voice',
-                            label: defineMessage({id: 'admin.textToSpeech.voiceTitle', defaultMessage: 'Voice:'}),
-                            placeholder: defineMessage({id: 'admin.textToSpeech.voiceExample', defaultMessage: 'e.g.: "alloy"'}),
-                            help_text: defineMessage({id: 'admin.textToSpeech.voiceDesc', defaultMessage: 'One of the model\'s voices. Leave it blank for the model\'s default.'}),
-                            isDisabled: it.any(it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.INTEGRATIONS.INTEGRATION_MANAGEMENT)), it.stateIsFalse('TextToSpeechSettings.Enable')),
-                        },
-                        {
-                            type: 'text',
-                            key: 'TextToSpeechSettings.APIKey',
-                            label: defineMessage({id: 'admin.textToSpeech.apiKeyTitle', defaultMessage: 'API key:'}),
-                            help_text: defineMessage({id: 'admin.textToSpeech.apiKeyDesc', defaultMessage: 'Sent as a bearer token. Leave it blank if the API needs none.'}),
-                            isDisabled: it.any(it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.INTEGRATIONS.INTEGRATION_MANAGEMENT)), it.stateIsFalse('TextToSpeechSettings.Enable')),
                         },
                     ],
                 },

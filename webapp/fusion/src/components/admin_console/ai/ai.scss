@@ -6,6 +6,19 @@
     height: auto;
     background: transparent;
     font-size: 14px;
+
+    // The page's two parts, model connections and the server-wide agents, headed as the community settings' panes.
+    h3.am-set-section {
+        margin: 0 0 8px;
+        color: var(--am-muted);
+        font: 700 11px var(--am-font-ui);
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+    }
+
+    .am-ai-console-agents {
+        margin-top: 32px;
+    }
 }
 
 .ai-builtin-features {

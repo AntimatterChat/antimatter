@@ -2031,13 +2031,25 @@
     "defaultMessage": "Performance Monitoring",
     "description": "Page name for Environment > Performance Monitoring in the System Console sidebar."
   },
+  "admin.ai.connections.agentsSection": {
+    "defaultMessage": "Server-wide agents",
+    "description": "Heading of the server-wide agents on System Console › AI › Connections and agents. An agent is an account people mention or message like a coworker, answered by an AI model or by a program elsewhere."
+  },
+  "admin.ai.connections.connectionsSection": {
+    "defaultMessage": "Model connections",
+    "description": "Heading of the model connections (AI providers' addresses and API keys) on System Console › AI › Connections and agents."
+  },
   "admin.ai.connections.search": {
     "defaultMessage": "AI providers, API keys, models, limits and usage",
     "description": "Search keywords for the System Console's Model connections page (not shown as a sentence; used to find the page in the console search)."
   },
+  "admin.ai.connections.searchAgents": {
+    "defaultMessage": "Agents: their model, instructions and who may talk to them",
+    "description": "Search keywords of System Console › AI › Connections and agents, for its agents (accounts people mention or message like a coworker, answered by an AI model)."
+  },
   "admin.ai.connections.title": {
-    "defaultMessage": "Model connections",
-    "description": "Page title of System Console › AI › Model connections."
+    "defaultMessage": "Connections and agents",
+    "description": "Page title of System Console › AI › Connections and agents: the model connections (AI providers' addresses and API keys) and the server-wide agents built on them, on one page."
   },
   "admin.ai.features.attention": {
     "defaultMessage": "This connection needs attention: {reason}",
@@ -2100,8 +2112,8 @@
     "description": "Error shown when the models offered by a connection's endpoint can't be listed."
   },
   "admin.ai.features.noConnections": {
-    "defaultMessage": "There are no server-wide model connections yet: add one in <link>AI › Model connections</link>.",
-    "description": "Shown on the Built-in features page when no server-wide model connection exists; <link>…</link> wraps the page path 'AI › Model connections'."
+    "defaultMessage": "There are no server-wide model connections yet: add one in <link>AI › Connections and agents</link>.",
+    "description": "Shown on the Built-in features page when no server-wide model connection exists; <link>…</link> wraps the page path 'AI › Connections and agents'."
   },
   "admin.ai.features.off": {
     "defaultMessage": "Off: this feature uses no AI.",
@@ -2116,8 +2128,8 @@
     "description": "Setting label on the Built-in features page: the model connection used to make recaps (AI summaries of channels)."
   },
   "admin.ai.features.recapsHelp": {
-    "defaultMessage": "Summaries of the channels people choose, on demand or on a schedule. Recaps also need to be on in Site Configuration › Recaps.",
-    "description": "Help text under the recaps setting. 'Site Configuration › Recaps' is a System Console page path."
+    "defaultMessage": "Summaries of the channels people choose, on demand or on a schedule. Recaps also need to be on in <link>AI › Recaps</link>.",
+    "description": "Help text under the recaps setting. <link>…</link> wraps the System Console page path 'AI › Recaps'."
   },
   "admin.ai.features.rewrite": {
     "defaultMessage": "Rewrite in the composer",
@@ -2132,8 +2144,8 @@
     "description": "Setting label on the Built-in features page: the model connection used to read messages aloud."
   },
   "admin.ai.features.textToSpeechHelp": {
-    "defaultMessage": "Reads messages aloud with the connection's /audio/speech endpoint, in place of the address and key of <link>Integrations › Text to speech</link>, which also sets the voice.",
-    "description": "Help text under the text to speech setting; /audio/speech is an API path (keep as is); <link>…</link> wraps the System Console page path 'Integrations › Text to speech'."
+    "defaultMessage": "Reads messages aloud with the connection's /audio/speech endpoint, in place of the address and key of <link>AI › Text to speech</link>, which also sets the voice.",
+    "description": "Help text under the text to speech setting; /audio/speech is an API path (keep as is); <link>…</link> wraps the System Console page path 'AI › Text to speech'."
   },
   "admin.ai.features.title": {
     "defaultMessage": "Built-in AI features",
@@ -13772,8 +13784,8 @@
     "description": "System Console sidebar entry, under AI: the page where each built-in AI feature (rewrite, recaps, auto-translation, text to speech) gets a model connection."
   },
   "admin.sidebar.aiModelConnections": {
-    "defaultMessage": "Model connections",
-    "description": "System Console sidebar entry, under AI: the page listing model connections (AI providers' addresses and API keys)."
+    "defaultMessage": "Connections and agents",
+    "description": "System Console sidebar entry, under AI: the page of the model connections (AI providers' addresses and API keys) and the server-wide agents."
   },
   "admin.sidebar.announcement": {
     "defaultMessage": "System-wide Notifications",
@@ -14128,8 +14140,8 @@
     "description": "Button that switches auto-translation from the older provider to 'Model connection'."
   },
   "admin.site.localization.autoTranslationConnectionHelp": {
-    "defaultMessage": "A server-wide connection of <link>AI › Model connections</link>. A dedicated translation model (such as HY-MT) is fast and accurate; a general LLM works too.",
-    "description": "Help text under the auto-translation model connection picker. HY-MT is the name of a translation model; 'AI › Model connections' is a System Console page path."
+    "defaultMessage": "A server-wide connection of <link>AI › Connections and agents</link>. A dedicated translation model (such as HY-MT) is fast and accurate; a general LLM works too.",
+    "description": "Help text under the auto-translation model connection picker. HY-MT is the name of a translation model; 'AI › Connections and agents' is a System Console page path (model connections and agents)."
   },
   "admin.site.localization.autoTranslationConnectionTitle": {
     "defaultMessage": "Model connection",
@@ -21875,10 +21887,6 @@
     "defaultMessage": "Find a channel",
     "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"Find a channel\"."
   },
-  "fusion.agents.communitySection": {
-    "defaultMessage": "Agents of {team}",
-    "description": "Heading of a community's own agents on the Integrations › Agents page; {team} is the community's name."
-  },
   "fusion.agents.confirm": {
     "defaultMessage": "Delete {name}? Its account is deactivated and its settings forgotten; its messages stay. This can't be undone.",
     "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"Delete {name}? Its account is deactivated and its settings forgotten; its messages stay. This can't be undone.\". {name} is the agent's name."
@@ -22103,10 +22111,6 @@
     "defaultMessage": "No agents yet.",
     "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"No agents yet.\"."
   },
-  "fusion.agents.noPermission": {
-    "defaultMessage": "Only the server's and this community's admins manage agents.",
-    "description": "Integrations › Agents, for someone who may manage no agents."
-  },
   "fusion.agents.off": {
     "defaultMessage": "Off",
     "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"Off\"."
@@ -22219,10 +22223,6 @@
     "defaultMessage": "The agent couldn't be saved.",
     "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"The agent couldn't be saved.\"."
   },
-  "fusion.agents.serverSection": {
-    "defaultMessage": "Server-wide agents",
-    "description": "Heading of the server-wide agents on the Integrations › Agents page (for system admins)."
-  },
   "fusion.agents.state.blocked": {
     "defaultMessage": "Blocked",
     "description": "Accessible label of the dot by an agent's name while it can't go on without help."
@@ -22258,10 +22258,6 @@
   "fusion.agents.teamsChosen": {
     "defaultMessage": "Communities chosen",
     "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"Communities chosen\"."
-  },
-  "fusion.agents.title": {
-    "defaultMessage": "Agents",
-    "description": "Title of the Integrations › Agents page."
   },
   "fusion.agents.toggleFailed": {
     "defaultMessage": "The agent couldn't be changed.",
@@ -26130,10 +26126,6 @@
   "fusion.inlineReply.spoiler": {
     "defaultMessage": "Spoiler",
     "description": ""
-  },
-  "fusion.integrations.agents": {
-    "defaultMessage": "Agents",
-    "description": "Entry of the Integrations page's side panel: the page that manages agents."
   },
   "fusion.integrations.back": {
     "defaultMessage": "Back to {team}",

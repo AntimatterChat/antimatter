@@ -9,7 +9,6 @@ import {NavLink} from 'react-router-dom';
 import type {Team} from '@mattermost/types/teams';
 
 import {Permissions} from 'mattermost-redux/constants';
-import {haveISystemPermission, haveITeamPermission} from 'mattermost-redux/selectors/entities/roles';
 
 import {getIntegrationsOptions} from 'selectors/integrations_options';
 
@@ -20,8 +19,6 @@ import Icon from 'fusion/components/icon';
 import type {IconName} from 'fusion/components/icon';
 import {am} from 'fusion/utils/class_names';
 import {getHistory} from 'utils/browser_history';
-
-import type {GlobalState} from 'types/store';
 
 type Props = {
     team: Team;
@@ -60,8 +57,6 @@ export default function IntegrationsNav(props: Props) {
     const base = `/${team.name}/integrations`;
     const teamExists = team.delete_at === 0;
     const pluginOptions = useSelector(getIntegrationsOptions, shallowEqual);
-    const canManageServerAgents = useSelector((state: GlobalState) => haveISystemPermission(state, {permission: Permissions.MANAGE_SYSTEM}));
-    const canManageCommunityAgents = useSelector((state: GlobalState) => haveITeamPermission(state, team.id, Permissions.MANAGE_TEAM));
 
     return (
         <nav
@@ -144,15 +139,6 @@ export default function IntegrationsNav(props: Props) {
                                 label={formatMessage({id: 'fusion.integrations.oauthConnections', defaultMessage: 'Outgoing OAuth connections'})}
                             />
                         </TeamPermissionGate>
-                    )}
-
-                    {/* Agents: the server's for system admins, the community's for its admins. */}
-                    {(canManageServerAgents || canManageCommunityAgents) && (
-                        <Item
-                            to={`${base}/agents`}
-                            icon='sparkle'
-                            label={formatMessage({id: 'fusion.integrations.agents', defaultMessage: 'Agents'})}
-                        />
                     )}
 
                     {/* Bot accounts only need the permission, even when creating bots is turned off. */}

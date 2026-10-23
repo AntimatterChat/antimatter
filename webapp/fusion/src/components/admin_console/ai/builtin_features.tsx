@@ -19,11 +19,11 @@ const messages = defineMessages({
     rewrite: {id: 'admin.ai.features.rewrite', defaultMessage: 'Rewrite in the composer'},
     rewriteHelp: {id: 'admin.ai.features.rewriteHelp', defaultMessage: 'The AI menu of the message box: improve, shorten, fix, translate. It shows once a connection is picked.'},
     recaps: {id: 'admin.ai.features.recaps', defaultMessage: 'Recaps'},
-    recapsHelp: {id: 'admin.ai.features.recapsHelp', defaultMessage: 'Summaries of the channels people choose, on demand or on a schedule. Recaps also need to be on in Site Configuration › Recaps.'},
+    recapsHelp: {id: 'admin.ai.features.recapsHelp', defaultMessage: 'Summaries of the channels people choose, on demand or on a schedule. Recaps also need to be on in <link>AI › Recaps</link>.'},
     autoTranslation: {id: 'admin.ai.features.autoTranslation', defaultMessage: 'Auto-translation'},
     autoTranslationHelp: {id: 'admin.ai.features.autoTranslationHelp', defaultMessage: 'Used when the translation provider is "Model connection", in <link>Site Configuration › Localization</link>.'},
     textToSpeech: {id: 'admin.ai.features.textToSpeech', defaultMessage: 'Text to speech'},
-    textToSpeechHelp: {id: 'admin.ai.features.textToSpeechHelp', defaultMessage: 'Reads messages aloud with the connection\'s /audio/speech endpoint, in place of the address and key of <link>Integrations › Text to speech</link>, which also sets the voice.'},
+    textToSpeechHelp: {id: 'admin.ai.features.textToSpeechHelp', defaultMessage: 'Reads messages aloud with the connection\'s /audio/speech endpoint, in place of the address and key of <link>AI › Text to speech</link>, which also sets the voice.'},
     lead: {id: 'admin.ai.features.lead', defaultMessage: 'Pick the server-wide model connection each built-in feature uses, and its model. A feature without one uses no AI. The built-in features don\'t need the AI chat app.'},
 });
 
@@ -75,6 +75,7 @@ export default function BuiltInFeatures(props: SystemConsoleCustomSettingsCompon
             <FormattedMessage
                 {...messages.recapsHelp}
                 key='h'
+                values={{link: link('/admin_console/ai/recaps')}}
             />,
         ],
         AutoTranslation: [
@@ -96,7 +97,7 @@ export default function BuiltInFeatures(props: SystemConsoleCustomSettingsCompon
             <FormattedMessage
                 {...messages.textToSpeechHelp}
                 key='h'
-                values={{link: link('/admin_console/integrations/text_to_speech')}}
+                values={{link: link('/admin_console/ai/text_to_speech')}}
             />,
         ],
     };
@@ -118,7 +119,7 @@ export default function BuiltInFeatures(props: SystemConsoleCustomSettingsCompon
                 <p className='ai-lead'>
                     <FormattedMessage
                         id='admin.ai.features.noConnections'
-                        defaultMessage='There are no server-wide model connections yet: add one in <link>AI › Model connections</link>.'
+                        defaultMessage='There are no server-wide model connections yet: add one in <link>AI › Connections and agents</link>.'
                         values={{link: link('/admin_console/ai/model_connections')}}
                     />
                 </p>
