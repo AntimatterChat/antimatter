@@ -59,7 +59,7 @@ describe('fusion/profiles/CommunityProfileDialog', () => {
         renderWithContext(<CommunityProfileDialog onClose={jest.fn()}/>, state());
         expect(screen.getByRole('heading', {name: 'Your profile in Lumen Labs'})).toBeInTheDocument();
         expect(screen.getByText('Mayo')).toBeInTheDocument();
-        await userEvent.type(screen.getByRole('textbox', {name: 'Nickname in this community'}), 'Captain');
+        await userEvent.type(screen.getByRole('textbox', {name: /^Nickname in this community/}), 'Captain');
         expect(screen.getByText('Captain')).toBeInTheDocument();
     });
 
@@ -67,7 +67,7 @@ describe('fusion/profiles/CommunityProfileDialog', () => {
         renderWithContext(<CommunityProfileDialog onClose={jest.fn()}/>, state());
         const save = screen.getByRole('button', {name: 'Save nickname'});
         expect(save).toBeDisabled();
-        await userEvent.type(screen.getByRole('textbox', {name: 'Nickname in this community'}), '  Captain ');
+        await userEvent.type(screen.getByRole('textbox', {name: /^Nickname in this community/}), '  Captain ');
         await userEvent.click(save);
         expect(patch).toHaveBeenCalledWith('t1', 'me', {nickname: 'Captain'});
         await waitFor(() => expect(mockToast).toHaveBeenCalledWith('Nickname saved for this community'));
