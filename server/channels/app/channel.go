@@ -485,8 +485,9 @@ func (a *App) GetOrCreateDirectChannel(rctx request.CTX, userID, otherUserID str
 		}
 	}
 
-	// Antimatter: someone blocked can't start a direct message with who blocked them, nor the other way around.
-	if appErr := a.checkUserBlocks(rctx, userID, otherUserID); appErr != nil {
+	// Antimatter: someone blocked can't start a direct message with who blocked them, nor the other way around, nor
+	// with someone who refuses direct messages from people like them. One that exists already only opens (above).
+	if appErr := a.checkDirectMessageAllowed(rctx, userID, otherUserID, nil); appErr != nil {
 		return nil, appErr
 	}
 

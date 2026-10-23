@@ -90,8 +90,8 @@ func (a *App) checkUserBlocks(rctx request.CTX, senderID, recipientID string) *m
 }
 
 // checkGroupMessageBlocks tells whether creatorID may start a group message with userIDs: not when one of them blocks
-// them. A group message someone else starts with both of them is allowed, as in Discord: the one who blocks sees the
-// other's messages folded and isn't notified of them.
+// them, or refuses their direct messages. A group message someone else starts with both of them is allowed, as in
+// Discord: the one who blocks sees the other's messages folded and isn't notified of them.
 func (a *App) checkGroupMessageBlocks(rctx request.CTX, creatorID string, userIDs []string) *model.AppError {
 	if !a.UserBlockingEnabled() || creatorID == "" {
 		return nil
@@ -100,65 +100,160 @@ func (a *App) checkGroupMessageBlocks(rctx request.CTX, creatorID string, userID
 	if err != nil {
 		return model.NewAppError("checkGroupMessageBlocks", "app.preference.get.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
 	}
+	var creator *model.User
 	for _, id := range userIDs {
 		if id != creatorID && levels[id] == model.UserBlockBlock {
-			creator, appErr := a.GetUser(rctx, creatorID)
+			c, appErr := a.GetUser(rctx, creatorID)
 			if appErr != nil {
 				return appErr
 			}
-			if creator.IsSystemAdmin() {
+			if c.IsSystemAdmin() {
 				return nil
 			}
+			return model.NewAppError("checkGroupMessageBlocks", "app.user_block.group_blocked.app_error", nil, "", http.StatusForbidden)
+		}
+	}
+
+	// Nor can someone start one with people who refuse their direct messages: it would get round it.
+	for _, id := range userIDs {
+		if id == creatorID {
+			continue
+		}
+		if creator == nil {
+			c, appErr := a.GetUser(rctx, creatorID)
+			if appErr != nil {
+				return appErr
+			}
+			creator = c
+		}
+		privacy, err := a.dmPrivacyFor(id, creator)
+		if err != nil {
+			return model.NewAppError("checkGroupMessageBlocks", "app.preference.get.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
+		}
+		if privacy == model.DMPrivacyRefuse {
 			return model.NewAppError("checkGroupMessageBlocks", "app.user_block.group_blocked.app_error", nil, "", http.StatusForbidden)
 		}
 	}
 	return nil
 }
 
-// wantsMessageRequestFrom tells whether a direct message from sender, whom recipient doesn't talk with yet, waits as a
-// message request. It does when recipient asks first (model.DMPrivacyAsk) in every community they share with sender,
-// each community taking their choice for it or else their choice for all; with no community in common, their choice
-// for all decides. Bots and system admins always get through: notices and moderation must reach people.
-func (a *App) wantsMessageRequestFrom(recipientID string, sender *model.User) (bool, error) {
+// dmPrivacyFor tells how recipient takes a direct message from sender, whom they don't talk with yet
+// (model.DMPrivacy*): the most restrictive of their choices in the communities they share with sender, each
+// community taking their choice for it or else their choice for all; with no community in common, their choice for
+// all. The most restrictive wins, so that joining an open community never lets anyone reach them more. Bots and
+// system admins always get through: notices and moderation must reach people.
+func (a *App) dmPrivacyFor(recipientID string, sender *model.User) (string, error) {
 	if sender.IsBot || sender.IsSystemAdmin() {
-		return false, nil
+		return model.DMPrivacyEveryone, nil
 	}
 	prefs, err := a.Srv().Store().Preference().GetCategory(recipientID, model.PreferenceCategoryDMPrivacy)
 	if err != nil {
-		return false, err
+		return "", err
 	}
 	all := model.DMPrivacyEveryone
 	communities := map[string]string{}
-	anyAsk := false
+	anyChoice := false
 	for _, pref := range prefs {
+		if !model.IsValidDMPrivacy(pref.Value) {
+			continue
+		}
 		if pref.Name == model.PreferenceNameDMPrivacyDefault {
 			all = pref.Value
 		} else {
 			communities[pref.Name] = pref.Value
 		}
-		anyAsk = anyAsk || pref.Value == model.DMPrivacyAsk
+		anyChoice = anyChoice || pref.Value != model.DMPrivacyEveryone
 	}
-	if !anyAsk {
-		return false, nil
+	if !anyChoice {
+		return model.DMPrivacyEveryone, nil
 	}
 
 	common, err := a.Srv().Store().Team().GetCommonTeamIDsForTwoUsers(recipientID, sender.Id)
 	if err != nil {
-		return false, err
+		return "", err
 	}
 	if len(common) == 0 {
-		return all == model.DMPrivacyAsk, nil
+		return all, nil
 	}
+	result := model.DMPrivacyEveryone
 	for _, teamID := range common {
 		choice, ok := communities[teamID]
 		if !ok {
 			choice = all
 		}
-		if choice != model.DMPrivacyAsk {
-			return false, nil
+		if model.DMPrivacyRank(choice) > model.DMPrivacyRank(result) {
+			result = choice
 		}
 	}
-	return true, nil
+	return result, nil
+}
+
+// wantsMessageRequestFrom tells whether a direct message from sender, whom recipient doesn't talk with yet, waits as a
+// message request: they ask first, or refuse, people like sender (see dmPrivacyFor).
+func (a *App) wantsMessageRequestFrom(recipientID string, sender *model.User) (bool, error) {
+	privacy, err := a.dmPrivacyFor(recipientID, sender)
+	if err != nil {
+		return false, err
+	}
+	return privacy != model.DMPrivacyEveryone, nil
+}
+
+// dmAcceptedBy tells whether recipientID took part in a direct message already: they accepted it, or, for one from
+// before message requests, started or opened it.
+func (a *App) dmAcceptedBy(rctx request.CTX, channel *model.Channel, recipientID string) (bool, *model.AppError) {
+	member, appErr := a.GetChannelMember(rctx, channel.Id, recipientID)
+	if appErr != nil {
+		return false, appErr
+	}
+	switch member.NotifyProps[model.ChannelMemberDMRequestProp] {
+	case model.DMRequestAccepted:
+		return true, nil
+	case model.DMRequestPending, model.DMRequestDismissed:
+		return false, nil
+	}
+	return member.LastViewedAt > 0 || channel.CreatorId == recipientID, nil
+}
+
+// checkDMRefused tells whether sender may write directly to recipientID: not when recipientID refuses direct messages
+// from people like them (model.DMPrivacyRefuse), unless they accepted the conversation already (channel, nil while
+// it's being started). The sender is told they can't message this person, as when they're blocked: not why.
+func (a *App) checkDMRefused(rctx request.CTX, sender *model.User, recipientID string, channel *model.Channel) *model.AppError {
+	if !a.UserBlockingEnabled() || sender.Id == recipientID || recipientID == "" {
+		return nil
+	}
+	privacy, err := a.dmPrivacyFor(recipientID, sender)
+	if err != nil {
+		return model.NewAppError("checkDMRefused", "app.preference.get.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
+	}
+	if privacy != model.DMPrivacyRefuse {
+		return nil
+	}
+	if channel != nil {
+		accepted, appErr := a.dmAcceptedBy(rctx, channel, recipientID)
+		if appErr != nil {
+			return appErr
+		}
+		if accepted {
+			return nil
+		}
+	}
+	return model.NewAppError("checkDMRefused", "app.user_block.blocked.app_error", nil, "", http.StatusForbidden)
+}
+
+// checkDirectMessageAllowed gathers what stops senderID from writing directly to recipientID: blocks, and the
+// recipient refusing people like them (channel: the conversation, nil while it's being started).
+func (a *App) checkDirectMessageAllowed(rctx request.CTX, senderID, recipientID string, channel *model.Channel) *model.AppError {
+	if appErr := a.checkUserBlocks(rctx, senderID, recipientID); appErr != nil {
+		return appErr
+	}
+	if !a.UserBlockingEnabled() || senderID == recipientID || recipientID == "" {
+		return nil
+	}
+	sender, appErr := a.GetUser(rctx, senderID)
+	if appErr != nil {
+		return appErr
+	}
+	return a.checkDMRefused(rctx, sender, recipientID, channel)
 }
 
 // setDMRequestState writes where a direct message stands for one of its members, and tells their apps.

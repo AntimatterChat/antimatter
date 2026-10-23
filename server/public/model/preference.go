@@ -157,7 +157,7 @@ func (o *Preference) IsValid() *AppError {
 	if o.Category == PreferenceCategoryUserBlock && (!IsValidId(o.Name) || o.Name == o.UserId || !IsValidUserBlockLevel(o.Value)) {
 		return NewAppError("Preference.IsValid", "model.preference.is_valid.user_block.app_error", nil, "name="+o.Name+", value="+o.Value, http.StatusBadRequest)
 	}
-	if o.Category == PreferenceCategoryDMPrivacy && ((o.Name != PreferenceNameDMPrivacyDefault && !IsValidId(o.Name)) || (o.Value != DMPrivacyEveryone && o.Value != DMPrivacyAsk)) {
+	if o.Category == PreferenceCategoryDMPrivacy && ((o.Name != PreferenceNameDMPrivacyDefault && !IsValidId(o.Name)) || !IsValidDMPrivacy(o.Value)) {
 		return NewAppError("Preference.IsValid", "model.preference.is_valid.dm_privacy.app_error", nil, "name="+o.Name+", value="+o.Value, http.StatusBadRequest)
 	}
 

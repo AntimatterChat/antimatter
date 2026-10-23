@@ -69,3 +69,29 @@ func TestMessageRequests(t *testing.T) {
 		CheckNotImplementedStatus(t, resp)
 	})
 }
+
+// Refusing direct messages from a community's people, over the API: the sender is told as if blocked.
+func TestDMPrivacyRefuse(t *testing.T) {
+	mainHelper.Parallel(t)
+	th := Setup(t).InitBasic(t)
+	ctx := context.Background()
+
+	appErr := th.App.UpdatePreferences(th.Context, th.BasicUser2.Id, model.Preferences{{UserId: th.BasicUser2.Id, Category: model.PreferenceCategoryDMPrivacy, Name: th.BasicTeam.Id, Value: model.DMPrivacyRefuse}})
+	require.Nil(t, appErr)
+
+	_, resp, err := th.Client.CreateDirectChannel(ctx, th.BasicUser.Id, th.BasicUser2.Id)
+	require.Error(t, err)
+	CheckForbiddenStatus(t, resp)
+	CheckErrorID(t, err, "app.user_block.blocked.app_error")
+
+	_, resp, err = th.Client.CreateGroupChannel(ctx, []string{th.BasicUser.Id, th.BasicUser2.Id, th.SystemAdminUser.Id})
+	require.Error(t, err)
+	CheckForbiddenStatus(t, resp)
+
+	_, _, err = th.SystemAdminClient.CreateDirectChannel(ctx, th.SystemAdminUser.Id, th.BasicUser2.Id)
+	require.NoError(t, err, "system admins get through")
+
+	// Saving an unknown choice is refused.
+	_, err = th.Client.UpdatePreferences(ctx, th.BasicUser.Id, model.Preferences{{UserId: th.BasicUser.Id, Category: model.PreferenceCategoryDMPrivacy, Name: model.PreferenceNameDMPrivacyDefault, Value: "friends"}})
+	require.Error(t, err)
+}

@@ -13392,12 +13392,12 @@
   {
     "id": "app.user_block.blocked.app_error",
     "translation": "You can't message this person.",
-    "description": "Error shown to someone who tries to start a direct message with, or post in a direct message to, a person who blocked them. Deliberately neutral: it must not say that they were blocked."
+    "description": "Error shown to someone who tries to start a direct message with, or post in a direct message to, a person who blocked them or doesn't take direct messages from people like them. Deliberately neutral: it must not say why."
   },
   {
     "id": "app.user_block.group_blocked.app_error",
     "translation": "You can't start a group message with some of these people.",
-    "description": "Error shown when someone tries to start a group message that includes a person who blocked them. Deliberately neutral: it must not say who blocked them."
+    "description": "Error shown when someone tries to start a group message that includes a person who blocked them or doesn't take direct messages from them. Deliberately neutral: it must not say who, nor why."
   },
   {
     "id": "app.user_block.you_blocked.app_error",
@@ -18790,7 +18790,7 @@
   {
     "id": "model.preference.is_valid.dm_privacy.app_error",
     "translation": "Invalid choice for direct messages from people you don't know.",
-    "description": "Error returned when saving the preference of whom one accepts direct messages from (everyone, or ask first as message requests) with an invalid community or value."
+    "description": "Error returned when saving the preference of whom one accepts direct messages from (everyone, ask first as message requests, or refuse them) with an invalid community or value."
   },
   {
     "id": "model.preference.is_valid.id.app_error",

@@ -188,13 +188,111 @@ func TestUserBlocking(t *testing.T) {
 		setPref(t, dave.Id, model.PreferenceCategoryDMPrivacy, th.BasicTeam.Id, model.DMPrivacyAsk)
 		assert.Equal(t, model.DMRequestPending, requestState(t, dm(t, carol, dave).Id, dave.Id))
 
-		// Any community in common that accepts lets them through.
+		// Someone who shares several communities with them gets the most restrictive: sharing a community that
+		// accepts everyone too doesn't get round the one that asks first.
 		other := th.CreateTeam(t)
-		th.LinkUserToTeam(t, carol, other)
 		th.LinkUserToTeam(t, dave, other)
 		erin := newUser(t)
 		th.LinkUserToTeam(t, erin, other)
-		assert.Equal(t, model.DMRequestAccepted, requestState(t, dm(t, erin, dave).Id, dave.Id))
+		assert.Equal(t, model.DMRequestPending, requestState(t, dm(t, erin, dave).Id, dave.Id))
+
+		// Someone met only in the community that accepts everyone gets through.
+		frank := th.CreateUser(t)
+		th.LinkUserToTeam(t, frank, other)
+		assert.Equal(t, model.DMRequestAccepted, requestState(t, dm(t, frank, dave).Id, dave.Id))
+	})
+
+	t.Run("refusing direct messages from a community's people", func(t *testing.T) {
+		alice, bob := newUser(t), newUser(t)
+		setPref(t, bob.Id, model.PreferenceCategoryDMPrivacy, th.BasicTeam.Id, model.DMPrivacyRefuse)
+
+		// They can't start one, and are told as if blocked.
+		_, appErr := th.App.GetOrCreateDirectChannel(th.Context, alice.Id, bob.Id)
+		require.NotNil(t, appErr)
+		assert.Equal(t, "app.user_block.blocked.app_error", appErr.Id)
+		assert.Equal(t, http.StatusForbidden, appErr.StatusCode)
+
+		// Nor a group message with them, which would get round it; others can start one with both.
+		carol := newUser(t)
+		_, appErr = th.App.CreateGroupChannel(th.Context, []string{alice.Id, bob.Id, carol.Id}, alice.Id)
+		require.NotNil(t, appErr)
+		assert.Equal(t, "app.user_block.group_blocked.app_error", appErr.Id)
+
+		// Who refuses starts conversations themselves, and the other person answers.
+		channel := dm(t, bob, alice)
+		mustPost(t, bob, channel, "hi, it's me")
+		mustPost(t, alice, channel, "hello")
+	})
+
+	t.Run("refusing stops a request waiting for an answer, not a conversation accepted", func(t *testing.T) {
+		alice, bob, carol := newUser(t), newUser(t), newUser(t)
+		setPref(t, bob.Id, model.PreferenceCategoryDMPrivacy, model.PreferenceNameDMPrivacyDefault, model.DMPrivacyAsk)
+		waiting := dm(t, alice, bob)
+		mustPost(t, alice, waiting, "hi")
+		accepted := dm(t, carol, bob)
+		mustPost(t, carol, accepted, "hi")
+		mustPost(t, bob, accepted, "hello carol")
+
+		setPref(t, bob.Id, model.PreferenceCategoryDMPrivacy, model.PreferenceNameDMPrivacyDefault, model.DMPrivacyRefuse)
+		_, appErr := post(t, alice, waiting, "hello?")
+		require.NotNil(t, appErr)
+		assert.Equal(t, "app.user_block.blocked.app_error", appErr.Id)
+		mustPost(t, carol, accepted, "still here")
+
+		// The conversation still opens, to read it.
+		again, appErr := th.App.GetOrCreateDirectChannel(th.Context, alice.Id, bob.Id)
+		require.Nil(t, appErr)
+		assert.Equal(t, waiting.Id, again.Id)
+	})
+
+	t.Run("a community that accepts everyone doesn't get round one that refuses", func(t *testing.T) {
+		bob := newUser(t)
+		setPref(t, bob.Id, model.PreferenceCategoryDMPrivacy, th.BasicTeam.Id, model.DMPrivacyRefuse)
+		open := th.CreateTeam(t)
+		th.LinkUserToTeam(t, bob, open)
+		setPref(t, bob.Id, model.PreferenceCategoryDMPrivacy, open.Id, model.DMPrivacyEveryone)
+
+		alice := newUser(t)
+		th.LinkUserToTeam(t, alice, open)
+		_, appErr := th.App.GetOrCreateDirectChannel(th.Context, alice.Id, bob.Id)
+		require.NotNil(t, appErr)
+
+		// Met only in the open community, they get through.
+		carol := th.CreateUser(t)
+		th.LinkUserToTeam(t, carol, open)
+		mustPost(t, carol, dm(t, carol, bob), "hi")
+	})
+
+	t.Run("with no community in common, the choice for all decides", func(t *testing.T) {
+		bob := newUser(t)
+		setPref(t, bob.Id, model.PreferenceCategoryDMPrivacy, model.PreferenceNameDMPrivacyDefault, model.DMPrivacyRefuse)
+		setPref(t, bob.Id, model.PreferenceCategoryDMPrivacy, th.BasicTeam.Id, model.DMPrivacyEveryone)
+		stranger := th.CreateUser(t)
+		_, appErr := th.App.GetOrCreateDirectChannel(th.Context, stranger.Id, bob.Id)
+		require.NotNil(t, appErr)
+
+		fellow := newUser(t)
+		mustPost(t, fellow, dm(t, fellow, bob), "fellow member")
+	})
+
+	t.Run("bots and system admins reach people who refuse direct messages", func(t *testing.T) {
+		bob := newUser(t)
+		setPref(t, bob.Id, model.PreferenceCategoryDMPrivacy, model.PreferenceNameDMPrivacyDefault, model.DMPrivacyRefuse)
+		setPref(t, bob.Id, model.PreferenceCategoryDMPrivacy, th.BasicTeam.Id, model.DMPrivacyRefuse)
+		mustPost(t, th.SystemAdminUser, dm(t, th.SystemAdminUser, bob), "a notice")
+
+		bot := th.CreateBot(t)
+		botUser, appErr := th.App.GetUser(th.Context, bot.UserId)
+		require.Nil(t, appErr)
+		mustPost(t, botUser, dm(t, botUser, bob), "beep")
+	})
+
+	t.Run("refusing isn't enforced while the admin turned blocking off", func(t *testing.T) {
+		setEnabled(false)
+		defer setEnabled(true)
+		alice, bob := newUser(t), newUser(t)
+		setPref(t, bob.Id, model.PreferenceCategoryDMPrivacy, model.PreferenceNameDMPrivacyDefault, model.DMPrivacyRefuse)
+		mustPost(t, alice, dm(t, alice, bob), "hi")
 	})
 
 	t.Run("bots and system admins always get through", func(t *testing.T) {
