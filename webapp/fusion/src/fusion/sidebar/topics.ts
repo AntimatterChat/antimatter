@@ -35,7 +35,7 @@ export function getTopicPeriodMs(state: GlobalState): number {
 
 // activeTopicAt is when a topic was last active: its last reply, else when it started. Undefined for a post that
 // isn't a topic (unnamed, a reply itself, or gone).
-export function activeTopicAt(post?: {root_id: string; delete_at: number; state?: string; last_reply_at?: number; create_at: number; props?: Record<string, unknown>}): number | undefined {
+export function activeTopicAt(post?: {root_id: string; delete_at: number; state?: string; last_reply_at?: number; create_at: number; props: Record<string, unknown>}): number | undefined {
     if (!post || post.root_id || post.delete_at || post.state === Posts.POST_DELETED || !getThreadTitle(post)) {
         return undefined;
     }
