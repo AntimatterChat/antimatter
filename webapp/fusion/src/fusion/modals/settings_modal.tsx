@@ -3,6 +3,7 @@
 
 import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {useIntl} from 'react-intl';
+import type {IntlShape} from 'react-intl';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {CollapsedThreads} from '@mattermost/types/config';
@@ -13,7 +14,7 @@ import {saveTheme} from 'mattermost-redux/actions/preferences';
 import {getMe, getSessions, revokeSession, setDefaultProfileImage, updateMe, updateUserPassword, uploadProfileImage} from 'mattermost-redux/actions/users';
 import {Permissions, Preferences} from 'mattermost-redux/constants';
 import {getConfig, getFeatureFlagValue, getPasswordConfig} from 'mattermost-redux/selectors/entities/general';
-import {getCollapsedThreadsPreference, getTheme, isCollapsedThreadsAllowed, shouldShowUnreadsCategory, DEFAULT_VISIBLE_DM_GM_LIMIT} from 'mattermost-redux/selectors/entities/preferences';
+import {getCollapsedThreadsPreference, getTheme, isCollapsedThreadsAllowed, shouldShowUnreadsCategory} from 'mattermost-redux/selectors/entities/preferences';
 import type {Theme} from 'mattermost-redux/selectors/entities/preferences';
 import {haveISystemPermission} from 'mattermost-redux/selectors/entities/roles';
 import {getCurrentTeamId} from 'mattermost-redux/selectors/entities/teams';
@@ -34,6 +35,7 @@ import {canVisitSystemConsole} from 'fusion/popovers/admin_links';
 import {isUserBlockingEnabled} from 'fusion/privacy/blocking';
 import PrivacyPane from 'fusion/privacy/privacy_pane';
 import {useToast} from 'fusion/shell/toast_context';
+import {CATEGORY_SIDEBAR, DEFAULT_TOPIC_PERIOD, NAME_TOPIC_PERIOD, TOPIC_PERIODS} from 'fusion/sidebar/topics';
 import {badgeChoice, badgesRequired, getTeamsByUser, TEAM_BADGE_PROP, withBadgeChoice} from 'fusion/teams/teams';
 import {am} from 'fusion/utils/class_names';
 import {openClassicUserSettings} from 'fusion/utils/modals';
@@ -480,6 +482,18 @@ function SecurityPane() {
     );
 }
 
+// topicPeriodLabel is the name of a topic period choice (see fusion/sidebar/topics.ts): a literal call per key, so
+// every one of them is extracted (a map indexed by the period key wouldn't be).
+function topicPeriodLabel(formatMessage: IntlShape['formatMessage'], key: string): string {
+    switch (key) {
+    case '1d': return formatMessage({id: 'fusion.settings.topicPeriod1d', defaultMessage: '1 day'});
+    case '3d': return formatMessage({id: 'fusion.settings.topicPeriod3d', defaultMessage: '3 days'});
+    case '2w': return formatMessage({id: 'fusion.settings.topicPeriod2w', defaultMessage: '2 weeks'});
+    case '1m': return formatMessage({id: 'fusion.settings.topicPeriod1m', defaultMessage: '1 month'});
+    default: return formatMessage({id: 'fusion.settings.topicPeriod1w', defaultMessage: '1 week'});
+    }
+}
+
 const THEME_CARDS: Array<{key: keyof typeof Preferences.THEMES; name: {id: string; defaultMessage: string}; sw?: [string, string, string]; acc: string}> = [
     {key: 'fusionSystem', name: {id: 'fusion.settings.themeSystem', defaultMessage: 'System'}, acc: '#8B5CF6'},
     {key: 'fusionDark', name: {id: 'fusion.settings.themeDark', defaultMessage: 'Dark'}, sw: ['#1E1F22', '#2B2D31', '#313338'], acc: '#8B5CF6'},
@@ -495,7 +509,7 @@ function AppearancePane() {
     const [militaryTime, setMilitaryTime] = usePreference(Preferences.CATEGORY_DISPLAY_SETTINGS, Preferences.USE_MILITARY_TIME, 'false');
     const groupUnreadsByDefault = useSelector(shouldShowUnreadsCategory);
     const [groupUnreads, setGroupUnreads] = usePreference(Preferences.CATEGORY_SIDEBAR_SETTINGS, Preferences.SHOW_UNREAD_SECTION, String(groupUnreadsByDefault));
-    const [dmLimit, setDmLimit] = usePreference(Preferences.CATEGORY_SIDEBAR_SETTINGS, Preferences.LIMIT_VISIBLE_DMS_GMS, String(DEFAULT_VISIBLE_DM_GM_LIMIT));
+    const [topicPeriod, setTopicPeriod] = usePreference(CATEGORY_SIDEBAR, NAME_TOPIC_PERIOD, DEFAULT_TOPIC_PERIOD);
     const [nameFormat, setNameFormat] = usePreference(Preferences.CATEGORY_DISPLAY_SETTINGS, Preferences.NAME_NAME_FORMAT, config.TeammateNameDisplay || Preferences.DISPLAY_PREFER_USERNAME);
     const custom = !THEME_CARDS.some((c) => Preferences.THEMES[c.key].type === theme.type);
     const startCustom = useStartCustomTheme();
@@ -596,11 +610,11 @@ function AppearancePane() {
                 onChange={(on) => setGroupUnreads(String(on))}
             />
             <Choice
-                title={formatMessage({id: 'fusion.settings.dmLimit', defaultMessage: 'Open conversations'})}
-                desc={formatMessage({id: 'fusion.settings.dmLimitDesc', defaultMessage: 'How many conversations Open conversations lists, the latest active first. Unread ones that don\'t fit wait at the bottom of the community rail.'})}
-                value={dmLimit}
-                options={['5', '10', '15', '20', '40'].map((n): [string, string] => [n, n])}
-                onChange={setDmLimit}
+                title={formatMessage({id: 'fusion.settings.topicPeriod', defaultMessage: 'Topics under a channel'})}
+                desc={formatMessage({id: 'fusion.settings.topicPeriodDesc', defaultMessage: 'How long a topic keeps showing under its channel after it was last active.'})}
+                value={topicPeriod}
+                options={TOPIC_PERIODS.map(([key]): [string, string] => [key, topicPeriodLabel(formatMessage, key)])}
+                onChange={setTopicPeriod}
             />
         </>
     );

@@ -25419,6 +25419,10 @@
     "defaultMessage": "Open conversations",
     "description": ""
   },
+  "fusion.dock.resize": {
+    "defaultMessage": "Resize Open conversations",
+    "description": "Screen reader label of the handle on the Open conversations dock's top edge, dragged (or moved with the arrow keys) to resize it."
+  },
   "fusion.dock.title": {
     "defaultMessage": "Open conversations",
     "description": ""
@@ -28403,14 +28407,6 @@
     "defaultMessage": "Standard",
     "description": ""
   },
-  "fusion.settings.dmLimit": {
-    "defaultMessage": "Open conversations",
-    "description": ""
-  },
-  "fusion.settings.dmLimitDesc": {
-    "defaultMessage": "How many conversations Open conversations lists, the latest active first. Unread ones that don't fit wait at the bottom of the community rail.",
-    "description": "Description of the \"Open conversations\" setting (a choice of 5, 10, 15, 20 or 40): the number of direct messages shown in the Open conversations list at the bottom of the sidebar. \"Community rail\" is the column of community icons on the far left."
-  },
   "fusion.settings.email": {
     "defaultMessage": "Email notifications",
     "description": ""
@@ -29097,6 +29093,34 @@
   },
   "fusion.settings.tokens": {
     "defaultMessage": "Personal access tokens",
+    "description": ""
+  },
+  "fusion.settings.topicPeriod": {
+    "defaultMessage": "Topics under a channel",
+    "description": ""
+  },
+  "fusion.settings.topicPeriod1d": {
+    "defaultMessage": "1 day",
+    "description": "A choice of the \"Topics under a channel\" setting: how long a topic keeps showing under its channel."
+  },
+  "fusion.settings.topicPeriod1m": {
+    "defaultMessage": "1 month",
+    "description": "A choice of the \"Topics under a channel\" setting: how long a topic keeps showing under its channel."
+  },
+  "fusion.settings.topicPeriod1w": {
+    "defaultMessage": "1 week",
+    "description": "A choice of the \"Topics under a channel\" setting: how long a topic keeps showing under its channel."
+  },
+  "fusion.settings.topicPeriod2w": {
+    "defaultMessage": "2 weeks",
+    "description": "A choice of the \"Topics under a channel\" setting: how long a topic keeps showing under its channel."
+  },
+  "fusion.settings.topicPeriod3d": {
+    "defaultMessage": "3 days",
+    "description": "A choice of the \"Topics under a channel\" setting: how long a topic keeps showing under its channel."
+  },
+  "fusion.settings.topicPeriodDesc": {
+    "defaultMessage": "How long a topic keeps showing under its channel after it was last active.",
     "description": ""
   },
   "fusion.settings.user": {
