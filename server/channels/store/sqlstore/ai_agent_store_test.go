@@ -20,3 +20,7 @@ func TestAgentActivityStore(t *testing.T) {
 func TestAIAgentAgentsPluginUserAgents(t *testing.T) {
 	StoreTestWithSqlStore(t, storetest.TestAIAgentAgentsPluginUserAgents)
 }
+
+func TestAIMCPServerStore(t *testing.T) {
+	StoreTest(t, storetest.TestAIMCPServerStore)
+}

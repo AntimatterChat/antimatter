@@ -64,6 +64,26 @@ func (_m *Store) AIConnection() store.AIConnectionStore {
 	return r0
 }
 
+// AIMCPServer provides a mock function with no fields
+func (_m *Store) AIMCPServer() store.AIMCPServerStore {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for AIMCPServer")
+	}
+
+	var r0 store.AIMCPServerStore
+	if rf, ok := ret.Get(0).(func() store.AIMCPServerStore); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(store.AIMCPServerStore)
+		}
+	}
+
+	return r0
+}
+
 // AccessControlPolicy provides a mock function with no fields
 func (_m *Store) AccessControlPolicy() store.AccessControlPolicyStore {
 	ret := _m.Called()

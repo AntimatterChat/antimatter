@@ -1228,6 +1228,10 @@ func (a *App) UpdateActive(rctx request.CTX, user *model.User, active bool) (*mo
 		if err := a.userDeactivated(rctx, ruser.Id); err != nil {
 			return nil, err
 		}
+		// Antimatter: someone deactivated keeps no sign-in to other services through agents' tools.
+		if err := a.Srv().Store().AIMCPServer().DeleteUserTokensForUser(rctx, ruser.Id); err != nil {
+			rctx.Logger().Warn("Couldn't forget a deactivated person's sign-ins to MCP servers", mlog.String("user_id", ruser.Id), mlog.Err(err))
+		}
 	}
 
 	if appErr := a.invalidateUserChannelMembersCaches(rctx, user.Id); appErr != nil {
@@ -2212,6 +2216,10 @@ func (a *App) permanentDeleteUserData(rctx request.CTX, userID string) error {
 		return err
 	}
 	if err := ss.AIAgent().PermanentDelete(rctx, userID); err != nil {
+		return err
+	}
+	// Their sign-ins to MCP servers go with them.
+	if err := ss.AIMCPServer().DeleteUserTokensForUser(rctx, userID); err != nil {
 		return err
 	}
 	if err := ss.AgentActivity().Delete(rctx, userID); err != nil {

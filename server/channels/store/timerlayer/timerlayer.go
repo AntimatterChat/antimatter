@@ -20,6 +20,7 @@ type TimerLayer struct {
 	Metrics                         einterfaces.MetricsInterface
 	AIAgentStore                    store.AIAgentStore
 	AIConnectionStore               store.AIConnectionStore
+	AIMCPServerStore                store.AIMCPServerStore
 	AccessControlPolicyStore        store.AccessControlPolicyStore
 	AgentActivityStore              store.AgentActivityStore
 	AttributesStore                 store.AttributesStore
@@ -97,6 +98,10 @@ func (s *TimerLayer) AIAgent() store.AIAgentStore {
 
 func (s *TimerLayer) AIConnection() store.AIConnectionStore {
 	return s.AIConnectionStore
+}
+
+func (s *TimerLayer) AIMCPServer() store.AIMCPServerStore {
+	return s.AIMCPServerStore
 }
 
 func (s *TimerLayer) AccessControlPolicy() store.AccessControlPolicyStore {
@@ -382,6 +387,11 @@ type TimerLayerAIAgentStore struct {
 
 type TimerLayerAIConnectionStore struct {
 	store.AIConnectionStore
+	Root *TimerLayer
+}
+
+type TimerLayerAIMCPServerStore struct {
+	store.AIMCPServerStore
 	Root *TimerLayer
 }
 
@@ -1062,6 +1072,182 @@ func (s *TimerLayerAIConnectionStore) Update(rctx request.CTX, connection *model
 			success = "true"
 		}
 		s.Root.Metrics.ObserveStoreMethodDuration("AIConnectionStore.Update", success, elapsed)
+	}
+	return result, err
+}
+
+func (s *TimerLayerAIMCPServerStore) Delete(rctx request.CTX, id string, deleteAt int64) error {
+	start := time.Now()
+
+	err := s.AIMCPServerStore.Delete(rctx, id, deleteAt)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("AIMCPServerStore.Delete", success, elapsed)
+	}
+	return err
+}
+
+func (s *TimerLayerAIMCPServerStore) DeleteUserToken(rctx request.CTX, serverID string, userID string) error {
+	start := time.Now()
+
+	err := s.AIMCPServerStore.DeleteUserToken(rctx, serverID, userID)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("AIMCPServerStore.DeleteUserToken", success, elapsed)
+	}
+	return err
+}
+
+func (s *TimerLayerAIMCPServerStore) DeleteUserTokensForUser(rctx request.CTX, userID string) error {
+	start := time.Now()
+
+	err := s.AIMCPServerStore.DeleteUserTokensForUser(rctx, userID)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("AIMCPServerStore.DeleteUserTokensForUser", success, elapsed)
+	}
+	return err
+}
+
+func (s *TimerLayerAIMCPServerStore) Get(rctx request.CTX, id string) (*model.AIMCPServer, error) {
+	start := time.Now()
+
+	result, err := s.AIMCPServerStore.Get(rctx, id)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("AIMCPServerStore.Get", success, elapsed)
+	}
+	return result, err
+}
+
+func (s *TimerLayerAIMCPServerStore) GetAll(rctx request.CTX) ([]*model.AIMCPServer, error) {
+	start := time.Now()
+
+	result, err := s.AIMCPServerStore.GetAll(rctx)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("AIMCPServerStore.GetAll", success, elapsed)
+	}
+	return result, err
+}
+
+func (s *TimerLayerAIMCPServerStore) GetForScopes(rctx request.CTX, scopes []string) ([]*model.AIMCPServer, error) {
+	start := time.Now()
+
+	result, err := s.AIMCPServerStore.GetForScopes(rctx, scopes)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("AIMCPServerStore.GetForScopes", success, elapsed)
+	}
+	return result, err
+}
+
+func (s *TimerLayerAIMCPServerStore) GetUserToken(rctx request.CTX, serverID string, userID string) (*model.AIMCPUserToken, error) {
+	start := time.Now()
+
+	result, err := s.AIMCPServerStore.GetUserToken(rctx, serverID, userID)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("AIMCPServerStore.GetUserToken", success, elapsed)
+	}
+	return result, err
+}
+
+func (s *TimerLayerAIMCPServerStore) GetUserTokenServerIds(rctx request.CTX, userID string) ([]string, error) {
+	start := time.Now()
+
+	result, err := s.AIMCPServerStore.GetUserTokenServerIds(rctx, userID)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("AIMCPServerStore.GetUserTokenServerIds", success, elapsed)
+	}
+	return result, err
+}
+
+func (s *TimerLayerAIMCPServerStore) Save(rctx request.CTX, server *model.AIMCPServer) (*model.AIMCPServer, error) {
+	start := time.Now()
+
+	result, err := s.AIMCPServerStore.Save(rctx, server)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("AIMCPServerStore.Save", success, elapsed)
+	}
+	return result, err
+}
+
+func (s *TimerLayerAIMCPServerStore) SaveUserToken(rctx request.CTX, token *model.AIMCPUserToken) error {
+	start := time.Now()
+
+	err := s.AIMCPServerStore.SaveUserToken(rctx, token)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("AIMCPServerStore.SaveUserToken", success, elapsed)
+	}
+	return err
+}
+
+func (s *TimerLayerAIMCPServerStore) Update(rctx request.CTX, server *model.AIMCPServer) (*model.AIMCPServer, error) {
+	start := time.Now()
+
+	result, err := s.AIMCPServerStore.Update(rctx, server)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("AIMCPServerStore.Update", success, elapsed)
 	}
 	return result, err
 }
@@ -17597,6 +17783,7 @@ func New(childStore store.Store, metrics einterfaces.MetricsInterface) *TimerLay
 
 	newStore.AIAgentStore = &TimerLayerAIAgentStore{AIAgentStore: childStore.AIAgent(), Root: &newStore}
 	newStore.AIConnectionStore = &TimerLayerAIConnectionStore{AIConnectionStore: childStore.AIConnection(), Root: &newStore}
+	newStore.AIMCPServerStore = &TimerLayerAIMCPServerStore{AIMCPServerStore: childStore.AIMCPServer(), Root: &newStore}
 	newStore.AccessControlPolicyStore = &TimerLayerAccessControlPolicyStore{AccessControlPolicyStore: childStore.AccessControlPolicy(), Root: &newStore}
 	newStore.AgentActivityStore = &TimerLayerAgentActivityStore{AgentActivityStore: childStore.AgentActivity(), Root: &newStore}
 	newStore.AttributesStore = &TimerLayerAttributesStore{AttributesStore: childStore.Attributes(), Root: &newStore}

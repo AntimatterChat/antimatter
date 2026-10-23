@@ -167,6 +167,10 @@ func GetMockStoreForSetupFunctions() *mocks.Store {
 	aiAgentStore := mocks.AIAgentStore{}
 	aiAgentStore.On("GetAll", mock.Anything).Return([]*model.AIAgent{}, nil)
 	agentActivityStore := mocks.AgentActivityStore{}
+	aiMCPServerStore := mocks.AIMCPServerStore{}
+	aiMCPServerStore.On("GetForScopes", mock.Anything, mock.Anything).Return([]*model.AIMCPServer{}, nil)
+	aiMCPServerStore.On("GetAll", mock.Anything).Return([]*model.AIMCPServer{}, nil)
+	aiMCPServerStore.On("DeleteUserTokensForUser", mock.Anything, mock.Anything).Return(nil)
 
 	channelGuardStore := mocks.ChannelGuardStore{}
 	channelGuardStore.On("GetAll", mock.Anything).Return([]*store.ChannelGuard{}, nil)
@@ -253,6 +257,7 @@ func GetMockStoreForSetupFunctions() *mocks.Store {
 	mockStore.On("ChannelGuard").Return(&channelGuardStore)
 	mockStore.On("AIAgent").Return(&aiAgentStore)
 	mockStore.On("AgentActivity").Return(&agentActivityStore)
+	mockStore.On("AIMCPServer").Return(&aiMCPServerStore)
 	mockStore.On("LockToMaster").Return()
 	mockStore.On("UnlockFromMaster").Return()
 

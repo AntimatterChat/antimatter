@@ -71,6 +71,7 @@ type Store struct {
 	FocusStore                      mocks.FocusStore
 	AIConnectionStore               mocks.AIConnectionStore
 	AIAgentStore                    mocks.AIAgentStore
+	AIMCPServerStore                mocks.AIMCPServerStore
 	AgentActivityStore              mocks.AgentActivityStore
 	ChannelOverrideStore            mocks.ChannelOverrideStore
 	ScheduledPostStore              mocks.ScheduledPostStore
@@ -141,6 +142,7 @@ func (s *Store) CommunityRules() store.CommunityRulesStore   { return &s.Communi
 func (s *Store) Focus() store.FocusStore                     { return &s.FocusStore }
 func (s *Store) AIConnection() store.AIConnectionStore       { return &s.AIConnectionStore }
 func (s *Store) AIAgent() store.AIAgentStore                 { return &s.AIAgentStore }
+func (s *Store) AIMCPServer() store.AIMCPServerStore         { return &s.AIMCPServerStore }
 func (s *Store) AgentActivity() store.AgentActivityStore     { return &s.AgentActivityStore }
 func (s *Store) ChannelOverride() store.ChannelOverrideStore { return &s.ChannelOverrideStore }
 func (s *Store) DesktopTokens() store.DesktopTokensStore     { return &s.DesktopTokensStore }
@@ -280,6 +282,7 @@ func (s *Store) AssertExpectations(t mock.TestingT) bool {
 		&s.FocusStore,
 		&s.AIConnectionStore,
 		&s.AIAgentStore,
+		&s.AIMCPServerStore,
 		&s.AgentActivityStore,
 		&s.ChannelOverrideStore,
 		&s.ScheduledPostStore,
