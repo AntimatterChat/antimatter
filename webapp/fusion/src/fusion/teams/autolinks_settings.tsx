@@ -42,11 +42,15 @@ export default function AutolinksSettings({setUnsaved}: Props) {
     const myChannels = useSelector(getMyChannels);
     const channels = useMemo(() => myChannels.filter((c) => c.team_id === team?.id && (c.type === 'O' || c.type === 'P') && c.delete_at === 0).sort((a, b) => a.display_name.localeCompare(b.display_name)), [myChannels, team?.id]);
 
+    // What's saved is compared as the editor writes it: the server keeps the rules in its own form (the order of their
+    // fields, the options off), which isn't a change.
     const serialized = serializeAutolinks(draft);
-    const unsaved = serialized !== saved;
+    const baseline = useMemo(() => serializeAutolinks(parseAutolinks(saved)), [saved]);
+    const unsaved = serialized !== baseline;
     useEffect(() => {
         setUnsaved?.(unsaved);
     }, [unsaved, setUnsaved]);
+    useEffect(() => () => setUnsaved?.(false), [setUnsaved]);
 
     // The preview follows the rules as edited, from the server, which applies them.
     useEffect(() => {

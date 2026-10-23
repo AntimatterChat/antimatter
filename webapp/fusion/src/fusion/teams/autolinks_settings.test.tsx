@@ -55,6 +55,22 @@ describe('AutolinksSettings', () => {
         expect(screen.getByRole('button', {name: 'Save'})).toBeDisabled();
     });
 
+    // The server keeps the rules in its own form: opening them changes nothing, and doesn't lock the settings.
+    test('the server\'s form of the rules isn\'t an unsaved change', async () => {
+        const stored = JSON.stringify({links: [{template: '[$1](https://jira/browse/$1)', pattern: '(LUM-\\d+)', name: 'Jira', disabled: false, word_match: false, channels: []}], on_edit: false});
+        const setUnsaved = render(stored);
+        expect(screen.getByRole('button', {name: 'Save'})).toBeDisabled();
+        expect(screen.getByRole('button', {name: 'Undo changes'})).toBeDisabled();
+        await waitFor(() => expect(setUnsaved).toHaveBeenLastCalledWith(false));
+        expect(setUnsaved).not.toHaveBeenCalledWith(true);
+    });
+
+    test('nothing to save with no rules either', async () => {
+        const setUnsaved = render('{"links":[]}');
+        await waitFor(() => expect(setUnsaved).toHaveBeenLastCalledWith(false));
+        expect(setUnsaved).not.toHaveBeenCalledWith(true);
+    });
+
     test('says when there are none', () => {
         render('');
         expect(screen.getByText('No autolinks yet.')).toBeInTheDocument();
