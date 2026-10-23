@@ -17,6 +17,7 @@ import RolesSettings from './roles_dialog';
 jest.mock('mattermost-redux/actions/teams', () => ({
     ...jest.requireActual('mattermost-redux/actions/teams'),
     patchTeam: jest.fn(() => ({type: 'MOCK_PATCH_TEAM'})),
+    getTeam: jest.fn(() => ({type: 'MOCK_GET_TEAM'})),
 }));
 jest.mock('./teams', () => ({
     ...jest.requireActual('./teams'),
@@ -25,18 +26,19 @@ jest.mock('./teams', () => ({
 jest.mock('fusion/shell/toast_context', () => ({useToast: () => jest.fn()}));
 
 const mods = {id: 'mods', name: 'mods', display_name: 'Moderators', source: 'custom', team_id: 't1', delete_at: 0, position: 0, member_ids: [], color: '#e67e22'} as unknown as Group;
+const everyone = {id: 'everyone', name: 'default-t1', display_name: 'Members', source: 'custom', team_id: 't1', delete_at: 0, position: 10000, member_ids: ['me'], color: ''} as unknown as Group;
 
-function state(view?: TeamMemberListView) {
+function state(view?: TeamMemberListView, defaultRole = false) {
     return {
         entities: {
             general: {config: {}},
             users: {currentUserId: 'me', profiles: {me: TestHelper.getUserMock({id: 'me', roles: 'system_user'})}},
             teams: {
                 currentTeamId: 't1',
-                teams: {t1: TestHelper.getTeamMock({id: 't1', name: 'lumen', member_list_view: view})},
+                teams: {t1: TestHelper.getTeamMock({id: 't1', name: 'lumen', member_list_view: view, default_role_id: defaultRole ? 'everyone' : ''})},
                 myMembers: {t1: {team_id: 't1', user_id: 'me', roles: 'team_user team_admin'}},
             },
-            groups: {groups: {mods}},
+            groups: {groups: defaultRole ? {mods, everyone} : {mods}},
             roles: {roles: {
                 system_user: {name: 'system_user', permissions: []},
                 team_user: {name: 'team_user', permissions: []},
@@ -47,8 +49,43 @@ function state(view?: TeamMemberListView) {
 }
 
 describe('fusion/teams/RolesSettings', () => {
+    let ensure: jest.SpyInstance;
     beforeEach(() => {
         (patchTeam as jest.Mock).mockClear();
+        ensure = jest.spyOn(Client4, 'ensureTeamDefaultRole').mockResolvedValue(everyone as never);
+    });
+
+    afterEach(() => {
+        ensure.mockRestore();
+    });
+
+    test('sets up the default role the first time the roles are managed', async () => {
+        renderWithContext(<RolesSettings onClose={jest.fn()}/>, state());
+        await waitFor(() => expect(ensure).toHaveBeenCalledWith('t1'));
+    });
+
+    test('the default role comes last, and can be edited but not moved, deleted, given or opened to all', async () => {
+        jest.spyOn(Client4, 'getTeamRole').mockResolvedValue({permissions: []} as never);
+        renderWithContext(<RolesSettings onClose={jest.fn()}/>, state(undefined, true));
+        expect(ensure).not.toHaveBeenCalled();
+
+        const rows = screen.getAllByText(/Moderators|Members/).map((el) => el.textContent);
+        expect(rows).toEqual(['Moderators', 'Members']);
+        expect(screen.getByText('Default role: everyone in the community has it')).toBeInTheDocument();
+        expect(screen.getAllByRole('button', {name: 'Delete the role'})).toHaveLength(1);
+        expect(screen.getAllByRole('button', {name: 'Move down'})).toHaveLength(1);
+        expect(screen.getAllByRole('button', {name: 'Move down'})[0]).toBeDisabled();
+
+        await userEvent.click(screen.getAllByRole('button', {name: 'Edit the role'})[1]);
+        expect(screen.getByDisplayValue('Members')).toBeInTheDocument();
+        expect(screen.queryByRole('switch', {name: 'Anyone can take it'})).not.toBeInTheDocument();
+        expect(screen.queryByRole('textbox', {name: 'Add people of the community…'})).not.toBeInTheDocument();
+        expect(screen.getByText(/Everyone in the community has this role/)).toBeInTheDocument();
+    });
+
+    test('the team badge setting is in the Teams tab, not here', () => {
+        renderWithContext(<RolesSettings onClose={jest.fn()}/>, state());
+        expect(screen.queryByRole('switch', {name: 'Everyone shows a team badge'})).not.toBeInTheDocument();
     });
 
     test('the community\'s admins choose how the member list groups people', async () => {

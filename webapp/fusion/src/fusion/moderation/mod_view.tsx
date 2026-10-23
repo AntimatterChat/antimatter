@@ -32,7 +32,7 @@ import {useDisplayName, useUser, useUserStatus} from 'fusion/hooks/users';
 import {STATUS_LABELS} from 'fusion/popovers/user_popover';
 import {useDialogs} from 'fusion/shell/dialogs_context';
 import {useToast} from 'fusion/shell/toast_context';
-import {getMemberRolesForCurrentTeam, getTeamRoles, useRoleColor} from 'fusion/teams/roles';
+import {getGivenRolesOf, getGivenTeamRoles, useRoleColor} from 'fusion/teams/roles';
 import {TeamTag} from 'fusion/teams/team_card';
 import {loadTeams} from 'fusion/teams/teams';
 import {am} from 'fusion/utils/class_names';
@@ -92,8 +92,9 @@ export default function ModViewPanel() {
     const systemAdmin = useSelector((state: GlobalState) => isSystemAdmin(getCurrentUser(state)?.roles || ''));
     const timeout = useSelector((state: GlobalState) => getMemberTimeout(state, teamId, userId));
     const member = useSelector((state: GlobalState) => selectTeamMember(state, teamId, userId));
-    const teamRoles = useSelector((state: GlobalState) => getTeamRoles(state, teamId));
-    const theirRoles = useSelector((state: GlobalState) => getMemberRolesForCurrentTeam(state)[userId]);
+    // The roles given to some (not the default role, which everyone has).
+    const teamRoles = useSelector((state: GlobalState) => getGivenTeamRoles(state, teamId));
+    const theirRoles = useSelector((state: GlobalState) => getGivenRolesOf(state, userId));
     const roleNames = useMemo(() => [...(member?.roles || '').split(' '), ...(user?.roles || '').split(' ')].filter(Boolean), [member?.roles, user?.roles]);
     const permissions = useSelector((state: GlobalState) => {
         const all = new Set<string>();

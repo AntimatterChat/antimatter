@@ -4981,6 +4981,14 @@ export default class Client4 {
         );
     };
 
+    // Antimatter: a community's default role, which everyone in it has, made the first time.
+    ensureTeamDefaultRole = (teamId: string) => {
+        return this.doFetch<Group>(
+            `${this.getTeamRoute(teamId)}/default_role`,
+            {method: 'post'},
+        );
+    };
+
     // Antimatter: the Mattermost role a team role grants, and its permissions.
     getTeamRole = (groupID: string) => {
         return this.doFetch<Role>(
