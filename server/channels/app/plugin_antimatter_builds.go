@@ -6,16 +6,19 @@ package app
 import "slices"
 
 // antimatterPluginIDs are the plugins Antimatter ships its own builds of, under the IDs of the
-// upstream plugins they are forked from. Boards (focalboard) and Playbooks aren't bundled with
-// the server any more (admins install them from their own GitHub releases), so they're left out:
-// the Marketplace's builds of them are free to replace whatever a server has installed.
+// upstream plugins they are forked from. Boards (focalboard) and Playbooks stay in this list even
+// though the server no longer bundles them: Antimatter still builds and releases its own forks of
+// both (installed from their own GitHub releases, not prepackaged here), and the Marketplace's
+// vanilla builds must never silently replace them.
 var antimatterPluginIDs = []string{
 	"com.github.manland.mattermost-plugin-gitlab",
 	"com.mattermost.calls",
 	"com.mattermost.mattermost-plugin-metrics",
+	"focalboard",
 	"github",
 	"jira",
 	"mattermost-ai",
+	"playbooks",
 }
 
 // marketplaceReplaceablePlugin reports whether the remote Marketplace may list and install its

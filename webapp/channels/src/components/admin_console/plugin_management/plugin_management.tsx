@@ -221,7 +221,7 @@ const messages = defineMessages({
     marketplaceUrl: {id: 'admin.plugins.settings.marketplaceUrl', defaultMessage: 'Marketplace URL:'},
     marketplaceUrlDesc: {id: 'admin.plugins.settings.marketplaceUrlDesc', defaultMessage: 'URL of the marketplace server.'},
     allowMarketplaceToReplaceAntimatterPlugins: {id: 'admin.plugins.settings.allowMarketplaceToReplaceAntimatterPlugins', defaultMessage: 'Allow Marketplace Builds of Antimatter Plugins:'},
-    allowMarketplaceToReplaceAntimatterPluginsDesc: {id: 'admin.plugins.settings.allowMarketplaceToReplaceAntimatterPluginsDesc', defaultMessage: 'When false, the marketplace leaves out its own builds of the plugins Antimatter provides (such as Calls, GitHub and Jira), so they are not offered as updates that would replace the Antimatter builds. When true, they are listed and can be installed over the Antimatter builds.'},
+    allowMarketplaceToReplaceAntimatterPluginsDesc: {id: 'admin.plugins.settings.allowMarketplaceToReplaceAntimatterPluginsDesc', defaultMessage: 'When false, the marketplace leaves out its own builds of the plugins Antimatter provides (such as Calls, Playbooks and Boards), so they are not offered as updates that would replace the Antimatter builds. When true, they are listed and can be installed over the Antimatter builds.'},
     uploadSuccess: {id: 'admin.plugin.upload.success', defaultMessage: 'Successfully uploaded plugin: {pluginName}'},
     uploadSuccessUpdated: {id: 'admin.plugin.upload.success_updated', defaultMessage: 'Successfully updated plugin: {pluginName}'},
     uploadSuccessUpgraded: {id: 'admin.plugin.upload.success_upgraded', defaultMessage: 'Successfully upgraded plugin: {pluginName} ({previousVersion} → {version})'},
