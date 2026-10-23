@@ -25,6 +25,7 @@ import RenderEmoji from 'components/emoji/render_emoji';
 import MessageWithAdditionalContent from 'components/message_with_additional_content';
 
 import {AgentNameDot, IntegrationTag} from 'fusion/agents/agent_status';
+import AgentToolCalls from 'fusion/agents/tool_calls';
 import CallCard, {useCallCard} from 'fusion/calls/call_card';
 import Avatar from 'fusion/components/avatar';
 import Icon from 'fusion/components/icon';
@@ -456,6 +457,7 @@ export default function Message({postId, previousPostId, inThread = false, highl
                         />
                     )}
                     {post.file_ids && post.file_ids.length > 0 && !deleted && <Files post={post}/>}
+                    {agent && !deleted && <AgentToolCalls post={post}/>}
                     {redactedFiles > 0 && !deleted && (
                         <div
                             className={am('attach', 'archived')}

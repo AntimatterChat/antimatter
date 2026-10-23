@@ -22295,6 +22295,58 @@
     "defaultMessage": "Writing…",
     "description": "Small note in a message's header while an agent is still writing its reply into it. Ends with an ellipsis."
   },
+  "fusion.agentTools.answerFailed": {
+    "defaultMessage": "Your answer couldn't be sent. Try again.",
+    "description": "On an agent's reply (Antimatter): error under a tool call when confirming or declining it failed (network)."
+  },
+  "fusion.agentTools.arguments": {
+    "defaultMessage": "What it will be called with",
+    "description": "On an agent's reply (Antimatter): accessible label of the box that shows a tool call's arguments (JSON) before the person confirms it."
+  },
+  "fusion.agentTools.confirm": {
+    "defaultMessage": "Confirm",
+    "description": "On an agent's reply (Antimatter): button that lets a tool call the agent proposed run, as the person, with the arguments shown."
+  },
+  "fusion.agentTools.decline": {
+    "defaultMessage": "Decline",
+    "description": "On an agent's reply (Antimatter): button that refuses a tool call the agent proposed; it won't run."
+  },
+  "fusion.agentTools.declined": {
+    "defaultMessage": "Declined",
+    "description": "On an agent's reply (Antimatter): status of a tool call the person declined; it didn't run."
+  },
+  "fusion.agentTools.done": {
+    "defaultMessage": "Done",
+    "description": "On an agent's reply (Antimatter): status of a tool call the person confirmed and that ran."
+  },
+  "fusion.agentTools.expired": {
+    "defaultMessage": "Expired",
+    "description": "On an agent's reply (Antimatter): status of a tool call nobody answered in time; it didn't run."
+  },
+  "fusion.agentTools.failed": {
+    "defaultMessage": "Didn't work",
+    "description": "On an agent's reply (Antimatter): status of a tool call that was confirmed but failed (or may no longer be used)."
+  },
+  "fusion.agentTools.kindExternal": {
+    "defaultMessage": "Changes something in another service",
+    "description": "On an agent's reply (Antimatter): the card of a tool the agent wants to run. Kind of tool: it changes something in another service (e.g. creates a ticket in an issue tracker)."
+  },
+  "fusion.agentTools.kindRead": {
+    "defaultMessage": "Reads",
+    "description": "On an agent's reply in a conversation (Antimatter): the card of a tool the agent wants to run for the person it answers. Kind of tool: it only looks something up."
+  },
+  "fusion.agentTools.kindWrite": {
+    "defaultMessage": "Changes something here",
+    "description": "On an agent's reply (Antimatter): the card of a tool the agent wants to run. Kind of tool: it changes something on this server (posts a message, adds an item)."
+  },
+  "fusion.agentTools.pendingOther": {
+    "defaultMessage": "Waiting for {name}",
+    "description": "On an agent's reply (Antimatter): status of a tool call, seen by someone else than the person it waits for. {name} is that person's @username."
+  },
+  "fusion.agentTools.pendingYou": {
+    "defaultMessage": "Waiting for you",
+    "description": "On an agent's reply (Antimatter): status of a tool call that waits for the reader to confirm or decline it."
+  },
   "fusion.ai.failed": {
     "defaultMessage": "The AI couldn't rewrite the message",
     "description": ""
