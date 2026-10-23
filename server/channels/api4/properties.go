@@ -747,6 +747,10 @@ func getPropertyValuesCore(c *Context, w http.ResponseWriter, r *http.Request, o
 			c.Err = err
 			return
 		}
+		// Antimatter: someone who hides their attributes from this person (profile privacy) shows them none.
+		if group.Name == model.AccessControlPropertyGroupName && c.App.AttributesHiddenFromSession(rctx, *c.AppContext.Session(), targetID) {
+			values = []*model.PropertyValue{}
+		}
 	}
 
 	auditRec.Success()

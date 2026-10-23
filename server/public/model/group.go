@@ -228,6 +228,11 @@ type GroupSearchOpts struct {
 	FilterTeamId string
 	FilterIsTeam *bool
 
+	// Antimatter: with FilterAllowReference, IncludeTeamRoles keeps the groups of a team that can't be mentioned too:
+	// a community's default role, which everyone sees with its other roles but nobody mentions. Lists of groups to
+	// mention (asking filter_allow_reference) leave it out.
+	IncludeTeamRoles bool
+
 	IncludeChannelMemberCount string
 	IncludeTimezones          bool
 	IncludeMemberIDs          bool

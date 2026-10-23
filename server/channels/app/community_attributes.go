@@ -350,9 +350,11 @@ func (a *App) GetCommunityAttributeValues(rctx request.CTX, session model.Sessio
 		return nil, appErr
 	}
 	admin := a.SessionCanManageCommunityAttributes(session, teamID)
+	// Antimatter: members who hide their attributes from this person (profile privacy) show them only to the admins.
+	hidden := a.attributesHiddenFrom(rctx, session.UserId, admin, memberIDs)
 	for _, v := range values {
 		field := fieldByID[v.FieldID]
-		if field == nil || !canSeeCommunityAttributeValue(field, session.UserId, v.TargetID, admin) {
+		if field == nil || hidden[v.TargetID] || !canSeeCommunityAttributeValue(field, session.UserId, v.TargetID, admin) {
 			continue
 		}
 		if result[v.TargetID] == nil {

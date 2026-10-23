@@ -10,6 +10,7 @@ import {displayUsername} from 'mattermost-redux/utils/user_utils';
 import ProfilePopover from 'components/profile_popover';
 import UserGroupPopover from 'components/user_group_popover';
 
+import {communityView} from 'fusion/profiles/community_profiles';
 import type {A11yFocusEventDetail} from 'utils/constants';
 import {A11yCustomEventTypes} from 'utils/constants';
 import {getUserOrGroupFromMentionName} from 'utils/post_utils';
@@ -54,7 +55,7 @@ const AtMention = (props: Props) => {
 
     if (user) {
         const userMentionNameSuffix = props.mentionName.substring(user.username.length);
-        const userDisplayName = displayUsername(user, props.teammateNameDisplay);
+        const userDisplayName = displayUsername(communityView(user, props.communityProfiles[user.id]), props.teammateNameDisplay);
         const highlightMention = !props.disableHighlight && user.id === props.currentUserId;
 
         return (

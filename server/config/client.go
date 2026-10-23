@@ -18,6 +18,8 @@ func GenerateClientConfig(c *model.Config, telemetryID string) map[string]string
 
 	props["EnableCustomUserStatuses"] = strconv.FormatBool(*c.TeamSettings.EnableCustomUserStatuses)
 	props["MemberListRoleGroups"] = strconv.FormatBool(*c.TeamSettings.MemberListRoleGroups)
+	// Antimatter: the kind new communities get, which the create dialog starts from.
+	props["DefaultCommunityKind"] = model.NormalizeTeamKind(*c.TeamSettings.DefaultCommunityKind)
 	props["RestrictChannelExportToAdmins"] = strconv.FormatBool(*c.TeamSettings.RestrictChannelExportToAdmins)
 	props["EnableLastActiveTime"] = strconv.FormatBool(*c.TeamSettings.EnableLastActiveTime)
 	props["EnableUserDeactivation"] = strconv.FormatBool(*c.TeamSettings.EnableUserDeactivation)

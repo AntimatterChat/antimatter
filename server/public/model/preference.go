@@ -157,7 +157,11 @@ func (o *Preference) IsValid() *AppError {
 	if o.Category == PreferenceCategoryUserBlock && (!IsValidId(o.Name) || o.Name == o.UserId || !IsValidUserBlockLevel(o.Value)) {
 		return NewAppError("Preference.IsValid", "model.preference.is_valid.user_block.app_error", nil, "name="+o.Name+", value="+o.Value, http.StatusBadRequest)
 	}
-	if o.Category == PreferenceCategoryDMPrivacy && ((o.Name != PreferenceNameDMPrivacyDefault && !IsValidId(o.Name)) || (o.Value != DMPrivacyEveryone && o.Value != DMPrivacyAsk)) {
+	// Antimatter: someone's profile in a community, named after it.
+	if o.Category == PreferenceCategoryCommunityProfile && !isValidCommunityProfilePreference(o) {
+		return NewAppError("Preference.IsValid", "model.preference.is_valid.community_profile.app_error", nil, "name="+o.Name, http.StatusBadRequest)
+	}
+	if o.Category == PreferenceCategoryDMPrivacy && ((o.Name != PreferenceNameDMPrivacyDefault && !IsValidId(o.Name)) || !IsValidDMPrivacy(o.Value)) {
 		return NewAppError("Preference.IsValid", "model.preference.is_valid.dm_privacy.app_error", nil, "name="+o.Name+", value="+o.Value, http.StatusBadRequest)
 	}
 
@@ -167,6 +171,11 @@ func (o *Preference) IsValid() *AppError {
 		if o.Name != PreferenceNameAIToolChoices || json.Unmarshal([]byte(o.Value), &choices) != nil || choices.IsValid() != nil {
 			return NewAppError("Preference.IsValid", "model.preference.is_valid.ai_tools.app_error", nil, "name="+o.Name, http.StatusBadRequest)
 		}
+	}
+
+	// Antimatter: notification settings of one community, over the person's own.
+	if o.Category == PreferenceCategoryCommunityNotify && (!IsValidId(o.Name) || !IsValidCommunityNotifyProps(o.Value)) {
+		return NewAppError("Preference.IsValid", "model.preference.is_valid.community_notify.app_error", nil, "name="+o.Name+", value="+o.Value, http.StatusBadRequest)
 	}
 
 	if o.Category == PreferenceCategorySidebarSettings && o.Name == PreferenceLimitVisibleDmsGms {

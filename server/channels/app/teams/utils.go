@@ -10,28 +10,27 @@ import (
 	"github.com/mattermost/mattermost/server/public/model"
 )
 
-// By default the list will be (not necessarily in this order):
+// DefaultChannelNames gives the channels a new team is created with. By default the list will be (not necessarily in
+// this order):
 //
-//	['general', 'off-topic']
+//	['general', 'welcome']
 //
-// However, if TeamSettings.ExperimentalDefaultChannels contains a list of channels then that list will replace
-// 'off-topic' and be included in the return results in addition to 'general'. For example:
+// However, if TeamSettings.ExperimentalDefaultChannels contains a list of channels then that list will be included in
+// the return results in addition to 'general' and 'welcome'. For example:
 //
-//	['general', 'game-of-thrones', 'wow']
+//	['general', 'welcome', 'game-of-thrones', 'wow']
 //
-// Antimatter: 'town-square', the default channel's old name, in that list stands for 'general' (no second channel).
+// Antimatter: General is where people land, Welcome gets the community's join and leave messages (Team.WelcomeChannelId);
+// communities got Off-Topic instead of Welcome before. 'town-square', the default channel's old name, in that list
+// stands for 'general' (no second channel).
 func (ts *TeamService) DefaultChannelNames() []string {
-	names := []string{model.DefaultChannelName}
+	names := []string{model.DefaultChannelName, model.WelcomeChannelName}
 
-	if len(ts.config().TeamSettings.ExperimentalDefaultChannels) == 0 {
-		names = append(names, "off-topic")
-	} else {
-		seenChannels := map[string]bool{model.DefaultChannelName: true, model.LegacyDefaultChannelName: true}
-		for _, channelName := range ts.config().TeamSettings.ExperimentalDefaultChannels {
-			if !seenChannels[channelName] {
-				names = append(names, channelName)
-				seenChannels[channelName] = true
-			}
+	seenChannels := map[string]bool{model.DefaultChannelName: true, model.LegacyDefaultChannelName: true, model.WelcomeChannelName: true}
+	for _, channelName := range ts.config().TeamSettings.ExperimentalDefaultChannels {
+		if !seenChannels[channelName] {
+			names = append(names, channelName)
+			seenChannels[channelName] = true
 		}
 	}
 

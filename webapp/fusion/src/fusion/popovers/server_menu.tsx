@@ -25,7 +25,6 @@ import {addToFolder, folderOfTeam, makeFolder, placeAfter, railItems, removeFrom
 import {getSortedMyTeams} from 'fusion/selectors';
 import {useDialogs} from 'fusion/shell/dialogs_context';
 import {comboKeys, comboLabel, getKeybinds} from 'fusion/shell/keybinds';
-import {useSettings} from 'fusion/shell/settings_context';
 import {useToast} from 'fusion/shell/toast_context';
 import {
     getUnreadChannelIdsInTeam,
@@ -44,7 +43,7 @@ import {
     openLeaveTeam,
     openTeamMembers,
     openTeamSettings,
-    openUserGroups,
+    openTeams,
 } from 'fusion/utils/modals';
 
 import type {GlobalState} from 'types/store';
@@ -88,7 +87,6 @@ export default function ServerMenu({team: forTeam, anchor, point, width, onClose
     const pluginItems = useSelector(getMainMenuPluginComponents);
     const addChannelItems = useSelector(getSidebarBrowseOrAddChannelMenuPluginComponents);
     const plugins = useSelector((state: GlobalState) => state.plugins.plugins);
-    const settings = useSettings();
     const allChannels = useSelector((state: GlobalState) => isAllChannelsCommunity(state, teamId));
     const [folders, saveFolders] = useFolders();
     const myTeams = useSelector(getSortedMyTeams);
@@ -159,7 +157,7 @@ export default function ServerMenu({team: forTeam, anchor, point, width, onClose
                 <MenuItem
                     icon='tag'
                     label={formatMessage({id: 'fusion.serverMenu.userGroups', defaultMessage: 'Teams…'})}
-                    onClick={inTeam(() => dispatch(openUserGroups(teamId)))}
+                    onClick={inTeam(() => dispatch(openTeams()))}
                 />
             )}
             {hasOpenRoles && (
@@ -169,6 +167,13 @@ export default function ServerMenu({team: forTeam, anchor, point, width, onClose
                     onClick={inTeam(() => dialogs.selfRoles())}
                 />
             )}
+
+            {/* One's picture, nickname, name and team badge in this community (My account has the global ones). */}
+            <MenuItem
+                icon='pen'
+                label={formatMessage({id: 'fusion.serverMenu.communityProfile', defaultMessage: 'Your profile in {community}…'}, {community: team?.display_name || ''})}
+                onClick={inTeam(() => dialogs.communityProfile())}
+            />
             <MenuSeparator/>
 
             {/* Its channels. */}
@@ -236,7 +241,12 @@ export default function ServerMenu({team: forTeam, anchor, point, width, onClose
             <MenuItem
                 icon='bell'
                 label={formatMessage({id: 'fusion.serverMenu.notifications', defaultMessage: 'Notification settings'})}
-                onClick={run(() => settings.open('notifications'))}
+                onClick={run(() => dialogs.communityNotifications(teamId))}
+            />
+            <MenuItem
+                icon='shield'
+                label={formatMessage({id: 'fusion.serverMenu.privacy', defaultMessage: 'Privacy settings'})}
+                onClick={run(() => dialogs.communityPrivacy(teamId))}
             />
             {pluginItems.length > 0 && (
                 <>

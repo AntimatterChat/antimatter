@@ -99,8 +99,8 @@ func (a *App) fillChannelWithCommunity(rctx request.CTX, team *model.Team, chann
 	a.invalidateCacheForChannelMembers(channel.Id)
 }
 
-// Default channels. A community's default channel is where newcomers land and its join and leave messages go: the
-// public channel its admins chose (Team.DefaultChannelId), else General (named town-square, Town Square, before an
+// Default channels. A community's default channel is where newcomers land (and its join and leave messages go, when it
+// has no Welcome channel): the public channel its admins chose (Team.DefaultChannelId), else General (named town-square, Town Square, before an
 // upgrade renamed it). Either can be archived or deleted like any channel: the community then has no default channel,
 // and people land in the first channel they're in.
 
@@ -170,6 +170,79 @@ func (a *App) FillDefaultChannelInBackground(rctx request.CTX, team *model.Team)
 	a.Srv().Go(func() {
 		a.fillChannelWithCommunity(request.EmptyContext(logger), team, channel)
 	})
+}
+
+// The Welcome channel. A community's join and leave messages go to the public channel it chose for them
+// (Team.WelcomeChannelId): its Welcome channel, made with it (model.WelcomeChannelName). Communities made before they
+// had one have none chosen: theirs go to their default channel, as before. Its admins can turn them off
+// (Team.DisableJoinLeaveMessages). Everyone is in the chosen channel, as in the default channel.
+
+// getWelcomeChannel gives the channel a community chose for its join and leave messages, nil when it chose none or
+// that channel is no longer one of its public channels.
+func (a *App) getWelcomeChannel(team *model.Team) *model.Channel {
+	if team == nil || team.WelcomeChannelId == "" {
+		return nil
+	}
+	channel, err := a.Srv().Store().Channel().Get(team.WelcomeChannelId, true)
+	if err != nil || channel.TeamId != team.Id || channel.DeleteAt != 0 || channel.Type != model.ChannelTypeOpen {
+		return nil
+	}
+	return channel
+}
+
+// GetJoinLeaveChannelForTeam gives the channel where a community tells who joins and leaves it: its Welcome channel,
+// else (for communities that chose none) its default channel; nil when it turned the messages off, or that channel is
+// archived.
+func (a *App) GetJoinLeaveChannelForTeam(rctx request.CTX, team *model.Team) *model.Channel {
+	if team == nil || team.DisableJoinLeaveMessages {
+		return nil
+	}
+	if team.WelcomeChannelId != "" {
+		return a.getWelcomeChannel(team)
+	}
+	return a.GetDefaultChannelForTeam(rctx, team)
+}
+
+// checkWelcomeChannelChoice accepts a community's choice of channel for its join and leave messages: none (its
+// default channel), or one of its public channels.
+func (a *App) checkWelcomeChannelChoice(teamID, channelID string) *model.AppError {
+	if channelID == "" {
+		return nil
+	}
+	channel, err := a.Srv().Store().Channel().Get(channelID, true)
+	if err != nil || channel.TeamId != teamID || channel.DeleteAt != 0 || channel.Type != model.ChannelTypeOpen {
+		return model.NewAppError("PatchTeam", "app.team.welcome_channel.app_error", nil, "", http.StatusBadRequest)
+	}
+	return nil
+}
+
+// FillWelcomeChannelInBackground brings everyone into the channel a community chose for its join and leave messages.
+func (a *App) FillWelcomeChannelInBackground(rctx request.CTX, team *model.Team) {
+	channel := a.getWelcomeChannel(team)
+	if channel == nil {
+		return
+	}
+	logger := rctx.Logger()
+	a.Srv().Go(func() {
+		a.fillChannelWithCommunity(request.EmptyContext(logger), team, channel)
+	})
+}
+
+// setUpWelcomeChannel makes the Welcome channel a new community was created with the channel of its join and leave
+// messages.
+func (a *App) setUpWelcomeChannel(rctx request.CTX, team *model.Team) *model.Team {
+	channel, err := a.Srv().Store().Channel().GetByName(team.Id, model.WelcomeChannelName, false)
+	if err != nil {
+		return team
+	}
+	team.WelcomeChannelId = channel.Id
+	updated, err := a.Srv().Store().Team().Update(team)
+	if err != nil {
+		rctx.Logger().Warn("Failed to set the Welcome channel of a new community", mlog.String("team_id", team.Id), mlog.Err(err))
+		team.WelcomeChannelId = ""
+		return team
+	}
+	return updated
 }
 
 // The default channel's old name. It was town-square (Town Square) before it became general (General), and links,

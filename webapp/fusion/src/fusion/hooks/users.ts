@@ -5,9 +5,9 @@ import {useSelector} from 'react-redux';
 
 import type {UserProfile} from '@mattermost/types/users';
 
-import {getTeammateNameDisplaySetting} from 'mattermost-redux/selectors/entities/preferences';
 import {getStatusForUserId, getUser} from 'mattermost-redux/selectors/entities/users';
-import {displayUsername} from 'mattermost-redux/utils/user_utils';
+
+import {displayNameIn, useCommunityScope} from 'fusion/profiles/community_profiles';
 
 import type {GlobalState} from 'types/store';
 
@@ -15,10 +15,12 @@ export function useUser(userId?: string): UserProfile | undefined {
     return useSelector((state: GlobalState) => (userId ? getUser(state, userId) : undefined));
 }
 
-// useDisplayName follows the user's "Teammate name display" setting.
-export function useDisplayName(user?: UserProfile): string {
-    const setting = useSelector(getTeammateNameDisplaySetting);
-    return displayUsername(user, setting);
+// useDisplayName is someone's name where they show: in a community, with their nickname there and as its admins chose
+// to show people; in direct and group messages and outside communities, as the user chose ("Show people as"). The
+// community is the one asked for, else the community scope around (see fusion/profiles/community_profiles).
+export function useDisplayName(user?: UserProfile, teamId?: string): string {
+    const scope = useCommunityScope(teamId);
+    return useSelector((state: GlobalState) => displayNameIn(state, user, scope));
 }
 
 export function useUserStatus(userId?: string): string {

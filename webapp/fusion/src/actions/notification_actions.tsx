@@ -27,6 +27,7 @@ import {isThreadOpen} from 'selectors/views/threads';
 
 import {getDisplayPrefs} from 'fusion/hooks/display';
 import {isSpoiler} from 'fusion/messages/spoiler';
+import {getCommunityNotifyProps, withCommunityNotifyProps} from 'fusion/modals/community_notify';
 import {getBlockLevel} from 'fusion/privacy/blocking';
 import {getHistory} from 'utils/browser_history';
 import Constants, {NotificationLevels, UserStatuses, IgnoreChannelMentions, DesktopSound} from 'utils/constants';
@@ -118,7 +119,11 @@ export function sendDesktopNotification(post: Post, msgProps: NewPostMessageProp
             display_name: msgProps.channel_display_name,
             type: msgProps.channel_type,
         } as Channel;
-        const user = getCurrentUser(state);
+
+        // Antimatter: your notification settings for the channel's community over your own (none for direct and group
+        // messages); the channel's own preferences still come first.
+        const communityId = channel.team_id ?? (channel.type === 'O' || channel.type === 'P' ? teamId : '');
+        const user = withCommunityNotifyProps(getCurrentUser(state), getCommunityNotifyProps(state, communityId));
         const member = getMyChannelMember(state, post.channel_id);
         const isCrtReply = isCollapsedThreadsEnabled(state) && post.root_id !== '';
         const forceNotification = Boolean(post.props?.force_notification);

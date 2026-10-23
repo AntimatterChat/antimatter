@@ -45,7 +45,7 @@ describe('browseList', () => {
 describe('BrowseChannelsDialog', () => {
     const general = channel('general');
     const dev = channel('dev', {purpose: 'Building things'});
-    const render = () => {
+    const render = (allChannels = false) => {
         const onClose = jest.fn();
         renderWithContext(
             <BrowseChannelsDialog onClose={onClose}/>,
@@ -53,7 +53,7 @@ describe('BrowseChannelsDialog', () => {
                 entities: {
                     general: {config: {}},
                     users: {currentUserId: 'me'},
-                    teams: {currentTeamId: 'team', teams: {team: {id: 'team', name: 'antimatter'}}},
+                    teams: {currentTeamId: 'team', teams: {team: {id: 'team', name: 'antimatter', all_channels_membership: allChannels}}},
                     channels: {
                         channels: {general, dev},
                         channelsInTeam: {team: new Set(['general', 'dev'])},
@@ -108,6 +108,16 @@ describe('BrowseChannelsDialog', () => {
         expect(await screen.findByText('Ops')).toBeInTheDocument();
         expect(search).toHaveBeenCalledWith('op', expect.objectContaining({team_ids: ['team'], include_deleted: true}));
         expect(screen.queryByText('General')).not.toBeInTheDocument();
+    });
+
+    // Antimatter: where everyone is in every channel, nobody joins or leaves channels.
+    test('where members are in every channel, no Join nor Joined', async () => {
+        render(true);
+        await userEvent.click(screen.getByRole('checkbox', {name: 'Hide joined'}));
+        expect(screen.getByText('General')).toBeInTheDocument();
+        expect(screen.getByText('Dev')).toBeInTheDocument();
+        expect(screen.queryByRole('button', {name: 'Join'})).not.toBeInTheDocument();
+        expect(screen.queryByText('Joined')).not.toBeInTheDocument();
     });
 
     test('the joined ones can be hidden', async () => {

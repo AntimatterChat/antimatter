@@ -6,7 +6,7 @@ import {useSelector} from 'react-redux';
 import type {Group} from '@mattermost/types/groups';
 
 import {createSelector} from 'mattermost-redux/selectors/create_selector';
-import {getCurrentTeam, getCurrentTeamId} from 'mattermost-redux/selectors/entities/teams';
+import {getCurrentTeam, getCurrentTeamId, getTeam} from 'mattermost-redux/selectors/entities/teams';
 
 import type {GlobalState} from 'types/store';
 
@@ -47,6 +47,20 @@ export function getTeamRoles(state: GlobalState, teamId: string): Group[] {
     return getRolesByTeam(state)[teamId] || NO_ROLES;
 }
 
+// A community's default role, which everyone in it has (but guests and bots), as Discord's @everyone: what members with
+// no other role look like and may do. Nobody gives it nor takes it away, and it isn't listed among someone's roles.
+export function isDefaultRole(state: GlobalState, role: Group): boolean {
+    return Boolean(role.team_id) && getTeam(state, role.team_id!)?.default_role_id === role.id;
+}
+
+// getGivenTeamRoles gives a team's roles but its default role: those given to some of its members, highest first.
+export const getGivenTeamRoles = createSelector(
+    'fusionGetGivenTeamRoles',
+    (state: GlobalState, teamId: string) => getTeamRoles(state, teamId),
+    (state: GlobalState, teamId: string) => getTeam(state, teamId)?.default_role_id,
+    (roles, defaultRoleId): Group[] => (defaultRoleId && roles.some((r) => r.id === defaultRoleId) ? roles.filter((r) => r.id !== defaultRoleId) : roles),
+);
+
 // getMemberRolesForCurrentTeam gives each person's roles in the current team, highest first.
 export const getMemberRolesForCurrentTeam = createSelector(
     'fusionGetMemberRolesForCurrentTeam',
@@ -78,8 +92,33 @@ export function useRoleColor(userId: string | undefined): string | undefined {
     return useSelector((state: GlobalState) => (userId ? getRoleColor(state, userId) : undefined));
 }
 
+// getGivenMemberRolesForCurrentTeam gives each person's roles in the current team, but its default role.
+const getGivenMemberRolesForCurrentTeam = createSelector(
+    'fusionGetGivenMemberRolesForCurrentTeam',
+    getMemberRolesForCurrentTeam,
+    (state: GlobalState) => getCurrentTeam(state)?.default_role_id,
+    (byUser, defaultRoleId): Record<string, Group[]> => {
+        if (!defaultRoleId) {
+            return byUser;
+        }
+        const given: Record<string, Group[]> = {};
+        for (const [userId, roles] of Object.entries(byUser)) {
+            const others = roles.filter((r) => r.id !== defaultRoleId);
+            if (others.length) {
+                given[userId] = others;
+            }
+        }
+        return given;
+    },
+);
+
+// useMemberRoles gives someone's roles in the current team, highest first, but its default role, which everyone has.
 export function useMemberRoles(userId: string): Group[] {
-    return useSelector((state: GlobalState) => getMemberRolesForCurrentTeam(state)[userId] || NO_ROLES);
+    return useSelector((state: GlobalState) => getGivenMemberRolesForCurrentTeam(state)[userId] || NO_ROLES);
+}
+
+export function getGivenRolesOf(state: GlobalState, userId: string): Group[] {
+    return getGivenMemberRolesForCurrentTeam(state)[userId] || NO_ROLES;
 }
 
 // hoistedRole is the highest of someone's roles shown apart in the member list.

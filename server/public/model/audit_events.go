@@ -92,6 +92,9 @@ const (
 	AuditEventSaveChannelOverride               = "saveChannelOverride"               // set what a role or person may do in a channel
 	AuditEventSaveCategoryOverride              = "saveCategoryOverride"              // set what a role or person may do in a server category's channels
 	AuditEventSetMemberTimeout                  = "setMemberTimeout"                  // time a team's member out, or lift it
+	AuditEventPatchCommunityProfile             = "patchCommunityProfile"             // change one's nickname in a community, or whether one is shown by name there
+	AuditEventSetCommunityAvatar                = "setCommunityAvatar"                // set one's picture for a community
+	AuditEventResetCommunityProfile             = "resetCommunityProfile"             // take a nickname or a picture off a community profile (oneself, or a moderator)
 	AuditEventUpdateCommunityRules              = "updateCommunityRules"              // turn a community's rules on or off, change them, ask everyone to agree again
 	AuditEventAcceptCommunityRules              = "acceptCommunityRules"              // agree to a version of a community's rules
 	AuditEventPutPostOnTop                      = "putPostOnTop"                      // keep a message on top of its channel for a while

@@ -378,8 +378,8 @@ func TestJoinDefaultChannelsCreatesChannelMemberHistoryRecordOffTopic(t *testing
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)
 
-	// figure out the initial number of users in off-topic
-	channel, err := th.App.Srv().Store().Channel().GetByName(th.BasicTeam.Id, "off-topic", true)
+	// figure out the initial number of users in off-topic (Antimatter: Welcome, which communities get instead)
+	channel, err := th.App.Srv().Store().Channel().GetByName(th.BasicTeam.Id, model.WelcomeChannelName, true)
 	require.NoError(t, err)
 	offTopicChannelId := channel.Id
 	users, nErr := th.App.Srv().Store().ChannelMemberHistory().GetUsersInChannelDuring(model.GetMillis()-100, model.GetMillis()+100, []string{offTopicChannelId})
@@ -1681,7 +1681,8 @@ func TestGetPublicChannelsForTeam(t *testing.T) {
 	require.NotNil(t, generalChannel)
 	expectedChannels = append(expectedChannels, generalChannel)
 
-	offTopic, appErr := th.App.GetChannelByName(th.Context, "off-topic", team.Id, false)
+	// Antimatter: communities get Welcome where they got Off-Topic.
+	offTopic, appErr := th.App.GetChannelByName(th.Context, model.WelcomeChannelName, team.Id, false)
 	require.Nil(t, appErr)
 	require.NotNil(t, offTopic)
 	expectedChannels = append(expectedChannels, offTopic)
@@ -1974,8 +1975,9 @@ func TestDefaultChannelNames(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t)
 
+	// Antimatter: Welcome too, and Off-Topic, which communities got before Welcome.
 	actual := th.App.DefaultChannelNames(th.Context)
-	expect := []string{model.DefaultChannelName, "off-topic"}
+	expect := []string{model.DefaultChannelName, model.WelcomeChannelName, "off-topic"}
 	require.ElementsMatch(t, expect, actual)
 
 	th.App.UpdateConfig(func(cfg *model.Config) {
@@ -1983,7 +1985,7 @@ func TestDefaultChannelNames(t *testing.T) {
 	})
 
 	actual = th.App.DefaultChannelNames(th.Context)
-	expect = []string{model.DefaultChannelName, "foo", "bar"}
+	expect = []string{model.DefaultChannelName, model.WelcomeChannelName, "foo", "bar"}
 	require.ElementsMatch(t, expect, actual)
 }
 

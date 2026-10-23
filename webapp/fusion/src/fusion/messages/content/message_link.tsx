@@ -10,12 +10,11 @@ import type {Post, PostPreviewMetadata} from '@mattermost/types/posts';
 import {getPost as fetchPost} from 'mattermost-redux/actions/posts';
 import {getDirectChannel} from 'mattermost-redux/selectors/entities/channels';
 import {getPost} from 'mattermost-redux/selectors/entities/posts';
-import {getTeammateNameDisplaySetting} from 'mattermost-redux/selectors/entities/preferences';
 import {getCurrentTeam, getTeamByName} from 'mattermost-redux/selectors/entities/teams';
 import {getUser} from 'mattermost-redux/selectors/entities/users';
-import {displayUsername} from 'mattermost-redux/utils/user_utils';
 
 import Icon from 'fusion/components/icon';
+import {useDisplayNames} from 'fusion/profiles/community_profiles';
 import {am} from 'fusion/utils/class_names';
 import {permalinkPath} from 'fusion/utils/paths';
 import {getHistory} from 'utils/browser_history';
@@ -48,7 +47,7 @@ function Chip({team, postId, host}: {team: string; postId: string; host: Post}) 
     const post = useSelector((state: GlobalState) => getPost(state, postId));
     const channel = useSelector((state: GlobalState) => (post ? getDirectChannel(state, post.channel_id) : undefined));
     const author = useSelector((state: GlobalState) => (post ? getUser(state, post.user_id) : undefined));
-    const nameDisplay = useSelector(getTeammateNameDisplaySetting);
+    const nameOf = useDisplayNames();
     const currentTeam = useSelector((state: GlobalState) => getCurrentTeam(state)?.name);
     const linkTeam = useSelector((state: GlobalState) => getTeamByName(state, team));
     const [missing, setMissing] = useState(false);
@@ -85,7 +84,7 @@ function Chip({team, postId, host}: {team: string; postId: string; host: Post}) 
     if (name && direct) {
         label = '@' + name;
     }
-    const who = author ? displayUsername(author, nameDisplay) : '';
+    const who = author ? nameOf(author) : '';
 
     // A message of another community starts with that community's name, as Discord does for other servers.
     const community = !direct && currentTeam && team.toLowerCase() !== currentTeam.toLowerCase() ? (linkTeam?.display_name || team) : '';

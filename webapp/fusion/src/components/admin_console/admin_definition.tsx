@@ -2797,23 +2797,23 @@ const AdminDefinition: AdminDefinitionType = {
                         {
                             type: 'bool',
                             key: 'TeamSettings.AllChannelsMembershipForNewTeams',
-                            label: defineMessage({id: 'admin.team.allChannelsMembershipTitle', defaultMessage: 'New communities put everyone in every channel: '}),
-                            help_text: defineMessage({id: 'admin.team.allChannelsMembershipDescription', defaultMessage: 'When true, communities created from now on have their members in all the channels they may see: they mute channels instead of leaving them. Each community can turn this off in its settings. Existing communities are not changed.'}),
+                            label: defineMessage({id: 'admin.team.allChannelsMembershipGuildsTitle', defaultMessage: 'New guilds put everyone in every channel: '}),
+                            help_text: defineMessage({id: 'admin.team.allChannelsMembershipGuildsDescription', defaultMessage: 'When true, guilds created from now on have their members in all the channels they may see: they mute channels instead of leaving them. Workspaces never do. Each community can change this in its settings, and changing a community\'s kind changes it too. Existing communities are not changed.'}),
                             isDisabled: it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.SITE.USERS_AND_TEAMS)),
                         },
                         {
                             type: 'dropdown',
                             key: 'TeamSettings.DefaultCommunityKind',
                             label: defineMessage({id: 'admin.team.defaultCommunityKindTitle', defaultMessage: 'Kind of new communities:'}),
-                            help_text: defineMessage({id: 'admin.team.defaultCommunityKindDescription', defaultMessage: 'The kind of the communities created from now on, unless their layout preset chooses another; on upgrade, communities that have no kind yet get it once. In a community, only its admins (and roles that manage channels) archive channels; in a workplace, members also archive the channels they created. Each community\'s admins can change its kind in its settings.'}),
+                            help_text: defineMessage({id: 'admin.team.defaultCommunityKindGuildHelp', defaultMessage: 'The kind of the communities created from now on, unless their creator or their layout preset chooses another; on upgrade, communities that have no kind yet get it once. In a guild, everyone is in all the channels and only its admins (and roles that manage channels) archive channels; in a workspace, members join the channels they want and also archive the channels they created. Each community\'s admins can change its kind in its settings.'}),
                             options: [
                                 {
-                                    value: 'community',
-                                    display_name: defineMessage({id: 'admin.team.defaultCommunityKind.community', defaultMessage: 'Community'}),
+                                    value: 'guild',
+                                    display_name: defineMessage({id: 'admin.team.defaultCommunityKind.guild', defaultMessage: 'Guild'}),
                                 },
                                 {
-                                    value: 'workplace',
-                                    display_name: defineMessage({id: 'admin.team.defaultCommunityKind.workplace', defaultMessage: 'Workplace'}),
+                                    value: 'workspace',
+                                    display_name: defineMessage({id: 'admin.team.defaultCommunityKind.workspace', defaultMessage: 'Workspace'}),
                                 },
                             ],
                             isDisabled: it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.SITE.USERS_AND_TEAMS)),

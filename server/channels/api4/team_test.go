@@ -49,7 +49,13 @@ func TestCreateTeam(t *testing.T) {
 		CheckErrorID(t, err, "store.sql_team.save_team.existing.app_error")
 		CheckBadRequestStatus(t, resp)
 
+		// Antimatter: a community created without an address gets one made from its name.
 		rteam.Name = ""
+		named, _, err := client.CreateTeam(context.Background(), rteam)
+		require.NoError(t, err)
+		require.True(t, model.IsValidTeamName(named.Name))
+
+		rteam.Name = "-"
 		_, resp, err = client.CreateTeam(context.Background(), rteam)
 		CheckErrorID(t, err, "model.team.is_valid.characters.app_error")
 		CheckBadRequestStatus(t, resp)

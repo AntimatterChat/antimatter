@@ -27,19 +27,62 @@ const (
 // TeamOnboardingMaxLength bounds a team's onboarding (Antimatter), as JSON.
 const TeamOnboardingMaxLength = 16384
 
-// The kinds of community (Antimatter), which set some of what its members may do. A community (the default) is a
-// public or hobby one, as on Discord: its members don't archive channels, its admins (and roles that manage
-// channels) do. A workplace is a company's or an organisation's workspace: its members archive the channels they
-// created (those they're the admins of) too. New communities get TeamSettings.DefaultCommunityKind unless created
-// with a kind.
+// The kinds of community (Antimatter), which set some of what its members may do. A guild (the default) is a public
+// or hobby community: its members don't archive channels, its admins (and roles that manage channels) do, and everyone
+// is in all its channels. A workspace is a company's or an organisation's community: its members archive the channels
+// they created (those they're the admins of) too, and join the channels they want. New communities get
+// TeamSettings.DefaultCommunityKind unless created with a kind.
+//
+// The kinds were named community and workplace before: those names are still accepted (NormalizeTeamKind), and are
+// what the Systems table keeps (TeamKindStoredValue), as apps reading it directly (Calls) expect.
 const (
-	TeamKindCommunity = "community"
-	TeamKindWorkplace = "workplace"
+	TeamKindGuild     = "guild"
+	TeamKindWorkspace = "workspace"
+
+	// The stored values of the kinds, also their former names.
+	TeamKindStoredGuild     = "community"
+	TeamKindStoredWorkspace = "workplace"
 
 	// TeamKindSystemKeyPrefix names the Systems row holding a team's kind, followed by its id. Every team has one:
 	// apps that can't read the teams through the API (Calls) read it directly.
 	TeamKindSystemKeyPrefix = "AmTeamKind_"
 )
+
+// NormalizeTeamKind gives a kind by its name, a former name standing for its kind; anything else is given back as is.
+func NormalizeTeamKind(kind string) string {
+	switch kind {
+	case TeamKindStoredGuild:
+		return TeamKindGuild
+	case TeamKindStoredWorkspace:
+		return TeamKindWorkspace
+	}
+	return kind
+}
+
+// IsValidTeamKind tells whether kind names a kind of community, by its name or its former name.
+func IsValidTeamKind(kind string) bool {
+	kind = NormalizeTeamKind(kind)
+	return kind == TeamKindGuild || kind == TeamKindWorkspace
+}
+
+// TeamKindStoredValue is the value the Systems table keeps for a kind, "" for no kind.
+func TeamKindStoredValue(kind string) string {
+	switch NormalizeTeamKind(kind) {
+	case TeamKindGuild:
+		return TeamKindStoredGuild
+	case TeamKindWorkspace:
+		return TeamKindStoredWorkspace
+	}
+	return ""
+}
+
+// TeamDefaultRoleSystemKeyPrefix names the Systems row holding a community's default role (Team.DefaultRoleId),
+// followed by its id.
+const TeamDefaultRoleSystemKeyPrefix = "AmTeamDefaultRole_"
+
+// WelcomeChannelName is the channel new communities get for their join and leave messages (Team.WelcomeChannelId),
+// next to General, where people land.
+const WelcomeChannelName = "welcome"
 
 // How a community's member list groups its members (Antimatter): as each member chooses (the default), or always by
 // role (admins, moderators...) or by team (its Antimatter teams).
@@ -48,6 +91,12 @@ const (
 	TeamMemberListViewRoles  = "roles"
 	TeamMemberListViewTeams  = "teams"
 )
+
+// IsValidTeamNameDisplay tells whether a community's NameDisplay is one of the ways to show people, or empty for the
+// server's default.
+func IsValidTeamNameDisplay(nameDisplay string) bool {
+	return nameDisplay == "" || nameDisplay == ShowUsername || nameDisplay == ShowNicknameFullName || nameDisplay == ShowFullName
+}
 
 type Team struct {
 	Id                  string  `json:"id"`
@@ -86,16 +135,32 @@ type Team struct {
 	// Discord: its public channels, and the private ones their roles open. They mute channels rather than leave them.
 	AllChannelsMembership bool `json:"all_channels_membership"`
 
-	// Antimatter: DefaultChannelId is the community's default channel, a public one: where newcomers land and the
-	// community's join and leave messages go. Empty for General while there is one (DefaultChannelName).
+	// Antimatter: DefaultChannelId is the community's default channel, a public one: where newcomers land. Empty for
+	// General while there is one (DefaultChannelName).
 	DefaultChannelId string `json:"default_channel_id"`
 
-	// Antimatter: Kind is the kind of community, TeamKindCommunity or TeamKindWorkplace (see IsWorkplace).
+	// Antimatter: WelcomeChannelId is the public channel where the community's join and leave messages go: the
+	// Welcome channel of new communities (WelcomeChannelName). Empty for the default channel, where they went before
+	// communities had a Welcome channel. DisableJoinLeaveMessages turns them off.
+	WelcomeChannelId         string `json:"welcome_channel_id"`
+	DisableJoinLeaveMessages bool   `json:"disable_join_leave_messages"`
+
+	// Antimatter: DefaultRoleId is the community's default role (a role everyone in it has, which can't be deleted):
+	// what members with no other role look like and may do. Empty until it's first set up; only the server sets it.
+	DefaultRoleId string `json:"default_role_id"`
+
+	// Antimatter: Kind is the kind of community, TeamKindGuild or TeamKindWorkspace (see IsWorkspace).
 	Kind string `json:"kind"`
 
 	// Antimatter: MemberListView is how the member list groups the community's members: TeamMemberListViewChoice
 	// (each member chooses), TeamMemberListViewRoles or TeamMemberListViewTeams.
 	MemberListView string `json:"member_list_view"`
+
+	// Antimatter: NameDisplay is how the community shows people in its channels, member list, mentions and cards, as
+	// its admins chose (ShowUsername, ShowNicknameFullName or ShowFullName), instead of each member's own choice,
+	// which still applies to direct and group messages. Empty for the server's default (TeamSettings.
+	// TeammateNameDisplay). Whoever refuses to be shown by name in the community shows as their username there.
+	NameDisplay string `json:"name_display"`
 
 	// Not persisted; derived by the store via EXISTS on AccessControlPolicies(Type='team').
 	// Use HasMembershipPolicyAction for enforcement — this is a read-path signal only.
@@ -145,14 +210,18 @@ func (o *Team) Auditable() map[string]any {
 		"require_team_badges":     o.RequireTeamBadges,
 		"all_channels_membership": o.AllChannelsMembership,
 		"default_channel_id":      o.DefaultChannelId,
+		"welcome_channel_id":      o.WelcomeChannelId,
+		"disable_join_leave":      o.DisableJoinLeaveMessages,
+		"default_role_id":         o.DefaultRoleId,
 		"kind":                    o.Kind,
 		"member_list_view":        o.MemberListView,
+		"name_display":            o.NameDisplay,
 	}
 }
 
-// IsWorkplace tells whether a team is a workplace community (TeamKindWorkplace); any other is a community.
-func (o *Team) IsWorkplace() bool {
-	return o != nil && o.Kind == TeamKindWorkplace
+// IsWorkspace tells whether a team is a workspace (TeamKindWorkspace); any other is a guild.
+func (o *Team) IsWorkspace() bool {
+	return o != nil && NormalizeTeamKind(o.Kind) == TeamKindWorkspace
 }
 
 func (o *Team) LogClone() any {
@@ -172,10 +241,13 @@ type TeamPatch struct {
 	Onboarding          *string `json:"onboarding"`
 	Autolinks           *string `json:"autolinks"`
 
-	AllChannelsMembership *bool   `json:"all_channels_membership"`
-	DefaultChannelId      *string `json:"default_channel_id"`
-	Kind                  *string `json:"kind"`
-	MemberListView        *string `json:"member_list_view"`
+	AllChannelsMembership    *bool   `json:"all_channels_membership"`
+	DefaultChannelId         *string `json:"default_channel_id"`
+	WelcomeChannelId         *string `json:"welcome_channel_id"`
+	DisableJoinLeaveMessages *bool   `json:"disable_join_leave_messages"`
+	Kind                     *string `json:"kind"`
+	MemberListView           *string `json:"member_list_view"`
+	NameDisplay              *string `json:"name_display"`
 }
 
 func (o *TeamPatch) Auditable() map[string]any {
@@ -189,8 +261,11 @@ func (o *TeamPatch) Auditable() map[string]any {
 		"autolinks":               o.Autolinks != nil,
 		"all_channels_membership": o.AllChannelsMembership,
 		"default_channel_id":      o.DefaultChannelId,
+		"welcome_channel_id":      o.WelcomeChannelId,
+		"disable_join_leave":      o.DisableJoinLeaveMessages,
 		"kind":                    o.Kind,
 		"member_list_view":        o.MemberListView,
+		"name_display":            o.NameDisplay,
 	}
 }
 
@@ -229,12 +304,24 @@ func (o *Team) IsValid() *AppError {
 		return NewAppError("Team.IsValid", "model.team.is_valid.default_channel.app_error", nil, "id="+o.Id, http.StatusBadRequest)
 	}
 
-	if o.Kind != "" && o.Kind != TeamKindCommunity && o.Kind != TeamKindWorkplace {
+	if o.WelcomeChannelId != "" && !IsValidId(o.WelcomeChannelId) {
+		return NewAppError("Team.IsValid", "model.team.is_valid.welcome_channel.app_error", nil, "id="+o.Id, http.StatusBadRequest)
+	}
+
+	if o.DefaultRoleId != "" && !IsValidId(o.DefaultRoleId) {
+		return NewAppError("Team.IsValid", "model.team.is_valid.default_role.app_error", nil, "id="+o.Id, http.StatusBadRequest)
+	}
+
+	if o.Kind != "" && !IsValidTeamKind(o.Kind) {
 		return NewAppError("Team.IsValid", "model.team.is_valid.kind.app_error", nil, "id="+o.Id, http.StatusBadRequest)
 	}
 
 	if o.MemberListView != "" && o.MemberListView != TeamMemberListViewChoice && o.MemberListView != TeamMemberListViewRoles && o.MemberListView != TeamMemberListViewTeams {
 		return NewAppError("Team.IsValid", "model.team.is_valid.member_list_view.app_error", nil, "id="+o.Id, http.StatusBadRequest)
+	}
+
+	if !IsValidTeamNameDisplay(o.NameDisplay) {
+		return NewAppError("Team.IsValid", "model.team.is_valid.name_display.app_error", nil, "id="+o.Id, http.StatusBadRequest)
 	}
 
 	if len(o.Onboarding) > TeamOnboardingMaxLength || (o.Onboarding != "" && !json.Valid([]byte(o.Onboarding))) {
@@ -322,8 +409,9 @@ func (o *Team) PreSave() {
 		o.InviteId = NewId()
 	}
 
+	o.Kind = NormalizeTeamKind(o.Kind)
 	if o.Kind == "" {
-		o.Kind = TeamKindCommunity
+		o.Kind = TeamKindGuild
 	}
 
 	if o.MemberListView == "" {
@@ -333,6 +421,7 @@ func (o *Team) PreSave() {
 
 func (o *Team) PreUpdate() {
 	o.UpdateAt = GetMillis()
+	o.Kind = NormalizeTeamKind(o.Kind)
 	o.Name = SanitizeUnicode(o.Name)
 	o.DisplayName = SanitizeUnicode(o.DisplayName)
 	o.Description = SanitizeUnicode(o.Description)
@@ -447,15 +536,27 @@ func (o *Team) Patch(patch *TeamPatch) {
 	}
 
 	if patch.Kind != nil {
-		o.Kind = *patch.Kind
+		o.Kind = NormalizeTeamKind(*patch.Kind)
 	}
 
 	if patch.MemberListView != nil {
 		o.MemberListView = *patch.MemberListView
 	}
 
+	if patch.NameDisplay != nil {
+		o.NameDisplay = *patch.NameDisplay
+	}
+
 	if patch.DefaultChannelId != nil {
 		o.DefaultChannelId = *patch.DefaultChannelId
+	}
+
+	if patch.WelcomeChannelId != nil {
+		o.WelcomeChannelId = *patch.WelcomeChannelId
+	}
+
+	if patch.DisableJoinLeaveMessages != nil {
+		o.DisableJoinLeaveMessages = *patch.DisableJoinLeaveMessages
 	}
 }
 

@@ -161,8 +161,8 @@ class TeamMembersDropdown extends React.PureComponent<Props, State> {
         } else if ((teamMember.roles.length > 0 && isAdmin(teamMember.roles)) || teamMember.scheme_admin) {
             currentRoles = (
                 <FormattedMessage
-                    id='team_members_dropdown.teamAdmin'
-                    defaultMessage='Team Admin'
+                    id='fusion.communityMembers.admin'
+                    defaultMessage='Community admin'
                 />
             );
         } else {
@@ -254,8 +254,8 @@ class TeamMembersDropdown extends React.PureComponent<Props, State> {
                 onClick={this.handleRemoveFromTeam}
                 labels={
                     <FormattedMessage
-                        id='team_members_dropdown.leave_team'
-                        defaultMessage='Remove from Team'
+                        id='fusion.communityMembers.remove'
+                        defaultMessage='Remove from the community'
                     />
                 }
             />
@@ -265,8 +265,8 @@ class TeamMembersDropdown extends React.PureComponent<Props, State> {
                 onClick={this.handleMakeAdmin}
                 labels={
                     <FormattedMessage
-                        id='team_members_dropdown.makeAdmin'
-                        defaultMessage='Make Team Admin'
+                        id='fusion.communityMembers.makeAdmin'
+                        defaultMessage='Make community admin'
                     />
                 }
             />
@@ -276,8 +276,8 @@ class TeamMembersDropdown extends React.PureComponent<Props, State> {
                 onClick={this.handleMakeMember}
                 labels={
                     <FormattedMessage
-                        id='team_members_dropdown.makeMember'
-                        defaultMessage='Make Team Member'
+                        id='fusion.communityMembers.makeMember'
+                        defaultMessage='Make community member'
                     />
                 }
             />
@@ -297,7 +297,7 @@ class TeamMembersDropdown extends React.PureComponent<Props, State> {
                     }}
                     menu={{
                         id: `teamMembersDropdown_${user.username}_menu`,
-                        'aria-label': intl.formatMessage({id: 'team_members_dropdown.menuAriaLabel', defaultMessage: 'Change the role of a team member'}),
+                        'aria-label': intl.formatMessage({id: 'fusion.communityMembers.menuAriaLabel', defaultMessage: 'Change the role of a community member'}),
                     }}
                     anchorOrigin={{
                         vertical: openUp ? 'top' : 'bottom',

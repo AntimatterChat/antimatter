@@ -22,6 +22,7 @@ import {useExclusiveCard} from 'fusion/components/layer/exclusive';
 import {useFocusLabel, useFocusUntil} from 'fusion/focus/focus';
 import {useDisplayName, useUser, useUserStatus} from 'fusion/hooks/users';
 import {canModerateTeam, openModView} from 'fusion/moderation/moderation';
+import {globalNameOf, useCommunityProfile} from 'fusion/profiles/community_profiles';
 import {useSettings} from 'fusion/shell/settings_context';
 import {useToast} from 'fusion/shell/toast_context';
 import {useRoleColor} from 'fusion/teams/roles';
@@ -88,6 +89,11 @@ export default function UserPopover({userId, anchor, onClose, toggles}: Props) {
     const toast = useToast();
     const user = useUser(userId);
     const name = useDisplayName(user);
+
+    // In a community where they set a profile of their own, their global name too (what the server lets one see).
+    const [communityProfile, scope] = useCommunityProfile(userId);
+    const globalName = useSelector((state: GlobalState) => globalNameOf(state, user));
+    const ownProfile = Boolean(scope && (communityProfile?.nickname || communityProfile?.avatar_update_at));
     const status = useUserStatus(userId);
     const focusLabel = useFocusLabel(useFocusUntil(userId));
     const me = useSelector(getCurrentUserId);
@@ -194,6 +200,11 @@ export default function UserPopover({userId, anchor, onClose, toggles}: Props) {
                         </>
                     ) : `@${user.username} · ${focusLabel || formatMessage(STATUS_LABELS[status] || STATUS_LABELS.offline)}`}
                 </div>
+                {ownProfile && globalName !== name && (
+                    <div className={am('handle')}>
+                        {formatMessage({id: 'fusion.profile.globalName', defaultMessage: 'Outside this community: {name}'}, {name: globalName})}
+                    </div>
+                )}
                 {!bot && (
                     <div className={am('facts')}>
                         {user.position && (

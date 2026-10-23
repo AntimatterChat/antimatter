@@ -1604,7 +1604,11 @@ func (s *SqlGroupStore) GetGroups(page, perPage int, opts model.GroupSearchOpts,
 			Offset(uint64(page * perPage))
 	}
 
-	if opts.FilterAllowReference {
+	// Antimatter: a community's default role isn't mentioned (everyone in the community has it), but is listed as its
+	// other roles are, unless the groups listed are those to mention.
+	if opts.FilterAllowReference && opts.IncludeTeamRoles {
+		groupsQuery = groupsQuery.Where("(UserGroups.AllowReference = true OR UserGroups.TeamId != '')")
+	} else if opts.FilterAllowReference {
 		groupsQuery = groupsQuery.Where("UserGroups.AllowReference = true")
 	}
 

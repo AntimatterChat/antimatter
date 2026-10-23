@@ -28,7 +28,7 @@ import {getChannelSettingsTabs} from 'selectors/plugins';
 import type {Tab as SidebarTab} from 'components/settings_sidebar/settings_sidebar';
 import {normalizePluginIcon} from 'components/settings_sidebar/settings_sidebar';
 
-import {canArchiveChannel, isFirstDefaultChannel} from 'fusion/channel/community_channels';
+import {canArchiveChannel, isAllChannelsCommunity, isFirstDefaultChannel} from 'fusion/channel/community_channels';
 import Icon from 'fusion/components/icon';
 import {Dialog} from 'fusion/components/layer';
 import {am} from 'fusion/utils/class_names';
@@ -152,7 +152,10 @@ function ChannelSettingsModal({channelId, isOpen, onExited, focusOriginElement}:
         }
         return haveISystemPermission(state, {permission: Permissions.MANAGE_SHARED_CHANNELS});
     });
-    const canManageJoinLeaveMessages = !isDMorGM && canManageChannelProperties;
+
+    // Antimatter: where everyone is in every channel, channels tell nobody joining or leaving them: nothing to hide.
+    const everyoneIn = useSelector((state: GlobalState) => !isDMorGM && isAllChannelsCommunity(state, channel.team_id));
+    const canManageJoinLeaveMessages = !isDMorGM && canManageChannelProperties && !everyoneIn;
     const shouldShowConfigurationTab = canManageBanner || canManageChannelTranslation || canManageSharedChannels || canManageJoinLeaveMessages;
     const shouldShowInfoTab = canManageChannelProperties;
 

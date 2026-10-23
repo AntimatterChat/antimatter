@@ -69,19 +69,19 @@ export function MembershipRequirementsBanner({team}: {team: Team}) {
                 variant='app'
                 title={isStrict ? (
                     <FormattedMessage
-                        id='team_member_modal.policy_enforced.title'
-                        defaultMessage='Team access is restricted by user attributes'
+                        id='fusion.communityMembers.policyEnforcedTitle'
+                        defaultMessage='Who joins the community is restricted by user attributes'
                     />
                 ) : (
                     <FormattedMessage
-                        id='team_member_modal.policy_advisory.title'
-                        defaultMessage='This team has membership requirements'
+                        id='fusion.communityMembers.policyAdvisoryTitle'
+                        defaultMessage='This community has membership requirements'
                     />
                 )}
                 message={isStrict ? (
                     <FormattedMessage
-                        id='team_member_modal.policy_enforced.description'
-                        defaultMessage='Only people who meet the membership requirements can be members of this team.'
+                        id='fusion.communityMembers.policyEnforcedDescription'
+                        defaultMessage='Only people who meet the membership requirements can be members of this community.'
                     />
                 ) : (
                     <FormattedMessage

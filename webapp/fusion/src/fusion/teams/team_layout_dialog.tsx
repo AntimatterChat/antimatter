@@ -19,17 +19,17 @@ const PRESET_TEXT: Array<{preset: Preset; title: MessageDescriptor; desc: Messag
     {
         preset: 'hybrid',
         title: defineMessage({id: 'fusion.layout.hybrid', defaultMessage: 'Hybrid (recommended)'}),
-        desc: defineMessage({id: 'fusion.layout.hybridDesc', defaultMessage: 'Curated categories for everyone, an open Community one where members file their channels, and a Moderators role. Only the community\'s admins archive channels.'}),
+        desc: defineMessage({id: 'fusion.layout.hybridGuildDesc', defaultMessage: 'A guild with curated categories for everyone, an open Community one where members file their channels, and a Moderators role. Only the community\'s admins archive channels.'}),
     },
     {
-        preset: 'community',
-        title: defineMessage({id: 'fusion.layout.community', defaultMessage: 'Community'}),
-        desc: defineMessage({id: 'fusion.layout.communityDesc', defaultMessage: 'Categories the admins keep, and a Moderators role. Only the community\'s admins archive channels. To stop members creating channels, change the community\'s permissions in the System Console.'}),
+        preset: 'guild',
+        title: defineMessage({id: 'fusion.layout.guild', defaultMessage: 'Guild'}),
+        desc: defineMessage({id: 'fusion.layout.guildDesc', defaultMessage: 'Categories the admins keep, and a Moderators role; everyone is in all the channels, and only the community\'s admins archive them. To stop members creating channels, change what the roles may do.'}),
     },
     {
-        preset: 'workplace',
-        title: defineMessage({id: 'fusion.layout.workplace', defaultMessage: 'Workplace'}),
-        desc: defineMessage({id: 'fusion.layout.workplaceDesc', defaultMessage: 'Like Mattermost: everyone keeps their own categories, and archives the channels they created. Removes the categories for everyone; roles stay.'}),
+        preset: 'workspace',
+        title: defineMessage({id: 'fusion.layout.workspace', defaultMessage: 'Workspace'}),
+        desc: defineMessage({id: 'fusion.layout.workspaceDesc', defaultMessage: 'Everyone keeps their own categories, joins the channels they want and archives the channels they created. Removes the categories for everyone; roles stay.'}),
     },
 ];
 
@@ -55,10 +55,10 @@ export default function TeamLayoutDialog({onClose, first = false}: {onClose: () 
     );
 }
 
-// TeamLayoutSettings sets a team up from a preset or a template, and exports its layout as a template: the Community
-// layout tab of the community settings, and the first-time dialog's content. Close (Not now, the first time) closes
-// them; applying a preset closes the first-time dialog.
-export function TeamLayoutSettings({onClose, first = false}: {onClose: () => void; first?: boolean}) {
+// TeamLayoutSettings sets a team up from a preset or a template, and exports its layout as a template: a section of the
+// community settings' General tab (embedded: no Close, the settings have theirs), and the first-time dialog's content,
+// whose Not now closes it, as applying a preset does.
+export function TeamLayoutSettings({onClose, first = false, embedded = false}: {onClose?: () => void; first?: boolean; embedded?: boolean}) {
     const {formatMessage} = useIntl();
     const dispatch = useDispatch();
     const toast = useToast();
@@ -87,7 +87,7 @@ export function TeamLayoutSettings({onClose, first = false}: {onClose: () => voi
             toast(formatMessage({id: 'fusion.layout.applied', defaultMessage: '{team} is set up'}, {team: team.display_name}));
         }
         if (first) {
-            onClose();
+            onClose?.();
         }
     };
 
@@ -176,7 +176,7 @@ export function TeamLayoutSettings({onClose, first = false}: {onClose: () => voi
                         {formatMessage({id: 'fusion.layout.later', defaultMessage: 'Not now'})}
                     </button>
                 )}
-                {!first && (
+                {!first && !embedded && (
                     <button
                         type='button'
                         className={am('btn')}

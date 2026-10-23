@@ -16,7 +16,10 @@ package model
 //
 // How someone takes direct messages from people they don't know yet is a preference too: PreferenceCategoryDMPrivacy,
 // named PreferenceNameDMPrivacyDefault for all communities and after a community's id where they chose otherwise
-// there, worth DMPrivacyEveryone (the default) or DMPrivacyAsk.
+// there, worth DMPrivacyEveryone (the default), DMPrivacyAsk (they wait as message requests) or DMPrivacyRefuse (they
+// can't start a direct or group message with them). Someone who shares several communities with them gets the most
+// restrictive of those communities' choices, so that joining an open community never lets anyone reach them more;
+// someone who shares none gets the choice for all. A conversation they accepted (or started, or answered) goes on.
 //
 // Whether a direct message waits as a request is kept on its recipient's channel member, in its notify props
 // (ChannelMemberDMRequestProp), so that the apps can leave requests out of the unread counts: only that person sees it.
@@ -29,6 +32,7 @@ const (
 	PreferenceNameDMPrivacyDefault = "default"
 	DMPrivacyEveryone              = "everyone"
 	DMPrivacyAsk                   = "ask"
+	DMPrivacyRefuse                = "refuse"
 
 	// ChannelMemberDMRequestProp is where a direct message stands for its recipient: DMRequestAccepted, DMRequestPending
 	// (a message request), DMRequestDismissed (a request they ignored, hidden until the sender writes again), or unset
@@ -52,6 +56,23 @@ const (
 // MessageRequestAction is the body of POST /channels/{channel_id}/message_request.
 type MessageRequestAction struct {
 	Action string `json:"action"`
+}
+
+// IsValidDMPrivacy tells a value of PreferenceCategoryDMPrivacy apart from anything else.
+func IsValidDMPrivacy(value string) bool {
+	return value == DMPrivacyEveryone || value == DMPrivacyAsk || value == DMPrivacyRefuse
+}
+
+// DMPrivacyRank orders the choices from the most open: the most restrictive of several wins.
+func DMPrivacyRank(value string) int {
+	switch value {
+	case DMPrivacyAsk:
+		return 1
+	case DMPrivacyRefuse:
+		return 2
+	default:
+		return 0
+	}
 }
 
 // IsValidUserBlockLevel tells a value of PreferenceCategoryUserBlock apart from anything else.

@@ -301,6 +301,13 @@ func localCreateTeam(c *Context, w http.ResponseWriter, r *http.Request) {
 	defer c.LogAuditRec(auditRec)
 	model.AddEventParameterAuditableToAuditRec(auditRec, "team", &team)
 
+	// Antimatter: as through the API, the address can be left to the server and the kind sets whether everyone is
+	// in all the channels.
+	if appErr := c.App.PrepareNewTeam(&team); appErr != nil {
+		c.Err = appErr
+		return
+	}
+
 	rteam, err := c.App.CreateTeam(c.AppContext, &team)
 	if err != nil {
 		c.Err = err

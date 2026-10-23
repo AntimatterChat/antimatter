@@ -4,6 +4,7 @@
 import React from 'react';
 
 import {deletePreferences, savePreferences} from 'mattermost-redux/actions/preferences';
+import {updateMe} from 'mattermost-redux/actions/users';
 
 import {renderWithContext, screen, userEvent, within} from 'tests/react_testing_utils';
 import {TestHelper} from 'utils/test_helper';
@@ -17,6 +18,7 @@ jest.mock('mattermost-redux/actions/preferences', () => ({
 jest.mock('mattermost-redux/actions/users', () => ({
     ...jest.requireActual('mattermost-redux/actions/users'),
     getMissingProfilesByIds: jest.fn(() => ({type: 'MOCK_MISSING_PROFILES'})),
+    updateMe: jest.fn(() => ({type: 'MOCK_UPDATE_ME'})),
 }));
 jest.mock('fusion/components/avatar', () => () => null);
 
@@ -27,13 +29,13 @@ jest.mock('fusion/shell/toast_context', () => ({useToast: () => jest.fn()}));
 const me = 'me';
 const pref = (category: string, name: string, value: string) => ({[`${category}--${name}`]: {user_id: me, category, name, value}});
 
-function state(preferences: Record<string, unknown> = {}) {
+function state(preferences: Record<string, unknown> = {}, {config = {}, props = {}}: {config?: Record<string, string>; props?: Record<string, string>} = {}) {
     return {
         entities: {
-            general: {config: {}},
+            general: {config},
             users: {
                 currentUserId: me,
-                profiles: Object.fromEntries([me, 'sofia', 'leo'].map((id) => [id, TestHelper.getUserMock({id, username: id, first_name: '', last_name: '', nickname: ''})])),
+                profiles: Object.fromEntries([me, 'sofia', 'leo'].map((id) => [id, TestHelper.getUserMock({id, username: id, first_name: '', last_name: '', nickname: '', props: id === me ? props : {}})])),
             },
             teams: {
                 teams: {t1: TestHelper.getTeamMock({id: 't1', display_name: 'Lumen', delete_at: 0})},
@@ -46,29 +48,59 @@ function state(preferences: Record<string, unknown> = {}) {
 }
 
 describe('fusion/privacy/PrivacyPane', () => {
-    test('accepts direct messages from everyone by default, and asks first when chosen', async () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    test('accepts direct messages from everyone by default, and asks first or refuses when chosen', async () => {
         renderWithContext(<PrivacyPane/>, state() as never);
         const choice = screen.getByRole('group', {name: 'From people you don\'t talk with yet'});
         expect(within(choice).getByRole('button', {name: 'Accept from everyone'})).toHaveAttribute('aria-pressed', 'true');
 
         await userEvent.click(within(choice).getByRole('button', {name: 'Ask me first'}));
         expect(savePreferences).toHaveBeenCalledWith(me, [{user_id: me, category: 'dm_privacy', name: 'default', value: 'ask'}]);
+
+        await userEvent.click(within(choice).getByRole('button', {name: 'Refuse'}));
+        expect(savePreferences).toHaveBeenCalledWith(me, [{user_id: me, category: 'dm_privacy', name: 'default', value: 'refuse'}]);
     });
 
-    test('each community follows the choice above until it has its own', async () => {
-        renderWithContext(<PrivacyPane/>, state(pref('dm_privacy', 'default', 'ask')) as never);
-        const select = screen.getByRole('combobox', {name: 'Lumen'});
-        expect(select).toHaveValue('');
-        expect(within(select).getByRole('option', {name: 'As above (Ask me first)'})).toBeInTheDocument();
-
-        await userEvent.selectOptions(select, 'everyone');
-        expect(savePreferences).toHaveBeenCalledWith(me, [{user_id: me, category: 'dm_privacy', name: 't1', value: 'everyone'}]);
-    });
-
-    test('going back to "as above" forgets the community\'s choice', async () => {
+    test('shows the defaults only: each community\'s own choices are in its menu', () => {
         renderWithContext(<PrivacyPane/>, state(pref('dm_privacy', 't1', 'ask')) as never);
-        await userEvent.selectOptions(screen.getByRole('combobox', {name: 'Lumen'}), '');
-        expect(deletePreferences).toHaveBeenCalledWith(me, [{user_id: me, category: 'dm_privacy', name: 't1', value: ''}]);
+        expect(screen.queryByRole('combobox', {name: 'Lumen'})).not.toBeInTheDocument();
+        expect(screen.queryByText('Lumen')).not.toBeInTheDocument();
+    });
+
+    test('the profile details shown by default: hiding one saves it for all communities', async () => {
+        renderWithContext(<PrivacyPane/>, state({}, {config: {ShowEmailAddress: 'true'}}) as never);
+        const position = screen.getByRole('switch', {name: 'Position'});
+        expect(position).toHaveAttribute('aria-checked', 'true');
+        expect(screen.getByRole('switch', {name: 'Email address'})).toBeInTheDocument();
+
+        await userEvent.click(position);
+        expect(updateMe).toHaveBeenCalledWith({props: {profile_privacy: JSON.stringify({default: ['position']})}});
+    });
+
+    test('showing everything again drops the choice, and keeps the other communities\' ones', async () => {
+        const props = {profile_privacy: JSON.stringify({default: ['position'], t1: ['email']}), other: 'kept'};
+        renderWithContext(<PrivacyPane/>, state({}, {props}) as never);
+        const position = screen.getByRole('switch', {name: 'Position'});
+        expect(position).toHaveAttribute('aria-checked', 'false');
+
+        await userEvent.click(position);
+        expect(updateMe).toHaveBeenCalledWith({props: {profile_privacy: JSON.stringify({t1: ['email']}), other: 'kept'}});
+    });
+
+    test('the email is offered only when the server shows emails', () => {
+        renderWithContext(<PrivacyPane/>, state({}, {config: {ShowEmailAddress: 'false'}}) as never);
+        expect(screen.queryByRole('switch', {name: 'Email address'})).not.toBeInTheDocument();
+        expect(screen.getByRole('switch', {name: 'Full name'})).toBeInTheDocument();
+    });
+
+    test('while the admin turned blocking off, only the profile details', () => {
+        renderWithContext(<PrivacyPane/>, state({}, {config: {EnableUserBlocking: 'false'}}) as never);
+        expect(screen.queryByRole('group', {name: 'From people you don\'t talk with yet'})).not.toBeInTheDocument();
+        expect(screen.queryByText('Blocked')).not.toBeInTheDocument();
+        expect(screen.getByRole('switch', {name: 'Nickname'})).toBeInTheDocument();
     });
 
     test('says when nobody is blocked or ignored', () => {

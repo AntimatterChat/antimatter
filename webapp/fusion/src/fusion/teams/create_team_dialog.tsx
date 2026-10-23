@@ -1,89 +1,39 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {useIntl} from 'react-intl';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
-import type {Team} from '@mattermost/types/teams';
+import type {Team, TeamKind} from '@mattermost/types/teams';
 
-import {checkIfTeamExists, createTeam} from 'mattermost-redux/actions/teams';
+import {createTeam} from 'mattermost-redux/actions/teams';
+import {getConfig} from 'mattermost-redux/selectors/entities/general';
 
 import {Dialog} from 'fusion/components/layer';
-import {Toggle} from 'fusion/modals/settings_controls';
+import {Choice, Toggle} from 'fusion/modals/settings_controls';
 import {am} from 'fusion/utils/class_names';
 import {getHistory} from 'utils/browser_history';
 import Constants from 'utils/constants';
-import {cleanUpUrlable} from 'utils/url';
 
-export type TeamUrlProblem = 'length' | 'format' | 'reserved' | 'taken';
+import type {GlobalState} from 'types/store';
 
-// teamUrlFromName is the address a team's name suggests: lower case, dashes for the rest, as the classic page made it.
-export function teamUrlFromName(name: string): string {
-    return cleanUpUrlable(name).slice(0, Constants.MAX_TEAMNAME_LENGTH);
-}
-
-// teamUrlProblem tells what's wrong with a team's address, by Mattermost's rules; undefined when it's fine as written.
-export function teamUrlProblem(url: string): TeamUrlProblem | undefined {
-    if (url.length < Constants.MIN_TEAMNAME_LENGTH || url.length > Constants.MAX_TEAMNAME_LENGTH) {
-        return 'length';
-    }
-    if (cleanUpUrlable(url) !== url || !(/^[a-z]+([a-z\-0-9]+|(__)?)[a-z0-9]+$/).test(url)) {
-        return 'format';
-    }
-    if (Constants.RESERVED_TEAM_NAMES.some((reserved: string) => url.startsWith(reserved))) {
-        return 'reserved';
-    }
-    return undefined;
-}
-
-// CreateTeamDialog makes a team: its name, its address (suggested by the name), and whether anyone on the server can
-// join it. The new team opens, where its admins are offered a layout to start from.
+// CreateTeamDialog makes a community on this server: its name, its kind (a guild, where everyone is in all the
+// channels, or a workspace, where members join the channels they want), and whether anyone on the server can join it.
+// Its address is the server's to make from its name. The new community opens, where its admins are offered a layout to
+// start from.
 export default function CreateTeamDialog({onClose}: {onClose: () => void}) {
     const {formatMessage} = useIntl();
     const dispatch = useDispatch();
+    const defaultKind = useSelector((state: GlobalState) => (getConfig(state).DefaultCommunityKind === 'workspace' ? 'workspace' : 'guild'));
     const [name, setName] = useState('');
-    const [url, setUrl] = useState('');
-    const [urlEdited, setUrlEdited] = useState(false);
+    const [kind, setKind] = useState<TeamKind>(defaultKind);
     const [open, setOpen] = useState(true);
-    const [taken, setTaken] = useState<string | null>(null);
     const [busy, setBusy] = useState(false);
     const [error, setError] = useState('');
 
-    // The address follows the name until it's edited.
-    useEffect(() => {
-        if (!urlEdited) {
-            setUrl(teamUrlFromName(name));
-        }
-    }, [name, urlEdited]);
-
-    // Whether the address is free, asked once typing stops.
-    useEffect(() => {
-        setTaken(null);
-        if (!url || teamUrlProblem(url)) {
-            return undefined;
-        }
-        let stale = false;
-        const timer = setTimeout(async () => {
-            const result = await dispatch(checkIfTeamExists(url));
-            if (!stale && 'data' in result && result.data) {
-                setTaken(url);
-            }
-        }, 300);
-        return () => {
-            stale = true;
-            clearTimeout(timer);
-        };
-    }, [url, dispatch]);
-
-    const problem: TeamUrlProblem | undefined = url ? teamUrlProblem(url) || (taken === url ? 'taken' : undefined) : undefined;
-    const problems: Record<TeamUrlProblem, string> = {
-        length: formatMessage({id: 'fusion.createTeam.urlLength', defaultMessage: 'Between {min} and {max} characters.'}, {min: Constants.MIN_TEAMNAME_LENGTH, max: Constants.MAX_TEAMNAME_LENGTH}),
-        format: formatMessage({id: 'fusion.createTeam.urlFormat', defaultMessage: 'Lower case letters, numbers and dashes; it starts with a letter and doesn\'t end with a dash.'}),
-        reserved: formatMessage({id: 'fusion.createTeam.urlReserved', defaultMessage: 'It can\'t start with a reserved word.'}),
-        taken: formatMessage({id: 'fusion.createTeam.urlTaken', defaultMessage: 'That address is taken.'}),
-    };
-    const canCreate = Boolean(name.trim()) && name.trim().length <= Constants.MAX_TEAMNAME_LENGTH && Boolean(url) && !problem && !busy;
+    const trimmed = name.trim();
+    const canCreate = trimmed.length >= Constants.MIN_TEAMNAME_LENGTH && trimmed.length <= Constants.MAX_TEAMNAME_LENGTH && !busy;
 
     const submit = async () => {
         if (!canCreate) {
@@ -91,14 +41,17 @@ export default function CreateTeamDialog({onClose}: {onClose: () => void}) {
         }
         setBusy(true);
         setError('');
-        const result = await dispatch(createTeam({display_name: name.trim(), name: url, type: open ? 'O' : 'I', allow_open_invite: open} as Team));
+        const result = await dispatch(createTeam({display_name: trimmed, type: open ? 'O' : 'I', allow_open_invite: open, kind} as Team));
         setBusy(false);
         if ('error' in result && result.error) {
             setError((result.error as {message?: string}).message || formatMessage({id: 'fusion.createTeam.failed', defaultMessage: 'The community couldn\'t be created.'}));
             return;
         }
         onClose();
-        getHistory().push(`/${url}/channels/${Constants.DEFAULT_CHANNEL}`);
+        const created = (result as {data?: Team}).data;
+        if (created?.name) {
+            getHistory().push(`/${created.name}/channels/${Constants.DEFAULT_CHANNEL}`);
+        }
     };
 
     return (
@@ -121,30 +74,16 @@ export default function CreateTeamDialog({onClose}: {onClose: () => void}) {
                         onChange={(e) => setName(e.target.value)}
                     />
                 </label>
-                <label className={am('field')}>
-                    <span>{formatMessage({id: 'fusion.createTeam.url', defaultMessage: 'Address'})}</span>
-                    <div className={am('team-url')}>
-                        <span className={am('team-url-site')}>{`${window.location.host}/`}</span>
-                        <input
-                            type='text'
-                            value={url}
-                            maxLength={Constants.MAX_TEAMNAME_LENGTH}
-                            aria-label={formatMessage({id: 'fusion.createTeam.url', defaultMessage: 'Address'})}
-                            aria-invalid={Boolean(problem)}
-                            aria-describedby='am-create-team-url-note'
-                            onChange={(e) => {
-                                setUrlEdited(true);
-                                setUrl(e.target.value.toLowerCase());
-                            }}
-                        />
-                    </div>
-                    <small
-                        id='am-create-team-url-note'
-                        className={am('field-note', {bad: Boolean(problem)})}
-                    >
-                        {problem ? problems[problem] : formatMessage({id: 'fusion.createTeam.urlNote', defaultMessage: 'Where the community is found; it can\'t change later.'})}
-                    </small>
-                </label>
+                <Choice<TeamKind>
+                    title={formatMessage({id: 'fusion.createTeam.kind', defaultMessage: 'Kind'})}
+                    desc={kind === 'guild' ? formatMessage({id: 'fusion.createTeam.guildDesc', defaultMessage: 'A guild, for a public or hobby community: everyone is in all its channels, and only its admins archive them.'}) : formatMessage({id: 'fusion.createTeam.workspaceDesc', defaultMessage: 'A workspace, for a company or an organisation: members join the channels they want, and archive those they created.'})}
+                    value={kind}
+                    options={[
+                        ['guild', formatMessage({id: 'fusion.teamChannels.kind.guild', defaultMessage: 'Guild'})],
+                        ['workspace', formatMessage({id: 'fusion.teamChannels.kind.workspace', defaultMessage: 'Workspace'})],
+                    ]}
+                    onChange={setKind}
+                />
                 <Toggle
                     title={formatMessage({id: 'fusion.createTeam.open', defaultMessage: 'Anyone on the server can join'})}
                     desc={formatMessage({id: 'fusion.createTeam.openDesc', defaultMessage: 'Otherwise people join by invitation only.'})}

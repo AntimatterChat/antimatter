@@ -5,7 +5,7 @@ import type {Group} from '@mattermost/types/groups';
 
 import type {GlobalState} from 'types/store';
 
-import {byPosition, getMemberRolesForCurrentTeam, getRoleColor, getTeamRoles, hoistedRole, isRole, roleColorsShown} from './roles';
+import {byPosition, getGivenRolesOf, getGivenTeamRoles, getMemberRolesForCurrentTeam, getRoleColor, getTeamRoles, hoistedRole, isDefaultRole, isRole, roleColorsShown} from './roles';
 
 const group = (id: string, fields: Partial<Group>) => ({id, display_name: id, source: 'custom', delete_at: 0, team_id: 'team', position: 0, member_ids: [], ...fields}) as Group;
 
@@ -74,5 +74,35 @@ describe('roles', () => {
         expect(hoistedRole([gamers, mods])).toBe(mods);
         expect(hoistedRole([gamers, plain])).toBeUndefined();
         expect(hoistedRole(undefined)).toBeUndefined();
+    });
+});
+
+// Antimatter: the default role everyone has colours those with no other coloured role, but isn't listed among anyone's
+// roles nor given to anyone.
+describe('the default role', () => {
+    const mods = group('mods', {position: 0, color: '#e67e22', member_ids: ['ada']});
+    const everyone = group('everyone', {position: 10000, color: '#95a5a6', member_ids: ['ada', 'bob']});
+    const state = {
+        entities: {
+            groups: {groups: {mods, everyone}},
+            teams: {currentTeamId: 'team', teams: {team: {id: 'team', default_role_id: 'everyone'}}},
+        },
+    } as unknown as GlobalState;
+
+    test('is told from the others', () => {
+        expect(isDefaultRole(state, everyone)).toBe(true);
+        expect(isDefaultRole(state, mods)).toBe(false);
+    });
+
+    test('isn\'t among the roles given to some, nor among someone\'s roles', () => {
+        expect(getTeamRoles(state, 'team').map((r) => r.id)).toEqual(['mods', 'everyone']);
+        expect(getGivenTeamRoles(state, 'team').map((r) => r.id)).toEqual(['mods']);
+        expect(getGivenRolesOf(state, 'ada').map((r) => r.id)).toEqual(['mods']);
+        expect(getGivenRolesOf(state, 'bob')).toEqual([]);
+    });
+
+    test('colours those with no other coloured role', () => {
+        expect(getRoleColor(state, 'ada')).toBe('#e67e22');
+        expect(getRoleColor(state, 'bob')).toBe('#95a5a6');
     });
 });

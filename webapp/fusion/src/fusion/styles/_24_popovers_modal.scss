@@ -208,7 +208,8 @@
 :is(.am-app, .am-layer) .am-role-list { display: grid; gap: 2px; margin: 12px 0; }
 :is(.am-app, .am-layer) .am-role-row { display: flex; align-items: center; gap: 10px; padding: 8px 6px 8px 10px; border-radius: 8px; background: var(--am-side); border: 1px solid var(--am-line); }
 :is(.am-app, .am-layer) .am-role-row:hover { background: var(--am-hover); }
-:is(.am-app, .am-layer) .am-role-row .am-grow { display: grid; min-width: 0; }
+// The name takes the row's room: the buttons sit at its right end.
+:is(.am-app, .am-layer) .am-role-row .am-grow { display: grid; flex: 1; min-width: 0; }
 :is(.am-app, .am-layer) .am-role-row .am-grow span { color: var(--am-muted); font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 :is(.am-app, .am-layer) .am-role-dot { width: 12px; height: 12px; border-radius: 50%; flex: none; }
 :is(.am-app, .am-layer) .am-role-row .am-icon-btn:disabled { opacity: .3; }
@@ -268,10 +269,7 @@
 :is(.am-app, .am-layer) .am-tri button.am-deny.am-from { color: var(--am-danger); }
 :is(.am-app, .am-layer) .am-tri button.am-allow.am-from { color: var(--am-online, #23a55a); }
 :is(.am-app, .am-layer) .am-override-head .am-avatar { flex: none; }
-/* Creating a team: its address, with the server before it; the bare frame behind the dialog on /create_team. */
-:is(.am-app, .am-layer) .am-team-url { display: flex; align-items: stretch; border: 1px solid var(--am-line); border-radius: 8px; background: var(--am-raise); overflow: hidden; }
-:is(.am-app, .am-layer) .am-team-url-site { display: flex; align-items: center; padding: 0 2px 0 10px; color: var(--am-muted); font-size: 13px; white-space: nowrap; }
-:is(.am-app, .am-layer) .am-team-url input[type="text"] { flex: 1; min-width: 0; border: 0; background: transparent; box-shadow: none; padding-left: 0; }
+/* Creating a community: the bare frame behind the dialog on /create_team. */
 :is(.am-app, .am-layer) .am-field-note { display: block; margin-top: 6px; }
 :is(.am-app, .am-layer) .am-field-note.am-bad { color: var(--am-danger); }
 .am-app.am-solo { position: fixed; inset: 0; display: block; background: var(--am-main); }

@@ -198,24 +198,40 @@ func TestCommunityKinds(t *testing.T) {
 	t.Run("a new community gets the setting's kind, unless created with one, and its row", func(t *testing.T) {
 		th := Setup(t)
 		team := th.CreateTeam(t)
-		assert.Equal(t, model.TeamKindCommunity, team.Kind)
-		assert.Equal(t, model.TeamKindCommunity, teamKindRow(t, th, team.Id), "the row is written for the default kind too")
+		assert.Equal(t, model.TeamKindGuild, team.Kind)
+		assert.Equal(t, model.TeamKindStoredGuild, teamKindRow(t, th, team.Id), "the row is written for the default kind too, under its former name")
 
-		setDefault(th, model.TeamKindWorkplace)
+		setDefault(th, model.TeamKindWorkspace)
 		team = th.CreateTeam(t)
-		assert.Equal(t, model.TeamKindWorkplace, team.Kind)
-		assert.Equal(t, model.TeamKindWorkplace, teamKindRow(t, th, team.Id))
+		assert.Equal(t, model.TeamKindWorkspace, team.Kind)
+		assert.Equal(t, model.TeamKindStoredWorkspace, teamKindRow(t, th, team.Id))
 
-		chosen, appErr := th.App.CreateTeam(th.Context, &model.Team{DisplayName: "Chosen", Name: "c" + model.NewId(), Email: "c@example.com", Type: model.TeamOpen, Kind: model.TeamKindCommunity})
+		chosen, appErr := th.App.CreateTeam(th.Context, &model.Team{DisplayName: "Chosen", Name: "c" + model.NewId(), Email: "c@example.com", Type: model.TeamOpen, Kind: model.TeamKindGuild})
 		require.Nil(t, appErr)
-		assert.Equal(t, model.TeamKindCommunity, chosen.Kind, "a preset's kind wins over the setting")
-		assert.Equal(t, model.TeamKindCommunity, teamKindRow(t, th, chosen.Id))
+		assert.Equal(t, model.TeamKindGuild, chosen.Kind, "a preset's kind wins over the setting")
+		assert.Equal(t, model.TeamKindStoredGuild, teamKindRow(t, th, chosen.Id))
 
 		// Saving a team without a kind keeps the one it has.
 		team.Kind = ""
 		_, err := th.Store.Team().Update(team)
 		require.NoError(t, err)
-		assert.Equal(t, model.TeamKindWorkplace, teamKindRow(t, th, team.Id))
+		assert.Equal(t, model.TeamKindStoredWorkspace, teamKindRow(t, th, team.Id))
+	})
+
+	t.Run("a community stored with a former name reads as its kind", func(t *testing.T) {
+		th := Setup(t)
+		team := th.CreateTeam(t)
+		require.NoError(t, th.Store.System().SaveOrUpdate(&model.System{Name: model.TeamKindSystemKeyPrefix + team.Id, Value: "workplace"}))
+		th.Store.Team().ClearCaches()
+		fetched, appErr := th.App.GetTeam(team.Id)
+		require.Nil(t, appErr)
+		assert.Equal(t, model.TeamKindWorkspace, fetched.Kind)
+
+		// A server configured with a former name gives new communities its kind.
+		setDefault(th, "workplace")
+		created, appErr := th.App.CreateTeam(th.Context, &model.Team{DisplayName: "Old setting", Name: "o" + model.NewId(), Email: "o@example.com", Type: model.TeamOpen})
+		require.Nil(t, appErr)
+		assert.Equal(t, model.TeamKindWorkspace, created.Kind)
 	})
 
 	// Before the upgrade, communities had no kind row.
@@ -229,7 +245,7 @@ func TestCommunityKinds(t *testing.T) {
 		require.NoError(t, err)
 	}
 
-	for _, kind := range []string{model.TeamKindCommunity, model.TeamKindWorkplace} {
+	for _, kind := range []string{model.TeamKindGuild, model.TeamKindWorkspace} {
 		t.Run("on upgrade, communities without a kind get the setting's: "+kind, func(t *testing.T) {
 			th := Setup(t)
 			old, other := th.CreateTeam(t), th.CreateTeam(t)
@@ -237,8 +253,8 @@ func TestCommunityKinds(t *testing.T) {
 			setDefault(th, kind)
 
 			require.NoError(t, th.Server.doCommunityKindsMigration())
-			assert.Equal(t, kind, teamKindRow(t, th, old.Id))
-			assert.Equal(t, kind, teamKindRow(t, th, other.Id))
+			assert.Equal(t, model.TeamKindStoredValue(kind), teamKindRow(t, th, old.Id))
+			assert.Equal(t, model.TeamKindStoredValue(kind), teamKindRow(t, th, other.Id))
 			fetched, appErr := th.App.GetTeam(old.Id)
 			require.Nil(t, appErr)
 			assert.Equal(t, kind, fetched.Kind)
@@ -249,21 +265,21 @@ func TestCommunityKinds(t *testing.T) {
 		th := Setup(t)
 		set, unset := th.CreateTeam(t), th.CreateTeam(t)
 		beforeUpgrade(t, th, unset)
-		require.NoError(t, th.Store.System().SaveOrUpdate(&model.System{Name: model.TeamKindSystemKeyPrefix + set.Id, Value: model.TeamKindWorkplace}))
-		setDefault(th, model.TeamKindCommunity)
+		require.NoError(t, th.Store.System().SaveOrUpdate(&model.System{Name: model.TeamKindSystemKeyPrefix + set.Id, Value: model.TeamKindStoredWorkspace}))
+		setDefault(th, model.TeamKindGuild)
 
 		require.NoError(t, th.Server.doCommunityKindsMigration())
-		assert.Equal(t, model.TeamKindWorkplace, teamKindRow(t, th, set.Id), "not overwritten")
-		assert.Equal(t, model.TeamKindCommunity, teamKindRow(t, th, unset.Id))
+		assert.Equal(t, model.TeamKindStoredWorkspace, teamKindRow(t, th, set.Id), "not overwritten")
+		assert.Equal(t, model.TeamKindStoredGuild, teamKindRow(t, th, unset.Id))
 		_, err := th.Store.System().GetByName(communityKindsMigrationKey)
 		require.NoError(t, err)
 
 		later := th.CreateTeam(t)
 		_, err = th.Store.System().PermanentDeleteByName(model.TeamKindSystemKeyPrefix + later.Id)
 		require.NoError(t, err)
-		setDefault(th, model.TeamKindWorkplace)
+		setDefault(th, model.TeamKindWorkspace)
 		require.NoError(t, th.Server.doCommunityKindsMigration())
 		assert.Empty(t, teamKindRow(t, th, later.Id), "it ran once")
-		assert.Equal(t, model.TeamKindCommunity, teamKindRow(t, th, unset.Id))
+		assert.Equal(t, model.TeamKindStoredGuild, teamKindRow(t, th, unset.Id))
 	})
 }

@@ -36,7 +36,10 @@ export type TeamTemplate = {
     kind?: TeamKind;
 };
 
-export type Preset = 'hybrid' | 'community' | 'workplace';
+export type Preset = 'hybrid' | 'guild' | 'workspace';
+
+// The channel new communities get for their join and leave messages (the server's model.WelcomeChannelName).
+export const WELCOME_CHANNEL = 'welcome';
 
 // What the presets' moderators may do: manage messages (edit and delete others', put them on top), rename channels
 // and manage their members, and remove people, which timeouts take too (the server's CheckCanModerateMember). The
@@ -52,42 +55,56 @@ export const MODERATOR_PERMISSIONS = [
 ];
 
 // The presets of the roles and categories plan. Hybrid, Antimatter's default: curated categories for everyone and an
-// open one where members file their channels. Community, Discord's: categories admins keep. Both make a community of
-// the community kind. Workplace, Mattermost's: everyone's own categories only, in a workplace community, where
-// members archive the channels they created.
+// open one where members file their channels. Guild, Discord's: categories admins keep. Both make a guild. Workspace,
+// Mattermost's: everyone's own categories only, in a workspace, where members archive the channels they created. The
+// Information category holds the Welcome channel, the others General, where people land.
 export const PRESETS: Record<Preset, TeamTemplate> = {
     hybrid: {
         version: 1,
-        server_categories: [{name: 'Information', locked: true, channels: [General.DEFAULT_CHANNEL]}, {name: 'Community', locked: false, channels: ['off-topic']}],
+        server_categories: [{name: 'Information', locked: true, channels: [WELCOME_CHANNEL]}, {name: 'Community', locked: false, channels: [General.DEFAULT_CHANNEL, 'off-topic']}],
         channels: [],
         roles: [{display_name: 'Moderators', color: '#e67e22', hoist: true, permissions: MODERATOR_PERMISSIONS}],
-        kind: 'community',
+        kind: 'guild',
     },
-    community: {
+    guild: {
         version: 1,
-        server_categories: [{name: 'Information', locked: true, channels: [General.DEFAULT_CHANNEL]}, {name: 'Channels', locked: true, channels: ['off-topic']}],
+        server_categories: [{name: 'Information', locked: true, channels: [WELCOME_CHANNEL]}, {name: 'Channels', locked: true, channels: [General.DEFAULT_CHANNEL, 'off-topic']}],
         channels: [],
         roles: [{display_name: 'Moderators', color: '#e67e22', hoist: true, permissions: MODERATOR_PERMISSIONS}],
-        kind: 'community',
+        kind: 'guild',
     },
-    workplace: {
+    workspace: {
         version: 1,
         server_categories: [],
         channels: [],
         roles: [],
-        kind: 'workplace',
+        kind: 'workspace',
     },
 };
 
+// templateKind reads a template's kind, the kinds' former names (community, workplace) standing for them.
+export function templateKind(kind: unknown): TeamKind | undefined {
+    switch (kind) {
+    case 'guild':
+    case 'community':
+        return 'guild';
+    case 'workspace':
+    case 'workplace':
+        return 'workspace';
+    }
+    return undefined;
+}
+
 // exportTemplate captures a team's layout: its server categories and their channels, its public and private channels,
-// its roles and their permissions, and its onboarding.
+// its roles and their permissions (but its default role, which every community has), and its onboarding.
 export function exportTemplate(teamId: string): ActionFuncAsync<TeamTemplate> {
     return async (dispatch, getState) => {
         const state = getState();
         const channels = getMyChannels(state).filter((c) => c.team_id === teamId && (c.type === 'O' || c.type === 'P') && c.delete_at === 0);
         const byId = new Map(channels.map((c) => [c.id, c]));
         const mappings = getManagedCategoryMappings(state, teamId) || {};
-        const roles = getTeamRoles(state, teamId);
+        const defaultRoleId = getTeam(state, teamId)?.default_role_id;
+        const roles = getTeamRoles(state, teamId).filter((r) => r.id !== defaultRoleId);
 
         // A role whose permissions can't be read is exported without them: applying it leaves them as they are.
         const permissions = await Promise.all(roles.map((r) => Client4.getTeamRole(r.id).then((role) => role.permissions).catch(() => undefined)));
@@ -143,7 +160,7 @@ export function parseTemplate(json: string): TeamTemplate | undefined {
             })).
             filter((r) => r.display_name),
         onboarding: typeof raw.onboarding === 'string' ? raw.onboarding : undefined,
-        kind: raw.kind === 'community' || raw.kind === 'workplace' ? raw.kind : undefined,
+        kind: templateKind(raw.kind),
     };
 }
 
@@ -168,7 +185,8 @@ export function applyTemplate(teamId: string, template: TeamTemplate): ActionFun
             }
         }
 
-        const existing = getTeamRoles(getState(), teamId);
+        const defaultRoleId = getTeam(getState(), teamId)?.default_role_id;
+        const existing = getTeamRoles(getState(), teamId).filter((r) => r.id !== defaultRoleId);
         await Promise.all(template.roles.map(async (r, i) => {
             const fields = {display_name: r.display_name, color: r.color || '', hoist: Boolean(r.hoist), self_assignable: Boolean(r.self_assignable)};
             const known = existing.find((e) => e.display_name.toLowerCase() === r.display_name.toLowerCase());
@@ -207,6 +225,9 @@ export function applyTemplate(teamId: string, template: TeamTemplate): ActionFun
     };
 }
 
+// isTeamSetUp tells whether a team has categories for everyone or roles (its default role, which any team whose roles
+// were managed has, doesn't count).
 export function isTeamSetUp(state: GlobalState, teamId: string): boolean {
-    return getServerCategories(state, teamId).length > 0 || getTeamRoles(state, teamId).length > 0;
+    const defaultRoleId = getTeam(state, teamId)?.default_role_id;
+    return getServerCategories(state, teamId).length > 0 || getTeamRoles(state, teamId).some((r) => r.id !== defaultRoleId);
 }

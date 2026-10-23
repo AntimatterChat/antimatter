@@ -16,9 +16,9 @@ import (
 // channel they were in. Antimatter's defaults (permissions migration MigrationKeyAntimatterChannelArchiveRights) give
 // it to the community's admins (team_admin) instead, and the kind of community adds:
 //
-//   - a community (TeamKindCommunity): nobody else; its moderators, when a role grants them "Manage channels";
-//   - a workplace community (TeamKindWorkplace): also the channel's admins, that is whoever created it and those
-//     they made admins of it.
+//   - a guild (TeamKindGuild): nobody else; its moderators, when a role grants them "Manage channels";
+//   - a workspace (TeamKindWorkspace): also the channel's admins, that is whoever created it and those they made
+//     admins of it.
 //
 // What a system admin grants through the permission schemes (channel_user, channel_admin, a team override scheme) or
 // a community admin through a role still applies as it is.
@@ -33,7 +33,7 @@ func (a *App) SessionCanArchiveChannel(rctx request.CTX, session model.Session, 
 	if ok, _ := a.SessionHasPermissionToChannel(rctx, session, channel.Id, perm); ok {
 		return nil
 	}
-	if channel.TeamId != "" && a.isWorkplaceTeam(channel.TeamId) {
+	if channel.TeamId != "" && a.isWorkspaceTeam(channel.TeamId) {
 		if ok, _ := a.SessionHasPermissionToChannel(rctx, session, channel.Id, model.PermissionManageChannelRoles); ok {
 			return nil
 		}
@@ -41,11 +41,11 @@ func (a *App) SessionCanArchiveChannel(rctx request.CTX, session model.Session, 
 	return model.MakePermissionError(&session, []*model.Permission{perm})
 }
 
-// isWorkplaceTeam tells whether a team is a workplace community; one that can't be read counts as a community, the
-// kind that allows less.
-func (a *App) isWorkplaceTeam(teamID string) bool {
+// isWorkspaceTeam tells whether a team is a workspace; one that can't be read counts as a guild, the kind that allows
+// less.
+func (a *App) isWorkspaceTeam(teamID string) bool {
 	team, appErr := a.GetTeam(teamID)
-	return appErr == nil && team.IsWorkplace()
+	return appErr == nil && team.IsWorkspace()
 }
 
 // SessionCanChangeOnTop tells whether a session may put a channel's messages on top, or take them off: in a direct or

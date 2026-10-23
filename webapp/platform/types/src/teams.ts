@@ -1,6 +1,7 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
+import type {CommunityNameDisplay, CommunityProfile} from './community_profiles';
 import type {CommunityRules} from './community_rules';
 import type {ServerError} from './errors';
 import type {MemberTimeout} from './moderation';
@@ -24,7 +25,8 @@ export type TeamMemberWithError = {
 
 export type TeamType = 'O' | 'I';
 
-export type TeamKind = 'community' | 'workplace';
+// Antimatter: the kinds of community. The server still accepts their former names, community and workplace.
+export type TeamKind = 'guild' | 'workspace';
 
 export type TeamMemberListView = 'choice' | 'roles' | 'teams';
 
@@ -62,13 +64,32 @@ export type Team = {
     default_channel_id?: string;
 
     /**
-     * Antimatter: the kind of community. In a community (the default), members don't archive channels; in a workplace
-     * one, they archive those they created (whose admins they are).
+     * Antimatter: the channel of the community's join and leave messages: its Welcome channel; empty for its default
+     * channel (communities made before Welcome). disable_join_leave_messages turns them off.
+     */
+    welcome_channel_id?: string;
+    disable_join_leave_messages?: boolean;
+
+    /** Antimatter: the community's default role, which everyone in it has; empty until its roles are first managed. */
+    default_role_id?: string;
+
+    /**
+     * Antimatter: the kind of community. In a guild (the default), members don't archive channels and everyone is in
+     * all its channels; in a workspace, they archive those they created (whose admins they are) and join the channels
+     * they want.
      */
     kind?: TeamKind;
 
     /** Antimatter: how the member list groups the community's members: as each chooses, by role, or by team. */
     member_list_view?: TeamMemberListView;
+
+    /**
+     * Antimatter: how the community shows people in its channels, member list, mentions and cards, as its admins chose;
+     * empty for the server's default (TeammateNameDisplay). Each member's own choice applies to direct and group
+     * messages. Whoever hides their full name and nickname from the community (its privacy settings) shows as their
+     * username there.
+     */
+    name_display?: CommunityNameDisplay | '';
 
     /** Data Retention Policy id. Unrelated to access-control policies below. */
     policy_id?: string | null;
@@ -120,6 +141,9 @@ export type TeamsState = {
 
     // Antimatter: the rules of each team whose rules were loaded, as the current user sees them.
     communityRules?: RelationOneToOne<Team, CommunityRules>;
+
+    // Antimatter: the profiles set in each team whose profiles were loaded, by user.
+    communityProfiles?: RelationOneToOne<Team, Record<string, CommunityProfile>>;
 };
 
 export type TeamUnread = {

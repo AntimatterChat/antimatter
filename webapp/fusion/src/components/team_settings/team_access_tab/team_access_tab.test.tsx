@@ -125,8 +125,8 @@ describe('components/TeamSettings', () => {
 
     test('should render Public Team and Private Team discoverability cards', () => {
         renderWithContext(<AccessTab {...defaultProps}/>);
-        expect(screen.getByText('Public Team')).toBeInTheDocument();
-        expect(screen.getByText('Private Team')).toBeInTheDocument();
+        expect(screen.getByText('Public community')).toBeInTheDocument();
+        expect(screen.getByText('Private community')).toBeInTheDocument();
     });
 
     test('should mark save panel dirty when discoverability card is clicked', async () => {
@@ -135,7 +135,7 @@ describe('components/TeamSettings', () => {
             team: TestHelper.getTeamMock({id: 'team_id', type: 'O', allow_open_invite: true}),
         };
         renderWithContext(<AccessTab {...props}/>);
-        await userEvent.click(screen.getByText('Private Team'));
+        await userEvent.click(screen.getByText('Private community'));
         expect(defaultProps.setAreThereUnsavedChanges).toHaveBeenCalledWith(true);
     });
 
@@ -145,7 +145,7 @@ describe('components/TeamSettings', () => {
             team: TestHelper.getTeamMock({id: 'team_id', type: 'O', allow_open_invite: true, policy_enforced: false}),
         };
         renderWithContext(<AccessTab {...props}/>);
-        await userEvent.click(screen.getByText('Private Team'));
+        await userEvent.click(screen.getByText('Private community'));
         await userEvent.click(screen.getByTestId('SaveChangesPanel__save-btn'));
         expect(patchTeam).toHaveBeenCalledWith({id: 'team_id', allow_open_invite: false});
     });
@@ -156,7 +156,7 @@ describe('components/TeamSettings', () => {
             team: TestHelper.getTeamMock({id: 'team_id', type: 'O', allow_open_invite: false, policy_enforced: false}),
         };
         renderWithContext(<AccessTab {...props}/>);
-        await userEvent.click(screen.getByText('Public Team'));
+        await userEvent.click(screen.getByText('Public community'));
         await userEvent.click(screen.getByTestId('SaveChangesPanel__save-btn'));
         expect(patchTeam).toHaveBeenCalledWith({id: 'team_id', allow_open_invite: true});
     });
@@ -168,7 +168,7 @@ describe('components/TeamSettings', () => {
             teamMembershipAccessControlEnabled: true,
         };
         renderWithContext(<AccessTab {...props}/>);
-        await userEvent.click(screen.getByText('Private Team'));
+        await userEvent.click(screen.getByText('Private community'));
 
         // Public -> Private on a governed team opens the mode-flip confirmation.
         // Confirming it saves immediately — no second click on the panel.
@@ -185,7 +185,7 @@ describe('components/TeamSettings', () => {
             teamMembershipAccessControlEnabled: true,
         };
         renderWithContext(<AccessTab {...props}/>);
-        await userEvent.click(screen.getByText('Public Team'));
+        await userEvent.click(screen.getByText('Public community'));
         await userEvent.click(screen.getByTestId('SaveChangesPanel__save-btn'));
         expect(patchTeam).toHaveBeenCalledWith({id: 'team_id', allow_open_invite: true});
     });
@@ -199,7 +199,7 @@ describe('components/TeamSettings', () => {
             teamMembershipAccessControlEnabled: false,
         };
         renderWithContext(<AccessTab {...props}/>);
-        await userEvent.click(screen.getByText('Private Team'));
+        await userEvent.click(screen.getByText('Private community'));
         await userEvent.click(screen.getByTestId('SaveChangesPanel__save-btn'));
         expect(patchTeam).toHaveBeenCalledWith({id: 'team_id', allow_open_invite: false});
     });
@@ -217,8 +217,8 @@ describe('components/TeamSettings', () => {
             teamMembershipAccessControlEnabled: true,
         };
         renderWithContext(<AccessTab {...props}/>);
-        await userEvent.click(screen.getByText('Private Team'));
-        expect(await screen.findByText('Switch to Private Team?')).toBeInTheDocument();
+        await userEvent.click(screen.getByText('Private community'));
+        expect(await screen.findByText('Make the community private?')).toBeInTheDocument();
         expect(await screen.findByText('Switch to Private')).toBeInTheDocument();
     });
 
@@ -242,7 +242,7 @@ describe('components/TeamSettings', () => {
             teamMembershipAccessControlEnabled: true,
         };
         renderWithContext(<AccessTab {...props}/>);
-        await userEvent.click(screen.getByText('Private Team'));
+        await userEvent.click(screen.getByText('Private community'));
 
         expect(await screen.findByText(/1 current member does not meet criteria/i)).toBeInTheDocument();
         expect(searchUsersForExpression).toHaveBeenCalledWith(
@@ -269,10 +269,10 @@ describe('components/TeamSettings', () => {
             teamMembershipAccessControlEnabled: true,
         };
         renderWithContext(<AccessTab {...props}/>);
-        await userEvent.click(screen.getByText('Private Team'));
+        await userEvent.click(screen.getByText('Private community'));
 
-        expect(await screen.findByText('Cannot switch to Private Team')).toBeInTheDocument();
-        expect(screen.queryByText('Switch to Private Team?')).not.toBeInTheDocument();
+        expect(await screen.findByText("The community can't be made private")).toBeInTheDocument();
+        expect(screen.queryByText('Make the community private?')).not.toBeInTheDocument();
         expect(patchTeam).not.toHaveBeenCalled();
     });
 
@@ -287,7 +287,7 @@ describe('components/TeamSettings', () => {
             teamMembershipAccessControlEnabled: true,
         };
         renderWithContext(<AccessTab {...props}/>);
-        await userEvent.click(screen.getByText('Private Team'));
+        await userEvent.click(screen.getByText('Private community'));
 
         expect(await screen.findByText(/Some members may not meet/i)).toBeInTheDocument();
         expect(screen.queryByText(/do not meet criteria/i)).not.toBeInTheDocument();
@@ -313,7 +313,7 @@ describe('components/TeamSettings', () => {
             teamMembershipAccessControlEnabled: true,
         };
         renderWithContext(<AccessTab {...props}/>);
-        await userEvent.click(screen.getByText('Private Team'));
+        await userEvent.click(screen.getByText('Private community'));
 
         expect(await screen.findByText(/2 current members do not meet criteria/i)).toBeInTheDocument();
     });
@@ -337,11 +337,11 @@ describe('components/TeamSettings', () => {
             teamMembershipAccessControlEnabled: true,
         };
         renderWithContext(<AccessTab {...props}/>);
-        await userEvent.click(screen.getByText('Private Team'));
+        await userEvent.click(screen.getByText('Private community'));
 
         // Self-exclusion block appears; the mode-flip confirmation does not; nothing is saved.
-        expect(await screen.findByText('Cannot switch to Private Team')).toBeInTheDocument();
-        expect(screen.queryByText('Switch to Private Team?')).not.toBeInTheDocument();
+        expect(await screen.findByText("The community can't be made private")).toBeInTheDocument();
+        expect(screen.queryByText('Make the community private?')).not.toBeInTheDocument();
         expect(validateExpressionAgainstRequester).toHaveBeenCalledWith(
             'user.attributes.Department == "Engineering"', undefined, 'team_id',
         );
@@ -369,10 +369,10 @@ describe('components/TeamSettings', () => {
             teamMembershipAccessControlEnabled: true,
         };
         renderWithContext(<AccessTab {...props}/>);
-        await userEvent.click(screen.getByText('Private Team'));
+        await userEvent.click(screen.getByText('Private community'));
 
-        expect(await screen.findByText('Switch to Private Team?')).toBeInTheDocument();
-        expect(screen.queryByText('Cannot switch to Private Team')).not.toBeInTheDocument();
+        expect(await screen.findByText('Make the community private?')).toBeInTheDocument();
+        expect(screen.queryByText("The community can't be made private")).not.toBeInTheDocument();
     });
 
     test('governed team with all members qualifying: modal shows a no-removals reassurance', async () => {
@@ -395,7 +395,7 @@ describe('components/TeamSettings', () => {
             teamMembershipAccessControlEnabled: true,
         };
         renderWithContext(<AccessTab {...props}/>);
-        await userEvent.click(screen.getByText('Private Team'));
+        await userEvent.click(screen.getByText('Private community'));
 
         expect(await screen.findByText(/no one will be removed/i)).toBeInTheDocument();
         expect(screen.queryByText(/do not meet criteria/i)).not.toBeInTheDocument();

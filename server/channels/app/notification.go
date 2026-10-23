@@ -128,7 +128,8 @@ func (a *App) SendNotifications(rctx request.CTX, post *model.Post, team *model.
 		)
 		return nil, pResult.NErr
 	}
-	profileMap := pResult.Data
+	// Antimatter: each member's notification settings for the channel's community over their own.
+	profileMap := a.withCommunityNotifyProps(rctx, channel.TeamId, pResult.Data)
 
 	cmnResult := <-cmnchan
 	if cmnResult.NErr != nil {
@@ -905,7 +906,7 @@ func (a *App) SendNotifications(rctx request.CTX, post *model.Post, team *model.
 						userThread.UnreadMentions = 0
 						userThread.UnreadReplies = 0
 					}
-					a.sanitizeProfiles(userThread.Participants, false)
+					a.sanitizeParticipants(userThread.Participants, uid)
 					userThread.Post.SanitizeNonIdentityProps()
 					userThread.Post.StripActionIntegrations()
 
@@ -1074,7 +1075,7 @@ func (a *App) RemoveNotifications(rctx request.CTX, post *model.Post, channel *m
 				previousUnreadMentions := int64(0)
 				previousUnreadReplies := int64(0)
 
-				a.sanitizeProfiles(userThread.Participants, false)
+				a.sanitizeParticipants(userThread.Participants, threadMembership.UserId)
 				userThread.Post.SanitizeNonIdentityProps()
 				userThread.Post.StripActionIntegrations()
 

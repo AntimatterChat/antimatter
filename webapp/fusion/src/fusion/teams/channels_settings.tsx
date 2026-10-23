@@ -19,8 +19,13 @@ import Constants from 'utils/constants';
 
 import type {GlobalState} from 'types/store';
 
-// ChannelsSettings is the Channels tab of the community settings: the kind of community (who archives channels),
-// whether everyone is in all its channels, as in Discord, and its default channel, where newcomers land.
+// The value of the join and leave messages' menu for "off".
+const JOIN_LEAVE_OFF = 'off';
+
+// ChannelsSettings is what members do with the community's channels, in its General settings: the kind of community
+// (a guild has everyone in all its channels and only its admins archive them; a workspace lets members join the
+// channels they want and archive those they created), whether everyone is in all its channels, its default channel,
+// where people land, and the channel of its join and leave messages (its Welcome channel), or none.
 export default function ChannelsSettings() {
     const {formatMessage} = useIntl();
     const dispatch = useDispatch();
@@ -55,6 +60,8 @@ export default function ChannelsSettings() {
         }
     };
 
+    const archived = formatMessage({id: 'fusion.teamChannels.defaultGone', defaultMessage: 'An archived channel'});
+
     // No choice is General while there is one; without it, people land in the first channel they're in.
     const general = publicChannels.find((c) => c.name === Constants.DEFAULT_CHANNEL);
     const chosen = team.default_channel_id || '';
@@ -66,20 +73,33 @@ export default function ChannelsSettings() {
         }
     }
     if (chosen && !options.some(([id]) => id === chosen)) {
-        options.push([chosen, formatMessage({id: 'fusion.teamChannels.defaultGone', defaultMessage: 'An archived channel'})]);
+        options.push([chosen, archived]);
     }
 
+    // The join and leave messages go to the Welcome channel; communities made before it have them in their default
+    // channel ('').
+    const joinLeave = team.disable_join_leave_messages ? JOIN_LEAVE_OFF : (team.welcome_channel_id || '');
+    const joinLeaveOptions: Array<[string, string]> = [
+        [JOIN_LEAVE_OFF, formatMessage({id: 'fusion.teamChannels.joinLeaveOff', defaultMessage: 'Off'})],
+        ['', formatMessage({id: 'fusion.teamChannels.joinLeaveDefault', defaultMessage: 'In the default channel'})],
+        ...publicChannels.map((c): [string, string] => [c.id, '#' + c.display_name]),
+    ];
+    if (team.welcome_channel_id && !joinLeaveOptions.some(([id]) => id === team.welcome_channel_id)) {
+        joinLeaveOptions.push([team.welcome_channel_id, archived]);
+    }
+
+    const kind: TeamKind = team.kind === 'workspace' ? 'workspace' : 'guild';
     return (
         <div className={am('team-channels')}>
             <Choice<TeamKind>
                 title={formatMessage({id: 'fusion.teamChannels.kind', defaultMessage: 'Kind of community'})}
-                desc={formatMessage({id: 'fusion.teamChannels.kindDesc', defaultMessage: 'Community: only its admins (and roles that manage channels) archive channels. Workplace, for a company\'s or an organisation\'s workspace: members also archive the channels they created. In both, only the channels\' admins, the community\'s admins and moderators put messages on top.'})}
-                value={team.kind === 'workplace' ? 'workplace' : 'community'}
+                desc={formatMessage({id: 'fusion.teamChannels.kindGuildDesc', defaultMessage: 'Guild: everyone is in all its channels, and only its admins (and roles that manage channels) archive them. Workspace, for a company or an organisation: members join the channels they want, and also archive the channels they created. Changing the kind turns "Members are in every channel" on for a guild, off for a workspace. In both, only the channels\' admins, the community\'s admins and moderators put messages on top.'})}
+                value={kind}
                 options={[
-                    ['community', formatMessage({id: 'fusion.teamChannels.kind.community', defaultMessage: 'Community'})],
-                    ['workplace', formatMessage({id: 'fusion.teamChannels.kind.workplace', defaultMessage: 'Workplace'})],
+                    ['guild', formatMessage({id: 'fusion.teamChannels.kind.guild', defaultMessage: 'Guild'})],
+                    ['workspace', formatMessage({id: 'fusion.teamChannels.kind.workspace', defaultMessage: 'Workspace'})],
                 ]}
-                onChange={(kind) => save({kind}, kind === 'workplace' ? formatMessage({id: 'fusion.teamChannels.kindWorkplace', defaultMessage: 'Members now archive the channels they created'}) : formatMessage({id: 'fusion.teamChannels.kindCommunity', defaultMessage: 'Only the community\'s admins archive channels now'}))}
+                onChange={(next) => save({kind: next}, next === 'workspace' ? formatMessage({id: 'fusion.teamChannels.kindNowWorkspace', defaultMessage: 'It\'s a workspace: members join the channels they want and archive those they created'}) : formatMessage({id: 'fusion.teamChannels.kindNowGuild', defaultMessage: 'It\'s a guild: everyone is being added to the channels they may see'}))}
             />
             <Toggle
                 title={formatMessage({id: 'fusion.teamChannels.all', defaultMessage: 'Members are in every channel'})}
@@ -89,10 +109,20 @@ export default function ChannelsSettings() {
             />
             <Select
                 title={formatMessage({id: 'fusion.teamChannels.default', defaultMessage: 'Default channel'})}
-                desc={formatMessage({id: 'fusion.teamChannels.defaultDesc', defaultMessage: 'Where newcomers land, and where the community\'s join and leave messages go. Everyone is in it and can\'t leave it. Archive it and people land in the first channel they\'re in.'})}
+                desc={formatMessage({id: 'fusion.teamChannels.defaultLandDesc', defaultMessage: 'Where people land. Everyone is in it and can\'t leave it. Archive it and people land in the first channel they\'re in.'})}
                 value={chosen}
                 options={options}
                 onChange={(id) => save({default_channel_id: id}, formatMessage({id: 'fusion.teamChannels.defaultSaved', defaultMessage: 'Default channel saved'}))}
+            />
+            <Select
+                title={formatMessage({id: 'fusion.teamChannels.joinLeave', defaultMessage: 'Join and leave messages'})}
+                desc={formatMessage({id: 'fusion.teamChannels.joinLeaveDesc', defaultMessage: 'The channel that tells who joins and leaves the community: new communities\' Welcome channel. Everyone is in it. Where members are in every channel, the channels themselves don\'t tell who joins or leaves them.'})}
+                value={joinLeave}
+                options={joinLeaveOptions}
+                onChange={(value) => save(
+                    value === JOIN_LEAVE_OFF ? {disable_join_leave_messages: true} : {disable_join_leave_messages: false, welcome_channel_id: value},
+                    value === JOIN_LEAVE_OFF ? formatMessage({id: 'fusion.teamChannels.joinLeaveOffSaved', defaultMessage: 'Nobody is told who joins and leaves'}) : formatMessage({id: 'fusion.teamChannels.joinLeaveSaved', defaultMessage: 'Join and leave messages saved'}),
+                )}
             />
         </div>
     );

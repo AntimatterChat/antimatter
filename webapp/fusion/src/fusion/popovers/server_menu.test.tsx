@@ -7,7 +7,7 @@ import {Permissions} from 'mattermost-redux/constants';
 
 import {CATEGORY_HIDE_MUTED, setHidingMutedChannels} from 'fusion/sidebar/team_actions';
 import {accessState} from 'fusion/teams/settings_test_utils';
-import {openTeamMembers, openTeamSettings, openUserGroups} from 'fusion/utils/modals';
+import {openTeamMembers, openTeamSettings, openTeams} from 'fusion/utils/modals';
 import {renderWithContext, screen, userEvent} from 'tests/react_testing_utils';
 
 import ServerMenu from './server_menu';
@@ -17,13 +17,14 @@ jest.mock('fusion/utils/modals', () => ({
     openLeaveTeam: jest.fn(() => ({type: 'MOCK_LEAVE'})),
     openTeamMembers: jest.fn(() => ({type: 'MOCK_MEMBERS'})),
     openTeamSettings: jest.fn(() => ({type: 'MOCK_SETTINGS'})),
-    openUserGroups: jest.fn(() => ({type: 'MOCK_TEAMS'})),
+    openTeams: jest.fn(() => ({type: 'MOCK_TEAMS'})),
 }));
 jest.mock('fusion/sidebar/team_actions', () => ({
     ...jest.requireActual('fusion/sidebar/team_actions'),
     setHidingMutedChannels: jest.fn(() => ({type: 'MOCK_HIDE_MUTED'})),
 }));
-jest.mock('fusion/shell/dialogs_context', () => ({useDialogs: () => ({browseChannels: jest.fn(), createChannel: jest.fn(), createCategory: jest.fn(), selfRoles: jest.fn()})}));
+const mockDialogs = {browseChannels: jest.fn(), createChannel: jest.fn(), createCategory: jest.fn(), selfRoles: jest.fn(), communityNotifications: jest.fn(), communityPrivacy: jest.fn(), communityProfile: jest.fn()};
+jest.mock('fusion/shell/dialogs_context', () => ({useDialogs: () => mockDialogs}));
 jest.mock('fusion/shell/settings_context', () => ({useSettings: () => ({open: jest.fn()})}));
 jest.mock('fusion/shell/toast_context', () => ({useToast: () => jest.fn()}));
 
@@ -74,9 +75,9 @@ describe('fusion/popovers/ServerMenu', () => {
     test('an admin\'s menu: Invite people, Community settings, the channels, the hide options, then Leave, in groups', () => {
         render(ADMIN);
         expect(layout()).toEqual([
-            'Invite people', 'Community settings', '|',
+            'Invite people', 'Community settings', 'Your profile in One…', '|',
             'Create channel', 'Create category', 'Browse channels', '|',
-            'Hide read channels', 'Hide muted channels', 'Mute community', 'Notification settings', '|',
+            'Hide read channels', 'Hide muted channels', 'Mute community', 'Notification settings', 'Privacy settings', '|',
             'Leave community',
         ]);
     });
@@ -87,6 +88,21 @@ describe('fusion/popovers/ServerMenu', () => {
             expect(screen.queryByRole('menuitem', {name: gone})).not.toBeInTheDocument();
             expect(screen.queryByText(gone)).not.toBeInTheDocument();
         }
+    });
+
+    test('Notification settings and Privacy settings open the community\'s own, not the global settings', async () => {
+        render(MEMBER);
+        await userEvent.click(screen.getByRole('menuitem', {name: 'Notification settings'}));
+        expect(mockDialogs.communityNotifications).toHaveBeenCalledWith('t1');
+        await userEvent.click(screen.getByRole('menuitem', {name: 'Privacy settings'}));
+        expect(mockDialogs.communityPrivacy).toHaveBeenCalledWith('t1');
+    });
+
+    // Antimatter: one's profile in the community, for everyone (My account has the global profile).
+    test('Your profile in the community opens its dialog, for everyone', async () => {
+        render(MEMBER);
+        await userEvent.click(screen.getByRole('menuitem', {name: 'Your profile in One…'}));
+        expect(mockDialogs.communityProfile).toHaveBeenCalled();
     });
 
     test('Community settings opens the settings of the menu\'s community', async () => {
@@ -100,12 +116,12 @@ describe('fusion/popovers/ServerMenu', () => {
             render(MEMBER);
             expect(screen.queryByRole('menuitem', {name: 'Community settings'})).not.toBeInTheDocument();
             expect(screen.queryByRole('menuitem', {name: 'Integrations'})).not.toBeInTheDocument();
-            expect(layout().slice(0, 4)).toEqual(['Invite people', 'View members', 'Teams…', '|']);
+            expect(layout().slice(0, 5)).toEqual(['Invite people', 'View members', 'Teams…', 'Your profile in One…', '|']);
 
             await userEvent.click(screen.getByRole('menuitem', {name: 'View members'}));
             expect(openTeamMembers).toHaveBeenCalled();
             await userEvent.click(screen.getByRole('menuitem', {name: 'Teams…'}));
-            expect(openUserGroups).toHaveBeenCalledWith('t1');
+            expect(openTeams).toHaveBeenCalled();
         });
 
         test('without teams on the server, a member has no Teams entry', () => {
@@ -126,7 +142,7 @@ describe('fusion/popovers/ServerMenu', () => {
             ['its slash commands', [Permissions.MANAGE_OWN_SLASH_COMMANDS]],
         ])('someone who manages %s does, right after Invite people, and finds the members and teams there', (_, permissions) => {
             render([...MEMBER, ...permissions]);
-            expect(layout().slice(0, 3)).toEqual(['Invite people', 'Community settings', '|']);
+            expect(layout().slice(0, 4)).toEqual(['Invite people', 'Community settings', 'Your profile in One…', '|']);
             expect(screen.queryByRole('menuitem', {name: 'View members'})).not.toBeInTheDocument();
             expect(screen.queryByRole('menuitem', {name: 'Teams…'})).not.toBeInTheDocument();
         });

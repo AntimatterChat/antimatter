@@ -76,3 +76,53 @@ describe('fusion/popovers/UserPopover: the System Console link', () => {
         expect(screen.queryByRole('button', {name: 'System Console'})).not.toBeInTheDocument();
     });
 });
+
+// Antimatter: in a community where someone set a nickname or picture of their own, their card has their name there,
+// and how they show outside it.
+describe('fusion/popovers/UserPopover: community profiles', () => {
+    beforeEach(() => {
+        if (!document.getElementById('am-layer')) {
+            const layer = document.createElement('div');
+            layer.id = 'am-layer';
+            document.body.appendChild(layer);
+        }
+    });
+
+    const renderCard = (profiles: Record<string, unknown>) => renderWithContext(
+        <UserPopover
+            userId='sofia'
+            anchor={document.body}
+            onClose={jest.fn()}
+        />,
+        {
+            entities: {
+                general: {config: {TeammateNameDisplay: 'full_name'}},
+                users: {
+                    currentUserId: 'me',
+                    profiles: {
+                        me: TestHelper.getUserMock({id: 'me', username: 'me', roles: 'system_user'}),
+                        sofia: TestHelper.getUserMock({id: 'sofia', username: 'sofia', first_name: 'Sofia', last_name: 'Reyes', roles: 'system_user'}),
+                    },
+                },
+                teams: {
+                    currentTeamId: 't1',
+                    teams: {t1: TestHelper.getTeamMock({id: 't1', name: 'lumen', name_display: 'nickname_full_name'})},
+                    communityProfiles: {t1: profiles},
+                },
+                roles: {roles: {system_user: {permissions: []}}},
+            },
+        } as never,
+    );
+
+    test('shows their nickname in the community, and their name outside it', () => {
+        renderCard({sofia: {team_id: 't1', user_id: 'sofia', nickname: 'Captain', update_at: 1}});
+        expect(screen.getByRole('heading', {name: 'Captain'})).toBeInTheDocument();
+        expect(screen.getByText('Outside this community: Sofia Reyes')).toBeInTheDocument();
+    });
+
+    test('without a profile of their own there, no second name', () => {
+        renderCard({});
+        expect(screen.getByRole('heading', {name: 'Sofia Reyes'})).toBeInTheDocument();
+        expect(screen.queryByText(/Outside this community/)).not.toBeInTheDocument();
+    });
+});

@@ -9,14 +9,13 @@ import type {Reaction} from '@mattermost/types/reactions';
 
 import {getMissingProfilesByIds} from 'mattermost-redux/actions/users';
 import {makeGetReactionsForPost} from 'mattermost-redux/selectors/entities/posts';
-import {getTeammateNameDisplaySetting} from 'mattermost-redux/selectors/entities/preferences';
 import {getCurrentUserId, getUsers} from 'mattermost-redux/selectors/entities/users';
-import {displayUsername} from 'mattermost-redux/utils/user_utils';
 
 import {toggleReaction} from 'actions/post_actions';
 
 import RenderEmoji from 'components/emoji/render_emoji';
 
+import {useDisplayNames} from 'fusion/profiles/community_profiles';
 import {am} from 'fusion/utils/class_names';
 
 import type {GlobalState} from 'types/store';
@@ -36,7 +35,7 @@ export default function Reactions({postId}: {postId: string}) {
     const reactions = useSelector((state: GlobalState) => getReactions(state, postId));
     const me = useSelector(getCurrentUserId);
     const users = useSelector(getUsers);
-    const nameDisplay = useSelector(getTeammateNameDisplaySetting);
+    const nameOf = useDisplayNames();
 
     const groups = useMemo(() => {
         const byName = new Map<string, Group>();
@@ -56,7 +55,7 @@ export default function Reactions({postId}: {postId: string}) {
 
     // The tooltip names you first, then the others in the order they reacted.
     const reactedBy = (g: Group) => {
-        const others = g.userIds.filter((id) => id !== me).map((id) => (users[id] ? displayUsername(users[id], nameDisplay) : '')).filter(Boolean);
+        const others = g.userIds.filter((id) => id !== me).map((id) => (users[id] ? nameOf(users[id]) : '')).filter(Boolean);
         const names = g.mine ? [formatMessage({id: 'fusion.reactions.you', defaultMessage: 'You'}), ...others] : others;
         const unnamed = (g.userIds.length - names.length) + Math.max(names.length - NAMED, 0);
         const listed = names.slice(0, NAMED);

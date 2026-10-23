@@ -89,8 +89,8 @@ const InviteSectionInput = ({regenerateTeamInviteId}: Props) => {
                 defaultMessage: 'Invite Code',
             })}
             description={formatMessage({
-                id: 'general_tab.codeLongDesc',
-                defaultMessage: 'The Invite Code is part of the unique team invitation link which is sent to members you’re inviting to this team. Regenerating the code creates a new invitation link and invalidates the previous link.',
+                id: 'fusion.communityAccess.codeLongDesc',
+                defaultMessage: 'The invite code is part of the community\'s invitation link, sent to the people you invite. Regenerating it makes a new link and invalidates the previous one.',
 
             })}
             content={inviteSectionInput}

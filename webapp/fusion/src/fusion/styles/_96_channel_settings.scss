@@ -116,8 +116,31 @@
     .btn.btn-link { background: none; color: var(--am-anti); }
   }
 
-  // The Teams page: a team per row, its tag first.
-  .am-team-row { width: 100%; text-align: left; color: var(--am-text); }
+  // The default role closes the list of roles, apart from those given to some.
+  .am-role-row.am-default-role { border-style: dashed; }
+
+  // General: the community's icon beside what it's for, then its name and description.
+  .am-community-icon-row { display: flex; align-items: center; gap: 16px; margin-bottom: 14px; }
+  .am-community-icon {
+    display: grid; flex: none; place-items: center; width: 64px; height: 64px; overflow: hidden;
+    border-radius: 16px; background: var(--am-raise-2); color: var(--am-text);
+    font: 800 20px var(--am-font-ui); text-transform: uppercase;
+  }
+  .am-community-icon img { width: 100%; height: 100%; object-fit: cover; }
+  .am-community-icon-actions { display: grid; gap: 4px; min-width: 0; }
+  .am-community-icon-actions > span { color: var(--am-muted); font-size: 13px; }
+  .am-community-icon-actions > div { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+  .am-community-info .am-modal-actions { margin-bottom: 4px; }
+}
+
+// The Teams page (a tab of the settings, and the Teams dialog): a search and what to show, then a team per row (its
+// tag first, its buttons at the right end), and the editor under the list.
+:is(.am-app, .am-layer) .am-team-teams-page {
+  .am-team-teams-head { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 12px 0 4px; }
+  .am-team-teams-head input[type="search"] { flex: 1; min-width: 160px; height: 36px; }
+  .am-team-row { width: 100%; color: var(--am-text); }
+  .am-team-row-open { display: flex; flex: 1; align-items: center; gap: 10px; min-width: 0; color: inherit; text-align: left; }
+  .am-team-row-open:disabled { cursor: default; opacity: .7; }
   .am-team-row .am-team-tag { flex: none; }
   .am-team-teams-foot { display: flex; margin-top: 12px; }
   .am-team-teams-foot .am-btn { width: auto; gap: 6px; }

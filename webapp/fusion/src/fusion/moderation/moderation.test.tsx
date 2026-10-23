@@ -31,7 +31,7 @@ const roles = {
     message_mod: {name: 'message_mod', permissions: ['delete_others_posts']},
 };
 const role = (id: string, name: string, members: string[]) => ({id, team_id: 'team', is_team: false, source: 'custom', delete_at: 0, display_name: name, name: id, member_ids: members, color: '#e11d48', position: 0});
-const stateWith = (myTeamRoles: string, timeout?: {until: number; reason: string}, mySystemRoles = 'system_user') => ({
+const stateWith = (myTeamRoles: string, timeout?: {until: number; reason: string}, mySystemRoles = 'system_user', bobProfile?: Record<string, unknown>) => ({
     entities: {
         users: {currentUserId: 'me', profiles: {me: {...admin, roles: mySystemRoles}, bob}, statuses: {bob: 'online'}},
         teams: {
@@ -40,6 +40,7 @@ const stateWith = (myTeamRoles: string, timeout?: {until: number; reason: string
             myMembers: {team: {team_id: 'team', user_id: 'me', roles: myTeamRoles}},
             membersInTeam: {team: {bob: {team_id: 'team', user_id: 'bob', roles: 'team_user'}}},
             timeouts: {team: timeout ? [{team_id: 'team', user_id: 'bob', created_by: 'me', create_at: 0, ...timeout}] : []},
+            communityProfiles: {team: bobProfile ? {bob: {team_id: 'team', user_id: 'bob', update_at: 1, ...bobProfile}} : {}},
         },
         roles: {roles},
         groups: {groups: {helpers: role('helpers', 'Helpers', ['bob']), mods: role('mods', 'Mods', [])}},
@@ -142,6 +143,31 @@ describe('ModViewPanel: its actions, per role, each once', () => {
         renderWithContext(<ModViewPanel/>, stateWith('team_user team_admin'));
         await screen.findByText('3 in the last day · 12 in the last week');
         expect(actionIds()).not.toContain('deactivate');
+    });
+});
+
+// Antimatter: a nickname or a picture for the community that breaks its rules is taken off from the mod view, by those
+// who may time the person out (the server checks the hierarchy too).
+describe('ModViewPanel: community profiles', () => {
+    test('a nickname and a picture of their own for the community can be reset', async () => {
+        const reset = jest.spyOn(Client4, 'resetCommunityProfile').mockResolvedValue({team_id: 'team', user_id: 'bob', update_at: 2});
+        renderWithContext(<ModViewPanel/>, stateWith('team_user team_admin', undefined, 'system_user', {nickname: 'Admin', avatar_update_at: 5}));
+        await screen.findByText('3 in the last day · 12 in the last week');
+        expect(actionIds()).toEqual(['message', 'search-messages', 'time-out', 'reset-nickname', 'reset-picture', 'remove-from-community']);
+        await userEvent.click(screen.getByRole('button', {name: 'Reset nickname'}));
+        expect(reset).toHaveBeenCalledWith('team', 'bob', {nickname: true});
+        await userEvent.click(screen.getByRole('button', {name: 'Reset picture'}));
+        expect(reset).toHaveBeenCalledWith('team', 'bob', {avatar: true});
+    });
+
+    test('nothing to reset without a profile of their own, nor for a moderator of messages', async () => {
+        const {unmount} = renderWithContext(<ModViewPanel/>, stateWith('team_user team_admin'));
+        await screen.findByText('3 in the last day · 12 in the last week');
+        expect(actionIds()).not.toContain('reset-nickname');
+        unmount();
+
+        renderWithContext(<ModViewPanel/>, stateWith('team_user message_mod', undefined, 'system_user', {nickname: 'Admin'}));
+        expect(screen.queryByRole('button', {name: 'Reset nickname'})).not.toBeInTheDocument();
     });
 });
 

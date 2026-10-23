@@ -33,6 +33,7 @@ import {flattenItems, flattenTerms} from 'components/suggestion/suggestion_resul
 
 import {IntegrationTag} from 'fusion/agents/agent_status';
 import Avatar from 'fusion/components/avatar';
+import {communityView, useCommunityProfile} from 'fusion/profiles/community_profiles';
 import ChannelIcon from 'fusion/sidebar/channel_icon';
 import {am} from 'fusion/utils/class_names';
 
@@ -70,6 +71,18 @@ const SPECIAL_DESCRIPTIONS: Record<string, {id: string; defaultMessage: string}>
     all: {id: 'fusion.ac.all', defaultMessage: 'Notifies everyone in this channel'},
 };
 
+// MentionNames are a person's names next to their username in a suggestion: as the conversation's community shows
+// them (their nickname there first).
+function MentionNames({user}: {user: UserProfile}) {
+    const [profile] = useCommunityProfile(user.id);
+    const view = communityView(user, profile);
+    const full = [view.first_name, view.last_name].filter(Boolean).join(' ');
+    if (profile?.nickname) {
+        return <>{full ? `${profile.nickname} · ${full}` : profile.nickname}</>;
+    }
+    return <>{full || view.nickname}</>;
+}
+
 // RowContent is one suggestion (exported for its tests).
 export function RowContent({kind, row}: {kind: Kind; row: Row}) {
     const {formatMessage} = useIntl();
@@ -97,7 +110,7 @@ export function RowContent({kind, row}: {kind: Kind; row: Row}) {
                 {/* Agents come with the people (the server's autocomplete lists those the person may talk to). */}
                 {(user.is_agent || item.isAgent === true) && <IntegrationTag agent={true}/>}
                 <span className={am('desc')}>
-                    {[user.first_name, user.last_name].filter(Boolean).join(' ') || user.nickname}
+                    <MentionNames user={user}/>
                     {user.is_bot && !user.is_agent && item.isAgent !== true ? ' · ' + formatMessage({id: 'fusion.ac.bot', defaultMessage: 'bot'}) : ''}
                 </span>
             </>

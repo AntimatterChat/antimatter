@@ -199,22 +199,23 @@ func TestTeamSanitizePreservesPolicyEnforced(t *testing.T) {
 	})
 }
 
-// Antimatter: the kind of community. New teams are communities; only the two kinds are valid.
+// Antimatter: the kind of community. New teams are guilds; only the two kinds are valid, their former names standing
+// for them.
 func TestTeamKind(t *testing.T) {
 	o := Team{DisplayName: "test", Name: "zzzzz", Type: TeamOpen}
 	o.PreSave()
-	assert.Equal(t, TeamKindCommunity, o.Kind)
-	assert.False(t, o.IsWorkplace())
+	assert.Equal(t, TeamKindGuild, o.Kind)
+	assert.False(t, o.IsWorkspace())
 	require.Nil(t, o.IsValid())
 
-	o.Patch(&TeamPatch{Kind: NewPointer(TeamKindWorkplace)})
-	assert.Equal(t, TeamKindWorkplace, o.Kind)
-	assert.True(t, o.IsWorkplace())
+	o.Patch(&TeamPatch{Kind: NewPointer(TeamKindWorkspace)})
+	assert.Equal(t, TeamKindWorkspace, o.Kind)
+	assert.True(t, o.IsWorkspace())
 	require.Nil(t, o.IsValid())
 
 	o.Kind = ""
-	require.Nil(t, o.IsValid(), "a team saved before kinds existed is a community")
-	assert.False(t, o.IsWorkplace())
+	require.Nil(t, o.IsValid(), "a team saved before kinds existed is a guild")
+	assert.False(t, o.IsWorkspace())
 
 	o.Kind = "castle"
 	appErr := o.IsValid()
@@ -222,7 +223,63 @@ func TestTeamKind(t *testing.T) {
 	assert.Equal(t, "model.team.is_valid.kind.app_error", appErr.Id)
 
 	var none *Team
-	assert.False(t, none.IsWorkplace())
+	assert.False(t, none.IsWorkspace())
+}
+
+// Antimatter: the kinds' former names, community and workplace, are still accepted and are what's stored.
+func TestTeamKindFormerNames(t *testing.T) {
+	assert.Equal(t, TeamKindGuild, NormalizeTeamKind("community"))
+	assert.Equal(t, TeamKindWorkspace, NormalizeTeamKind("workplace"))
+	assert.Equal(t, TeamKindGuild, NormalizeTeamKind(TeamKindGuild))
+	assert.Equal(t, "castle", NormalizeTeamKind("castle"))
+
+	for _, kind := range []string{TeamKindGuild, TeamKindWorkspace, "community", "workplace"} {
+		assert.True(t, IsValidTeamKind(kind), kind)
+	}
+	assert.False(t, IsValidTeamKind(""))
+	assert.False(t, IsValidTeamKind("castle"))
+
+	assert.Equal(t, "community", TeamKindStoredValue(TeamKindGuild))
+	assert.Equal(t, "workplace", TeamKindStoredValue(TeamKindWorkspace))
+	assert.Equal(t, "workplace", TeamKindStoredValue("workplace"))
+	assert.Equal(t, "", TeamKindStoredValue(""))
+
+	o := Team{DisplayName: "test", Name: "zzzzz", Type: TeamOpen, Kind: "workplace"}
+	o.PreSave()
+	assert.Equal(t, TeamKindWorkspace, o.Kind, "a former name is saved as its kind")
+	assert.True(t, o.IsWorkspace())
+
+	o.Patch(&TeamPatch{Kind: NewPointer("community")})
+	assert.Equal(t, TeamKindGuild, o.Kind)
+	require.Nil(t, o.IsValid())
+
+	o.Kind = "workplace"
+	assert.True(t, o.IsWorkspace(), "a team read with the former name is a workspace")
+}
+
+// Antimatter: the community's Welcome channel and default role are ids, and its join and leave messages can be turned
+// off.
+func TestTeamWelcomeChannelAndDefaultRole(t *testing.T) {
+	o := Team{DisplayName: "test", Name: "zzzzz", Type: TeamOpen}
+	o.PreSave()
+	require.Nil(t, o.IsValid())
+
+	welcome := NewId()
+	o.Patch(&TeamPatch{WelcomeChannelId: NewPointer(welcome), DisableJoinLeaveMessages: NewPointer(true)})
+	assert.Equal(t, welcome, o.WelcomeChannelId)
+	assert.True(t, o.DisableJoinLeaveMessages)
+	require.Nil(t, o.IsValid())
+
+	o.WelcomeChannelId = "welcome"
+	appErr := o.IsValid()
+	require.NotNil(t, appErr)
+	assert.Equal(t, "model.team.is_valid.welcome_channel.app_error", appErr.Id)
+
+	o.WelcomeChannelId = ""
+	o.DefaultRoleId = "members"
+	appErr = o.IsValid()
+	require.NotNil(t, appErr)
+	assert.Equal(t, "model.team.is_valid.default_role.app_error", appErr.Id)
 }
 
 // Antimatter: how the member list groups a community's members. Members choose unless the admins fix it.
@@ -248,11 +305,17 @@ func TestTeamMemberListView(t *testing.T) {
 func TestDefaultCommunityKindSetting(t *testing.T) {
 	cfg := &Config{}
 	cfg.SetDefaults()
-	assert.Equal(t, TeamKindCommunity, *cfg.TeamSettings.DefaultCommunityKind)
+	assert.Equal(t, TeamKindGuild, *cfg.TeamSettings.DefaultCommunityKind)
 	require.Nil(t, cfg.TeamSettings.isValid())
 
-	*cfg.TeamSettings.DefaultCommunityKind = TeamKindWorkplace
+	*cfg.TeamSettings.DefaultCommunityKind = TeamKindWorkspace
 	require.Nil(t, cfg.TeamSettings.isValid())
+
+	// A configuration saved with a former name reads as its kind.
+	*cfg.TeamSettings.DefaultCommunityKind = "workplace"
+	require.Nil(t, cfg.TeamSettings.isValid())
+	cfg.SetDefaults()
+	assert.Equal(t, TeamKindWorkspace, *cfg.TeamSettings.DefaultCommunityKind)
 
 	*cfg.TeamSettings.DefaultCommunityKind = "corporate"
 	appErr := cfg.TeamSettings.isValid()

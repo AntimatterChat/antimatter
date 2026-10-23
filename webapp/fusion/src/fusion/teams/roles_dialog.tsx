@@ -11,7 +11,7 @@ import type {TeamMemberListView} from '@mattermost/types/teams';
 import type {UserProfile} from '@mattermost/types/users';
 
 import {addUsersToGroup, archiveGroup, createGroupWithUserIds, patchGroup, removeUsersFromGroup} from 'mattermost-redux/actions/groups';
-import {patchTeam} from 'mattermost-redux/actions/teams';
+import {getTeam, patchTeam} from 'mattermost-redux/actions/teams';
 import {getMissingProfilesByIds} from 'mattermost-redux/actions/users';
 import {Client4} from 'mattermost-redux/client';
 import {Permissions} from 'mattermost-redux/constants';
@@ -58,14 +58,33 @@ const slug = (name: string) => name.toLowerCase().normalize('NFKD').replace(/[^a
 
 // RolesSettings is the Roles tab of the community settings, where a team's admins set up its roles, as Discord's
 // server settings: their names, colours, icons, order and members, whether each shows its members apart, and the
-// team's display settings (role colours, badges, how the member list groups people). Close closes the settings.
+// team's display settings (role colours, how the member list groups people). Its default role, which everyone in it
+// has (as Discord's @everyone), comes last: made the first time the roles are managed, it can't be moved, deleted,
+// given or taken away. Close closes the settings.
 export default function RolesSettings({onClose}: {onClose: () => void}) {
     const {formatMessage} = useIntl();
     const dispatch = useDispatch();
     const toast = useToast();
     const team = useSelector(getCurrentTeam);
-    const roles = useSelector((state: GlobalState) => (team ? getTeamRoles(state, team.id) : []), shallowEqual);
+    const allRoles = useSelector((state: GlobalState) => (team ? getTeamRoles(state, team.id) : []), shallowEqual);
+    const defaultRoleId = team?.default_role_id || '';
+    const defaultRole = allRoles.find((r) => r.id === defaultRoleId);
+    const roles = useMemo(() => allRoles.filter((r) => r.id !== defaultRoleId), [allRoles, defaultRoleId]);
     const [editing, setEditing] = useState<string | 'new' | null>(null);
+
+    // The default role is made the first time the roles are managed.
+    const teamId = team?.id;
+    useEffect(() => {
+        if (!teamId || defaultRoleId) {
+            return;
+        }
+        Client4.ensureTeamDefaultRole(teamId).then(() => {
+            dispatch(getTeam(teamId));
+            dispatch(loadTeams());
+        }).catch(() => {
+            // Without it, the other roles are managed as before.
+        });
+    }, [teamId, defaultRoleId, dispatch]);
 
     // Team admins manage every role; those who may manage roles, the roles below their own highest one.
     const admin = useSelector((state: GlobalState) => Boolean(team) && haveITeamPermission(state, team!.id, Permissions.MANAGE_TEAM));
@@ -142,7 +161,7 @@ export default function RolesSettings({onClose}: {onClose: () => void}) {
         }
     };
 
-    const editedRole = roles.find((r) => r.id === editing);
+    const editedRole = allRoles.find((r) => r.id === editing);
     return (
         <div className={am('roles-pane')}>
             <p className={am('lead')}>{formatMessage({id: 'fusion.roles.lead', defaultMessage: 'Roles give members colours. Roles shown separately get their own group in the member list; the member\'s highest role sets their name colour.'})}</p>
@@ -153,12 +172,6 @@ export default function RolesSettings({onClose}: {onClose: () => void}) {
                         desc={formatMessage({id: 'fusion.roles.colorsDesc', defaultMessage: 'Names take the colour of their highest role, over everyone\'s coloured names.'})}
                         on={!team.hide_role_colors}
                         onChange={(on) => dispatch(patchTeam({id: team.id, hide_role_colors: !on}))}
-                    />
-                    <Toggle
-                        title={formatMessage({id: 'fusion.roles.badges', defaultMessage: 'Everyone shows a team badge'})}
-                        desc={formatMessage({id: 'fusion.roles.badgesDesc', defaultMessage: 'For example in a company: in this community, people who chose no badge show the tag of their first team here.'})}
-                        on={Boolean(team.require_team_badges)}
-                        onChange={(on) => dispatch(patchTeam({id: team.id, require_team_badges: on}))}
                     />
                     <Choice<TeamMemberListView>
                         title={formatMessage({id: 'fusion.roles.memberList', defaultMessage: 'Member list'})}
@@ -248,11 +261,40 @@ export default function RolesSettings({onClose}: {onClose: () => void}) {
                     </div>
                 ))}
                 {!roles.length && <p className={am('lead')}>{formatMessage({id: 'fusion.roles.none', defaultMessage: 'No roles yet.'})}</p>}
+                {defaultRole && (
+                    <div className={am('role-row', 'default-role')}>
+                        <i
+                            className={am('role-dot')}
+                            style={{background: defaultRole.color || 'var(--am-muted)'}}
+                        />
+                        <div className={am('grow')}>
+                            <b style={defaultRole.color ? {color: defaultRole.color} : undefined}>{defaultRole.display_name}</b>
+                            <span>
+                                {formatMessage({id: 'fusion.roles.defaultRole', defaultMessage: 'Default role: everyone in the community has it'})}
+                                {defaultRole.hoist && ` · ${formatMessage({id: 'fusion.roles.shownApart', defaultMessage: 'shown separately'})}`}
+                            </span>
+                        </div>
+                        <button
+                            type='button'
+                            className={am('icon-btn')}
+                            title={formatMessage({id: 'fusion.roles.edit', defaultMessage: 'Edit the role'})}
+                            aria-label={formatMessage({id: 'fusion.roles.edit', defaultMessage: 'Edit the role'})}
+                            disabled={!manages(defaultRole)}
+                            onClick={() => setEditing(editing === defaultRole.id ? null : defaultRole.id)}
+                        >
+                            <Icon
+                                name='pen'
+                                size='sm'
+                            />
+                        </button>
+                    </div>
+                )}
             </div>
             {editing && (
                 <RoleEditor
                     key={editing}
                     role={editedRole}
+                    isDefault={Boolean(editedRole) && editedRole?.id === defaultRoleId}
                     onSave={(draft) => save(draft, editedRole)}
                     onCancel={() => setEditing(null)}
                     onMembersChanged={refresh}
@@ -286,13 +328,16 @@ export default function RolesSettings({onClose}: {onClose: () => void}) {
 
 type EditorProps = {
     role?: Group;
+
+    // The default role: everyone has it, nobody takes or leaves it.
+    isDefault?: boolean;
     onSave: (draft: Draft) => void;
     onCancel: () => void;
     onMembersChanged: () => void;
 };
 
 // RoleEditor edits a role's look and, once it exists, its members.
-function RoleEditor({role, onSave, onCancel, onMembersChanged}: EditorProps) {
+function RoleEditor({role, isDefault = false, onSave, onCancel, onMembersChanged}: EditorProps) {
     const {formatMessage} = useIntl();
     const [draft, setDraft] = useState<Draft>({display_name: role?.display_name || '', color: role?.color || SWATCHES[5], icon: role?.icon || '', hoist: role?.hoist ?? true, self_assignable: Boolean(role?.self_assignable), permissions: role ? undefined : []});
     const [loadFailed, setLoadFailed] = useState(false);
@@ -363,12 +408,14 @@ function RoleEditor({role, onSave, onCancel, onMembersChanged}: EditorProps) {
                 on={draft.hoist}
                 onChange={(hoist) => set({hoist})}
             />
-            <Toggle
-                title={formatMessage({id: 'fusion.roles.selfAssignable', defaultMessage: 'Anyone can take it'})}
-                desc={formatMessage({id: 'fusion.roles.selfAssignableDesc', defaultMessage: 'People of the community take or leave it themselves, in "Your roles" or through the onboarding.'})}
-                on={draft.self_assignable}
-                onChange={(on) => set({self_assignable: on})}
-            />
+            {!isDefault && (
+                <Toggle
+                    title={formatMessage({id: 'fusion.roles.selfAssignable', defaultMessage: 'Anyone can take it'})}
+                    desc={formatMessage({id: 'fusion.roles.selfAssignableDesc', defaultMessage: 'People of the community take or leave it themselves, in "Your roles" or through the onboarding.'})}
+                    on={draft.self_assignable}
+                    onChange={(on) => set({self_assignable: on})}
+                />
+            )}
             <div className={am('field', 'role-perms')}>
                 <span>{formatMessage({id: 'fusion.roles.permissions', defaultMessage: 'Permissions'})}</span>
                 {loadFailed && <p className={am('lead')}>{formatMessage({id: 'fusion.roles.permissionsFailed', defaultMessage: 'The role\'s permissions couldn\'t be loaded: saving leaves them as they are.'})}</p>}
@@ -387,12 +434,13 @@ function RoleEditor({role, onSave, onCancel, onMembersChanged}: EditorProps) {
                     );
                 })}
             </div>
-            {role && (
+            {role && !isDefault && (
                 <RoleMembers
                     role={role}
                     onChanged={onMembersChanged}
                 />
             )}
+            {isDefault && <p className={am('lead')}>{formatMessage({id: 'fusion.roles.defaultMembers', defaultMessage: 'Everyone in the community has this role, but guests and bots: what it grants, every member may do, and its colour is that of the members with no other coloured role.'})}</p>}
             <div className={am('modal-actions')}>
                 <button
                     type='button'

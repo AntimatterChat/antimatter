@@ -75,8 +75,11 @@ func (n *idLoadedNotification) GetNotificationMessage(rctx request.CTX, ack *mod
 	}
 
 	nameFormat := a.GetNotificationNameFormat(user)
-	channelName := notification.GetChannelName(nameFormat, user.Id)
-	senderName := notification.GetSenderName(nameFormat, model.SafeDereference(a.Config().ServiceSettings.EnablePostUsernameOverride))
+	// Antimatter: the names as this person may see them (profile privacy); then, for a community's message, as the
+	// community shows people, with the sender's nickname there (chosen for it, so never hidden).
+	nameFormat, seen := a.communityNotificationNames(notification.seenBy(a, user), nameFormat)
+	channelName := seen.GetChannelName(nameFormat, user.Id)
+	senderName := seen.GetSenderName(nameFormat, model.SafeDereference(a.Config().ServiceSettings.EnablePostUsernameOverride))
 
 	replyToThreadType := ""
 	if post.RootId != "" && a.IsCRTEnabledForUser(rctx, user.Id) {

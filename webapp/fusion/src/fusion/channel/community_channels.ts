@@ -19,8 +19,9 @@ import type {GlobalState} from 'types/store';
 // A community can have everyone in all its channels, as in Discord: its members are in every public channel and every
 // private channel their roles open, and mute channels rather than leave them. Guests and bots aren't concerned.
 //
-// Its default channel is where newcomers land and its join and leave messages go: the public channel its admins chose,
-// else General. Either can be archived, and the community then has none.
+// Its default channel is where newcomers land: the public channel its admins chose, else General. Either can be
+// archived, and the community then has none. Its join and leave messages go to its Welcome channel (or, for
+// communities made before they had one, to its default channel), unless its admins turned them off.
 
 // isAllChannelsCommunity tells whether a community has everyone in all its channels.
 export function isAllChannelsCommunity(state: GlobalState, teamId: string): boolean {
@@ -56,21 +57,24 @@ export function isDefaultChannel(state: GlobalState, channel: Channel | undefine
     return Boolean(channel?.team_id) && getDefaultChannel(state, channel!.team_id)?.id === channel!.id;
 }
 
-// isFirstDefaultChannel tells whether a channel is one of those every community starts with (General and
-// Off-Topic), or the one it chose: only the community's admins archive those.
+// The channel new communities get for their join and leave messages (the server's model.WelcomeChannelName).
+export const WELCOME_CHANNEL = 'welcome';
+
+// isFirstDefaultChannel tells whether a channel is one of those every community starts with (General and Welcome, or
+// Off-Topic before Welcome), or the one it chose: only the community's admins archive those, as on the server.
 export function isFirstDefaultChannel(state: GlobalState, channel: Channel): boolean {
-    return channel.name === Constants.DEFAULT_CHANNEL || channel.name === Constants.OFFTOPIC_CHANNEL || isDefaultChannel(state, channel);
+    return channel.name === Constants.DEFAULT_CHANNEL || channel.name === WELCOME_CHANNEL || channel.name === Constants.OFFTOPIC_CHANNEL || isDefaultChannel(state, channel);
 }
 
-// isWorkplaceCommunity tells whether a community is of the workplace kind (a company's or an organisation's
-// workspace) rather than a community (the default).
-export function isWorkplaceCommunity(state: GlobalState, teamId: string): boolean {
-    return getTeam(state, teamId)?.kind === 'workplace';
+// isWorkspaceCommunity tells whether a community is a workspace (a company's or an organisation's) rather than a
+// guild (the default).
+export function isWorkspaceCommunity(state: GlobalState, teamId: string): boolean {
+    return getTeam(state, teamId)?.kind === 'workspace';
 }
 
 // canArchiveChannel tells whether one may archive a channel of a community, as the server does
 // (SessionCanArchiveChannel): those the permissions let (the community's admins, roles that manage channels, what a
-// system admin gave members), and in a workplace community the channel's admins too, that is whoever created it. In
+// system admin gave members), and in a workspace the channel's admins too, that is whoever created it. In
 // a community, members don't archive channels, not even those they created. The default channels' extra rule (the
 // community's admins only) is the caller's.
 export function canArchiveChannel(state: GlobalState, channel: Channel | undefined): boolean {
@@ -81,5 +85,5 @@ export function canArchiveChannel(state: GlobalState, channel: Channel | undefin
     if (haveIChannelPermission(state, channel.team_id, channel.id, permission)) {
         return true;
     }
-    return isWorkplaceCommunity(state, channel.team_id) && haveIChannelPermission(state, channel.team_id, channel.id, Permissions.MANAGE_CHANNEL_ROLES);
+    return isWorkspaceCommunity(state, channel.team_id) && haveIChannelPermission(state, channel.team_id, channel.id, Permissions.MANAGE_CHANNEL_ROLES);
 }

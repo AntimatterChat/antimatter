@@ -10,7 +10,7 @@ import initialState from 'mattermost-redux/store/initial_state';
 
 import type {GlobalState} from 'types/store';
 
-import {applyTemplate, parseTemplate, PRESETS} from './templates';
+import {applyTemplate, isTeamSetUp, parseTemplate, PRESETS} from './templates';
 
 import mergeObjects from '../../packages/mattermost-redux/test/merge_objects';
 
@@ -68,14 +68,18 @@ describe('parseTemplate', () => {
         expect(parsed?.channels.map((c) => c.name)).toEqual(['general', 'rules']);
     });
 
-    test('the presets file the default channel, general, under Information', () => {
-        expect(PRESETS.hybrid.server_categories[0].channels).toEqual(['general']);
-        expect(PRESETS.community.server_categories[0].channels).toEqual(['general']);
+    test('the presets file Welcome under Information, and General, where people land, with the channels', () => {
+        expect(PRESETS.hybrid.server_categories[0].channels).toEqual(['welcome']);
+        expect(PRESETS.guild.server_categories[0].channels).toEqual(['welcome']);
+        expect(PRESETS.hybrid.server_categories[1].channels).toContain('general');
+        expect(PRESETS.guild.server_categories[1].channels).toContain('general');
     });
 
-    test('reads the kind, and drops one it does not know', () => {
-        expect(parseTemplate(JSON.stringify({...PRESETS.workplace, kind: 'workplace'}))?.kind).toBe('workplace');
-        expect(parseTemplate(JSON.stringify({...PRESETS.workplace, kind: 'castle'}))?.kind).toBeUndefined();
+    test('reads the kind, its former names too, and drops one it does not know', () => {
+        expect(parseTemplate(JSON.stringify({...PRESETS.workspace, kind: 'workspace'}))?.kind).toBe('workspace');
+        expect(parseTemplate(JSON.stringify({...PRESETS.workspace, kind: 'workplace'}))?.kind).toBe('workspace');
+        expect(parseTemplate(JSON.stringify({...PRESETS.guild, kind: 'community'}))?.kind).toBe('guild');
+        expect(parseTemplate(JSON.stringify({...PRESETS.workspace, kind: 'castle'}))?.kind).toBeUndefined();
     });
 
     test('refuses what is not a template', () => {
@@ -96,7 +100,7 @@ describe('PRESETS', () => {
     });
 
     test('the moderators of the presets may time out and remove people, and manage messages', () => {
-        for (const preset of [PRESETS.hybrid, PRESETS.community]) {
+        for (const preset of [PRESETS.hybrid, PRESETS.guild]) {
             const permissions = preset.roles[0].permissions;
             expect(permissions).toContain('remove_user_from_team');
             expect(permissions).toContain('delete_others_posts');
@@ -105,18 +109,18 @@ describe('PRESETS', () => {
         }
     });
 
-    test('hybrid and community make communities; workplace, a workplace', () => {
-        expect(PRESETS.hybrid.kind).toBe('community');
-        expect(PRESETS.community.kind).toBe('community');
-        expect(PRESETS.workplace.kind).toBe('workplace');
+    test('hybrid and guild make guilds; workspace, a workspace', () => {
+        expect(PRESETS.hybrid.kind).toBe('guild');
+        expect(PRESETS.guild.kind).toBe('guild');
+        expect(PRESETS.workspace.kind).toBe('workspace');
     });
 
-    test('community keeps every category locked', () => {
-        expect(PRESETS.community.server_categories.every((c) => c.locked)).toBe(true);
+    test('guild keeps every category locked', () => {
+        expect(PRESETS.guild.server_categories.every((c) => c.locked)).toBe(true);
     });
 
-    test('workplace has no categories for everyone', () => {
-        expect(PRESETS.workplace.server_categories).toEqual([]);
+    test('workspace has no categories for everyone', () => {
+        expect(PRESETS.workspace.server_categories).toEqual([]);
     });
 
     test('no category is listed twice and no channel is filed twice', () => {
@@ -161,8 +165,8 @@ describe('applyTemplate', () => {
 
     test('sets the kind of community the template makes', async () => {
         (patchTeam as jest.Mock).mockClear();
-        await run({version: 1, server_categories: [], channels: [], roles: [], kind: 'workplace'});
-        expect(patchTeam).toHaveBeenCalledWith({id: 'team', kind: 'workplace'});
+        await run({version: 1, server_categories: [], channels: [], roles: [], kind: 'workspace'});
+        expect(patchTeam).toHaveBeenCalledWith({id: 'team', kind: 'workspace'});
 
         (patchTeam as jest.Mock).mockClear();
         await run({version: 1, server_categories: [], channels: [], roles: []});
@@ -173,5 +177,23 @@ describe('applyTemplate', () => {
         (createGroupWithUserIds as jest.Mock).mockReturnValue({type: 'CREATED', data: {id: 'role'}});
         await run({version: 1, server_categories: [], channels: [], roles: [{display_name: 'Mods'}]});
         expect(Client4.updateTeamRolePermissions).not.toHaveBeenCalled();
+    });
+});
+
+describe('isTeamSetUp', () => {
+    const role = (id: string) => ({id, team_id: 'team', source: 'custom', delete_at: 0, is_team: false, display_name: id, position: 0});
+    const state = (roles: string[], defaultRoleId = '') => mergeObjects(initialState, {
+        entities: {
+            teams: {teams: {team: {id: 'team', default_role_id: defaultRoleId}}},
+            groups: {groups: Object.fromEntries(roles.map((id) => [id, role(id)]))},
+            channelCategories: {serverCategories: {team: []}},
+        },
+    }) as unknown as GlobalState;
+
+    test('a team with roles is set up, its default role alone doesn\'t count', () => {
+        expect(isTeamSetUp(state([]), 'team')).toBe(false);
+        expect(isTeamSetUp(state(['mods']), 'team')).toBe(true);
+        expect(isTeamSetUp(state(['members'], 'members'), 'team')).toBe(false);
+        expect(isTeamSetUp(state(['members', 'mods'], 'members'), 'team')).toBe(true);
     });
 });

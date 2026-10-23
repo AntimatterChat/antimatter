@@ -156,7 +156,8 @@ func (a *App) publishReceivedGroupEvent(group *model.Group) *model.AppError {
 	messageWs := model.NewWebSocketEvent(model.WebsocketEventReceivedGroup, "", "", "", nil, "")
 	messageWs.Add("group", string(groupJSON))
 
-	if !group.AllowReference {
+	// Antimatter: a community's roles are everyone's to see, its default role (not mentioned) too.
+	if !group.AllowReference && !group.BelongsToTeam() {
 		restrictBroadcastToGroupReaders(messageWs.GetBroadcast())
 	}
 	a.Publish(messageWs)

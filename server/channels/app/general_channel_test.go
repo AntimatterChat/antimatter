@@ -63,7 +63,7 @@ func TestNewCommunitiesGetGeneral(t *testing.T) {
 			cfg.TeamSettings.ExperimentalDefaultChannels = []string{model.LegacyDefaultChannelName, "foo"}
 		})
 		defer th.App.UpdateConfig(func(cfg *model.Config) { cfg.TeamSettings.ExperimentalDefaultChannels = []string{} })
-		assert.ElementsMatch(t, []string{model.DefaultChannelName, "foo"}, th.App.DefaultChannelNames(th.Context))
+		assert.ElementsMatch(t, []string{model.DefaultChannelName, model.WelcomeChannelName, "foo"}, th.App.DefaultChannelNames(th.Context))
 	})
 }
 

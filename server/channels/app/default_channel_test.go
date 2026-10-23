@@ -69,9 +69,10 @@ func TestCommunityDefaultChannel(t *testing.T) {
 			*cfg.ServiceSettings.ExperimentalEnableDefaultChannelLeaveJoinMessages = true
 		})
 		require.Nil(t, th.App.DeleteChannel(th.Context, generalChannel, th.SystemAdminUser.Id))
-		offTopic, appErr := th.App.GetChannelByName(th.Context, "off-topic", team.Id, false)
+		welcome, appErr := th.App.GetChannelByName(th.Context, model.WelcomeChannelName, team.Id, false)
 		require.Nil(t, appErr)
-		require.Nil(t, th.App.DeleteChannel(th.Context, offTopic, th.SystemAdminUser.Id))
+		require.Nil(t, th.App.DeleteChannel(th.Context, welcome, th.SystemAdminUser.Id))
+		assert.Nil(t, th.App.GetJoinLeaveChannelForTeam(th.Context, team), "no channel for join and leave messages")
 		assert.Nil(t, th.App.GetDefaultChannelForTeam(th.Context, team), "no default channel")
 
 		user := th.CreateUser(t)

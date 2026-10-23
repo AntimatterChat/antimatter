@@ -27,6 +27,7 @@ describe('components/AtMention', () => {
             accounting: TestHelper.getGroupMock({id: 'qwerty3', name: 'accounting', allow_reference: true}),
         },
         getMissingMentionedUsers: jest.fn(),
+        communityProfiles: {},
     };
 
     test('should match snapshot when mentioning user', () => {
@@ -237,6 +238,34 @@ describe('components/AtMention', () => {
         );
 
         expect(container).toMatchSnapshot();
+    });
+
+    // Antimatter: the person's nickname in the message's community, as the community shows people.
+    test('should show the person as the community shows them', () => {
+        const {rerender} = render(
+            <AtMention
+                {...baseProps}
+                mentionName='user1'
+                communityProfiles={{abc2: {team_id: 't', user_id: 'abc2', nickname: 'Captain', update_at: 1}}}
+            >
+                {'(at)-user1'}
+            </AtMention>,
+        );
+        expect(screen.getByText('@Captain')).toBeInTheDocument();
+
+        // The nickname shows where the community shows nicknames only.
+        rerender(
+            <AtMention
+                {...baseProps}
+                mentionName='user1'
+                teammateNameDisplay={General.TEAMMATE_NAME_DISPLAY.SHOW_USERNAME}
+                communityProfiles={{abc2: {team_id: 't', user_id: 'abc2', nickname: 'Captain', update_at: 1}}}
+            >
+                {'(at)-user1'}
+            </AtMention>,
+        );
+        expect(screen.getByText('@user1')).toBeInTheDocument();
+        expect(screen.queryByText('@Captain')).not.toBeInTheDocument();
     });
 
     describe('fetchMissingUsers', () => {

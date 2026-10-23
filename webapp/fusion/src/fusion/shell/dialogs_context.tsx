@@ -13,6 +13,7 @@ import ChannelExportDialog from 'fusion/channel/channel_export_dialog';
 import ChannelPermissionsDialog from 'fusion/channel/channel_permissions_dialog';
 import FocusDialog from 'fusion/focus/focus_dialog';
 import AddPeopleDialog from 'fusion/modals/add_people_dialog';
+import CommunityNotificationsDialog from 'fusion/modals/community_notifications_dialog';
 import ConfirmDialog from 'fusion/modals/confirm_dialog';
 import type {ConfirmOptions} from 'fusion/modals/confirm_dialog';
 import CreateCategoryDialog from 'fusion/modals/create_category_dialog';
@@ -23,6 +24,8 @@ import HelpDialog from 'fusion/modals/help_dialog';
 import RemoveMemberDialog from 'fusion/moderation/remove_member_dialog';
 import TimeoutDialog from 'fusion/moderation/timeout_dialog';
 import BlockPromptDialog from 'fusion/privacy/block_prompt';
+import CommunityPrivacyDialog from 'fusion/privacy/community_privacy_dialog';
+import CommunityProfileDialog from 'fusion/profiles/community_profile_dialog';
 import CreateTeamDialog from 'fusion/teams/create_team_dialog';
 import SelfRolesDialog from 'fusion/teams/self_roles_dialog';
 import {openInvitePeople, openNewChannel} from 'fusion/utils/modals';
@@ -59,6 +62,9 @@ type Dialogs = {
     // Take or leave the team's roles open to all.
     selfRoles: () => void;
 
+    // One's profile in the current community: picture, nickname, whether one is shown by name, team badge.
+    communityProfile: () => void;
+
     // Make a new team.
     createTeam: () => void;
 
@@ -80,11 +86,15 @@ type Dialogs = {
 
     // Start focus mode (from the status menu).
     focus: () => void;
+
+    // A community's own notification and privacy settings (from its menu), over your own.
+    communityNotifications: (teamId: string) => void;
+    communityPrivacy: (teamId: string) => void;
 };
 
-const DialogsContext = createContext<Dialogs>({createChannel: () => {}, addPeople: () => {}, invite: () => {}, deleteMessage: () => {}, createCategory: () => {}, renameServerCategory: () => {}, channelPermissions: () => {}, exportChannel: () => {}, categoryPermissions: () => {}, selfRoles: () => {}, confirm: () => {}, help: () => {}, createTeam: () => {}, timeOut: () => {}, removeFromTeam: () => {}, browseChannels: () => {}, blockPrompt: () => {}, focus: () => {}});
+const DialogsContext = createContext<Dialogs>({createChannel: () => {}, addPeople: () => {}, invite: () => {}, deleteMessage: () => {}, createCategory: () => {}, renameServerCategory: () => {}, channelPermissions: () => {}, exportChannel: () => {}, categoryPermissions: () => {}, selfRoles: () => {}, communityProfile: () => {}, confirm: () => {}, help: () => {}, createTeam: () => {}, timeOut: () => {}, removeFromTeam: () => {}, browseChannels: () => {}, blockPrompt: () => {}, focus: () => {}, communityNotifications: () => {}, communityPrivacy: () => {}});
 
-type Open = {kind: 'create'; categoryId?: string} | {kind: 'add'; channel: Channel} | {kind: 'delete'; post: Post} | {kind: 'category'; renaming?: string} | {kind: 'permissions'; channel: Channel} | {kind: 'export'; channel: Channel} | {kind: 'selfRoles'} | {kind: 'confirm'; options: ConfirmOptions} | {kind: 'help'; page?: HelpPage} | {kind: 'categoryPermissions'; teamId: string; name: string} | {kind: 'createTeam'} | {kind: 'timeOut'; userId: string} | {kind: 'removeFromTeam'; userId: string} | {kind: 'browse'} | {kind: 'blockPrompt'; userId: string} | {kind: 'focus'} | null;
+type Open = {kind: 'create'; categoryId?: string} | {kind: 'add'; channel: Channel} | {kind: 'delete'; post: Post} | {kind: 'category'; renaming?: string} | {kind: 'permissions'; channel: Channel} | {kind: 'export'; channel: Channel} | {kind: 'selfRoles'} | {kind: 'communityProfile'} | {kind: 'confirm'; options: ConfirmOptions} | {kind: 'help'; page?: HelpPage} | {kind: 'categoryPermissions'; teamId: string; name: string} | {kind: 'createTeam'} | {kind: 'timeOut'; userId: string} | {kind: 'removeFromTeam'; userId: string} | {kind: 'browse'} | {kind: 'blockPrompt'; userId: string} | {kind: 'focus'} | {kind: 'communityNotifications'; teamId: string} | {kind: 'communityPrivacy'; teamId: string} | null;
 
 // DialogsProvider owns the Fusion UI's own dialogs that menus and buttons open, outliving the menu that opened them.
 export function DialogsProvider({children}: {children: React.ReactNode}) {
@@ -102,6 +112,7 @@ export function DialogsProvider({children}: {children: React.ReactNode}) {
         exportChannel: (channel) => setOpen({kind: 'export', channel}),
         categoryPermissions: (teamId, name) => setOpen({kind: 'categoryPermissions', teamId, name}),
         selfRoles: () => setOpen({kind: 'selfRoles'}),
+        communityProfile: () => setOpen({kind: 'communityProfile'}),
         confirm: (options) => setOpen({kind: 'confirm', options}),
         help: (page) => setOpen({kind: 'help', page}),
         createTeam: () => setOpen({kind: 'createTeam'}),
@@ -110,6 +121,8 @@ export function DialogsProvider({children}: {children: React.ReactNode}) {
         removeFromTeam: (userId) => setOpen({kind: 'removeFromTeam', userId}),
         blockPrompt: (userId) => setOpen({kind: 'blockPrompt', userId}),
         focus: () => setOpen({kind: 'focus'}),
+        communityNotifications: (teamId) => setOpen({kind: 'communityNotifications', teamId}),
+        communityPrivacy: (teamId) => setOpen({kind: 'communityPrivacy', teamId}),
     }), [dispatch]);
 
     const close = () => setOpen(null);
@@ -143,9 +156,22 @@ export function DialogsProvider({children}: {children: React.ReactNode}) {
                 />
             )}
             {open?.kind === 'selfRoles' && <SelfRolesDialog onClose={close}/>}
+            {open?.kind === 'communityProfile' && <CommunityProfileDialog onClose={close}/>}
             {open?.kind === 'createTeam' && <CreateTeamDialog onClose={close}/>}
             {open?.kind === 'browse' && <BrowseChannelsDialog onClose={close}/>}
             {open?.kind === 'focus' && <FocusDialog onClose={close}/>}
+            {open?.kind === 'communityNotifications' && (
+                <CommunityNotificationsDialog
+                    teamId={open.teamId}
+                    onClose={close}
+                />
+            )}
+            {open?.kind === 'communityPrivacy' && (
+                <CommunityPrivacyDialog
+                    teamId={open.teamId}
+                    onClose={close}
+                />
+            )}
             {open?.kind === 'timeOut' && (
                 <TimeoutDialog
                     userId={open.userId}

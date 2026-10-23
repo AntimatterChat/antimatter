@@ -333,7 +333,7 @@ func getUser(c *Context, w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	etag := user.Etag(*c.App.Config().PrivacySettings.ShowFullName, *c.App.Config().PrivacySettings.ShowEmailAddress)
+	etag := profileEtag(c, user)
 
 	if c.HandleEtag(etag, "Get User", w, r) {
 		return
@@ -343,6 +343,7 @@ func getUser(c *Context, w http.ResponseWriter, r *http.Request) {
 		user.Sanitize(map[string]bool{})
 	} else {
 		c.App.SanitizeProfile(user, c.IsSystemAdmin())
+		hideProfileDetails(c, user)
 	}
 	c.App.Srv().Platform().UpdateLastActivityAtIfNeeded(*c.AppContext.Session())
 	w.Header().Set(model.HeaderEtagServer, etag)
@@ -396,7 +397,7 @@ func getUserByUsername(c *Context, w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	etag := user.Etag(*c.App.Config().PrivacySettings.ShowFullName, *c.App.Config().PrivacySettings.ShowEmailAddress)
+	etag := profileEtag(c, user)
 
 	if c.HandleEtag(etag, "Get User", w, r) {
 		return
@@ -406,6 +407,7 @@ func getUserByUsername(c *Context, w http.ResponseWriter, r *http.Request) {
 		user.Sanitize(map[string]bool{})
 	} else {
 		c.App.SanitizeProfile(user, c.IsSystemAdmin())
+		hideProfileDetails(c, user)
 	}
 	w.Header().Set(model.HeaderEtagServer, etag)
 	if err := json.NewEncoder(w).Encode(user); err != nil {
@@ -451,13 +453,20 @@ func getUserByEmail(c *Context, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	etag := user.Etag(*c.App.Config().PrivacySettings.ShowFullName, *c.App.Config().PrivacySettings.ShowEmailAddress)
+	// Antimatter: someone who hides their email from this person isn't found by it.
+	if c.App.ProfileDetailsHiddenFrom(c.AppContext.Session().UserId, c.IsSystemAdmin(), user)[model.ProfileFieldEmail] {
+		c.Err = model.NewAppError("getUserByEmail", app.MissingAccountError, nil, "", http.StatusNotFound)
+		return
+	}
+
+	etag := profileEtag(c, user)
 
 	if c.HandleEtag(etag, "Get User", w, r) {
 		return
 	}
 
 	c.App.SanitizeProfile(user, c.IsSystemAdmin())
+	hideProfileDetails(c, user)
 	w.Header().Set(model.HeaderEtagServer, etag)
 	if err := json.NewEncoder(w).Encode(user); err != nil {
 		c.Logger.Warn("Error while writing response", mlog.Err(err))
@@ -840,6 +849,10 @@ func getUsersByGroupChannelIds(c *Context, w http.ResponseWriter, r *http.Reques
 		return
 	}
 
+	for _, users := range usersByChannelId {
+		hideProfileDetails(c, users...)
+	}
+
 	err = json.NewEncoder(w).Encode(usersByChannelId)
 	if err != nil {
 		c.Logger.Warn("Error writing response", mlog.Err(err))
@@ -1168,6 +1181,7 @@ func getUsers(c *Context, w http.ResponseWriter, r *http.Request) {
 		w.Header().Set(model.HeaderEtagServer, etag)
 	}
 	c.App.Srv().Platform().UpdateLastActivityAtIfNeeded(*c.AppContext.Session())
+	hideProfileDetails(c, profiles...)
 
 	js, err := json.Marshal(profiles)
 	if err != nil {
@@ -1217,6 +1231,7 @@ func getUsersByIds(c *Context, w http.ResponseWriter, r *http.Request) {
 		c.Err = appErr
 		return
 	}
+	hideProfileDetails(c, users...)
 
 	js, err := json.Marshal(users)
 	if err != nil {
@@ -1250,6 +1265,7 @@ func getUsersByNames(c *Context, w http.ResponseWriter, r *http.Request) {
 		c.Err = appErr
 		return
 	}
+	hideProfileDetails(c, users...)
 
 	js, err := json.Marshal(users)
 	if err != nil {
@@ -1371,6 +1387,8 @@ func searchUsers(c *Context, w http.ResponseWriter, r *http.Request) {
 		c.Err = appErr
 		return
 	}
+	// Antimatter: nobody is found by the details they hide from whoever searches.
+	profiles = app.FilterHiddenSearchMatches(props.Term, profiles, hideProfileDetails(c, profiles...))
 
 	js, err := json.Marshal(profiles)
 	if err != nil {
@@ -1467,6 +1485,19 @@ func autocompleteUsers(c *Context, w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		autocomplete.Users = result
+	}
+
+	// Antimatter: nobody is offered by the details they hide from whoever types.
+	autocomplete.Users = app.FilterHiddenSearchMatches(name, autocomplete.Users, hideProfileDetails(c, autocomplete.Users...))
+	autocomplete.OutOfChannel = app.FilterHiddenSearchMatches(name, autocomplete.OutOfChannel, hideProfileDetails(c, autocomplete.OutOfChannel...))
+
+	// Antimatter: then the people the community knows by their nickname there, which they chose to show there: they
+	// stay, with what else they hide from whoever types hidden.
+	if teamId != "" && name != "" {
+		users, outOfChannel := len(autocomplete.Users), len(autocomplete.OutOfChannel)
+		c.App.AddCommunityNicknameMatches(c.AppContext, teamId, channelId, name, options, &autocomplete)
+		hideProfileDetails(c, autocomplete.Users[users:]...)
+		hideProfileDetails(c, autocomplete.OutOfChannel[outOfChannel:]...)
 	}
 
 	// Fetch agent users for autocomplete

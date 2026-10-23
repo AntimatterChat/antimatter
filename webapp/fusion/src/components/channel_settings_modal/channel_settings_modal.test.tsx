@@ -413,7 +413,7 @@ describe('ChannelSettingsModal', () => {
         mockPublicChannelPermission = false;
 
         const workplace = makeTestState() as DeepPartial<GlobalState>;
-        workplace.entities!.teams = {teams: {team_id: TestHelper.getTeamMock({id: 'team_id', kind: 'workplace'})}};
+        workplace.entities!.teams = {teams: {team_id: TestHelper.getTeamMock({id: 'team_id', kind: 'workspace'})}};
         const {unmount} = renderWithContext(<ChannelSettingsModal {...baseProps}/>, workplace as GlobalState);
         await waitFor(() => {
             expect(screen.getByRole('tablist')).toBeInTheDocument();
@@ -422,7 +422,7 @@ describe('ChannelSettingsModal', () => {
         unmount();
 
         const community = makeTestState() as DeepPartial<GlobalState>;
-        community.entities!.teams = {teams: {team_id: TestHelper.getTeamMock({id: 'team_id', kind: 'community'})}};
+        community.entities!.teams = {teams: {team_id: TestHelper.getTeamMock({id: 'team_id', kind: 'guild'})}};
         renderWithContext(<ChannelSettingsModal {...baseProps}/>, community as GlobalState);
         await waitFor(() => {
             expect(screen.getByRole('tablist')).toBeInTheDocument();
@@ -478,6 +478,17 @@ describe('ChannelSettingsModal', () => {
         renderWithContext(<ChannelSettingsModal {...baseProps}/>, testState);
         await userEvent.click(screen.getByRole('tab', {name: /configuration/i}));
         expect(screen.getByTestId('join-leave-section')).toBeInTheDocument();
+    });
+
+    // Antimatter: where everyone is in every channel, channels tell nobody joining or leaving them.
+    it('should not show the join/leave section where members are in every channel', async () => {
+        const testState = makeTestState() as DeepPartial<GlobalState>;
+        testState.entities!.teams = {teams: {team_id: TestHelper.getTeamMock({id: 'team_id', kind: 'guild', all_channels_membership: true})}};
+
+        renderWithContext(<ChannelSettingsModal {...baseProps}/>, testState as GlobalState);
+        await userEvent.click(screen.getByRole('tab', {name: /configuration/i}));
+        expect(screen.getByTestId('banner-section')).toBeInTheDocument();
+        expect(screen.queryByTestId('join-leave-section')).not.toBeInTheDocument();
     });
 
     it('should not show configuration tab for DM channel (join/leave not applicable to DMs)', async () => {

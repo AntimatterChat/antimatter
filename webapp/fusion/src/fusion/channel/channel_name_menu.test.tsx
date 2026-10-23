@@ -70,7 +70,7 @@ const policy = ch('pol', 'policy', {type: 'P', policy_enforced: true});
 const all = [general, dev, secret, old, dm, gm, policy];
 
 const appAction = jest.fn();
-function state({kind = 'community' as TeamKind, allChannels = false, apps = false} = {}) {
+function state({kind = 'guild' as TeamKind, allChannels = false, apps = false} = {}) {
     return {
         entities: {
             general: {config: {}},
@@ -373,12 +373,12 @@ describe('fusion/channel/ChannelNameMenu: roles that mustn\'t see an admin\'s or
         expect(ids()).not.toContain('unarchive');
     });
 
-    test('in a community, a channel\'s admins don\'t archive it; in a workplace community, they do', () => {
+    test('in a guild, a channel\'s admins don\'t archive it; in a workspace, they do', () => {
         actAs('channelAdmin');
         const {unmount} = render(dev);
         expect(ids()).not.toContain('archive');
         unmount();
-        render(dev, state({kind: 'workplace'}));
+        render(dev, state({kind: 'workspace'}));
         expect(ids()).toContain('archive');
     });
 

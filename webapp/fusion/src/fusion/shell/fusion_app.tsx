@@ -7,7 +7,7 @@ import {useRouteMatch} from 'react-router-dom';
 
 import {fetchMyCategories} from 'mattermost-redux/actions/channel_categories';
 import {fetchChannelOverrides} from 'mattermost-redux/actions/channels';
-import {fetchCommunityRules, fetchTeamTimeouts} from 'mattermost-redux/actions/teams';
+import {fetchCommunityProfiles, fetchCommunityRules, fetchTeamTimeouts} from 'mattermost-redux/actions/teams';
 import {getCurrentChannelId} from 'mattermost-redux/selectors/entities/channels';
 import {getTheme} from 'mattermost-redux/selectors/entities/preferences';
 import {getCurrentTeamId} from 'mattermost-redux/selectors/entities/teams';
@@ -109,12 +109,14 @@ function Frame({children}: Props) {
     }, [channelId, dispatch, store]);
 
     // The sidebar's categories, including the direct messages shown in the dock; who's timed out in the team
-    // (Antimatter), which permission checks apply; and its rules, which one may have to agree to before posting.
+    // (Antimatter), which permission checks apply; its rules, which one may have to agree to before posting; and its
+    // members' profiles there (nicknames, pictures, who isn't shown by name), all at once.
     useEffect(() => {
         if (teamId) {
             dispatch(fetchMyCategories(teamId));
             dispatch(fetchTeamTimeouts(teamId));
             dispatch(fetchCommunityRules(teamId));
+            dispatch(fetchCommunityProfiles(teamId));
         }
     }, [teamId, dispatch]);
 

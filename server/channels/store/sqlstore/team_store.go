@@ -252,29 +252,41 @@ func prefixedTeamSliceColumns(isSelect bool, prefix string) []string {
 		columns = append(columns,
 			fmt.Sprintf("COALESCE((SELECT sy.Value FROM Systems sy WHERE sy.Name = '%s' || %s.Id), '') = 'true' AS AllChannelsMembership", teamAllChannelsKeyPrefix, prefix),
 			fmt.Sprintf("COALESCE((SELECT sy.Value FROM Systems sy WHERE sy.Name = '%s' || %s.Id), '') AS DefaultChannelId", teamDefaultChannelKeyPrefix, prefix),
-			fmt.Sprintf("COALESCE((SELECT sy.Value FROM Systems sy WHERE sy.Name = '%s' || %s.Id), '%s') AS Kind", teamKindKeyPrefix, prefix, model.TeamKindCommunity),
+			fmt.Sprintf("COALESCE((SELECT sy.Value FROM Systems sy WHERE sy.Name = '%s' || %s.Id), '') AS WelcomeChannelId", teamWelcomeChannelKeyPrefix, prefix),
+			fmt.Sprintf("COALESCE((SELECT sy.Value FROM Systems sy WHERE sy.Name = '%s' || %s.Id), '') = 'true' AS DisableJoinLeaveMessages", teamJoinLeaveOffKeyPrefix, prefix),
+			fmt.Sprintf("COALESCE((SELECT sy.Value FROM Systems sy WHERE sy.Name = '%s' || %s.Id), '') AS DefaultRoleId", teamDefaultRoleKeyPrefix, prefix),
+			// The kinds are stored under their former names (model.TeamKindStoredValue).
+			fmt.Sprintf("CASE COALESCE((SELECT sy.Value FROM Systems sy WHERE sy.Name = '%s' || %s.Id), '') WHEN '%s' THEN '%s' ELSE '%s' END AS Kind", teamKindKeyPrefix, prefix, model.TeamKindStoredWorkspace, model.TeamKindWorkspace, model.TeamKindGuild),
 			fmt.Sprintf("COALESCE((SELECT sy.Value FROM Systems sy WHERE sy.Name = '%s' || %s.Id), '%s') AS MemberListView", teamMemberListViewKeyPrefix, prefix, model.TeamMemberListViewChoice),
+			fmt.Sprintf("COALESCE((SELECT sy.Value FROM Systems sy WHERE sy.Name = '%s' || %s.Id), '') AS NameDisplay", teamNameDisplayKeyPrefix, prefix),
 		)
 	}
 
 	return columns
 }
 
-// Antimatter: some community settings, AllChannelsMembership, DefaultChannelId, Kind and MemberListView, are kept in
-// the Systems table, one row each per team that sets them, rather than in new Teams columns: no schema migration.
-// Selecting teams reads them back into the team (prefixedTeamSliceColumns); saving a team writes them
-// (saveTeamSettings). Every team has its Kind row (model.TeamKindSystemKeyPrefix), written when it's created (and for
-// older teams by a migration), which apps such as Calls read directly; a team saved without a kind keeps the one it
-// has. MemberListView is stored when it isn't the default: members choose how they list a team's members.
+// Antimatter: some community settings, AllChannelsMembership, DefaultChannelId, WelcomeChannelId,
+// DisableJoinLeaveMessages, DefaultRoleId, Kind, MemberListView and NameDisplay, are kept in the Systems table, one row each per
+// team that sets them, rather than in new Teams columns: no schema migration. Selecting teams reads them back into the
+// team (prefixedTeamSliceColumns); saving a team writes them (saveTeamSettings). Every team has its Kind row
+// (model.TeamKindSystemKeyPrefix), written when it's created (and for older teams by a migration), which apps such as
+// Calls read directly, under the kinds' former names (model.TeamKindStoredValue); a team saved without a kind keeps the
+// one it has. MemberListView is stored when it isn't the default: members choose how they list a team's members;
+// NameDisplay when the community chose how it shows people (else the server's default applies). The
+// default role, which only the server sets, is never removed by saving a team without it.
 const (
 	teamAllChannelsKeyPrefix    = "AmTeamAllChannels_"
 	teamDefaultChannelKeyPrefix = "AmTeamDefaultChannel_"
+	teamWelcomeChannelKeyPrefix = "AmTeamWelcomeChannel_"
+	teamJoinLeaveOffKeyPrefix   = "AmTeamJoinLeaveOff_"
+	teamDefaultRoleKeyPrefix    = model.TeamDefaultRoleSystemKeyPrefix
 	teamKindKeyPrefix           = model.TeamKindSystemKeyPrefix
 	teamMemberListViewKeyPrefix = "AmTeamMemberListView_"
+	teamNameDisplayKeyPrefix    = "AmTeamNameDisplay_"
 )
 
 // teamSettingPrefixes are the Systems rows of a team's settings, removed with it.
-var teamSettingPrefixes = []string{teamAllChannelsKeyPrefix, teamDefaultChannelKeyPrefix, teamKindKeyPrefix, teamMemberListViewKeyPrefix}
+var teamSettingPrefixes = []string{teamAllChannelsKeyPrefix, teamDefaultChannelKeyPrefix, teamWelcomeChannelKeyPrefix, teamJoinLeaveOffKeyPrefix, teamDefaultRoleKeyPrefix, teamKindKeyPrefix, teamMemberListViewKeyPrefix, teamNameDisplayKeyPrefix}
 
 // teamSettingKeys gives each setting of a team its Systems row, with the value it stores; "" deletes the row. A
 // setting left out is left as it is.
@@ -287,13 +299,23 @@ func teamSettingKeys(team *model.Team) map[string]string {
 	if team.MemberListView == model.TeamMemberListViewRoles || team.MemberListView == model.TeamMemberListViewTeams {
 		memberListView = team.MemberListView
 	}
+	joinLeaveOff := ""
+	if team.DisableJoinLeaveMessages {
+		joinLeaveOff = "true"
+	}
 	keys := map[string]string{
 		teamAllChannelsKeyPrefix + team.Id:    allChannels,
 		teamDefaultChannelKeyPrefix + team.Id: team.DefaultChannelId,
+		teamWelcomeChannelKeyPrefix + team.Id: team.WelcomeChannelId,
+		teamJoinLeaveOffKeyPrefix + team.Id:   joinLeaveOff,
 		teamMemberListViewKeyPrefix + team.Id: memberListView,
+		teamNameDisplayKeyPrefix + team.Id:    team.NameDisplay,
 	}
-	if team.Kind == model.TeamKindCommunity || team.Kind == model.TeamKindWorkplace {
-		keys[teamKindKeyPrefix+team.Id] = team.Kind
+	if team.DefaultRoleId != "" {
+		keys[teamDefaultRoleKeyPrefix+team.Id] = team.DefaultRoleId
+	}
+	if stored := model.TeamKindStoredValue(team.Kind); stored != "" {
+		keys[teamKindKeyPrefix+team.Id] = stored
 	}
 	return keys
 }

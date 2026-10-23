@@ -637,6 +637,16 @@ func TestGenerateClientConfigLockProfileFieldsForEmailUsers(t *testing.T) {
 	assert.Equal(t, model.TeamSettingsLockProfileFieldsAll, clientConfig["LockProfileFieldsForEmailUsers"])
 }
 
+// Antimatter: the create community dialog starts from the kind new communities get, by its name.
+func TestGenerateClientConfigDefaultCommunityKind(t *testing.T) {
+	config := &model.Config{}
+	config.SetDefaults()
+	assert.Equal(t, model.TeamKindGuild, GenerateClientConfig(config, "")["DefaultCommunityKind"])
+
+	config.TeamSettings.DefaultCommunityKind = model.NewPointer("workplace")
+	assert.Equal(t, model.TeamKindWorkspace, GenerateClientConfig(config, "")["DefaultCommunityKind"], "a former name gives its kind")
+}
+
 func TestGetLimitedClientConfig(t *testing.T) {
 	t.Parallel()
 	testCases := []struct {

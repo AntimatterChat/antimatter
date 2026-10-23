@@ -51,3 +51,16 @@ func TestPreferenceIsValidUserBlock(t *testing.T) {
 	require.NotNil(t, pref(PreferenceCategoryDMPrivacy, NewId(), "friends").IsValid())
 	require.NotNil(t, pref(PreferenceCategoryDMPrivacy, "a-team", DMPrivacyAsk).IsValid())
 }
+
+func TestDMPrivacyPreference(t *testing.T) {
+	pref := func(name, value string) *Preference {
+		return &Preference{UserId: NewId(), Category: PreferenceCategoryDMPrivacy, Name: name, Value: value}
+	}
+	for _, value := range []string{DMPrivacyEveryone, DMPrivacyAsk, DMPrivacyRefuse} {
+		assert.Nil(t, pref(PreferenceNameDMPrivacyDefault, value).IsValid(), value)
+		assert.Nil(t, pref(NewId(), value).IsValid(), value)
+	}
+	assert.NotNil(t, pref(PreferenceNameDMPrivacyDefault, "friends").IsValid())
+	assert.Less(t, DMPrivacyRank(DMPrivacyEveryone), DMPrivacyRank(DMPrivacyAsk))
+	assert.Less(t, DMPrivacyRank(DMPrivacyAsk), DMPrivacyRank(DMPrivacyRefuse))
+}

@@ -23,8 +23,8 @@ const OpenInvite = ({isPublic, isGroupConstrained, onChange}: Props) => {
         const groupConstrainedContent = (
             <p id='groupConstrainedContent'>{
                 formatMessage({
-                    id: 'team_settings.openInviteDescription.groupConstrained',
-                    defaultMessage: 'Members of this team are added and removed by linked groups. <link>Learn More</link>',
+                    id: 'fusion.communityAccess.groupConstrained',
+                    defaultMessage: 'Members of this community are added and removed by linked groups. <link>Learn more</link>',
                 }, {
                     link: (msg: React.ReactNode) => (
                         <ExternalLink
@@ -45,8 +45,8 @@ const OpenInvite = ({isPublic, isGroupConstrained, onChange}: Props) => {
                     defaultMessage: 'Discoverability',
                 })}
                 description={formatMessage({
-                    id: 'team_settings.discoverability.group_constrained_description',
-                    defaultMessage: 'Public teams appear on the server landing page so anyone with an account can find and join them.',
+                    id: 'fusion.communityAccess.publicDescription',
+                    defaultMessage: 'Public communities are listed for everyone on the server, so anyone with an account can find and join them.',
                 })}
                 descriptionAboveContent={true}
                 content={groupConstrainedContent}
@@ -64,8 +64,8 @@ const OpenInvite = ({isPublic, isGroupConstrained, onChange}: Props) => {
                 selected={isPublic ? Constants.OPEN_CHANNEL : Constants.PRIVATE_CHANNEL}
                 publicButtonProps={{
                     title: formatMessage({
-                        id: 'team_settings.discoverability.public_title',
-                        defaultMessage: 'Public Team',
+                        id: 'fusion.communityAccess.publicTitle',
+                        defaultMessage: 'Public community',
                     }),
                     description: formatMessage({
                         id: 'team_settings.discoverability.public_description',
@@ -74,8 +74,8 @@ const OpenInvite = ({isPublic, isGroupConstrained, onChange}: Props) => {
                 }}
                 privateButtonProps={{
                     title: formatMessage({
-                        id: 'team_settings.discoverability.private_title',
-                        defaultMessage: 'Private Team',
+                        id: 'fusion.communityAccess.privateTitle',
+                        defaultMessage: 'Private community',
                     }),
                     description: formatMessage({
                         id: 'team_settings.discoverability.private_description',
@@ -95,8 +95,8 @@ const OpenInvite = ({isPublic, isGroupConstrained, onChange}: Props) => {
                 defaultMessage: 'Discoverability',
             })}
             description={formatMessage({
-                id: 'team_settings.discoverability.description',
-                defaultMessage: 'Public teams appear on the server landing page so anyone with an account can find and join them. Switching a team from Public to Private regenerates its invitation code, which creates a new invitation link and invalidates the old one.',
+                id: 'fusion.communityAccess.discoverabilityDescription',
+                defaultMessage: 'Public communities are listed for everyone on the server, so anyone with an account can find and join them. Making a public community private regenerates its invitation code: a new invitation link, and the old one stops working.',
             })}
             descriptionAboveContent={true}
             content={selectorContent}
