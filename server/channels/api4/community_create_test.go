@@ -175,9 +175,10 @@ func TestTeamDefaultRoleAPI(t *testing.T) {
 	h.th.App.UpdateConfig(func(cfg *model.Config) { *cfg.ServiceSettings.EnableCustomGroups = true })
 
 	member, memberClient := h.member(t)
-	_, resp, err := ensureDefaultRole(t, memberClient, h.team.Id)
+	_, httpResp, err := ensureDefaultRole(t, memberClient, h.team.Id)
 	require.Error(t, err, "members don't make it")
-	assert.Equal(t, http.StatusForbidden, resp.StatusCode)
+	assert.Equal(t, http.StatusForbidden, httpResp.StatusCode)
+	var resp *model.Response
 
 	_, adminClient := h.admin(t)
 	role, _, err := ensureDefaultRole(t, adminClient, h.team.Id)
