@@ -72,8 +72,8 @@ func (a *App) checkCommunityMember(rctx request.CTX, teamID, userID string) *mod
 // saveCommunityProfile keeps a profile (or drops it when it changes nothing), and tells the community's members.
 func (a *App) saveCommunityProfile(rctx request.CTX, profile *model.CommunityProfile) *model.AppError {
 	profile.UpdateAt = model.GetMillis()
-	if appErr := profile.IsValid(); appErr != nil {
-		return appErr
+	if invalid := profile.IsValid(); invalid != nil {
+		return invalid
 	}
 	if profile.IsEmpty() {
 		if err := a.Srv().Store().Preference().Delete(profile.UserId, model.PreferenceCategoryCommunityProfile, profile.TeamId); err != nil {
@@ -130,15 +130,15 @@ func (a *App) SetCommunityAvatar(rctx request.CTX, teamID, userID string, imageD
 	if limitErr := checkImageLimits(file, *a.Config().FileSettings.MaxImageResolution); limitErr != nil {
 		return nil, model.NewAppError("SetCommunityAvatar", "api.user.upload_profile_user.check_image_limits.app_error", nil, "", http.StatusBadRequest).Wrap(limitErr)
 	}
-	if _, err := file.Seek(0, io.SeekStart); err != nil {
-		return nil, model.NewAppError("SetCommunityAvatar", "api.user.upload_profile_user.open.app_error", nil, "", http.StatusBadRequest).Wrap(err)
+	if _, seekErr := file.Seek(0, io.SeekStart); seekErr != nil {
+		return nil, model.NewAppError("SetCommunityAvatar", "api.user.upload_profile_user.open.app_error", nil, "", http.StatusBadRequest).Wrap(seekErr)
 	}
 	buf, appErr := a.AdjustImage(rctx, file)
 	if appErr != nil {
 		return nil, appErr
 	}
-	if _, appErr := a.WriteFile(buf, communityAvatarPath(teamID, userID)); appErr != nil {
-		return nil, model.NewAppError("SetCommunityAvatar", "api.user.upload_profile_user.upload_profile.app_error", nil, "", http.StatusInternalServerError).Wrap(appErr)
+	if _, writeErr := a.WriteFile(buf, communityAvatarPath(teamID, userID)); writeErr != nil {
+		return nil, model.NewAppError("SetCommunityAvatar", "api.user.upload_profile_user.upload_profile.app_error", nil, "", http.StatusInternalServerError).Wrap(writeErr)
 	}
 
 	profile, appErr := a.GetCommunityProfile(teamID, userID)
@@ -192,8 +192,8 @@ func (a *App) ResetCommunityProfile(rctx request.CTX, session model.Session, tea
 	if reset.Avatar && profile.AvatarUpdateAt != 0 {
 		profile.AvatarUpdateAt = 0
 		changed = true
-		if appErr := a.RemoveFile(communityAvatarPath(teamID, userID)); appErr != nil {
-			rctx.Logger().Warn("Failed to remove a community picture", mlog.String("team_id", teamID), mlog.String("user_id", userID), mlog.Err(appErr))
+		if removeErr := a.RemoveFile(communityAvatarPath(teamID, userID)); removeErr != nil {
+			rctx.Logger().Warn("Failed to remove a community picture", mlog.String("team_id", teamID), mlog.String("user_id", userID), mlog.Err(removeErr))
 		}
 	}
 	if !changed {
@@ -253,9 +253,9 @@ func (a *App) AddCommunityNicknameMatches(rctx request.CTX, teamID, channelID, t
 	}
 	inChannel := map[string]bool{}
 	if channelID != "" {
-		channelMembers, err := a.Srv().Store().Channel().GetMembersByIds(channelID, ids)
-		if err != nil {
-			rctx.Logger().Warn("Failed to read a channel's members for an autocomplete", mlog.String("channel_id", channelID), mlog.Err(err))
+		channelMembers, channelErr := a.Srv().Store().Channel().GetMembersByIds(channelID, ids)
+		if channelErr != nil {
+			rctx.Logger().Warn("Failed to read a channel's members for an autocomplete", mlog.String("channel_id", channelID), mlog.Err(channelErr))
 			return nil
 		}
 		for _, member := range channelMembers {
