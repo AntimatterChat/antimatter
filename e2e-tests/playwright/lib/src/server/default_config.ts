@@ -762,9 +762,6 @@ const defaultServerConfig: AdminConfig = {
             'mattermost-ai': {
                 Enable: true,
             },
-            playbooks: {
-                Enable: true,
-            },
         },
         EnableMarketplace: true,
         EnableRemoteMarketplace: true,

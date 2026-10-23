@@ -4376,6 +4376,34 @@ func TestConfigDefaultAIPluginState(t *testing.T) {
 	})
 }
 
+func TestConfigDefaultBoardsAndPlaybooksPluginState(t *testing.T) {
+	t.Run("should not enable Boards or Playbooks on a fresh install", func(t *testing.T) {
+		// Boards (focalboard) and Playbooks are no longer bundled with the server: a server that
+		// has never had a state for them stays without one, so an admin who installs one from its
+		// own GitHub release isn't fighting a default that keeps turning it back on or off.
+		c1 := Config{}
+		c1.SetDefaults()
+
+		assert.Nil(t, c1.PluginSettings.PluginStates[PluginIdFocalboard])
+		assert.Nil(t, c1.PluginSettings.PluginStates[PluginIdPlaybooks])
+	})
+
+	t.Run("should keep an existing server's Boards and Playbooks state across an upgrade", func(t *testing.T) {
+		c1 := Config{
+			PluginSettings: PluginSettings{
+				PluginStates: map[string]*PluginState{
+					PluginIdFocalboard: {Enable: true},
+					PluginIdPlaybooks:  {Enable: false},
+				},
+			},
+		}
+
+		c1.SetDefaults()
+		assert.True(t, c1.PluginSettings.PluginStates[PluginIdFocalboard].Enable)
+		assert.False(t, c1.PluginSettings.PluginStates[PluginIdPlaybooks].Enable)
+	})
+}
+
 func TestConfigGetMessageRetentionHours(t *testing.T) {
 	tests := []struct {
 		name   string
