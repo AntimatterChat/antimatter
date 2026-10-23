@@ -31,7 +31,6 @@ import {Dialog} from 'fusion/components/layer';
 import {useDisplayPrefs} from 'fusion/hooks/display';
 import {WALLTIME_PREFERENCE} from 'fusion/messages/walltime/walltime_text';
 import {canVisitSystemConsole} from 'fusion/popovers/admin_links';
-import {isUserBlockingEnabled} from 'fusion/privacy/blocking';
 import PrivacyPane from 'fusion/privacy/privacy_pane';
 import {useToast} from 'fusion/shell/toast_context';
 import {badgeChoice, badgesRequired, getTeamsByUser, TEAM_BADGE_PROP, withBadgeChoice} from 'fusion/teams/teams';
@@ -729,9 +728,6 @@ export default function SettingsModal({tab, onTab, onClose}: Props) {
     const {formatMessage} = useIntl();
     const systemConsole = useSelector(canVisitSystemConsole);
 
-    // Privacy & safety only while the admin lets people ignore and block each other.
-    const blocking = useSelector(isUserBlockingEnabled);
-
     const pluginSettings = useSelector(getPluginUserSettings);
     const pluginId = tab.startsWith('plugin:') ? tab.slice('plugin:'.length) : '';
     const pane = pluginId ? (
@@ -761,7 +757,7 @@ export default function SettingsModal({tab, onTab, onClose}: Props) {
         >
             <nav>
                 <h5>{formatMessage({id: 'fusion.settings.user', defaultMessage: 'User settings'})}</h5>
-                {TABS.filter(([key]) => key !== 'privacy' || blocking).map(([key, label]) => (
+                {TABS.map(([key, label]) => (
                     <button
                         key={key}
                         type='button'

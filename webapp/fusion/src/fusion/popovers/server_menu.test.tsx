@@ -77,7 +77,7 @@ describe('fusion/popovers/ServerMenu', () => {
         expect(layout()).toEqual([
             'Invite people', 'Community settings', '|',
             'Create channel', 'Create category', 'Browse channels', '|',
-            'Hide read channels', 'Hide muted channels', 'Mute community', 'Notification settings', '|',
+            'Hide read channels', 'Hide muted channels', 'Mute community', 'Notification settings', 'Privacy settings', '|',
             'Leave community',
         ]);
     });
@@ -90,10 +90,12 @@ describe('fusion/popovers/ServerMenu', () => {
         }
     });
 
-    test('Notification settings opens the community\'s own, not the global settings', async () => {
+    test('Notification settings and Privacy settings open the community\'s own, not the global settings', async () => {
         render(MEMBER);
         await userEvent.click(screen.getByRole('menuitem', {name: 'Notification settings'}));
         expect(mockDialogs.communityNotifications).toHaveBeenCalledWith('t1');
+        await userEvent.click(screen.getByRole('menuitem', {name: 'Privacy settings'}));
+        expect(mockDialogs.communityPrivacy).toHaveBeenCalledWith('t1');
     });
 
     test('Community settings opens the settings of the menu\'s community', async () => {

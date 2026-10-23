@@ -236,6 +236,11 @@ export default function ServerMenu({team: forTeam, anchor, point, width, onClose
                 label={formatMessage({id: 'fusion.serverMenu.notifications', defaultMessage: 'Notification settings'})}
                 onClick={run(() => dialogs.communityNotifications(teamId))}
             />
+            <MenuItem
+                icon='shield'
+                label={formatMessage({id: 'fusion.serverMenu.privacy', defaultMessage: 'Privacy settings'})}
+                onClick={run(() => dialogs.communityPrivacy(teamId))}
+            />
             {pluginItems.length > 0 && (
                 <>
                     <MenuSeparator/>

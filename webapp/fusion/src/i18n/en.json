@@ -24923,6 +24923,34 @@
     "defaultMessage": "Notifications in {community}",
     "description": "Title of the dialog of one community's own notification settings, opened from its menu. {community} is the community's name."
   },
+  "fusion.communityPrivacy.asDefault": {
+    "defaultMessage": "As my default ({choice})",
+    "description": "Community privacy settings: first option for direct messages, which follows the choice made for all communities. {choice} is that choice, e.g. \"Ask me first\"."
+  },
+  "fusion.communityPrivacy.done": {
+    "defaultMessage": "Done",
+    "description": "Community privacy settings: button closing the dialog (choices are saved as they change)."
+  },
+  "fusion.communityPrivacy.lead": {
+    "defaultMessage": "What the people you meet here can do and see. Someone who's also in another of your communities gets the most private of your choices. Nobody is told what you choose.",
+    "description": "Community privacy settings: explanation under the title. \"Here\" is this community."
+  },
+  "fusion.communityPrivacy.profileDefault": {
+    "defaultMessage": "As your defaults until you change something here. Your username and picture always show.",
+    "description": "Community privacy settings: under \"Your profile\", when this community follows the defaults set in Settings › Privacy & safety."
+  },
+  "fusion.communityPrivacy.profileOwn": {
+    "defaultMessage": "Chosen for this community. Your username and picture always show.",
+    "description": "Community privacy settings: under \"Your profile\", when this community has its own choice of the profile details shown."
+  },
+  "fusion.communityPrivacy.title": {
+    "defaultMessage": "Privacy in {community}",
+    "description": "Title of the dialog of one community's own privacy settings, opened from its menu. {community} is the community's name."
+  },
+  "fusion.communityPrivacy.useDefaults": {
+    "defaultMessage": "Use my defaults",
+    "description": "Community privacy settings: button that drops this community's own choice of profile details, so that it follows the defaults again."
+  },
   "fusion.communityRules.agree": {
     "defaultMessage": "I agree",
     "description": "Button of the community rules dialog: agrees to the community's rules, after which one can post in its channels."
@@ -27451,10 +27479,6 @@
     "defaultMessage": "Show more",
     "description": "Shared by the emoji picker's views (adding or managing custom emoji, GIFs, stickers, meme templates): button at the end of a long list, drawing or loading the next part."
   },
-  "fusion.privacy.asAbove": {
-    "defaultMessage": "As above ({choice})",
-    "description": "Option for a community in the Privacy settings: use the choice made for all communities. {choice} is that choice, e.g. \"Ask me first\"."
-  },
   "fusion.privacy.ask": {
     "defaultMessage": "Ask me first",
     "description": "Option for direct messages from people you do not talk with yet: they wait as message requests."
@@ -27471,9 +27495,9 @@
     "defaultMessage": "Direct messages",
     "description": "Privacy settings: heading of the choices about direct messages."
   },
-  "fusion.privacy.dmDesc": {
-    "defaultMessage": "Asked first, their messages wait among your message requests, without notifying you, until you accept them. Bots and system admins always get through.",
-    "description": "Privacy settings: explains the choice of accepting direct messages from everyone or asking first (message requests)."
+  "fusion.privacy.dmChoiceDesc": {
+    "defaultMessage": "Asked first, their messages wait among your message requests, without notifying you, until you accept them. Refused, they can't message you. Bots and system admins always get through.",
+    "description": "Privacy settings: explains the choices for direct messages from people you do not talk with yet: accept from everyone, ask first (message requests) or refuse."
   },
   "fusion.privacy.dmTitle": {
     "defaultMessage": "From people you don't talk with yet",
@@ -27491,9 +27515,13 @@
     "defaultMessage": "Nothing they write notifies you, their direct messages wait among your message requests, and their messages are folded.",
     "description": "Privacy settings: what ignoring someone does, under the heading of the people you ignore."
   },
-  "fusion.privacy.lead": {
-    "defaultMessage": "Who can message you directly, and the people you ignore or block. Nobody is told what you choose here.",
-    "description": "Privacy settings: introduction under the pane title."
+  "fusion.privacy.leadDefaults": {
+    "defaultMessage": "Who can message you directly and what people see of you, in all your communities, and the people you ignore or block. A community can differ: its menu has its own Privacy settings. Nobody is told what you choose here.",
+    "description": "Privacy & safety settings: explanation at the top. \"Privacy settings\" is the entry of a community's menu."
+  },
+  "fusion.privacy.leadProfileOnly": {
+    "defaultMessage": "What people see of you in all your communities. A community can differ: its menu has its own Privacy settings. Nobody is told what you choose here.",
+    "description": "Privacy & safety settings: explanation at the top while the admin turned blocking and message requests off. \"Privacy settings\" is the entry of a community's menu."
   },
   "fusion.privacy.noneBlocked": {
     "defaultMessage": "You haven't blocked anyone.",
@@ -27503,13 +27531,9 @@
     "defaultMessage": "You aren't ignoring anyone.",
     "description": "Privacy settings: shown when you ignore nobody."
   },
-  "fusion.privacy.perCommunity": {
-    "defaultMessage": "In each community",
-    "description": "Privacy settings: heading of the direct message choice made for each community (a community is a Mattermost team)."
-  },
-  "fusion.privacy.perCommunityLead": {
-    "defaultMessage": "Someone gets through when a community you share with them accepts them. With no community in common, the choice above decides.",
-    "description": "Privacy settings: explains how the per-community choices combine for someone you share several communities with."
+  "fusion.privacy.refuse": {
+    "defaultMessage": "Refuse",
+    "description": "Option for direct messages from people you do not talk with yet: they cannot message you."
   },
   "fusion.privacy.unblock": {
     "defaultMessage": "Unblock",
@@ -27594,6 +27618,62 @@
   "fusion.profile.timedOut": {
     "defaultMessage": "Timed out until {time}, {date}",
     "description": ""
+  },
+  "fusion.profilePrivacy.attributes": {
+    "defaultMessage": "Attributes",
+    "description": "Privacy settings: switch showing or hiding your profile attributes (fields the admins defined, such as employer or site)."
+  },
+  "fusion.profilePrivacy.attributesDesc": {
+    "defaultMessage": "The attributes on your profile, such as who you work for or your site. The community's admins still see them.",
+    "description": "Privacy settings: explains the attributes switch."
+  },
+  "fusion.profilePrivacy.email": {
+    "defaultMessage": "Email address",
+    "description": "Privacy settings: switch showing or hiding your email address."
+  },
+  "fusion.profilePrivacy.emailDesc": {
+    "defaultMessage": "Hidden, nobody finds you by it either.",
+    "description": "Privacy settings: explains the email switch: hidden, searching for your address does not find you."
+  },
+  "fusion.profilePrivacy.fullName": {
+    "defaultMessage": "Full name",
+    "description": "Privacy settings: switch showing or hiding your first and last name."
+  },
+  "fusion.profilePrivacy.fullNameDesc": {
+    "defaultMessage": "Your first and last name. Hidden, you show as your username or nickname.",
+    "description": "Privacy settings: explains the full name switch."
+  },
+  "fusion.profilePrivacy.lead": {
+    "defaultMessage": "The details people see on your profile. Someone who shares several communities with you sees only what all of them show. Your username and picture always show; system admins see everything.",
+    "description": "Privacy & safety settings: explanation under \"Your profile\", the defaults for all communities."
+  },
+  "fusion.profilePrivacy.localTime": {
+    "defaultMessage": "Local time",
+    "description": "Privacy settings: switch showing or hiding your local time (your time zone)."
+  },
+  "fusion.profilePrivacy.localTimeDesc": {
+    "defaultMessage": "Your time zone, and the time it is for you.",
+    "description": "Privacy settings: explains the local time switch."
+  },
+  "fusion.profilePrivacy.nickname": {
+    "defaultMessage": "Nickname",
+    "description": "Privacy settings: switch showing or hiding your nickname."
+  },
+  "fusion.profilePrivacy.nicknameDesc": {
+    "defaultMessage": "The name you chose to be called.",
+    "description": "Privacy settings: explains the nickname switch."
+  },
+  "fusion.profilePrivacy.position": {
+    "defaultMessage": "Position",
+    "description": "Privacy settings: switch showing or hiding your position (job title, not location)."
+  },
+  "fusion.profilePrivacy.positionDesc": {
+    "defaultMessage": "Your role or job title.",
+    "description": "Privacy settings: explains the position switch."
+  },
+  "fusion.profilePrivacy.section": {
+    "defaultMessage": "Your profile",
+    "description": "Privacy settings: heading of the profile details others may see (full name, nickname, position...)."
   },
   "fusion.rail.add": {
     "defaultMessage": "Add a community",
@@ -28266,6 +28346,10 @@
   "fusion.serverMenu.outOfFolder": {
     "defaultMessage": "Remove from {folder}",
     "description": ""
+  },
+  "fusion.serverMenu.privacy": {
+    "defaultMessage": "Privacy settings",
+    "description": "Community menu: opens this community's own privacy settings (direct messages, profile details shown)."
   },
   "fusion.serverMenu.selfRoles": {
     "defaultMessage": "Your roles…",
@@ -28949,7 +29033,7 @@
   },
   "fusion.settings.privacy": {
     "defaultMessage": "Privacy & safety",
-    "description": "Settings: name of the pane about direct messages from people you do not know and the people you ignore or block."
+    "description": "Settings: name of the pane about who can message you directly, which profile details people see, and the people you ignore or block."
   },
   "fusion.settings.profileFields": {
     "defaultMessage": "Profile details",

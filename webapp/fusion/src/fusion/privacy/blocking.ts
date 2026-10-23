@@ -2,6 +2,7 @@
 // See LICENSE.txt for license information.
 
 import {useCallback, useSyncExternalStore} from 'react';
+import {useIntl} from 'react-intl';
 import {useSelector} from 'react-redux';
 
 import type {Channel, ChannelMembership} from '@mattermost/types/channels';
@@ -26,8 +27,9 @@ import type {ActionFuncAsync, GlobalState} from 'types/store';
 //
 // Whom you ignore or block is one of your preferences (user_block, named after them, worth "ignore" or "block"); how
 // you take direct messages from people you don't know yet too (dm_privacy, "default" for all communities or a
-// community's id, worth "everyone" or "ask"). Whether a direct message waits as a request is on your channel member
-// (notify_props.dm_request), which only you see.
+// community's id, worth "everyone", "ask" or "refuse"). Someone who shares several communities with you gets the most
+// restrictive of their choices; someone who shares none gets your default. Whether a direct message waits as a
+// request is on your channel member (notify_props.dm_request), which only you see.
 export const USER_BLOCK_CATEGORY = 'user_block';
 export const DM_PRIVACY_CATEGORY = 'dm_privacy';
 export const DM_PRIVACY_DEFAULT = 'default';
@@ -36,7 +38,7 @@ export const DM_PRIVACY_DEFAULT = 'default';
 export const BLOCK_PROMPT_CATEGORY = 'block_prompt';
 
 export type BlockLevel = '' | 'ignore' | 'block';
-export type DMPrivacy = 'everyone' | 'ask';
+export type DMPrivacy = 'everyone' | 'ask' | 'refuse';
 
 // The admin can turn it all off for workplaces where colleagues must always be reachable.
 export function isUserBlockingEnabled(state: GlobalState): boolean {
@@ -77,7 +79,17 @@ export const getBlockLists: (state: GlobalState) => {blocked: string[]; ignored:
 
 export function getDMPrivacy(state: GlobalState, communityId = DM_PRIVACY_DEFAULT): DMPrivacy | '' {
     const value = getPreference(state, DM_PRIVACY_CATEGORY, communityId, '');
-    return value === 'everyone' || value === 'ask' ? value : '';
+    return value === 'everyone' || value === 'ask' || value === 'refuse' ? value : '';
+}
+
+// useDMPrivacyOptions names the choices for direct messages from people you don't talk with yet.
+export function useDMPrivacyOptions(): Array<[DMPrivacy, string]> {
+    const {formatMessage} = useIntl();
+    return [
+        ['everyone', formatMessage({id: 'fusion.privacy.everyone', defaultMessage: 'Accept from everyone'})],
+        ['ask', formatMessage({id: 'fusion.privacy.ask', defaultMessage: 'Ask me first'})],
+        ['refuse', formatMessage({id: 'fusion.privacy.refuse', defaultMessage: 'Refuse'})],
+    ];
 }
 
 function teammateOf(channel: Channel, me: string): string {
