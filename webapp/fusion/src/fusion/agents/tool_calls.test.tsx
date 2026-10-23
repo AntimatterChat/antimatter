@@ -11,7 +11,7 @@ import webSocketClient from 'client/web_websocket_client';
 import {resetAgentActivities} from 'fusion/agents/activity';
 import {fakeMatchMedia} from 'fusion/hooks/media_test_utils';
 import Message from 'fusion/messages/message';
-import {act, renderWithContext, screen, userEvent} from 'tests/react_testing_utils';
+import {renderWithContext, screen, userEvent} from 'tests/react_testing_utils';
 import {TestHelper} from 'utils/test_helper';
 
 import AgentToolCalls, {prettyArguments, toolCallsOf} from './tool_calls';
@@ -66,22 +66,18 @@ describe('fusion/agents/tool_calls', () => {
         expect(screen.getByText('Post a message', {selector: 'b'})).toBeInTheDocument();
         expect(screen.getByText('antimatter.post_message')).toBeInTheDocument();
         expect(screen.getByText(/"message": "Shipped!"/)).toBeInTheDocument();
-        await act(async () => {
-            await userEvent.click(screen.getByRole('button', {name: 'Confirm'}));
-        });
+        await userEvent.click(screen.getByRole('button', {name: 'Confirm'}));
         expect(answer).toHaveBeenCalledWith('call1', true);
-        expect(screen.getByText('Done')).toBeInTheDocument();
+        expect(await screen.findByText('Done')).toBeInTheDocument();
         expect(screen.queryByRole('button', {name: 'Confirm'})).not.toBeInTheDocument();
     });
 
     test('declining sends a decline', async () => {
         const answer = jest.spyOn(Client4, 'answerAIToolCall').mockResolvedValue(call({status: 'declined'}));
         render('maya', [call()]);
-        await act(async () => {
-            await userEvent.click(screen.getByRole('button', {name: 'Decline'}));
-        });
+        await userEvent.click(screen.getByRole('button', {name: 'Decline'}));
         expect(answer).toHaveBeenCalledWith('call1', false);
-        expect(screen.getByText('Declined')).toBeInTheDocument();
+        expect(await screen.findByText('Declined')).toBeInTheDocument();
     });
 
     test('someone else only sees whom it waits for', () => {
@@ -105,10 +101,8 @@ describe('fusion/agents/tool_calls', () => {
     test('an answer that fails says so and keeps the buttons', async () => {
         jest.spyOn(Client4, 'answerAIToolCall').mockRejectedValue(new Error('nope'));
         render('maya', [call()]);
-        await act(async () => {
-            await userEvent.click(screen.getByRole('button', {name: 'Confirm'}));
-        });
-        expect(screen.getByText('Your answer couldn\'t be sent. Try again.')).toBeInTheDocument();
+        await userEvent.click(screen.getByRole('button', {name: 'Confirm'}));
+        expect(await screen.findByText('Your answer couldn\'t be sent. Try again.')).toBeInTheDocument();
         expect(screen.getByRole('button', {name: 'Confirm'})).toBeEnabled();
     });
 
