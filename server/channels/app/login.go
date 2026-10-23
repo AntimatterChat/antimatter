@@ -182,6 +182,9 @@ func (a *App) DoLogin(rctx request.CTX, w http.ResponseWriter, r *http.Request, 
 
 	w.Header().Set(model.HeaderToken, session.Token)
 
+	// Antimatter: the user's other connected sessions warn them of the sign-in.
+	a.publishSessionCreated(session)
+
 	rctx = rctx.WithSession(session)
 
 	if a.Ldap() != nil {

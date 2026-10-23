@@ -29223,6 +29223,54 @@
     "defaultMessage": "Unreads",
     "description": ""
   },
+  "fusion.signIn.desktopApp": {
+    "defaultMessage": "Desktop app",
+    "description": "Sign-in warning: the device that signed in is the desktop app."
+  },
+  "fusion.signIn.detail": {
+    "defaultMessage": "{device} · {time}",
+    "description": "Sign-in warning: the device that signed in, and when (a time, with the day when not today)."
+  },
+  "fusion.signIn.device": {
+    "defaultMessage": "{app} on {system}",
+    "description": "Sign-in warning: the app or browser that signed in, and its operating system, e.g. \"Firefox on Linux\"."
+  },
+  "fusion.signIn.disconnect": {
+    "defaultMessage": "Disconnect",
+    "description": "Sign-in warning button: signs that session out of your account."
+  },
+  "fusion.signIn.disconnectFailed": {
+    "defaultMessage": "Couldn't disconnect that session. Try again.",
+    "description": "Toast when signing out the session from a sign-in warning failed."
+  },
+  "fusion.signIn.hint": {
+    "defaultMessage": "Not you? Disconnect it, then change your password.",
+    "description": "Sign-in warning: what to do when it was not you who signed in."
+  },
+  "fusion.signIn.itsMe": {
+    "defaultMessage": "It's me",
+    "description": "Sign-in warning button: the sign-in was you; dismisses the warning on all your devices."
+  },
+  "fusion.signIn.label": {
+    "defaultMessage": "New sign-in to your account: {device}",
+    "description": "Screen reader label of a sign-in warning: the title, then the device that signed in, e.g. \"Firefox on Linux\"."
+  },
+  "fusion.signIn.mobileApp": {
+    "defaultMessage": "Mobile app",
+    "description": "Sign-in warning: the device that signed in is the mobile app."
+  },
+  "fusion.signIn.more": {
+    "defaultMessage": "{count, plural, one {# more sign-in} other {# more sign-ins}}",
+    "description": "Under the sign-in warnings shown, how many more wait their turn."
+  },
+  "fusion.signIn.title": {
+    "defaultMessage": "New sign-in to your account",
+    "description": "Sign-in warning, at the top of the screen: someone signed in to your account on another device."
+  },
+  "fusion.signIn.unknownDevice": {
+    "defaultMessage": "Unknown device",
+    "description": "Sign-in warning: the device that signed in is not known."
+  },
   "fusion.sleep.dismiss": {
     "defaultMessage": "Dismiss",
     "description": ""

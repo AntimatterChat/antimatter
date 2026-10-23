@@ -57,6 +57,7 @@ import {LayoutProvider, isPhoneLayout, useLayout} from './layout_context';
 import {useLongPress} from './long_press';
 import {useNavShortcuts} from './nav_shortcuts';
 import {SettingsProvider, useSettings} from './settings_context';
+import SignInWarnings from './sign_in_warnings';
 import {useSwipes} from './swipes';
 import {ToastProvider} from './toast_context';
 import {useVisualViewport} from './viewport';
@@ -239,6 +240,9 @@ function Frame({children}: Props) {
 
             {/* What you missed, when a focus of yours ends. */}
             <FocusSummaryHost/>
+
+            {/* Someone signed in to your account: disconnect them, or it was you. */}
+            <SignInWarnings/>
         </>
     );
 }

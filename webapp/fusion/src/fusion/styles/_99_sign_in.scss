@@ -1,0 +1,22 @@
+// Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
+// See LICENSE.txt for license information.
+
+// Sign-in warnings: someone signed in to your account. At the top of the screen, centred, over everything (dialogs
+// included: it's about your account's safety); the newest on top when several, with a count of those waiting.
+.am-layer .am-signins { position: fixed; top: 12px; left: 50%; z-index: 85; display: flex; flex-direction: column; gap: 8px; width: min(440px, calc(100vw - 32px)); transform: translateX(-50%); pointer-events: none; }
+.am-layer .am-signin { display: grid; gap: 10px; padding: 12px 14px; border: 1px solid color-mix(in srgb, var(--am-danger) 45%, var(--am-line)); border-radius: 14px; background: var(--am-main); color: var(--am-text); box-shadow: var(--am-shadow); pointer-events: auto; animation: am-reaction-in .2s ease; }
+.am-layer .am-signin-top { display: flex; align-items: flex-start; gap: 10px; min-width: 0; }
+.am-layer .am-signin-top > .am-ic { flex: none; margin-top: 2px; color: var(--am-danger); }
+.am-layer .am-signin-top .am-grow { flex: 1; min-width: 0; }
+.am-layer .am-signin-top b { display: block; font-size: 14.5px; }
+.am-layer .am-signin-top .am-sub { display: block; overflow-wrap: anywhere; color: var(--am-text-2); font-size: 13px; }
+.am-layer .am-signin-top .am-hint { display: block; margin-top: 2px; color: var(--am-muted); font-size: 12.5px; }
+.am-layer .am-signin-actions { display: flex; justify-content: flex-end; gap: 8px; }
+.am-layer .am-signin-actions .am-btn { height: 32px; padding: 0 14px; font-size: 13.5px; }
+.am-layer .am-signins-more { align-self: center; padding: 3px 10px; border-radius: 999px; background: var(--am-raise); color: var(--am-text-2); font-size: 12.5px; box-shadow: var(--am-shadow); pointer-events: auto; }
+
+// On a phone: under the notch, and the two buttons share the width (big enough for a finger).
+@media (max-width: 480px) {
+  .am-layer .am-signins { top: calc(8px + env(safe-area-inset-top, 0px)); }
+  .am-layer .am-signin-actions .am-btn { flex: 1; height: 40px; }
+}

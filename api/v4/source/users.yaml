@@ -2005,6 +2005,57 @@
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
+  "/api/v4/users/{user_id}/sessions/acknowledge":
+    post:
+      tags:
+        - users
+      summary: Confirm a sign-in
+      description: >
+        Antimatter. When someone signs in to an account (with a password, SSO or a magic link, on the web, the
+        desktop or the mobile app), the account's other connected sessions get a `session_created` websocket event
+        with the new session's `session_id`, `create_at` (milliseconds), `platform`, `os`, `browser` and `mobile`
+        (never its token). The user then revokes that session (Revoke a user session, which sends a
+        `session_revoked` event with its `session_id`) or confirms it was them here, which sends a
+        `session_acknowledged` event with its `session_id`: either takes the warning off all their sessions.
+        Personal access tokens and OAuth apps' tokens don't send `session_created`. The events go to the user's own
+        sessions only.
+
+        ##### Permissions
+
+        Must be logged in as the user (`me` or their own id); the session must be theirs.
+      operationId: AcknowledgeSession
+      parameters:
+        - name: user_id
+          in: path
+          description: User GUID, or `me`
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - session_id
+              properties:
+                session_id:
+                  description: The id of the user's session that signed in.
+                  type: string
+        required: true
+      responses:
+        "200":
+          description: Sign-in confirmed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StatusOK"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
   "/api/v4/users/{user_id}/sessions/revoke/all":
     post:
       tags:

@@ -464,6 +464,25 @@ export type FocusEnded = BaseWebSocketMessage<WebSocketEvents.FocusEnded, {
     ended_by: 'user' | 'timer' | 'status';
 }>;
 
+// Antimatter: someone signed in to the current user's account (sent to their other sessions, never with a token).
+export type SessionCreated = BaseWebSocketMessage<WebSocketEvents.SessionCreated, {
+    session_id: string;
+    create_at: number;
+    platform: string;
+    os: string;
+    browser: string;
+    mobile: boolean;
+}>;
+
+// Antimatter: a sign-in was handled, on any of the user's devices: its session revoked, or confirmed as theirs.
+export type SessionRevoked = BaseWebSocketMessage<WebSocketEvents.SessionRevoked, {
+    session_id: string;
+}>;
+
+export type SessionAcknowledged = BaseWebSocketMessage<WebSocketEvents.SessionAcknowledged, {
+    session_id: string;
+}>;
+
 // Antimatter: a message was put on top of its channel (or again, with a new time), or taken off it.
 export type PostPutOnTop = BaseWebSocketMessage<WebSocketEvents.PostPutOnTop, {
     on_top: OnTopPost;

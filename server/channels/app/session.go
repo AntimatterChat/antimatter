@@ -386,6 +386,9 @@ func (a *App) RevokeSession(rctx request.CTX, session *model.Session) *model.App
 		a.sendMobileWipeSignal(rctx, session)
 	})
 
+	// Antimatter: a sign-in warning about this session goes from the user's other sessions.
+	a.publishSessionHandled(model.WebsocketEventSessionRevoked, session.UserId, session.Id)
+
 	return nil
 }
 

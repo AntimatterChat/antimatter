@@ -398,6 +398,7 @@ func Init(srv *app.Server) (*API, error) {
 	api.InitCommand()
 	api.InitStatus()
 	api.InitFocus()
+	api.InitSessionWarnings()
 	api.InitWebSocket()
 	api.InitEmoji()
 	api.InitOAuth()

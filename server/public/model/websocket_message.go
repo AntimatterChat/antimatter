@@ -137,6 +137,11 @@ const (
 	// Antimatter: an agent's activity changed; an agent's reply grows as the model streams it.
 	WebsocketEventAgentActivityChanged WebsocketEventType = "agent_activity_changed"
 	WebsocketEventAgentPostStream      WebsocketEventType = "agent_post_stream"
+	// Antimatter: someone signed in to the user's account (to warn their other sessions), and that sign-in was
+	// handled: the session revoked, or confirmed as theirs ("It's me").
+	WebsocketEventSessionCreated      WebsocketEventType = "session_created"
+	WebsocketEventSessionRevoked      WebsocketEventType = "session_revoked"
+	WebsocketEventSessionAcknowledged WebsocketEventType = "session_acknowledged"
 
 	WebSocketMsgTypeResponse = "response"
 	WebSocketMsgTypeEvent    = "event"

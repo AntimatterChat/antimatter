@@ -1149,6 +1149,15 @@ export default class Client4 {
         );
     };
 
+    // Antimatter: confirms that a sign-in (a session of the user's own) was them, which takes its warning off their
+    // other sessions.
+    acknowledgeSession = (userId: string, sessionId: string) => {
+        return this.doFetch<StatusOK>(
+            `${this.getUserRoute(userId)}/sessions/acknowledge`,
+            {method: 'post', body: JSON.stringify({session_id: sessionId})},
+        );
+    };
+
     revokeAllSessionsForUser = (userId: string) => {
         return this.doFetch<StatusOK>(
             `${this.getUserRoute(userId)}/sessions/revoke/all`,
