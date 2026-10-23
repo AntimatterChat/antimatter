@@ -522,6 +522,7 @@ export default function StatusPopover({anchor, onClose}: Props) {
                             )}
                         </button>
                     );
+
                     // Focus mode sits between Do not disturb and Invisible: it's a timed Do not disturb, so it
                     // belongs right after it.
                     const focusOption = s.status === 'dnd' && (

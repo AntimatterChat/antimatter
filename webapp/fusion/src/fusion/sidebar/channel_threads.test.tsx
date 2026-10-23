@@ -6,7 +6,6 @@ import React from 'react';
 import {CollapsedThreads} from '@mattermost/types/config';
 
 import {THREAD_TITLE_PROP} from 'fusion/messages/thread_title';
-
 import {renderWithContext, screen} from 'tests/react_testing_utils';
 import {TestHelper} from 'utils/test_helper';
 
@@ -29,7 +28,7 @@ describe('fusion/sidebar/ChannelThreads', () => {
     const staleTopic = TestHelper.getPostMock({id: 'stale', channel_id: 'ch', create_at: NOW - (10 * DAY), props: {[THREAD_TITLE_PROP]: 'Old topic'}});
     const plainReply = TestHelper.getPostMock({id: 'reply-root', channel_id: 'ch', create_at: NOW - DAY, message: 'Does anyone know…'});
 
-    const render = (posts: ReturnType<typeof TestHelper.getPostMock>[], threads: Record<string, unknown> = {}, period?: string) => renderWithContext(
+    const render = (posts: Array<ReturnType<typeof TestHelper.getPostMock>>, threads: Record<string, unknown> = {}, period?: string) => renderWithContext(
         <ChannelThreads channelId='ch'/>,
         {
             entities: {
