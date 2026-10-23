@@ -348,7 +348,7 @@ func (r *aiAgentToolRunner) Run(rctx request.CTX, turn *AgentTurnContext, call a
 // aiToolCallArguments checks a call's arguments: a JSON object (none is an empty one), not too large. A problem is
 // said to the model.
 func aiToolCallArguments(raw json.RawMessage) (json.RawMessage, string) {
-	if len(strings.TrimSpace(string(raw))) == 0 {
+	if strings.TrimSpace(string(raw)) == "" {
 		return json.RawMessage(`{}`), ""
 	}
 	if len(raw) > model.AIToolArgumentsMaxBytes {
