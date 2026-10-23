@@ -39,7 +39,7 @@ export default function ConnectionTranslationSettings({value, disabled, onChange
                     <>
                         <FormattedMessage
                             id='admin.site.localization.autoTranslationConnectionHelp'
-                            defaultMessage='A server-wide connection of <link>AI › Model connections</link>. A dedicated translation model (such as HY-MT) is fast and accurate; a general LLM works too.'
+                            defaultMessage='A server-wide connection of <link>AI › Connections and agents</link>. A dedicated translation model (such as HY-MT) is fast and accurate; a general LLM works too.'
                             values={{link: (chunks: React.ReactNode) => <Link to='/admin_console/ai/model_connections'>{chunks}</Link>}}
                         />
                         {error && <div className='error-message'>{error}</div>}

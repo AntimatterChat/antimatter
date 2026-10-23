@@ -24,6 +24,11 @@ type aiServerState struct {
 	// agents is the node's list of agents; e2eModel the end-to-end tests' stand-in model, when they installed one.
 	agents   *agentDirectory
 	e2eModel *aiE2EModel
+
+	// mcp caches the MCP servers' tool lists; appTools are the tools the apps registered (each node's own: every
+	// node runs the apps).
+	mcp      aiMCPState
+	appTools aiAppToolsState
 }
 
 // agentDirectory gives the node's list of agents.

@@ -1903,3 +1903,10 @@ func (api *apiTimerLayer) AIConnectionsForUser(userID, channelID, teamID string)
 	api.recordTime(startTime, "AIConnectionsForUser", _returnsB == nil)
 	return _returnsA, _returnsB
 }
+
+func (api *apiTimerLayer) RegisterAITools(tools []*model.AIToolDefinition) *model.AppError {
+	startTime := timePkg.Now()
+	_returnsA := api.apiImpl.RegisterAITools(tools)
+	api.recordTime(startTime, "RegisterAITools", _returnsA == nil)
+	return _returnsA
+}

@@ -30,6 +30,7 @@ import {
     requestOf,
 } from './agents';
 import type {AgentDraft, AgentKind} from './agents';
+import ToolPolicyField from './tool_policy_field';
 
 type Props = {
 
@@ -292,10 +293,11 @@ export default function AgentForm({scope: newScope, agent, onSaved, onCancel}: P
                         />
                         <small className={am('field-note')}>{formatMessage({id: 'fusion.agents.systemPromptDesc', defaultMessage: 'Its system prompt. People who talk to it don\'t see it.'})}</small>
                     </label>
-                    <div className={am('field')}>
-                        <span>{formatMessage({id: 'fusion.agents.tools', defaultMessage: 'Tools'})}</span>
-                        <small className={am('field-note')}>{formatMessage({id: 'fusion.agents.toolsSoon', defaultMessage: 'Coming soon: the tools of Antimatter and its apps the agent may use, always with the rights of the person asking.'})}</small>
-                    </div>
+                    <ToolPolicyField
+                        scope={scope}
+                        policy={draft.tools}
+                        onChange={(tools) => set({tools})}
+                    />
                 </>
             )}
 

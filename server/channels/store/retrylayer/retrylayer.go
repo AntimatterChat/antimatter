@@ -21,6 +21,7 @@ type RetryLayer struct {
 	store.Store
 	AIAgentStore                    store.AIAgentStore
 	AIConnectionStore               store.AIConnectionStore
+	AIMCPServerStore                store.AIMCPServerStore
 	AccessControlPolicyStore        store.AccessControlPolicyStore
 	AgentActivityStore              store.AgentActivityStore
 	AttributesStore                 store.AttributesStore
@@ -98,6 +99,10 @@ func (s *RetryLayer) AIAgent() store.AIAgentStore {
 
 func (s *RetryLayer) AIConnection() store.AIConnectionStore {
 	return s.AIConnectionStore
+}
+
+func (s *RetryLayer) AIMCPServer() store.AIMCPServerStore {
+	return s.AIMCPServerStore
 }
 
 func (s *RetryLayer) AccessControlPolicy() store.AccessControlPolicyStore {
@@ -383,6 +388,11 @@ type RetryLayerAIAgentStore struct {
 
 type RetryLayerAIConnectionStore struct {
 	store.AIConnectionStore
+	Root *RetryLayer
+}
+
+type RetryLayerAIMCPServerStore struct {
+	store.AIMCPServerStore
 	Root *RetryLayer
 }
 
@@ -1167,6 +1177,258 @@ func (s *RetryLayerAIConnectionStore) Update(rctx request.CTX, connection *model
 	tries := 0
 	for {
 		result, err := s.AIConnectionStore.Update(rctx, connection)
+		if err == nil {
+			return result, nil
+		}
+		if !isRepeatableError(err) {
+			return result, err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerAIMCPServerStore) Delete(rctx request.CTX, id string, deleteAt int64) error {
+
+	tries := 0
+	for {
+		err := s.AIMCPServerStore.Delete(rctx, id, deleteAt)
+		if err == nil {
+			return nil
+		}
+		if !isRepeatableError(err) {
+			return err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerAIMCPServerStore) DeleteUserToken(rctx request.CTX, serverID string, userID string) error {
+
+	tries := 0
+	for {
+		err := s.AIMCPServerStore.DeleteUserToken(rctx, serverID, userID)
+		if err == nil {
+			return nil
+		}
+		if !isRepeatableError(err) {
+			return err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerAIMCPServerStore) DeleteUserTokensForServer(rctx request.CTX, serverID string) error {
+
+	tries := 0
+	for {
+		err := s.AIMCPServerStore.DeleteUserTokensForServer(rctx, serverID)
+		if err == nil {
+			return nil
+		}
+		if !isRepeatableError(err) {
+			return err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerAIMCPServerStore) DeleteUserTokensForUser(rctx request.CTX, userID string) error {
+
+	tries := 0
+	for {
+		err := s.AIMCPServerStore.DeleteUserTokensForUser(rctx, userID)
+		if err == nil {
+			return nil
+		}
+		if !isRepeatableError(err) {
+			return err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerAIMCPServerStore) Get(rctx request.CTX, id string) (*model.AIMCPServer, error) {
+
+	tries := 0
+	for {
+		result, err := s.AIMCPServerStore.Get(rctx, id)
+		if err == nil {
+			return result, nil
+		}
+		if !isRepeatableError(err) {
+			return result, err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerAIMCPServerStore) GetAll(rctx request.CTX) ([]*model.AIMCPServer, error) {
+
+	tries := 0
+	for {
+		result, err := s.AIMCPServerStore.GetAll(rctx)
+		if err == nil {
+			return result, nil
+		}
+		if !isRepeatableError(err) {
+			return result, err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerAIMCPServerStore) GetForScopes(rctx request.CTX, scopes []string) ([]*model.AIMCPServer, error) {
+
+	tries := 0
+	for {
+		result, err := s.AIMCPServerStore.GetForScopes(rctx, scopes)
+		if err == nil {
+			return result, nil
+		}
+		if !isRepeatableError(err) {
+			return result, err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerAIMCPServerStore) GetUserToken(rctx request.CTX, serverID string, userID string) (*model.AIMCPUserToken, error) {
+
+	tries := 0
+	for {
+		result, err := s.AIMCPServerStore.GetUserToken(rctx, serverID, userID)
+		if err == nil {
+			return result, nil
+		}
+		if !isRepeatableError(err) {
+			return result, err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerAIMCPServerStore) GetUserTokenServerIds(rctx request.CTX, userID string) ([]string, error) {
+
+	tries := 0
+	for {
+		result, err := s.AIMCPServerStore.GetUserTokenServerIds(rctx, userID)
+		if err == nil {
+			return result, nil
+		}
+		if !isRepeatableError(err) {
+			return result, err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerAIMCPServerStore) Save(rctx request.CTX, server *model.AIMCPServer) (*model.AIMCPServer, error) {
+
+	tries := 0
+	for {
+		result, err := s.AIMCPServerStore.Save(rctx, server)
+		if err == nil {
+			return result, nil
+		}
+		if !isRepeatableError(err) {
+			return result, err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerAIMCPServerStore) SaveUserToken(rctx request.CTX, token *model.AIMCPUserToken) error {
+
+	tries := 0
+	for {
+		err := s.AIMCPServerStore.SaveUserToken(rctx, token)
+		if err == nil {
+			return nil
+		}
+		if !isRepeatableError(err) {
+			return err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerAIMCPServerStore) Update(rctx request.CTX, server *model.AIMCPServer) (*model.AIMCPServer, error) {
+
+	tries := 0
+	for {
+		result, err := s.AIMCPServerStore.Update(rctx, server)
 		if err == nil {
 			return result, nil
 		}
@@ -22255,6 +22517,7 @@ func New(childStore store.Store) *RetryLayer {
 
 	newStore.AIAgentStore = &RetryLayerAIAgentStore{AIAgentStore: childStore.AIAgent(), Root: &newStore}
 	newStore.AIConnectionStore = &RetryLayerAIConnectionStore{AIConnectionStore: childStore.AIConnection(), Root: &newStore}
+	newStore.AIMCPServerStore = &RetryLayerAIMCPServerStore{AIMCPServerStore: childStore.AIMCPServer(), Root: &newStore}
 	newStore.AccessControlPolicyStore = &RetryLayerAccessControlPolicyStore{AccessControlPolicyStore: childStore.AccessControlPolicy(), Root: &newStore}
 	newStore.AgentActivityStore = &RetryLayerAgentActivityStore{AgentActivityStore: childStore.AgentActivity(), Root: &newStore}
 	newStore.AttributesStore = &RetryLayerAttributesStore{AttributesStore: childStore.Attributes(), Root: &newStore}

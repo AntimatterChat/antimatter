@@ -30,6 +30,8 @@ func (api *API) InitAIAgents() {
 	agents.Handle("/activity/ids", api.APISessionRequired(getAgentActivitiesByIds)).Methods(http.MethodPost)
 	// The AI chat: the person's conversations with the agents they may use.
 	agents.Handle("/conversations", api.APISessionRequired(getAIAgentConversations)).Methods(http.MethodGet)
+	// Tools: what the managers of a scope's agents may give them (ai_tools.go).
+	agents.Handle("/tools/catalogue", api.APISessionRequired(getAIToolCatalogue)).Methods(http.MethodGet)
 
 	agent := agents.PathPrefix("/{agent_id:[A-Za-z0-9]+}").Subrouter()
 	agent.Handle("", api.APISessionRequired(getAIAgent)).Methods(http.MethodGet)
@@ -41,6 +43,8 @@ func (api *API) InitAIAgents() {
 	agent.Handle("/activity", api.APISessionRequired(setAgentActivity)).Methods(http.MethodPut)
 	// The AI chat and the message actions: ask the agent for a task (a summary...), as the session's person.
 	agent.Handle("/tasks", api.APISessionRequired(startAIAgentTask)).Methods(http.MethodPost)
+	// The tools the agent may use for the session's person (ai_tools.go).
+	agent.Handle("/tools", api.APISessionRequired(getAIAgentTools)).Methods(http.MethodGet)
 }
 
 // aiAgentScopePermission is the permission that manages a scope's agents, for the error message.

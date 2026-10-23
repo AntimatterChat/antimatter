@@ -81,6 +81,7 @@ export const enum WebSocketEvents {
     SessionCreated = 'session_created',
     SessionRevoked = 'session_revoked',
     SessionAcknowledged = 'session_acknowledged',
+    AIToolsChanged = 'ai_tools_changed',
     CloudSubscriptionChanged = 'cloud_subscription_changed',
     ThreadUpdated = 'thread_updated',
     ThreadFollowChanged = 'thread_follow_changed',

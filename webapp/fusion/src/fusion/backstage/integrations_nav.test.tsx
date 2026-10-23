@@ -39,7 +39,7 @@ describe('fusion/backstage/IntegrationsNav', () => {
         expect(screen.queryByRole('link', {name: 'Custom emoji'})).not.toBeInTheDocument();
     });
 
-    // Antimatter: agents, for the server's admins (server-wide ones) and the community's (its own).
+    // Antimatter: agents are made in the AI settings (the System Console's, and the community's settings), not here.
     const renderWithRoles = (roles: string, teamRoles: string, permissions: Record<string, string[]>) => renderWithContext(
         <IntegrationsNav
             team={team}
@@ -62,17 +62,12 @@ describe('fusion/backstage/IntegrationsNav', () => {
         } as never,
     );
 
-    test('lists Agents for a system admin and for the community\'s admins', () => {
+    test('has no Agents entry, not even for the admins who make agents', () => {
         const {unmount} = renderWithRoles('system_user system_admin', 'team_user', {system_admin: ['manage_system'], system_user: [], team_user: []});
-        expect(screen.getByRole('link', {name: 'Agents'})).toHaveAttribute('href', '/lab/integrations/agents');
+        expect(screen.queryByRole('link', {name: 'Agents'})).not.toBeInTheDocument();
         unmount();
 
         renderWithRoles('system_user', 'team_user team_admin', {system_user: [], team_user: [], team_admin: ['manage_team']});
-        expect(screen.getByRole('link', {name: 'Agents'})).toBeInTheDocument();
-    });
-
-    test('has no Agents for a member who manages neither', () => {
-        renderWithRoles('system_user', 'team_user', {system_user: [], team_user: []});
         expect(screen.queryByRole('link', {name: 'Agents'})).not.toBeInTheDocument();
     });
 });

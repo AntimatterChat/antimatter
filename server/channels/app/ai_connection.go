@@ -235,6 +235,8 @@ func (a *App) PatchAIConnection(rctx request.CTX, c *model.AIConnection, patch *
 	if err != nil {
 		return nil, aiConnectionStoreError("PatchAIConnection", err)
 	}
+	// Its address, key or models may have changed: its agents' statuses follow.
+	a.refreshAIAgentStatusesLater(saved.Id, nil)
 	return saved, nil
 }
 
@@ -244,6 +246,8 @@ func (a *App) DeleteAIConnection(rctx request.CTX, c *model.AIConnection) *model
 	if err := a.Srv().Store().AIConnection().Delete(rctx, c.Id, model.GetMillis()); err != nil {
 		return aiConnectionStoreError("DeleteAIConnection", err)
 	}
+	// Its agents can't answer any more: they go offline.
+	a.refreshAIAgentStatusesLater(c.Id, nil)
 	return nil
 }
 
@@ -276,9 +280,17 @@ func (a *App) aiProvider(c *model.AIConnection) (ai.Provider, *model.AppError) {
 
 const aiConnectionTestTimeout = 20 * time.Second
 
-// TestAIConnection checks a connection's endpoint and key with a cheap call: the list of its models, else (for
-// endpoints without one) a one-token chat with its chat model.
+// TestAIConnection checks a saved connection's endpoint and key (testAIConnection); its agents' statuses follow the
+// result (online when it answers, away when it doesn't).
 func (a *App) TestAIConnection(rctx request.CTX, c *model.AIConnection) *model.AIConnectionTestResult {
+	result := a.testAIConnection(rctx, c)
+	a.noteAIConnectionAnswers(rctx, c.Id, result.OK)
+	return result
+}
+
+// testAIConnection checks a connection's endpoint and key with a cheap call: the list of its models, else (for
+// endpoints without one) a one-token chat with its chat model.
+func (a *App) testAIConnection(rctx request.CTX, c *model.AIConnection) *model.AIConnectionTestResult {
 	result := &model.AIConnectionTestResult{}
 	provider, appErr := a.aiProvider(c)
 	if appErr != nil {
@@ -319,7 +331,7 @@ func (a *App) TestAIConnectionRequest(rctx request.CTX, req *model.AIConnectionR
 	if appErr := c.IsValid(); appErr != nil {
 		return nil, appErr
 	}
-	return a.TestAIConnection(rctx, c), nil
+	return a.testAIConnection(rctx, c), nil
 }
 
 // ListAIConnectionModels gives the models a connection's endpoint offers.

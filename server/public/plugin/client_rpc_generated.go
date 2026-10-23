@@ -2241,6 +2241,59 @@ func (s *hooksRPCServer) DraftWillBeUpserted(args *Z_DraftWillBeUpsertedArgs, re
 	return nil
 }
 
+func init() {
+	hookNameToId["ExecuteAITool"] = ExecuteAIToolID
+}
+
+type Z_ExecuteAIToolArgs struct {
+	A *Context
+	B *model.AIToolExecution
+}
+
+type Z_ExecuteAIToolReturns struct {
+	A *model.AIToolResult
+}
+
+func (g *hooksRPCClient) ExecuteAITool(c *Context, call *model.AIToolExecution) *model.AIToolResult {
+	_args := &Z_ExecuteAIToolArgs{c, call}
+	_returns := &Z_ExecuteAIToolReturns{}
+	if g.implemented[ExecuteAIToolID] {
+		if err := g.client.Call("Plugin.ExecuteAITool", _args, _returns); err != nil {
+			g.log.Error("RPC call ExecuteAITool to plugin failed.", mlog.Err(err))
+		}
+	}
+	return _returns.A
+}
+
+// ExecuteAIToolWithRPCErr returns the same values as ExecuteAITool, with an additional trailing error
+// for the RPC transport — always the LAST return slot.
+func (g *hooksRPCClient) ExecuteAIToolWithRPCErr(c *Context, call *model.AIToolExecution) (*model.AIToolResult, error) {
+	_args := &Z_ExecuteAIToolArgs{c, call}
+	_returns := &Z_ExecuteAIToolReturns{}
+	var _err error
+	if g.implemented[ExecuteAIToolID] {
+		_err = g.client.Call("Plugin.ExecuteAITool", _args, _returns)
+		if _err != nil {
+			// Reset _returns so partial gob decoding can't leak non-zero
+			// values past a transport failure (HooksWithRPCErrGenerated contract).
+			_returns = &Z_ExecuteAIToolReturns{}
+			g.log.Debug("RPC call ExecuteAITool to plugin failed.", mlog.Err(_err))
+		}
+	}
+	return _returns.A, _err
+}
+
+func (s *hooksRPCServer) ExecuteAITool(args *Z_ExecuteAIToolArgs, returns *Z_ExecuteAIToolReturns) error {
+	if hook, ok := s.impl.(interface {
+		ExecuteAITool(c *Context, call *model.AIToolExecution) *model.AIToolResult
+	}); ok {
+		returns.A = hook.ExecuteAITool(args.A, args.B)
+	} else {
+		return encodableError(fmt.Errorf("Hook ExecuteAITool called but not implemented."))
+	}
+	return nil
+}
+
 // HooksWithRPCErrGenerated provides a WithRPCErr variant for every generated hook. The last error return
 // is always the RPC transport error — if non-nil, the plugin's other return values are zero. For
 // hooks whose base signature already returns error, the tuple is (originalReturns..., rpcErr)
@@ -2335,6 +2388,8 @@ type HooksWithRPCErrGenerated interface {
 	ScheduledPostWillBeCreatedWithRPCErr(c *Context, scheduledPost *model.ScheduledPost) (*model.ScheduledPost, string, error)
 
 	DraftWillBeUpsertedWithRPCErr(c *Context, draft *model.Draft) (*model.Draft, string, error)
+
+	ExecuteAIToolWithRPCErr(c *Context, call *model.AIToolExecution) (*model.AIToolResult, error)
 }
 
 type Z_RegisterCommandArgs struct {
@@ -9968,6 +10023,34 @@ func (s *apiRPCServer) AIConnectionsForUser(args *Z_AIConnectionsForUserArgs, re
 		returns.A, returns.B = hook.AIConnectionsForUser(args.A, args.B, args.C)
 	} else {
 		return encodableError(fmt.Errorf("API AIConnectionsForUser called but not implemented."))
+	}
+	return nil
+}
+
+type Z_RegisterAIToolsArgs struct {
+	A []*model.AIToolDefinition
+}
+
+type Z_RegisterAIToolsReturns struct {
+	A *model.AppError
+}
+
+func (g *apiRPCClient) RegisterAITools(tools []*model.AIToolDefinition) *model.AppError {
+	_args := &Z_RegisterAIToolsArgs{tools}
+	_returns := &Z_RegisterAIToolsReturns{}
+	if err := g.client.Call("Plugin.RegisterAITools", _args, _returns); err != nil {
+		log.Printf("RPC call to RegisterAITools API failed: %s", err.Error())
+	}
+	return _returns.A
+}
+
+func (s *apiRPCServer) RegisterAITools(args *Z_RegisterAIToolsArgs, returns *Z_RegisterAIToolsReturns) error {
+	if hook, ok := s.impl.(interface {
+		RegisterAITools(tools []*model.AIToolDefinition) *model.AppError
+	}); ok {
+		returns.A = hook.RegisterAITools(args.A)
+	} else {
+		return encodableError(fmt.Errorf("API RegisterAITools called but not implemented."))
 	}
 	return nil
 }

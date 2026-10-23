@@ -210,6 +210,26 @@ func (_m *Hooks) EmailNotificationWillBeSent(emailNotification *model.EmailNotif
 	return r0, r1
 }
 
+// ExecuteAITool provides a mock function with given fields: c, call
+func (_m *Hooks) ExecuteAITool(c *plugin.Context, call *model.AIToolExecution) *model.AIToolResult {
+	ret := _m.Called(c, call)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ExecuteAITool")
+	}
+
+	var r0 *model.AIToolResult
+	if rf, ok := ret.Get(0).(func(*plugin.Context, *model.AIToolExecution) *model.AIToolResult); ok {
+		r0 = rf(c, call)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*model.AIToolResult)
+		}
+	}
+
+	return r0
+}
+
 // ExecuteCommand provides a mock function with given fields: c, args
 func (_m *Hooks) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
 	ret := _m.Called(c, args)

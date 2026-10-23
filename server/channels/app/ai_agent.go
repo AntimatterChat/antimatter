@@ -82,6 +82,15 @@ func (d *agentDirectory) get(userID string) *model.AIAgent {
 	return nil
 }
 
+// lookup gives the agent of a user ID (nil for an account that isn't an agent's), and whether the list is loaded at
+// all (when it isn't, nil says nothing).
+func (d *agentDirectory) lookup(userID string) (*model.AIAgent, bool) {
+	d.mu.RLock()
+	loaded := d.byUserID != nil
+	d.mu.RUnlock()
+	return d.get(userID), loaded
+}
+
 func (d *agentDirectory) byName(username string) *model.AIAgent {
 	d.mu.RLock()
 	id := d.byUsername[strings.ToLower(username)]
@@ -411,6 +420,7 @@ func (a *App) CreateAIAgent(rctx request.CTX, req *model.AIAgentRequest, creator
 	}
 	a.InvalidateCacheForUser(saved.UserId)
 	a.invalidateAIAgents()
+	a.refreshAIAgentStatusesLater("", saved)
 	return a.aiAgentDetails(rctx, saved)
 }
 
@@ -472,6 +482,8 @@ func (a *App) PatchAIAgent(rctx request.CTX, agent *model.AIAgent, patch *model.
 		return nil, model.NewAppError("PatchAIAgent", "app.ai.agent.save.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
 	}
 	a.invalidateAIAgents()
+	// Its connection or model may have changed.
+	a.refreshAIAgentStatusesLater("", saved)
 	return a.aiAgentDetails(rctx, saved)
 }
 
@@ -486,6 +498,13 @@ func (a *App) SetAIAgentEnabled(rctx request.CTX, agent *model.AIAgent, enabled 
 		a.setAgentActivityQuietly(rctx, agent, &model.AgentActivity{UserId: agent.UserId, State: model.AgentStateIdle, UpdateAt: model.GetMillis()})
 	}
 	a.invalidateAIAgents()
+	if !agent.External {
+		if enabled {
+			a.refreshAIAgentStatusesLater("", agent)
+		} else {
+			a.setAIAgentStatus(agent.UserId, model.StatusOffline)
+		}
+	}
 	return a.aiAgentDetails(rctx, agent)
 }
 
@@ -505,6 +524,7 @@ func (a *App) DeleteAIAgent(rctx request.CTX, agent *model.AIAgent) *model.AppEr
 	if err := a.Srv().Store().AgentActivity().Delete(rctx, agent.UserId); err != nil {
 		rctx.Logger().Warn("Couldn't forget a deleted agent's activity", mlog.String("user_id", agent.UserId), mlog.Err(err))
 	}
+	a.setAIAgentStatus(agent.UserId, model.StatusOffline)
 	a.invalidateAIAgents()
 	return nil
 }

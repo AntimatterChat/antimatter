@@ -5367,7 +5367,6 @@
   "fusion.agents.title": "وكلاء",
   "fusion.agents.toggleFailed": "تعذّر تغيير الوكيل.",
   "fusion.agents.tools": "الأدوات",
-  "fusion.agents.toolsSoon": "قريبًا: أدوات Antimatter وتطبيقاته التي قد يستخدمها الوكيل، دائمًا بصلاحيات الشخص الذي يطرح الطلب.",
   "fusion.agents.username": "اسم المستخدم",
   "fusion.agents.usernameDesc": "كيفية الإشارة إليه: من 3 إلى 22 حرفًا صغيرًا وأرقامًا ونقاطًا وشرطات أو خطوطًا سفلية، بدءًا بحرف.",
   "fusion.agents.usernamePlaceholder": "مثال: باحث",

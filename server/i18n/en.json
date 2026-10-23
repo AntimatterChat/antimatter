@@ -300,6 +300,26 @@
     "description": "Admin API error when the uploaded custom brand image exceeds the size limit."
   },
   {
+    "id": "api.ai.mcp.oauth.connected.body",
+    "translation": "Agents can now use its tools with your account. You can close this window.",
+    "description": "Text of the page shown after a person signed in to an MCP server (Antimatter)."
+  },
+  {
+    "id": "api.ai.mcp.oauth.connected.title",
+    "translation": "Signed in to {{.Name}}",
+    "description": "Title of the page shown after a person signed in to an MCP server (a source of tools for agents, Antimatter). {{.Name}} is the server's name."
+  },
+  {
+    "id": "api.ai.mcp.oauth.failed.body",
+    "translation": "The sign-in expired or was refused. Close this window and try again from the Tools menu of the AI chat.",
+    "description": "Text of the page shown when a person's sign-in to an MCP server failed (Antimatter). 'Tools menu of the AI chat' is where people sign in."
+  },
+  {
+    "id": "api.ai.mcp.oauth.failed.title",
+    "translation": "Couldn't sign in",
+    "description": "Title of the page shown when a person's sign-in to an MCP server (a source of tools for agents, Antimatter) failed."
+  },
+  {
     "id": "api.ai_bridge_test_helper.disabled.app_error",
     "translation": "Bridge test helper is disabled.",
     "description": "API error returned when a testing-only AI bridge endpoint is called on a server without testing mode enabled; audience is developers/QA."
@@ -4662,6 +4682,11 @@
     "description": "API error when removing a remote (connected Mattermost server) from a shared channel fails; 'uninvite' means revoking the share."
   },
   {
+    "id": "api.status.agent.app_error",
+    "translation": "An agent's status is set by the server: it shows whether the agent can answer.",
+    "description": "API error when someone tries to set an AI agent's online/away/do not disturb status or custom status; the server sets it from whether the agent's model connection answers."
+  },
+  {
     "id": "api.status.user_not_found.app_error",
     "translation": "User not found.",
     "description": "API error when the user whose online/away status was requested does not exist."
@@ -6787,6 +6812,11 @@
     "description": "Message only the person who asked sees, when they mention or message an agent they may not talk to in that place. {{.Agent}} is the agent's @username."
   },
   {
+    "id": "app.ai.agent.turn.waiting_confirmation",
+    "translation": "{{.Person}}, confirm or decline before I go on: {{.Tools}}.",
+    "description": "An agent's reply (written as the agent speaking) when it wants to use tools that need the person's confirmation first; the reply shows each call with Confirm and Decline. {{.Person}} is the person's @username, {{.Tools}} the tools' names, separated by commas."
+  },
+  {
     "id": "app.ai.call.audience.app_error",
     "translation": "You can't use this model connection.",
     "description": "API error of the server's AI service (Antimatter): the connection's audience (chosen teams and roles, guests) doesn't include the person."
@@ -6952,6 +6982,46 @@
     "description": "API error of the server's AI service (Antimatter): a built-in AI feature is used but no connection is configured for it. {{.Feature}} is rewrite, recaps, auto_translation or text_to_speech, not translated."
   },
   {
+    "id": "app.ai.mcp.not_found.app_error",
+    "translation": "MCP server not found.",
+    "description": "Error (Antimatter) when an MCP server (a source of tools for agents) doesn't exist, was deleted, or the person may not use it."
+  },
+  {
+    "id": "app.ai.mcp.oauth.app_error",
+    "translation": "Signing in to the MCP server didn't work. Try again, or ask an admin to check its address and OAuth settings.",
+    "description": "Error (Antimatter) when a person's OAuth sign-in to an MCP server fails (its metadata can't be found, the client can't be registered, or the code can't be exchanged)."
+  },
+  {
+    "id": "app.ai.mcp.oauth_expired.app_error",
+    "translation": "This sign-in has expired or was already used. Start it again from the Tools menu.",
+    "description": "Error (Antimatter) when the page an MCP server's sign-in returns to has an unknown, expired, already used or someone else's sign-in."
+  },
+  {
+    "id": "app.ai.mcp.oauth_site_url.app_error",
+    "translation": "Signing in to MCP servers needs the server's Site URL to be set.",
+    "description": "Error (Antimatter) when a person tries to sign in to an MCP server but the System Console's Site URL is empty (the sign-in needs it for the address to come back to)."
+  },
+  {
+    "id": "app.ai.mcp.references.app_error",
+    "translation": "The MCP server names a community that doesn't exist.",
+    "description": "Error (Antimatter) when an MCP server is saved with a scope or sharing that names a missing or deleted community."
+  },
+  {
+    "id": "app.ai.mcp.save.app_error",
+    "translation": "The MCP server couldn't be saved.",
+    "description": "Error (Antimatter) when the database couldn't save an MCP server (a source of tools for agents)."
+  },
+  {
+    "id": "app.ai.mcp.secret_unreadable.app_error",
+    "translation": "The MCP server's secrets can't be read: the AI encryption key may have changed. Enter them again.",
+    "description": "Error (Antimatter) when an MCP server's sealed secrets (OAuth client secret, service account headers) can't be decrypted with the server's AI encryption key."
+  },
+  {
+    "id": "app.ai.mcp.slug_taken.app_error",
+    "translation": "Another MCP server already has this short name. Choose another one.",
+    "description": "Error (Antimatter) when adding an MCP server whose short name (it names its tools, mcp.<short name>.<tool>) is already used."
+  },
+  {
     "id": "app.ai.summarize.agent_call_failed",
     "translation": "AI agent call failed.",
     "description": "API error returned when the request to the AI agents service for a summarization (e.g. channel recap) fails."
@@ -6960,6 +7030,31 @@
     "id": "app.ai.summarize.parse_failed",
     "translation": "Failed to parse AI summarization response.",
     "description": "API error returned when the AI service's summarization response cannot be parsed into the expected structure."
+  },
+  {
+    "id": "app.ai.tools.app_namespace.app_error",
+    "translation": "An app with this ID can't register tools: its names would look like the server's own or an MCP server's.",
+    "description": "Error (Antimatter) when an app (plugin) whose ID is 'antimatter' or starts with 'mcp.' registers tools for agents."
+  },
+  {
+    "id": "app.ai.tools.call_not_allowed.app_error",
+    "translation": "This tool can no longer be used here: the agent, the tool or your access changed.",
+    "description": "Error (Antimatter) when a person confirms an agent's tool call but the agent's policy, their own tool choices, or their access to the agent or channel changed since it was proposed."
+  },
+  {
+    "id": "app.ai.tools.call_not_found.app_error",
+    "translation": "This tool call isn't waiting for you: it was already answered, it expired, or it isn't yours.",
+    "description": "Error (Antimatter) when someone confirms or declines an agent's tool call that doesn't exist, was already answered, expired (after a day) or is another person's."
+  },
+  {
+    "id": "app.ai.tools.call_save.app_error",
+    "translation": "The tool call couldn't be saved for your confirmation.",
+    "description": "Error (Antimatter) when an agent's tool call that needs the person's confirmation couldn't be stored."
+  },
+  {
+    "id": "app.ai.tools.too_many.app_error",
+    "translation": "An app may register at most {{.Max}} tools.",
+    "description": "Error (Antimatter) when an app (plugin) registers too many tools for agents. {{.Max}} is the limit."
   },
   {
     "id": "app.ai_bridge_test_helper.invalid_config",
@@ -16085,6 +16180,76 @@
     "description": "Validation error of an AI model connection (Antimatter) when it is created or changed."
   },
   {
+    "id": "model.ai_mcp_server.auth.app_error",
+    "translation": "Choose how people use the MCP server: no sign-in, each person signs in, or a shared service account.",
+    "description": "Validation error of an MCP server (a source of tools for agents, Antimatter): its sign-in kind is invalid."
+  },
+  {
+    "id": "model.ai_mcp_server.headers.app_error",
+    "translation": "A service account needs its headers (at most 16, for example Authorization), and only a service account has headers.",
+    "description": "Validation error of an MCP server (a source of tools for agents, Antimatter): a shared service account is set up with the HTTP headers it sends."
+  },
+  {
+    "id": "model.ai_mcp_server.id.app_error",
+    "translation": "The MCP server's ID is invalid.",
+    "description": "Validation error of an MCP server (a source of tools for agents, Antimatter) when it is added or changed."
+  },
+  {
+    "id": "model.ai_mcp_server.name.app_error",
+    "translation": "An MCP server needs a name of at most 64 characters.",
+    "description": "Validation error of an MCP server (a source of tools for agents, Antimatter) when it is added or changed."
+  },
+  {
+    "id": "model.ai_mcp_server.needs_attention.app_error",
+    "translation": "The note on what needs attention is too long.",
+    "description": "Validation error of an MCP server (a source of tools for agents, Antimatter)."
+  },
+  {
+    "id": "model.ai_mcp_server.oauth.app_error",
+    "translation": "The MCP server's OAuth client ID, secret or scopes are invalid.",
+    "description": "Validation error of an MCP server (a source of tools for agents, Antimatter) when it is added or changed."
+  },
+  {
+    "id": "model.ai_mcp_server.scope.app_error",
+    "translation": "An MCP server is server-wide or a community's.",
+    "description": "Validation error of an MCP server (a source of tools for agents, Antimatter) when it is added or changed."
+  },
+  {
+    "id": "model.ai_mcp_server.sharing.app_error",
+    "translation": "The communities the MCP server is shared with are invalid.",
+    "description": "Validation error of a server-wide MCP server (a source of tools for agents, Antimatter) when it is added or changed."
+  },
+  {
+    "id": "model.ai_mcp_server.slug.app_error",
+    "translation": "The short name must be 1 to 32 lowercase letters, digits, _ or -, starting with a letter or digit. Its tools are named mcp.<short name>.<tool>.",
+    "description": "Validation error of an MCP server (a source of tools for agents, Antimatter). Keep 'mcp.<short name>.<tool>' as is: it shows how tools are named."
+  },
+  {
+    "id": "model.ai_mcp_server.times.app_error",
+    "translation": "The MCP server's times are missing.",
+    "description": "Validation error of an MCP server (a source of tools for agents, Antimatter)."
+  },
+  {
+    "id": "model.ai_mcp_server.url.app_error",
+    "translation": "The MCP server's address must be an http or https URL without a user name or password.",
+    "description": "Validation error of an MCP server (a source of tools for agents, Antimatter) when it is added or changed."
+  },
+  {
+    "id": "model.ai_tool.choices.app_error",
+    "translation": "The tools you turned off can't be saved: too many, or a name is invalid.",
+    "description": "Error when a person saves which agents' tools they turned off for themselves (Antimatter)."
+  },
+  {
+    "id": "model.ai_tool.definition.app_error",
+    "translation": "A tool an app registered is invalid: its name (letters, digits, _ and - only), title, description, kind (read, write or external_write) or permissions.",
+    "description": "Error when an app (plugin) registers a tool for agents (Antimatter) that doesn't pass validation."
+  },
+  {
+    "id": "model.ai_tool.schema.app_error",
+    "translation": "A tool's input schema must be a JSON object of at most 64 KB.",
+    "description": "Error when an app (plugin) registers a tool for agents (Antimatter) whose input JSON schema isn't valid."
+  },
+  {
     "id": "model.authorize.is_valid.auth_code.app_error",
     "translation": "Invalid authorization code.",
     "description": "API validation error during the OAuth 2.0 authorization flow when the generated authorization code field is malformed; developer/integration-facing."
@@ -18741,6 +18906,11 @@
     "id": "model.post.query_params.invalid_time_field",
     "translation": "Invalid time field.",
     "description": "API error when the time field query parameter of a post listing request names an unsupported timestamp column."
+  },
+  {
+    "id": "model.preference.is_valid.ai_tools.app_error",
+    "translation": "Invalid choice of tools for agents.",
+    "description": "Error returned when saving the preference that lists the tools a person turned off for the agents they talk to (Antimatter), with an invalid name or value."
   },
   {
     "id": "model.preference.is_valid.category.app_error",

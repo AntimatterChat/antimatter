@@ -5367,7 +5367,6 @@
   "fusion.agents.title": "এজেন্ট",
   "fusion.agents.toggleFailed": "এজেন্ট পরিবর্তন করা যায়নি।",
   "fusion.agents.tools": "টুলস",
-  "fusion.agents.toolsSoon": "শীঘ্রই আসছে: Antimatter এবং তার অ্যাপসমূহের যেসব টুল এজেন্ট ব্যবহার করতে পারে, সবসময় অনুরোধকারীর অনুমতির ভিত্তিতে।",
   "fusion.agents.username": "ইউজারনেম",
   "fusion.agents.usernameDesc": "কীভাবে এটি মেনশন করা হবে: ৩ থেকে ২২টি ছোট হাতের অক্ষর, সংখ্যা, বিন্দু, ড্যাশ বা আন্ডারস্কোর, যা একটি অক্ষর দিয়ে শুরু হবে।",
   "fusion.agents.usernamePlaceholder": "যেমন: researcher",

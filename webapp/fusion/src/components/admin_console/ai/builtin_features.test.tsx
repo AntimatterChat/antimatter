@@ -140,6 +140,12 @@ describe('components/admin_console/ai/BuiltInFeatures', () => {
     test('points to the model connections when there are none', async () => {
         list.mockResolvedValue([]);
         render();
-        expect(await screen.findByRole('link', {name: 'AI › Model connections'})).toHaveAttribute('href', '/admin_console/ai/model_connections');
+        expect(await screen.findByRole('link', {name: 'AI › Connections and agents'})).toHaveAttribute('href', '/admin_console/ai/model_connections');
+    });
+
+    test('points to the recaps and text to speech pages, in AI too', async () => {
+        render();
+        expect(await screen.findByRole('link', {name: 'AI › Recaps'})).toHaveAttribute('href', '/admin_console/ai/recaps');
+        expect(screen.getByRole('link', {name: 'AI › Text to speech'})).toHaveAttribute('href', '/admin_console/ai/text_to_speech');
     });
 });

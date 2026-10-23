@@ -381,6 +381,10 @@ func (api *PluginAPI) GetUserStatusesByIds(userIDs []string) ([]*model.Status, *
 }
 
 func (api *PluginAPI) UpdateUserStatus(userID, status string) (*model.Status, *model.AppError) {
+	// Antimatter: apps never set an agent's status (the server's, or its own program's).
+	if appErr := api.app.SessionMaySetUserStatus(api.ctx, model.Session{}, userID); appErr != nil {
+		return nil, appErr
+	}
 	switch status {
 	case model.StatusOnline:
 		api.app.SetStatusOnline(userID, true)
@@ -398,6 +402,9 @@ func (api *PluginAPI) UpdateUserStatus(userID, status string) (*model.Status, *m
 }
 
 func (api *PluginAPI) SetUserStatusTimedDND(userID string, endTime int64) (*model.Status, *model.AppError) {
+	if appErr := api.app.SessionMaySetUserStatus(api.ctx, model.Session{}, userID); appErr != nil {
+		return nil, appErr
+	}
 	// read-after-write bug which will fail if there are replicas.
 	// it works for now because we have a cache in between.
 	// FIXME: make SetStatusDoNotDisturbTimed return updated status
@@ -406,10 +413,16 @@ func (api *PluginAPI) SetUserStatusTimedDND(userID string, endTime int64) (*mode
 }
 
 func (api *PluginAPI) UpdateUserCustomStatus(userID string, customStatus *model.CustomStatus) *model.AppError {
+	if appErr := api.app.SessionMaySetUserStatus(api.ctx, model.Session{}, userID); appErr != nil {
+		return appErr
+	}
 	return api.app.SetCustomStatus(api.ctx, userID, customStatus)
 }
 
 func (api *PluginAPI) RemoveUserCustomStatus(userID string) *model.AppError {
+	if appErr := api.app.SessionMaySetUserStatus(api.ctx, model.Session{}, userID); appErr != nil {
+		return appErr
+	}
 	return api.app.RemoveCustomStatus(api.ctx, userID)
 }
 

@@ -26,6 +26,7 @@ import SystemNotice from 'components/system_notice';
 import {LhsItemType} from 'types/store/lhs';
 
 import AdminSidebar from './admin_sidebar';
+import {MOVED_CONSOLE_ROUTES} from './moved_console_routes';
 import type {AdminDefinitionSubSection, AdminDefinitionSection} from './types';
 
 import type {PropsFromRedux} from './index';
@@ -192,6 +193,14 @@ const AdminConsole = (props: Props) => {
 
         return (
             <Switch>
+                {Object.entries(MOVED_CONSOLE_ROUTES).map(([from, to]) => (
+                    <Redirect
+                        key={from}
+                        exact={true}
+                        from={`${props.match.url}/${from}`}
+                        to={`${props.match.url}/${to}`}
+                    />
+                ))}
                 {schemaRoutes}
                 {<Redirect to={`${props.match.url}/${defaultUrl}`}/>}
             </Switch>

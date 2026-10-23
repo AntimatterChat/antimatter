@@ -5367,7 +5367,6 @@
   "fusion.agents.title": "סוכנים",
   "fusion.agents.toggleFailed": "לא ניתן לשנות את הסוכן.",
   "fusion.agents.tools": "כלים",
-  "fusion.agents.toolsSoon": "בקרוב: הכלים של Antimatter ושל אפליקציותיה שהסוכן יכול להשתמש בהם, תמיד בהתאם להרשאות של האדם שמבקש.",
   "fusion.agents.username": "שם משתמש",
   "fusion.agents.usernameDesc": "כיצד אנשים יזכירו אותו: 3 עד 22 אותיות קטנות, ספרות, נקודות, מקפים או קו תחתון, המתחילים באות.",
   "fusion.agents.usernamePlaceholder": "למשל: researcher",

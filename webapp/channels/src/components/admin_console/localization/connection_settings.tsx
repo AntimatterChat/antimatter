@@ -38,7 +38,7 @@ export default function ConnectionTranslationSettings({value, disabled, onChange
                     <>
                         <FormattedMessage
                             id='admin.site.localization.autoTranslationConnectionHelp'
-                            defaultMessage='A server-wide model connection, set up in the System Console of the Fusion web app (AI › Model connections). A dedicated translation model (such as HY-MT) is fast and accurate; a general LLM works too.'
+                            defaultMessage='A server-wide model connection, set up in the System Console of the Fusion web app (AI › Connections and agents). A dedicated translation model (such as HY-MT) is fast and accurate; a general LLM works too.'
                         />
                         {error && <div className='error-message'>{error}</div>}
                     </>

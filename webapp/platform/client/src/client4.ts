@@ -8,6 +8,7 @@ import type {ClusterInfo, AnalyticsRow, SchemaMigration, LogFilterQuery} from '@
 import type {Agent, LLMService} from '@mattermost/types/agents';
 import type {AgentActivity, AgentActivityRequest, AIAgentDetails, AIAgentPatch, AIAgentRequest} from '@mattermost/types/ai_agents';
 import type {AIConnection, AIConnectionInfo, AIConnectionPatch, AIConnectionRequest, AIConnectionTestResult, AIConnectionUsage, AIModelInfo} from '@mattermost/types/ai_connections';
+import type {AIMCPOAuthConnect, AIMCPServer, AIMCPServerPatch, AIMCPServerRequest, AIToolCallSummary, AIToolCatalogue, AIToolSourceInfo} from '@mattermost/types/ai_tools';
 import type {AppBinding, AppCallRequest, AppCallResponse} from '@mattermost/types/apps';
 import type {Audit} from '@mattermost/types/audits';
 import type {UserAutocomplete, AutocompleteSuggestion} from '@mattermost/types/autocomplete';
@@ -4097,6 +4098,79 @@ export default class Client4 {
         return this.doFetch<AgentActivity[]>(
             `${this.getAIAgentsRoute()}/activity/ids`,
             {method: 'post', body: JSON.stringify(userIds)},
+        );
+    };
+
+    // Agents' tools (Antimatter). The tools an agent may use for the caller (in a channel, or none), by source.
+    getAIAgentTools = (agentId: string, channelId?: string) => {
+        return this.doFetch<AIToolSourceInfo[]>(
+            `${this.getAIAgentRoute(agentId)}/tools${buildQueryString(channelId ? {channel_id: channelId} : {})}`,
+            {method: 'get'},
+        );
+    };
+
+    // What the agents of a scope may be given, for their managers.
+    getAIToolCatalogue = (scope: string) => {
+        return this.doFetch<AIToolCatalogue>(
+            `${this.getAIAgentsRoute()}/tools/catalogue${buildQueryString({scope})}`,
+            {method: 'get'},
+        );
+    };
+
+    // The caller's answer to a tool call an agent proposed to them.
+    answerAIToolCall = (callId: string, confirm: boolean) => {
+        return this.doFetch<AIToolCallSummary>(
+            `${this.getBaseRoute()}/ai/tools/calls/${encodeURIComponent(callId)}/${confirm ? 'confirm' : 'decline'}`,
+            {method: 'post'},
+        );
+    };
+
+    getAIMCPServersRoute() {
+        return `${this.getBaseRoute()}/ai/mcp_servers`;
+    }
+
+    // MCP servers the caller manages: of a scope ('server' or a team ID), or all of them.
+    getAIMCPServers = (scope?: string) => {
+        return this.doFetch<AIMCPServer[]>(
+            `${this.getAIMCPServersRoute()}${buildQueryString(scope ? {scope} : {})}`,
+            {method: 'get'},
+        );
+    };
+
+    createAIMCPServer = (server: AIMCPServerRequest) => {
+        return this.doFetch<AIMCPServer>(
+            this.getAIMCPServersRoute(),
+            {method: 'post', body: JSON.stringify(server)},
+        );
+    };
+
+    patchAIMCPServer = (serverId: string, patch: AIMCPServerPatch) => {
+        return this.doFetch<AIMCPServer>(
+            `${this.getAIMCPServersRoute()}/${encodeURIComponent(serverId)}`,
+            {method: 'patch', body: JSON.stringify(patch)},
+        );
+    };
+
+    deleteAIMCPServer = (serverId: string) => {
+        return this.doFetch<StatusOK>(
+            `${this.getAIMCPServersRoute()}/${encodeURIComponent(serverId)}`,
+            {method: 'delete'},
+        );
+    };
+
+    // Starts the caller's sign-in to an MCP server: where to send them.
+    connectAIMCPServer = (serverId: string) => {
+        return this.doFetch<AIMCPOAuthConnect>(
+            `${this.getAIMCPServersRoute()}/${encodeURIComponent(serverId)}/oauth`,
+            {method: 'post'},
+        );
+    };
+
+    // Forgets the caller's own sign-in to an MCP server.
+    disconnectAIMCPServer = (serverId: string) => {
+        return this.doFetch<StatusOK>(
+            `${this.getAIMCPServersRoute()}/${encodeURIComponent(serverId)}/oauth`,
+            {method: 'delete'},
         );
     };
 

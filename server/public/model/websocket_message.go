@@ -142,6 +142,8 @@ const (
 	WebsocketEventSessionCreated      WebsocketEventType = "session_created"
 	WebsocketEventSessionRevoked      WebsocketEventType = "session_revoked"
 	WebsocketEventSessionAcknowledged WebsocketEventType = "session_acknowledged"
+	// Antimatter: the tools a person may use with agents changed (a sign-in to an MCP server, or an MCP server).
+	WebsocketEventAIToolsChanged WebsocketEventType = "ai_tools_changed"
 
 	WebSocketMsgTypeResponse = "response"
 	WebSocketMsgTypeEvent    = "event"

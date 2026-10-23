@@ -60,3 +60,12 @@ func (api *PluginAPI) AIDecide(actingUserID, channelID, teamID string, request *
 func (api *PluginAPI) AIConnectionsForUser(userID, channelID, teamID string) ([]*model.AIConnectionInfo, *model.AppError) {
 	return api.app.GetAIConnectionsForUser(api.ctx, userID, channelID, teamID)
 }
+
+// RegisterAITools keeps the app's tools for agents, named after the app's ID.
+func (api *PluginAPI) RegisterAITools(tools []*model.AIToolDefinition) *model.AppError {
+	version := ""
+	if api.manifest != nil {
+		version = api.manifest.Version
+	}
+	return api.app.RegisterAIAppTools(api.id, version, tools)
+}

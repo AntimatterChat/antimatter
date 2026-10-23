@@ -95,3 +95,10 @@
   :is(.am-app, .am-layer) .am-ai-days .am-ai-day-n { grid-column: 2; }
   :is(.am-app, .am-layer) .am-ai-form .am-modal-actions .am-btn { flex: 1 1 auto; justify-content: center; }
 }
+
+/* The MCP servers, after the model connections; and an agent's tools in its form. */
+:is(.am-app, .am-layer) .am-ai-mcp { margin-top: 28px; }
+:is(.am-app, .am-layer) .am-ai-mcp .am-ai-row .am-mono { font-family: var(--am-font-mono); font-size: 12px; }
+:is(.am-app, .am-layer) .am-agent-tools .am-agent-tool-source { padding: 4px 0; border-top: 1px solid var(--am-line); }
+:is(.am-app, .am-layer) .am-agent-tools .am-agent-tool-source:first-of-type { border-top: 0; }
+:is(.am-app, .am-layer) .am-agent-tools .am-chip-picks { margin: 2px 0 10px; }

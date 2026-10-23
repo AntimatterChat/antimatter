@@ -33,7 +33,7 @@ export type AgentDraft = {
     // As typed, until saved: '' is the default.
     maxToolTurns: string;
 
-    // The tool registry comes later: the policy is kept as it is.
+    // Which tools it may use, and which of their reads run without asking (tool_policy.ts).
     tools: AIAgentToolPolicy;
 };
 

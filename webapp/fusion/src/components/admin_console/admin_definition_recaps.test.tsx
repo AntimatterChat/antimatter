@@ -21,7 +21,7 @@ const noAccess = {
 } as ConsoleAccess;
 
 function isHidden(config: Partial<AdminConfig>, access: ConsoleAccess = readAccess) {
-    const check = AdminDefinition.site.subsections.recaps.isHidden as Extract<Check, (...args: any[]) => boolean>;
+    const check = AdminDefinition.ai.subsections.recaps.isHidden as Extract<Check, (...args: any[]) => boolean>;
     return check(config, {}, access);
 }
 

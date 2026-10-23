@@ -112,6 +112,12 @@ func updateUserStatus(c *Context, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Antimatter: an agent's status is the server's (a built-in agent's) or its own program's (an external one's).
+	if appErr := c.App.SessionMaySetUserStatus(c.AppContext, *c.AppContext.Session(), c.Params.UserId); appErr != nil {
+		c.Err = appErr
+		return
+	}
+
 	currentStatus, err := c.App.GetStatus(c.Params.UserId)
 	if err != nil {
 		c.Logger.Warn("Failed to get current status", mlog.Err(err))
@@ -162,6 +168,11 @@ func updateUserCustomStatus(c *Context, w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
+	if appErr := c.App.SessionMaySetUserStatus(c.AppContext, *c.AppContext.Session(), c.Params.UserId); appErr != nil {
+		c.Err = appErr
+		return
+	}
+
 	customStatus.PreSave()
 	err := c.App.SetCustomStatus(c.AppContext, c.Params.UserId, &customStatus)
 	if err != nil {
@@ -185,6 +196,11 @@ func removeUserCustomStatus(c *Context, w http.ResponseWriter, r *http.Request) 
 
 	if !c.App.SessionHasPermissionToUser(c.AppContext, *c.AppContext.Session(), c.Params.UserId) {
 		c.SetPermissionError(model.PermissionEditOtherUsers)
+		return
+	}
+
+	if appErr := c.App.SessionMaySetUserStatus(c.AppContext, *c.AppContext.Session(), c.Params.UserId); appErr != nil {
+		c.Err = appErr
 		return
 	}
 

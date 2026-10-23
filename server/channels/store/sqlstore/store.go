@@ -112,6 +112,7 @@ type SqlStoreStores struct {
 	focus                      store.FocusStore
 	aiConnection               store.AIConnectionStore
 	aiAgent                    store.AIAgentStore
+	aiMCPServer                store.AIMCPServerStore
 	agentActivity              store.AgentActivityStore
 	channelOverride            store.ChannelOverrideStore
 	scheduledPost              store.ScheduledPostStore
@@ -314,6 +315,7 @@ func New(settings model.SqlSettings, logger mlog.LoggerIFace, metrics einterface
 	store.stores.focus = newSqlFocusStore(store)
 	store.stores.aiConnection = newSqlAIConnectionStore(store)
 	store.stores.aiAgent = newSqlAIAgentStore(store)
+	store.stores.aiMCPServer = newSqlAIMCPServerStore(store)
 	store.stores.agentActivity = newSqlAgentActivityStore(store)
 	store.stores.channelOverride = newSqlChannelOverrideStore(store)
 	store.stores.scheduledPost = newScheduledPostStore(store)
@@ -964,6 +966,10 @@ func (ss *SqlStore) AIConnection() store.AIConnectionStore {
 
 func (ss *SqlStore) AIAgent() store.AIAgentStore {
 	return ss.stores.aiAgent
+}
+
+func (ss *SqlStore) AIMCPServer() store.AIMCPServerStore {
+	return ss.stores.aiMCPServer
 }
 
 func (ss *SqlStore) AgentActivity() store.AgentActivityStore {

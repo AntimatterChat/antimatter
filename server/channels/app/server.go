@@ -1768,6 +1768,14 @@ func runLeaderTasks(a *App) {
 		}
 		return model.CreateRecurringTask("Health Check", fn, healthCheckInterval)
 	})
+
+	// Antimatter: the built-in agents show online while their model connection answers (agent_status.go); checked
+	// when this node becomes the leader, then every agentStatusInterval.
+	a.ch.agentStatusTask.runOnLeader(a, "Agent Statuses", func() *model.ScheduledTask {
+		fn := func() { a.RefreshAIAgentStatuses(rctx, "") }
+		a.Srv().Go(fn)
+		return model.CreateRecurringTask("Agent Statuses", fn, agentStatusInterval)
+	})
 }
 
 func (a *App) GetAppliedSchemaMigrations() ([]model.AppliedMigration, *model.AppError) {

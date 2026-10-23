@@ -22,6 +22,7 @@ import type {Index} from 'utils/admin_console_index';
 import {getHistory} from 'utils/browser_history';
 
 import type AdminDefinition from '../admin_definition';
+import {listedUnderPlugins} from '../moved_console_routes';
 
 import type {PropsFromRedux} from './index';
 
@@ -244,6 +245,7 @@ class AdminSidebar extends React.PureComponent<Props, State> {
 
                 return a.id.localeCompare(b.id);
             }).
+                filter((plugin) => listedUnderPlugins(plugin.id)).
                 filter((plugin) => this.state.sections === null || this.isPluginPresentInSections(plugin)).
                 map((plugin) => {
                     return (

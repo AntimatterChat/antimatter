@@ -68,6 +68,7 @@ type Store interface {
 	Focus() FocusStore
 	AIConnection() AIConnectionStore
 	AIAgent() AIAgentStore
+	AIMCPServer() AIMCPServerStore
 	AgentActivity() AgentActivityStore
 	ChannelOverride() ChannelOverrideStore
 	MarkSystemRanUnitTests()
@@ -1291,6 +1292,36 @@ type AIAgentStore interface {
 	// that one of opts.AgentIds replied in (with their participants, to tell which). It doesn't check that the person
 	// may still read them.
 	GetConversations(rctx request.CTX, opts model.AIAgentConversationsOptions) ([]*model.AIAgentConversation, error)
+}
+
+// AIMCPServerStore keeps the MCP servers agents may use (Antimatter), and the people's sign-ins to them. Every secret
+// is sealed before it reaches the store.
+type AIMCPServerStore interface {
+	// Save adds an MCP server; a slug already used by another one not deleted is a conflict.
+	Save(rctx request.CTX, server *model.AIMCPServer) (*model.AIMCPServer, error)
+	// Update saves an MCP server's settings; never its slug, scope, or who made it when.
+	Update(rctx request.CTX, server *model.AIMCPServer) (*model.AIMCPServer, error)
+	// Get gives an MCP server, deleted or not.
+	Get(rctx request.CTX, id string) (*model.AIMCPServer, error)
+	// GetForScopes gives the MCP servers, not deleted, of the scopes ("server" and team IDs).
+	GetForScopes(rctx request.CTX, scopes []string) ([]*model.AIMCPServer, error)
+	// GetAll gives every MCP server not deleted.
+	GetAll(rctx request.CTX) ([]*model.AIMCPServer, error)
+	// Delete marks an MCP server deleted and forgets everyone's sign-in to it.
+	Delete(rctx request.CTX, id string, deleteAt int64) error
+
+	// SaveUserToken keeps a person's sign-in to an MCP server, replacing the one they had.
+	SaveUserToken(rctx request.CTX, token *model.AIMCPUserToken) error
+	// GetUserToken gives a person's own sign-in to an MCP server.
+	GetUserToken(rctx request.CTX, serverID, userID string) (*model.AIMCPUserToken, error)
+	// GetUserTokenServerIds gives the MCP servers a person signed in to.
+	GetUserTokenServerIds(rctx request.CTX, userID string) ([]string, error)
+	// DeleteUserToken forgets a person's sign-in to an MCP server; nothing when there's none.
+	DeleteUserToken(rctx request.CTX, serverID, userID string) error
+	// DeleteUserTokensForServer forgets everyone's sign-in to an MCP server.
+	DeleteUserTokensForServer(rctx request.CTX, serverID string) error
+	// DeleteUserTokensForUser forgets every sign-in of a person.
+	DeleteUserTokensForUser(rctx request.CTX, userID string) error
 }
 
 // AgentActivityStore keeps what each agent is doing now (Antimatter).

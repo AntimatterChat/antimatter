@@ -13,8 +13,8 @@ export const AI_AGENT_MAX_TOOL_TURNS = 250;
 
 export type BotKind = 'bot' | 'agent';
 
-// Which tools an agent may use ('todo.add_item', 'todo.*', '*') and which reads run without asking. The tool
-// registry comes later: the server keeps the policy meanwhile.
+// Which tools an agent may use ('todo.add_item', 'todo.*', '*') and which reads run without asking (see ai_tools.ts):
+// anything else waits for the person's confirmation.
 export type AIAgentToolPolicy = {
     enabled: boolean;
     allowed: string[];

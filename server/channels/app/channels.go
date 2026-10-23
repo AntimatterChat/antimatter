@@ -125,6 +125,9 @@ type Channels struct {
 
 	healthCheckTask leaderTask
 
+	// agentStatusTask checks the built-in agents' model connections (Antimatter): their status follows.
+	agentStatusTask leaderTask
+
 	interruptQuitChan chan struct{}
 }
 
@@ -331,6 +334,7 @@ func (ch *Channels) Stop() error {
 	ch.postReminderTask.stop()
 	ch.scheduledPostTask.stop()
 	ch.healthCheckTask.stop()
+	ch.agentStatusTask.stop()
 
 	close(ch.interruptQuitChan)
 

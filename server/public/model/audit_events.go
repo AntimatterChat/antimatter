@@ -108,6 +108,12 @@ const (
 	AuditEventEnableAIAgent                     = "enableAIAgent"                     // turn an agent's account on
 	AuditEventDisableAIAgent                    = "disableAIAgent"                    // turn an agent's account off
 	AuditEventStartAIAgentTask                  = "startAIAgentTask"                  // ask an agent for a task (a summary...) on a post or channel
+	AuditEventAIToolCall                        = "aiToolCall"                        // an agent's tool run for a person (or refused, or declined): never the arguments' content
+	AuditEventCreateAIMCPServer                 = "createAIMCPServer"                 // add an MCP server for agents (server-wide or a community's)
+	AuditEventPatchAIMCPServer                  = "patchAIMCPServer"                  // change an MCP server
+	AuditEventDeleteAIMCPServer                 = "deleteAIMCPServer"                 // delete an MCP server, and everyone's sign-in to it
+	AuditEventConnectAIMCPServer                = "connectAIMCPServer"                // sign in to an MCP server (a person's own account there)
+	AuditEventDisconnectAIMCPServer             = "disconnectAIMCPServer"             // sign out of an MCP server
 	AuditEventCreateCommunityAttribute          = "createCommunityAttribute"          // define a user attribute for a team's members
 	AuditEventPatchCommunityAttribute           = "patchCommunityAttribute"           // change a team's user attribute
 	AuditEventDeleteCommunityAttribute          = "deleteCommunityAttribute"          // delete a team's user attribute
