@@ -31,7 +31,7 @@ export function clampRows(rows: number, {min, max}: DockRowBounds): number {
 export function getDockRowsPreference(state: GlobalState): number {
     const legacy = getVisibleDmGmLimit(state);
     const value = Number(getPreference(state, CATEGORY_DOCK, NAME_DOCK_ROWS, String(legacy)));
-    return clampRows(Number.isFinite(value) && value > 0 ? value : legacy, {min: MIN_DOCK_ROWS, max: MAX_DOCK_ROWS});
+    return clampRows(Number.isFinite(value) ? value : legacy, {min: MIN_DOCK_ROWS, max: MAX_DOCK_ROWS});
 }
 
 // useDockRows reads the dock's row count and saves it when the user drags its edge (or moves it with the keyboard).
