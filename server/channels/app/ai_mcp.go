@@ -752,7 +752,7 @@ func (a *App) FinishAIMCPOAuth(rctx request.CTX, userID, state, code, oauthError
 		return nil, model.NewAppError(where, "app.ai.mcp.oauth_expired.app_error", nil, "unreadable state", http.StatusBadRequest)
 	}
 	var pending aiMCPOAuthState
-	if err := json.Unmarshal([]byte(plain), &pending); err != nil || pending.UserId != userID || pending.ServerId != serverID {
+	if json.Unmarshal([]byte(plain), &pending) != nil || pending.UserId != userID || pending.ServerId != serverID {
 		return nil, model.NewAppError(where, "app.ai.mcp.oauth_expired.app_error", nil, "invalid state", http.StatusBadRequest)
 	}
 	s, appErr := a.GetAIMCPServer(rctx, serverID)

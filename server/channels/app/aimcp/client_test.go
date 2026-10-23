@@ -85,7 +85,7 @@ func (f *fakeMCP) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		_ = json.Unmarshal(msg.Params, &params)
 		start := 0
 		if params.Cursor != "" {
-			fmt.Sscanf(params.Cursor, "%d", &start)
+			_, _ = fmt.Sscanf(params.Cursor, "%d", &start)
 		}
 		end := min(start+2, len(f.tools))
 		page := map[string]any{"tools": f.tools[start:end]}

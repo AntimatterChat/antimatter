@@ -247,7 +247,7 @@ func (c *Client) ListTools(ctx context.Context) ([]Tool, error) {
 	}
 	var tools []Tool
 	cursor := ""
-	for page := 0; page < MaxToolPages; page++ {
+	for range MaxToolPages {
 		params := map[string]any{}
 		if cursor != "" {
 			params["cursor"] = cursor
@@ -381,8 +381,8 @@ func (c *Client) call(ctx context.Context, method string, params, out any, retry
 	if resp.StatusCode == http.StatusNotFound && c.sessionID != "" && retry {
 		resp.Body.Close()
 		c.sessionID, c.protocol, c.initialized = "", "", false
-		if err := c.Initialize(ctx); err != nil {
-			return err
+		if initErr := c.Initialize(ctx); initErr != nil {
+			return initErr
 		}
 		return c.call(ctx, method, params, out, false)
 	}

@@ -82,11 +82,11 @@ func TestAIToolPolicyIsEnforced(t *testing.T) {
 
 	t.Run("the policy is checked again when the call runs", func(t *testing.T) {
 		agent := toolTestAgent(t, th, c.Id, model.AIAgentToolPolicy{Enabled: true, Allowed: []string{"antimatter.*"}, AutoRun: []string{"*"}})
-		turn := toolTestTurn(t, th, agent, th.BasicUser, th.BasicChannel)
-		require.NotEmpty(t, runner.Tools(th.Context, turn))
-		turn.Agent = turn.Agent.Clone()
-		turn.Agent.Tools.Allowed = []string{"antimatter.lookup_user"}
-		outcome := runTestTool(th, turn, "antimatter__read_channel", map[string]any{"channel_id": th.BasicChannel.Id})
+		changed := toolTestTurn(t, th, agent, th.BasicUser, th.BasicChannel)
+		require.NotEmpty(t, runner.Tools(th.Context, changed))
+		changed.Agent = changed.Agent.Clone()
+		changed.Agent.Tools.Allowed = []string{"antimatter.lookup_user"}
+		outcome := runTestTool(th, changed, "antimatter__read_channel", map[string]any{"channel_id": th.BasicChannel.Id})
 		assert.Equal(t, "This tool isn't available.", outcome.Result)
 	})
 
@@ -675,9 +675,9 @@ func TestAgentTurnWaitsForConfirmation(t *testing.T) {
 	assert.Equal(t, "antimatter.post_message", calls[0].Tool)
 	assert.Len(t, s.bodies(), 1, "the turn stopped")
 	require.Eventually(t, func() bool {
-		raw, appErr := th.App.GetPluginKey(agentRuntimeKVNamespace, aiPendingToolCallPrefix+calls[0].Id)
+		stored, appErr := th.App.GetPluginKey(agentRuntimeKVNamespace, aiPendingToolCallPrefix+calls[0].Id)
 		var pending aiPendingToolCall
-		return appErr == nil && json.Unmarshal(raw, &pending) == nil && pending.ReplyId == reply.Id
+		return appErr == nil && json.Unmarshal(stored, &pending) == nil && pending.ReplyId == reply.Id
 	}, 5*time.Second, 20*time.Millisecond, "the call knows the reply that shows it")
 
 	summary, appErr := th.App.AnswerAIToolCall(th.Context, th.BasicUser.Id, calls[0].Id, true)
