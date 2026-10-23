@@ -506,14 +506,24 @@ export default function ServerRail() {
                     data-am-tip={formatMessage({id: 'fusion.rail.add', defaultMessage: 'Add a community'})}
                     data-am-tip-side='right'
                     aria-label={formatMessage({id: 'fusion.rail.add', defaultMessage: 'Add a community'})}
-                    aria-haspopup='menu'
-                    aria-expanded={adding}
-                    onClick={() => setAdding(!adding)}
+                    aria-haspopup={canJoin && canCreate ? 'menu' : undefined}
+                    aria-expanded={canJoin && canCreate ? adding : undefined}
+                    onClick={() => {
+                        // With only one way to add a community, there's nothing to choose: skip the one-item menu
+                        // and go straight to it.
+                        if (canCreate && !canJoin) {
+                            dialogs.createTeam();
+                        } else if (canJoin && !canCreate) {
+                            getHistory().push('/select_team');
+                        } else {
+                            setAdding(!adding);
+                        }
+                    }}
                 >
                     <Icon name='plus'/>
                 </button>
             )}
-            {adding && (
+            {canJoin && canCreate && adding && (
                 <Popover
                     anchor={addRef.current}
                     placement='beside'
@@ -522,28 +532,24 @@ export default function ServerRail() {
                     label={formatMessage({id: 'fusion.rail.add', defaultMessage: 'Add a community'})}
                     onClose={() => setAdding(false)}
                 >
-                    {canJoin && (
-                        <MenuItem
-                            icon='compass'
-                            label={formatMessage({id: 'fusion.rail.join', defaultMessage: 'Join another community'})}
-                            sub={formatMessage({id: 'fusion.rail.joinSub', defaultMessage: 'Browse the communities open to you'})}
-                            onClick={() => {
-                                setAdding(false);
-                                getHistory().push('/select_team');
-                            }}
-                        />
-                    )}
-                    {canCreate && (
-                        <MenuItem
-                            icon='plus'
-                            label={formatMessage({id: 'fusion.rail.create', defaultMessage: 'Create a community'})}
-                            sub={formatMessage({id: 'fusion.rail.createSub', defaultMessage: 'A new space with its own channels'})}
-                            onClick={() => {
-                                setAdding(false);
-                                dialogs.createTeam();
-                            }}
-                        />
-                    )}
+                    <MenuItem
+                        icon='compass'
+                        label={formatMessage({id: 'fusion.rail.join', defaultMessage: 'Join another community'})}
+                        sub={formatMessage({id: 'fusion.rail.joinSub', defaultMessage: 'Browse the communities open to you'})}
+                        onClick={() => {
+                            setAdding(false);
+                            getHistory().push('/select_team');
+                        }}
+                    />
+                    <MenuItem
+                        icon='plus'
+                        label={formatMessage({id: 'fusion.rail.create', defaultMessage: 'Create a community'})}
+                        sub={formatMessage({id: 'fusion.rail.createSub', defaultMessage: 'A new space with its own channels'})}
+                        onClick={() => {
+                            setAdding(false);
+                            dialogs.createTeam();
+                        }}
+                    />
                 </Popover>
             )}
             <span className={am('rail-grow')}/>
