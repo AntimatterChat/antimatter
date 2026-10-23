@@ -94,6 +94,9 @@ export type WebSocketMessage = (
     Messages.PostRemovedFromTop |
     Messages.AgentActivityChanged |
     Messages.AgentPostStream |
+    Messages.SessionCreated |
+    Messages.SessionRevoked |
+    Messages.SessionAcknowledged |
 
     Messages.EmojiAdded |
 
