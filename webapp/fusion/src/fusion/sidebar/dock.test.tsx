@@ -1,7 +1,10 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
+import nock from 'nock';
 import React from 'react';
+
+import {Client4} from 'mattermost-redux/client';
 
 import {fireEvent, renderWithContext, screen, userEvent} from 'tests/react_testing_utils';
 import {TestHelper} from 'utils/test_helper';
@@ -90,6 +93,17 @@ describe('fusion/sidebar/Dock', () => {
     // Its size (how many conversations show) is a drag of its top edge, snapping to whole rows, remembered as a
     // preference of yours: there is no longer a setting for it (see AppearancePane in modals/settings_modal.tsx).
     describe('resizing its top edge', () => {
+        // Dragging or a keyboard move saves the row count at once (see useDockRows): without this, the server
+        // request rejects in jsdom and the thunk's catch rolls the optimistic update back mid-interaction.
+        beforeEach(() => {
+            Client4.setUrl('http://localhost:8065');
+            nock(Client4.getUsersRoute()).persist().put('/me/preferences').reply(200, {status: 'OK'});
+        });
+
+        afterEach(() => {
+            nock.cleanAll();
+        });
+
         test('drags it taller or shorter, in whole rows', () => {
             mockDockRows = 20;
             const {store} = render();

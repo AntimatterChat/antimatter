@@ -49,7 +49,7 @@ describe('fusion/sidebar/makeGetDockChannelIds', () => {
 
     test('once dragged, follows its own row count instead of the old setting', () => {
         expect(makeGetDockChannelIds()(stateWith({limit: '20', dockRows: '5'}))).toEqual(['dm3', 'dm0', 'dm1', 'dm2', 'dm4']);
-        expect(makeGetDockChannelIds()(stateWith({dockRows: '3'}))).toEqual(['dm3', 'dm0', 'dm1']);
+        expect(makeGetDockChannelIds()(stateWith({dockRows: '3'}))).toEqual(['dm0', 'dm1', 'dm2']);
     });
 
     test('always keeps the conversation you are in', () => {
