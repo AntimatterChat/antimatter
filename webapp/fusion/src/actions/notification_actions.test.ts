@@ -233,6 +233,32 @@ describe('notification_actions', () => {
             });
         });
 
+        test('should not double the "@" when the sender\'s profile is not loaded yet (a bot\'s reminder post, e.g. Playbooks)', async () => {
+            // Regression test for a desktop notification showing "@@maya, please provide a
+            // status update" instead of "@playbooksbot: @maya, please provide a status update":
+            // the server's sender_name (GetSenderName) already carries the "@" for username
+            // format, and getNotificationUsername must strip it before getNotificationBody adds
+            // its own, for whenever the sender's profile (here, the bot's) isn't yet in the store.
+            const botPost = {
+                ...post,
+                user_id: 'playbooksbot_id',
+                message: '@maya, please provide a status update.',
+            } as unknown as Post;
+            const botMsgProps = {
+                ...msgProps,
+                post: JSON.stringify(botPost),
+                sender_name: '@playbooksbot',
+            };
+
+            const store = testConfigureStore(baseState);
+
+            return store.dispatch(sendDesktopNotification(botPost, botMsgProps)).then(() => {
+                expect(spy).toHaveBeenCalledWith(expect.objectContaining({
+                    body: '@playbooksbot: @maya, please provide a status update.',
+                }));
+            });
+        });
+
         test('should not notify user when tab and channel are active', async () => {
             const store = testConfigureStore(baseState);
             baseState.views.browser.focused = true;

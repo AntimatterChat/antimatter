@@ -28,8 +28,16 @@ func TestMarketplaceReplaceablePlugin(t *testing.T) {
 	require.True(t, ch.marketplaceReplaceablePlugin("some.other.plugin", true))
 
 	// A plugin Antimatter ships its own build of: replaceable until it is installed.
+	require.True(t, ch.marketplaceReplaceablePlugin("jira", false))
+	require.False(t, ch.marketplaceReplaceablePlugin("jira", true))
+
+	// Boards and Playbooks aren't bundled with the server any more, but Antimatter still ships
+	// its own forks of both (installed from their own GitHub releases): the Marketplace's vanilla
+	// builds still don't replace an installed copy, same as any other Antimatter build.
 	require.True(t, ch.marketplaceReplaceablePlugin("focalboard", false))
 	require.False(t, ch.marketplaceReplaceablePlugin("focalboard", true))
+	require.True(t, ch.marketplaceReplaceablePlugin("playbooks", false))
+	require.False(t, ch.marketplaceReplaceablePlugin("playbooks", true))
 
 	// A prepackaged bundle signed with the Antimatter key, installed or not.
 	ch.antimatterPrepackagedPlugins.Store("some.other.plugin", struct{}{})
@@ -40,6 +48,18 @@ func TestMarketplaceReplaceablePlugin(t *testing.T) {
 	})
 	require.True(t, ch.marketplaceReplaceablePlugin("some.other.plugin", false))
 	require.True(t, ch.marketplaceReplaceablePlugin("focalboard", true))
+	require.True(t, ch.marketplaceReplaceablePlugin("playbooks", true))
+}
+
+func TestAntimatterPluginIDsKeepsBoardsAndPlaybooks(t *testing.T) {
+	mainHelper.Parallel(t)
+
+	// Boards (focalboard) and Playbooks are no longer bundled with the server, but Antimatter
+	// still builds and releases its own forks of both (installed from their own GitHub releases,
+	// not prepackaged here): they stay in this list so the Marketplace's vanilla builds never
+	// silently replace an installed copy.
+	require.True(t, slices.Contains(antimatterPluginIDs, model.PluginIdFocalboard))
+	require.True(t, slices.Contains(antimatterPluginIDs, model.PluginIdPlaybooks))
 }
 
 func TestGetMarketplacePluginsLeavesOutAntimatterBuilds(t *testing.T) {

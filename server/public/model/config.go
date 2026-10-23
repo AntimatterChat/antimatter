@@ -3935,20 +3935,15 @@ func (s *PluginSettings) SetDefaults(ls LogSettings, ms MetricsSettings) {
 		s.PluginStates[PluginIdCalls] = &PluginState{Enable: true}
 	}
 
-	if s.PluginStates[PluginIdPlaybooks] == nil {
-		// Enable the playbooks plugin by default
-		s.PluginStates[PluginIdPlaybooks] = &PluginState{Enable: true}
-	}
-
 	if s.PluginStates[PluginIdAI] == nil {
 		// Enable the AI plugin by default
 		s.PluginStates[PluginIdAI] = &PluginState{Enable: true}
 	}
 
-	if s.PluginStates[PluginIdFocalboard] == nil {
-		// Enable the boards plugin by default
-		s.PluginStates[PluginIdFocalboard] = &PluginState{Enable: true}
-	}
+	// Playbooks and Boards (focalboard) aren't bundled by default any more: a fresh install
+	// leaves their plugin state unset (installing one from its own GitHub release then enables
+	// it, as for any plugin). A server upgraded from before this change keeps whatever state it
+	// already has: this only runs when the state was never set.
 
 	for _, id := range AntimatterPluginIds {
 		if s.PluginStates[id] == nil {

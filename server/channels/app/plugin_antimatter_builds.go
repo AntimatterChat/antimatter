@@ -6,7 +6,10 @@ package app
 import "slices"
 
 // antimatterPluginIDs are the plugins Antimatter ships its own builds of, under the IDs of the
-// upstream plugins they are forked from.
+// upstream plugins they are forked from. Boards (focalboard) and Playbooks stay in this list even
+// though the server no longer bundles them: Antimatter still builds and releases its own forks of
+// both (installed from their own GitHub releases, not prepackaged here), and the Marketplace's
+// vanilla builds must never silently replace them.
 var antimatterPluginIDs = []string{
 	"com.github.manland.mattermost-plugin-gitlab",
 	"com.mattermost.calls",
