@@ -128,7 +128,8 @@ func (a *App) SendNotifications(rctx request.CTX, post *model.Post, team *model.
 		)
 		return nil, pResult.NErr
 	}
-	profileMap := pResult.Data
+	// Antimatter: each member's notification settings for the channel's community over their own.
+	profileMap := a.withCommunityNotifyProps(rctx, channel.TeamId, pResult.Data)
 
 	cmnResult := <-cmnchan
 	if cmnResult.NErr != nil {

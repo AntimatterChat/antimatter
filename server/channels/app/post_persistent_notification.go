@@ -276,7 +276,8 @@ func (a *App) persistentNotificationsAuxiliaryData(rctx request.CTX, channelsMap
 				channelKeywords[c.Id].AddUserKeyword(userID, "@"+user.Username)
 			}
 		}
-		channelProfileMap[c.Id] = profileMap
+		// Antimatter: each member's notification settings for the channel's community over their own.
+		channelProfileMap[c.Id] = a.withCommunityNotifyProps(rctx, c.TeamId, profileMap)
 	}
 	return channelGroupMap, channelProfileMap, channelKeywords, channelNotifyProps, nil
 }

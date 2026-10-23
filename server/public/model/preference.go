@@ -161,6 +161,11 @@ func (o *Preference) IsValid() *AppError {
 		return NewAppError("Preference.IsValid", "model.preference.is_valid.dm_privacy.app_error", nil, "name="+o.Name+", value="+o.Value, http.StatusBadRequest)
 	}
 
+	// Antimatter: notification settings of one community, over the person's own.
+	if o.Category == PreferenceCategoryCommunityNotify && (!IsValidId(o.Name) || !IsValidCommunityNotifyProps(o.Value)) {
+		return NewAppError("Preference.IsValid", "model.preference.is_valid.community_notify.app_error", nil, "name="+o.Name+", value="+o.Value, http.StatusBadRequest)
+	}
+
 	if o.Category == PreferenceCategorySidebarSettings && o.Name == PreferenceLimitVisibleDmsGms {
 		visibleDmsGmsValue, convErr := strconv.Atoi(o.Value)
 		if convErr != nil || visibleDmsGmsValue < 1 || visibleDmsGmsValue > PreferenceMaxLimitVisibleDmsGmsValue {

@@ -18788,6 +18788,11 @@
     "description": "API error when saving a user preference whose category identifier is empty or too long; 'category' groups related preference settings."
   },
   {
+    "id": "model.preference.is_valid.community_notify.app_error",
+    "translation": "Invalid notification settings for this community.",
+    "description": "Error returned when saving someone's notification settings for one community (desktop, mobile and email notifications, sounds, channel-wide mentions) with an unknown community, setting or value."
+  },
+  {
     "id": "model.preference.is_valid.dm_privacy.app_error",
     "translation": "Invalid choice for direct messages from people you don't know.",
     "description": "Error returned when saving the preference of whom one accepts direct messages from (everyone, ask first as message requests, or refuse them) with an invalid community or value."
