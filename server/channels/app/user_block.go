@@ -251,6 +251,10 @@ func (a *App) checkDirectMessageAllowed(rctx request.CTX, senderID, recipientID 
 	}
 	sender, appErr := a.GetUser(rctx, senderID)
 	if appErr != nil {
+		if appErr.StatusCode == http.StatusNotFound {
+			// As for any direct message with someone unknown.
+			return model.NewAppError("checkDirectMessageAllowed", "api.channel.create_direct_channel.invalid_user.app_error", nil, "", http.StatusBadRequest).Wrap(appErr)
+		}
 		return appErr
 	}
 	return a.checkDMRefused(rctx, sender, recipientID, channel)

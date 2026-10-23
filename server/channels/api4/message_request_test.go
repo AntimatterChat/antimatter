@@ -95,3 +95,46 @@ func TestDMPrivacyRefuse(t *testing.T) {
 	_, err = th.Client.UpdatePreferences(ctx, th.BasicUser.Id, model.Preferences{{UserId: th.BasicUser.Id, Category: model.PreferenceCategoryDMPrivacy, Name: model.PreferenceNameDMPrivacyDefault, Value: "friends"}})
 	require.Error(t, err)
 }
+
+// Whoever asks for a direct message starts it, whatever the order of the ids they send: the other person's refusal
+// and their asking first apply to them (regression: the first id was taken as the sender).
+func TestDirectChannelStartedByCaller(t *testing.T) {
+	mainHelper.Parallel(t)
+	th := Setup(t).InitBasic(t)
+	ctx := context.Background()
+
+	t.Run("a refusal applies with the ids swapped", func(t *testing.T) {
+		appErr := th.App.UpdatePreferences(th.Context, th.BasicUser2.Id, model.Preferences{{UserId: th.BasicUser2.Id, Category: model.PreferenceCategoryDMPrivacy, Name: th.BasicTeam.Id, Value: model.DMPrivacyRefuse}})
+		require.Nil(t, appErr)
+
+		_, resp, err := th.Client.CreateDirectChannel(ctx, th.BasicUser2.Id, th.BasicUser.Id)
+		require.Error(t, err)
+		CheckForbiddenStatus(t, resp)
+		CheckErrorID(t, err, "app.user_block.blocked.app_error")
+	})
+
+	t.Run("asking first applies with the ids swapped", func(t *testing.T) {
+		other := th.CreateUser(t)
+		th.LinkUserToTeam(t, other, th.BasicTeam)
+		appErr := th.App.UpdatePreferences(th.Context, other.Id, model.Preferences{{UserId: other.Id, Category: model.PreferenceCategoryDMPrivacy, Name: model.PreferenceNameDMPrivacyDefault, Value: model.DMPrivacyAsk}})
+		require.Nil(t, appErr)
+
+		dm, resp, err := th.Client.CreateDirectChannel(ctx, other.Id, th.BasicUser.Id)
+		require.NoError(t, err)
+		CheckCreatedStatus(t, resp)
+
+		member, appErr := th.App.GetChannelMember(th.Context, dm.Id, other.Id)
+		require.Nil(t, appErr)
+		assert.Equal(t, model.DMRequestPending, member.NotifyProps[model.ChannelMemberDMRequestProp], "a request for who asks first")
+
+		member, appErr = th.App.GetChannelMember(th.Context, dm.Id, th.BasicUser.Id)
+		require.Nil(t, appErr)
+		assert.Equal(t, model.DMRequestAccepted, member.NotifyProps[model.ChannelMemberDMRequestProp], "accepted for who started it")
+	})
+
+	t.Run("someone unknown is a bad request", func(t *testing.T) {
+		_, resp, err := th.SystemAdminClient.CreateDirectChannel(ctx, model.NewId(), th.BasicUser2.Id)
+		require.Error(t, err)
+		CheckBadRequestStatus(t, resp)
+	})
+}

@@ -918,7 +918,14 @@ func createDirectChannel(c *Context, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	sc, appErr := c.App.GetOrCreateDirectChannel(c.AppContext, userIds[0], userIds[1])
+	// Antimatter: whoever asks starts it, whatever the order of the ids: who refuses direct messages from people like
+	// them, or asks them first, is the other.
+	// A system admin making one between two others keeps their order.
+	starterId, recipientId := userIds[0], userIds[1]
+	if allowed {
+		starterId, recipientId = c.AppContext.Session().UserId, otherUserId
+	}
+	sc, appErr := c.App.GetOrCreateDirectChannel(c.AppContext, starterId, recipientId)
 	if appErr != nil {
 		c.Err = appErr
 		return
