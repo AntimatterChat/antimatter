@@ -197,6 +197,11 @@
 // The conversations dock is set apart from the channels above it by a thin rule and a slightly raised background, no
 // shadow: --am-line barely shows on the sidebar in dark themes, so the rule is muted-based.
 :is(.am-app, .am-layer) .am-dock { flex: none; overflow: hidden; display: flex; flex-direction: column; border-top: 1px solid color-mix(in srgb, var(--am-muted) 30%, transparent); background: color-mix(in srgb, var(--am-side) 92%, var(--am-raise)); position: relative; }
+// The dock's own size: dragged (or moved with the arrow keys) from its top edge, in steps of one row (see
+// sidebar/dock_resize.ts). A thin highlight on hover, focus or while dragging shows it can be resized.
+:is(.am-app, .am-layer) .am-dock-resize { position: absolute; top: -4px; left: 0; right: 0; z-index: 1; height: 8px; cursor: row-resize; touch-action: none; outline: none; }
+:is(.am-app, .am-layer) .am-dock-resize::after { content: ''; position: absolute; left: 0; right: 0; top: 3px; height: 2px; background: transparent; transition: background-color .12s ease .1s; }
+:is(.am-app, .am-layer) .am-dock-resize:is(:hover, :focus-visible, .am-dragging)::after { background: var(--am-matter); }
 :is(.am-app, .am-layer) .am-dock-head {
   display: flex;
   align-items: center;

@@ -38,7 +38,11 @@ export function usePermalinkAnchor(channelId: string | undefined, resolvingPerma
     let linkedPostId: string | undefined;
     let anchorPostId: string | undefined;
     if (resolvingPermalink) {
-        anchorPostId = shown.current.channelId === channelId ? shown.current.postId : undefined;
+        // focusPost selects the post's conversation (so its header and messages are right) before the address
+        // itself moves there. In the gap between the two, the channel shown is already the new one: anchor it on
+        // the post being resolved (still in the /pl/ address), not on nothing, or the view flashes to that
+        // channel's newest messages before jumping to the post.
+        anchorPostId = shown.current.channelId === channelId ? shown.current.postId : match.params.postid;
     } else {
         linkedPostId = match.params.postid;
         anchorPostId = linkedPostId || location.state?.permalinkAnchor || undefined;

@@ -20,6 +20,8 @@ jest.mock('fusion/sidebar/home_sidebar', () => ({DM_FIND_ID: 'am-dm-find'}));
 jest.mock('actions/team_actions', () => ({switchTeam: jest.fn(() => ({type: 'SWITCH'})), updateTeamsOrderForUser: jest.fn(() => ({type: 'ORDER'}))}));
 jest.mock('fusion/shell/global_search_context', () => ({useGlobalSearch: () => ({open: jest.fn()})}));
 jest.mock('mattermost-redux/actions/preferences', () => ({savePreferences: jest.fn(() => ({type: 'PREFS'}))}));
+const mockDialogs = {createTeam: jest.fn()};
+jest.mock('fusion/shell/dialogs_context', () => ({useDialogs: () => mockDialogs}));
 
 const mockTeam = TestHelper.getTeamMock({id: 'team', name: 'antimatter', display_name: 'Antimatter'});
 const alice = TestHelper.getChannelMock({id: 'alice-dm', type: 'G', display_name: 'alice, bob'});
@@ -234,5 +236,58 @@ describe('fusion/rail/ServerRail', () => {
         render();
 
         expect(screen.queryByRole('group')).not.toBeInTheDocument();
+    });
+
+    // The rail's "+" bubble: with only one way to add a community, it acts directly instead of opening a menu with
+    // a single item in it.
+    describe('the "+" bubble', () => {
+        const renderAdd = (roles: string, extraTeams: Record<string, ReturnType<typeof TestHelper.getTeamMock>> = {}) => renderWithContext(
+            <ServerRail/>,
+            {
+                entities: {
+                    teams: {
+                        currentTeamId: mockTeam.id,
+                        teams: {[mockTeam.id]: mockTeam, ...extraTeams},
+                        myMembers: {[mockTeam.id]: {team_id: mockTeam.id}},
+                    },
+                    channels: {currentChannelId: 'general', channels: {general: TestHelper.getChannelMock({id: 'general', type: 'O'})}},
+                    users: {currentUserId: 'me', profiles: {me: {id: 'me', username: 'me', roles}}},
+                    roles: {roles: {creator: {name: 'creator', permissions: ['create_team']}, plain: {name: 'plain', permissions: []}}},
+                    preferences: {myPreferences: {}},
+                },
+            } as never,
+        );
+
+        test('only able to create: opens the create-community dialog directly', async () => {
+            renderAdd('creator');
+            await userEvent.click(screen.getByRole('button', {name: 'Add a community'}));
+            expect(mockDialogs.createTeam).toHaveBeenCalled();
+            expect(getHistory().push).not.toHaveBeenCalled();
+            expect(screen.queryByRole('menu')).not.toBeInTheDocument();
+        });
+
+        test('only able to join: goes to the community browser directly', async () => {
+            const otherOpenTeam = TestHelper.getTeamMock({id: 'open', name: 'open', display_name: 'Open', allow_open_invite: true});
+            renderAdd('plain', {[otherOpenTeam.id]: otherOpenTeam});
+            await userEvent.click(screen.getByRole('button', {name: 'Add a community'}));
+            expect(getHistory().push).toHaveBeenCalledWith('/select_team');
+            expect(mockDialogs.createTeam).not.toHaveBeenCalled();
+            expect(screen.queryByRole('menu')).not.toBeInTheDocument();
+        });
+
+        test('able to do both: opens the menu with both choices', async () => {
+            const otherOpenTeam = TestHelper.getTeamMock({id: 'open', name: 'open', display_name: 'Open', allow_open_invite: true});
+            renderAdd('creator', {[otherOpenTeam.id]: otherOpenTeam});
+            await userEvent.click(screen.getByRole('button', {name: 'Add a community'}));
+            expect(mockDialogs.createTeam).not.toHaveBeenCalled();
+            expect(getHistory().push).not.toHaveBeenCalled();
+            expect(screen.getByRole('menuitem', {name: /Join another community/})).toBeInTheDocument();
+            expect(screen.getByRole('menuitem', {name: /Create a community/})).toBeInTheDocument();
+        });
+
+        test('neither: no bubble at all', () => {
+            renderAdd('plain');
+            expect(screen.queryByRole('button', {name: 'Add a community'})).not.toBeInTheDocument();
+        });
     });
 });

@@ -209,13 +209,12 @@ describe('fusion/modals/SettingsModal', () => {
         expect(savePreferences).toHaveBeenCalledWith('me', [{user_id: 'me', category: 'fusion_display', name: 'simplified_interface', value: 'true'}]);
     });
 
-    test('lists 10 open conversations by default, as each person sets', async () => {
+    // Its size is a drag of its own top edge now (sidebar/dock_resize.ts), not a setting here: no redundant control
+    // for the same thing.
+    test('has no "Open conversations" setting', () => {
         render('appearance');
 
-        const count = screen.getByRole('group', {name: 'Open conversations'});
-        expect(within(count).getByRole('button', {name: '10'})).toHaveAttribute('aria-pressed', 'true');
-        await userEvent.click(within(count).getByRole('button', {name: '20'}));
-        expect(savePreferences).toHaveBeenCalledWith('me', [{user_id: 'me', category: 'sidebar_settings', name: 'limit_visible_dms_gms', value: '20'}]);
+        expect(screen.queryByText('Open conversations')).not.toBeInTheDocument();
     });
 
     // Antimatter: the System Console link is for every role that may read a part of it, as in the status menu (the

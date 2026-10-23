@@ -3,6 +3,7 @@
 
 import React, {useMemo, useRef, useState} from 'react';
 import {useIntl} from 'react-intl';
+import type {IntlShape} from 'react-intl';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {CustomStatusDuration} from '@mattermost/types/users';
@@ -64,23 +65,50 @@ const SUGGESTIONS: Array<{emoji: string; text: {id: string; defaultMessage: stri
 ];
 
 // Do not disturb durations, as in the mockup. The end time is in seconds; 0 means until turned off.
-const DND_DURATIONS: Array<[string, number, {id: string; defaultMessage: string}]> = [
-    ['15min', 15 * 6e4, {id: 'fusion.status.for15', defaultMessage: 'For 15 minutes'}],
-    ['1h', 36e5, {id: 'fusion.status.for1h', defaultMessage: 'For 1 hour'}],
-    ['1d', 864e5, {id: 'fusion.status.for1d', defaultMessage: 'For 1 day'}],
-    ['1w', 7 * 864e5, {id: 'fusion.status.for1w', defaultMessage: 'For 1 week'}],
-    ['forever', 0, {id: 'fusion.status.forever', defaultMessage: 'Forever'}],
+const DND_DURATIONS: Array<[string, number]> = [
+    ['15min', 15 * 6e4],
+    ['1h', 36e5],
+    ['1d', 864e5],
+    ['1w', 7 * 864e5],
+    ['forever', 0],
 ];
 const dndEnd = (ms: number) => (ms ? Math.floor((Date.now() + ms) / 1000) : 0);
 
-const CLEAR_AFTER: Array<[CustomStatusDuration, {id: string; defaultMessage: string}]> = [
-    [CustomStatusDuration.THIRTY_MINUTES, {id: 'fusion.status.clear30', defaultMessage: '30 minutes'}],
-    [CustomStatusDuration.ONE_HOUR, {id: 'fusion.status.clear1h', defaultMessage: '1 hour'}],
-    [CustomStatusDuration.FOUR_HOURS, {id: 'fusion.status.clear4h', defaultMessage: '4 hours'}],
-    [CustomStatusDuration.TODAY, {id: 'fusion.status.clearToday', defaultMessage: 'Today'}],
-    [CustomStatusDuration.THIS_WEEK, {id: 'fusion.status.clearWeek', defaultMessage: 'This week'}],
-    [CustomStatusDuration.DONT_CLEAR, {id: 'fusion.status.clearNever', defaultMessage: "Don't clear"}],
+// dndDurationLabel is a DND_DURATIONS key's name: a literal call per key, not a lookup into a stored message
+// descriptor, so every one of them is extracted (a map, or an array of tuples holding the descriptor, isn't: these
+// ids were missing from en.json, never translated, until this fix).
+function dndDurationLabel(formatMessage: IntlShape['formatMessage'], key: string): string {
+    switch (key) {
+    case '1h': return formatMessage({id: 'fusion.status.for1h', defaultMessage: 'For 1 hour'});
+    case '1d': return formatMessage({id: 'fusion.status.for1d', defaultMessage: 'For 1 day'});
+    case '1w': return formatMessage({id: 'fusion.status.for1w', defaultMessage: 'For 1 week'});
+    case 'forever': return formatMessage({id: 'fusion.status.forever', defaultMessage: 'Forever'});
+    default: return formatMessage({id: 'fusion.status.for15', defaultMessage: 'For 15 minutes'});
+    }
+}
+
+const CLEAR_AFTER: CustomStatusDuration[] = [
+    CustomStatusDuration.THIRTY_MINUTES,
+    CustomStatusDuration.ONE_HOUR,
+    CustomStatusDuration.FOUR_HOURS,
+    CustomStatusDuration.TODAY,
+    CustomStatusDuration.THIS_WEEK,
+    CustomStatusDuration.DONT_CLEAR,
 ];
+
+// clearAfterLabel is a CLEAR_AFTER choice's name, the same way: a literal call per choice. Anything not listed
+// (DATE_AND_TIME has its own label, built from the date and time chosen) falls back to Today's, as the custom
+// status input's own duration label already did.
+function clearAfterLabel(formatMessage: IntlShape['formatMessage'], duration: CustomStatusDuration): string {
+    switch (duration) {
+    case CustomStatusDuration.THIRTY_MINUTES: return formatMessage({id: 'fusion.status.clear30', defaultMessage: '30 minutes'});
+    case CustomStatusDuration.ONE_HOUR: return formatMessage({id: 'fusion.status.clear1h', defaultMessage: '1 hour'});
+    case CustomStatusDuration.FOUR_HOURS: return formatMessage({id: 'fusion.status.clear4h', defaultMessage: '4 hours'});
+    case CustomStatusDuration.THIS_WEEK: return formatMessage({id: 'fusion.status.clearWeek', defaultMessage: 'This week'});
+    case CustomStatusDuration.DONT_CLEAR: return formatMessage({id: 'fusion.status.clearNever', defaultMessage: "Don't clear"});
+    default: return formatMessage({id: 'fusion.status.clearToday', defaultMessage: 'Today'});
+    }
+}
 
 function expiresAt(duration: CustomStatusDuration): string | undefined {
     const now = new Date();
@@ -139,7 +167,7 @@ export default function StatusPopover({anchor, onClose}: Props) {
     const autoReplies = useSelector((state: GlobalState) => getConfig(state).ExperimentalEnableAutomaticReplies === 'true');
     const systemConsole = useSelector(canVisitSystemConsole);
     const marketplace = useSelector(canOpenMarketplace);
-    const durationLabel = duration === CustomStatusDuration.DATE_AND_TIME && clearAt ? intl.formatDate(clearAt, {weekday: 'short', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit'}) : formatMessage(CLEAR_AFTER.find(([d]) => d === duration)?.[1] || CLEAR_AFTER[3][1]);
+    const durationLabel = duration === CustomStatusDuration.DATE_AND_TIME && clearAt ? intl.formatDate(clearAt, {weekday: 'short', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit'}) : clearAfterLabel(formatMessage, duration);
 
     if (!me) {
         return null;
@@ -308,12 +336,12 @@ export default function StatusPopover({anchor, onClose}: Props) {
                     onClose={() => setChoosingDuration(false)}
                 >
                     <MenuHeading>{formatMessage({id: 'fusion.status.clearAfter', defaultMessage: 'Clear after'})}</MenuHeading>
-                    {CLEAR_AFTER.map(([d, l]) => (
+                    {CLEAR_AFTER.map((d) => (
                         <MenuItem
                             key={d || 'never'}
                             role='menuitemradio'
                             checked={duration === d}
-                            label={formatMessage(l)}
+                            label={clearAfterLabel(formatMessage, d)}
                             onClick={() => {
                                 setDuration(d);
                                 setChoosingDuration(false);
@@ -396,7 +424,7 @@ export default function StatusPopover({anchor, onClose}: Props) {
                                     size={18}
                                 />
                                 <span className={am('grow')}>{formatMessage(suggestion.text)}</span>
-                                <small>{formatMessage(CLEAR_AFTER.find(([d]) => d === suggestion.duration)![1])}</small>
+                                <small>{clearAfterLabel(formatMessage, suggestion.duration)}</small>
                             </button>
                         </div>
                     ))}
@@ -494,63 +522,69 @@ export default function StatusPopover({anchor, onClose}: Props) {
                             )}
                         </button>
                     );
+
+                    // Focus mode sits between Do not disturb and Invisible: it's a timed Do not disturb, so it
+                    // belongs right after it.
+                    const focusOption = s.status === 'dnd' && (
+                        <button
+                            key='focus'
+                            className={am('sp-opt', 'sp-focus', {on: Boolean(focusUntil)})}
+                            aria-pressed={Boolean(focusUntil)}
+                            onClick={() => {
+                                if (focusUntil) {
+                                    Client4.endFocus().catch(() => toast(formatMessage({id: 'fusion.focus.endFailed', defaultMessage: 'Focus mode couldn\'t be ended', description: 'Toast when ending focus mode from the status menu failed.'})));
+                                } else {
+                                    dialogs.focus();
+                                }
+                                onClose();
+                            }}
+                        >
+                            <span className={am('status-dot', 'focus')}/>
+                            <span className={am('grow')}>
+                                <b>{focusUntil ? formatMessage({id: 'fusion.focus.end', defaultMessage: 'End focus', description: 'Status menu (your avatar), while in focus mode: ends it now.'}) : formatMessage({id: 'fusion.focus.menu', defaultMessage: 'Focus mode…', description: 'Status menu (your avatar): opens the dialog to start focus mode (Do not disturb for a while, with a reason).'})}</b>
+                                <span>{focusUntil ? `${focusLeft(focusUntil)} · ${formatMessage({id: 'fusion.focus.untilShort', defaultMessage: 'until {time}', description: 'Status menu, while in focus mode: when it ends.'}, {time: focusTime})}` : formatMessage({id: 'fusion.focus.menuSub', defaultMessage: 'Mutes notifications and hides your unread badges for a while', description: 'Status menu (your avatar): under "Focus mode…", what it does.'})}</span>
+                            </span>
+                            {focusUntil > 0 && (
+                                <Icon
+                                    name='check'
+                                    size='sm'
+                                />
+                            )}
+                        </button>
+                    );
                     if (s.status !== 'dnd') {
                         return <React.Fragment key={s.status}>{option}</React.Fragment>;
                     }
                     return (
-                        <div
-                            key={s.status}
-                            className={am('sp-item')}
-                        >
-                            {option}
-                            <div
-                                className={am('sp-sub')}
-                                role='menu'
-                                aria-label={formatMessage({id: 'fusion.status.dndFor', defaultMessage: 'Do not disturb for'})}
-                            >
-                                {DND_DURATIONS.map(([key, ms, l]) => (
-                                    <button
-                                        key={key}
-                                        role='menuitem'
-                                        onClick={() => choose('dnd', dndEnd(ms))}
-                                    >
-                                        {formatMessage(l)}
-                                    </button>
-                                ))}
-                                <button
-                                    role='menuitem'
-                                    onClick={() => setDndCustom(true)}
+                        <React.Fragment key={s.status}>
+                            <div className={am('sp-item')}>
+                                {option}
+                                <div
+                                    className={am('sp-sub')}
+                                    role='menu'
+                                    aria-label={formatMessage({id: 'fusion.status.dndFor', defaultMessage: 'Do not disturb for'})}
                                 >
-                                    {formatMessage({id: 'fusion.status.dndCustom', defaultMessage: 'Until a custom time…'})}
-                                </button>
+                                    {DND_DURATIONS.map(([key, ms]) => (
+                                        <button
+                                            key={key}
+                                            role='menuitem'
+                                            onClick={() => choose('dnd', dndEnd(ms))}
+                                        >
+                                            {dndDurationLabel(formatMessage, key)}
+                                        </button>
+                                    ))}
+                                    <button
+                                        role='menuitem'
+                                        onClick={() => setDndCustom(true)}
+                                    >
+                                        {formatMessage({id: 'fusion.status.dndCustom', defaultMessage: 'Until a custom time…'})}
+                                    </button>
+                                </div>
                             </div>
-                        </div>
+                            {focusOption}
+                        </React.Fragment>
                     );
                 })}
-                <button
-                    className={am('sp-opt', 'sp-focus', {on: Boolean(focusUntil)})}
-                    aria-pressed={Boolean(focusUntil)}
-                    onClick={() => {
-                        if (focusUntil) {
-                            Client4.endFocus().catch(() => toast(formatMessage({id: 'fusion.focus.endFailed', defaultMessage: 'Focus mode couldn\'t be ended', description: 'Toast when ending focus mode from the status menu failed.'})));
-                        } else {
-                            dialogs.focus();
-                        }
-                        onClose();
-                    }}
-                >
-                    <span className={am('status-dot', 'focus')}/>
-                    <span className={am('grow')}>
-                        <b>{focusUntil ? formatMessage({id: 'fusion.focus.end', defaultMessage: 'End focus', description: 'Status menu (your avatar), while in focus mode: ends it now.'}) : formatMessage({id: 'fusion.focus.menu', defaultMessage: 'Focus mode…', description: 'Status menu (your avatar): opens the dialog to start focus mode (Do not disturb for a while, with a reason).'})}</b>
-                        <span>{focusUntil ? `${focusLeft(focusUntil)} · ${formatMessage({id: 'fusion.focus.untilShort', defaultMessage: 'until {time}', description: 'Status menu, while in focus mode: when it ends.'}, {time: focusTime})}` : formatMessage({id: 'fusion.focus.menuSub', defaultMessage: 'Mutes notifications and hides your unread badges for a while', description: 'Status menu (your avatar): under "Focus mode…", what it does.'})}</span>
-                    </span>
-                    {focusUntil > 0 && (
-                        <Icon
-                            name='check'
-                            size='sm'
-                        />
-                    )}
-                </button>
             </div>
             <div className={am('sp-links')}>
                 <button
