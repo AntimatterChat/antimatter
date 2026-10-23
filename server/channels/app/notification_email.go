@@ -31,12 +31,12 @@ func (a *App) buildEmailNotification(
 	user *model.User,
 	team *model.Team,
 ) *model.EmailNotification {
+	nameFormat := a.GetNotificationNameFormat(user)
 	channel := notification.Channel
 	post := notification.Post
 	sender := notification.Sender
 
 	translateFunc := i18n.GetUserTranslations(user.Locale)
-	nameFormat := a.GetNotificationNameFormat(user)
 
 	var useMilitaryTime bool
 	if data, err := a.Srv().Store().Preference().Get(
@@ -49,8 +49,9 @@ func (a *App) buildEmailNotification(
 		useMilitaryTime = data.Value == "true"
 	}
 
-	// Antimatter: the names as this person may see them (profile privacy).
-	seen := notification.seenBy(a, user)
+	// Antimatter: the names as this person may see them (profile privacy); then, for a community's message, as the
+	// community shows people, with the sender's nickname there (chosen for it, so never hidden).
+	nameFormat, seen := a.communityNotificationNames(notification.seenBy(a, user), nameFormat)
 	channelName := seen.GetChannelName(nameFormat, "")
 	senderName := seen.GetSenderName(nameFormat,
 		*a.Config().ServiceSettings.EnablePostUsernameOverride)

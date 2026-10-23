@@ -111,6 +111,11 @@ func updatePreferences(c *Context, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if hasServerOnlyPreference(preferences) {
+		c.Err = model.NewAppError("updatePreferences", "api.preference.server_only.app_error", nil, "", http.StatusBadRequest)
+		return
+	}
+
 	var sanitizedPreferences model.Preferences
 	channelMap := make(map[string]*model.Channel)
 
@@ -173,6 +178,11 @@ func deletePreferences(c *Context, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if hasServerOnlyPreference(preferences) {
+		c.Err = model.NewAppError("deletePreferences", "api.preference.server_only.app_error", nil, "", http.StatusBadRequest)
+		return
+	}
+
 	if err := c.App.DeletePreferences(c.AppContext, c.Params.UserId, preferences); err != nil {
 		c.Err = err
 		return
@@ -180,4 +190,15 @@ func deletePreferences(c *Context, w http.ResponseWriter, r *http.Request) {
 
 	auditRec.Success()
 	ReturnStatusOK(w)
+}
+
+// hasServerOnlyPreference tells whether preferences include one only the server writes (Antimatter): community
+// profiles, which their own API checks and tells the community about.
+func hasServerOnlyPreference(preferences model.Preferences) bool {
+	for _, pref := range preferences {
+		if pref.Category == model.PreferenceCategoryCommunityProfile {
+			return true
+		}
+	}
+	return false
 }

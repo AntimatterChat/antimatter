@@ -2541,6 +2541,16 @@
     "description": "Display name of the /unflip slash command in the slash command autocomplete list; it is the command's trigger word and stays as-is."
   },
   {
+    "id": "api.community_profile.no_avatar.app_error",
+    "translation": "This person has no picture of their own in this community.",
+    "description": "Not-found error when asking for someone's community picture (Antimatter) while they use their profile picture there."
+  },
+  {
+    "id": "api.community_profile.not_own.app_error",
+    "translation": "Only the person themselves sets their profile in a community.",
+    "description": "Permission error when someone, a system admin included, tries to set another person's nickname, picture or name setting for a community (Antimatter community profiles). Moderators may only reset a nickname or picture."
+  },
+  {
     "id": "api.config.get_config.restricted_merge.app_error",
     "translation": "Failed to merge given config.",
     "description": "Admin API error when merging the stored configuration with restricted defaults fails while reading the config; 'config' is the server configuration."
@@ -4171,6 +4181,11 @@
     "id": "api.preference.preferences_category.get.app_error",
     "translation": "Unable to get user preferences.",
     "description": "API error when loading a category of user preferences fails."
+  },
+  {
+    "id": "api.preference.server_only.app_error",
+    "translation": "Community profiles are changed through the community profile, not the preferences.",
+    "description": "Error when an app or client tries to write or delete the stored community profiles (Antimatter) through the generic preferences API; they have their own API."
   },
   {
     "id": "api.preference.update_preferences.set.app_error",
@@ -7929,6 +7944,21 @@
     "id": "app.community_attributes.values.invalid.app_error",
     "translation": "This value doesn't fit the attribute {{.Name}}.",
     "description": "API error returned when a community attribute value has the wrong shape: an unknown choice, an invalid email, URL, phone number or date, an unknown person, or a text too long."
+  },
+  {
+    "id": "app.community_profile.get.app_error",
+    "translation": "The community profiles couldn't be read.",
+    "description": "Server error when the profiles people set for a community (nicknames and pictures, Antimatter) can't be read from the database."
+  },
+  {
+    "id": "app.community_profile.not_member.app_error",
+    "translation": "Only the community's members have a profile in it.",
+    "description": "Error when someone tries to set (or reset) a profile for a community they aren't a member of (Antimatter community profiles)."
+  },
+  {
+    "id": "app.community_profile.save.app_error",
+    "translation": "The community profile couldn't be saved.",
+    "description": "Server error when saving someone's profile for a community (nickname, picture, whether they're shown by name; Antimatter) fails."
   },
   {
     "id": "app.community_rules.accept.app_error",
@@ -16740,6 +16770,21 @@
     "description": "Error shown when a slash command integration's HTTP response has an unrecognized response type (in_channel or ephemeral); developer/integrator-facing."
   },
   {
+    "id": "model.community_profile.is_valid.avatar.app_error",
+    "translation": "Invalid community picture.",
+    "description": "Validation error when someone's community profile (Antimatter) has an invalid picture timestamp; not normally seen."
+  },
+  {
+    "id": "model.community_profile.is_valid.id.app_error",
+    "translation": "Invalid community or user id for the community profile.",
+    "description": "Validation error when a community profile (someone's nickname and picture in one community, Antimatter) names an invalid community or user."
+  },
+  {
+    "id": "model.community_profile.is_valid.nickname.app_error",
+    "translation": "The nickname must be at most {{.Max}} characters, without line breaks.",
+    "description": "Validation error when someone's nickname for one community (Antimatter community profile) is too long or has control characters; {{.Max}} is the maximum number of characters."
+  },
+  {
     "id": "model.community_rules.empty.app_error",
     "translation": "Write the rules before turning them on.",
     "description": "Error when an admin turns a community's rules on with no text."
@@ -18793,6 +18838,11 @@
     "description": "Error returned when saving someone's notification settings for one community (desktop, mobile and email notifications, sounds, channel-wide mentions) with an unknown community, setting or value."
   },
   {
+    "id": "model.preference.is_valid.community_profile.app_error",
+    "translation": "Invalid community profile.",
+    "description": "Validation error when a stored community profile (someone's nickname and picture in one community, Antimatter) is malformed."
+  },
+  {
     "id": "model.preference.is_valid.dm_privacy.app_error",
     "translation": "Invalid choice for direct messages from people you don't know.",
     "description": "Error returned when saving the preference of whom one accepts direct messages from (everyone, ask first as message requests, or refuse them) with an invalid community or value."
@@ -19131,6 +19181,11 @@
     "id": "model.team.is_valid.name.app_error",
     "translation": "Invalid name.",
     "description": "API error when a team's display name is empty or too long."
+  },
+  {
+    "id": "model.team.is_valid.name_display.app_error",
+    "translation": "Invalid way to show people: it must be username, nickname_full_name or full_name.",
+    "description": "Validation error when a community's \"Show people as\" setting (Antimatter) is given an unknown value. Keep username, nickname_full_name and full_name as they are: they are the values to send."
   },
   {
     "id": "model.team.is_valid.onboarding.app_error",

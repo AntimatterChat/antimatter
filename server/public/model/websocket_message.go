@@ -125,6 +125,7 @@ const (
 	WebsocketEventCommunityRulesUpdated      WebsocketEventType = "community_rules_updated"
 	WebsocketEventCommunityRulesAccepted     WebsocketEventType = "community_rules_accepted"
 	WebsocketEventCommunityAttributesUpdated WebsocketEventType = "community_attributes_updated"
+	WebsocketEventCommunityProfileUpdated    WebsocketEventType = "community_profile_updated"
 	WebsocketEventFocusEnded                 WebsocketEventType = "focus_ended"
 	WebsocketEventPostPutOnTop               WebsocketEventType = "post_put_on_top"
 	WebsocketEventPostRemovedFromTop         WebsocketEventType = "post_removed_from_top"

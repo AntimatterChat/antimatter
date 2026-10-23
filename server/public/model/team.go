@@ -92,6 +92,12 @@ const (
 	TeamMemberListViewTeams  = "teams"
 )
 
+// IsValidTeamNameDisplay tells whether a community's NameDisplay is one of the ways to show people, or empty for the
+// server's default.
+func IsValidTeamNameDisplay(nameDisplay string) bool {
+	return nameDisplay == "" || nameDisplay == ShowUsername || nameDisplay == ShowNicknameFullName || nameDisplay == ShowFullName
+}
+
 type Team struct {
 	Id                  string  `json:"id"`
 	CreateAt            int64   `json:"create_at"`
@@ -150,6 +156,12 @@ type Team struct {
 	// (each member chooses), TeamMemberListViewRoles or TeamMemberListViewTeams.
 	MemberListView string `json:"member_list_view"`
 
+	// Antimatter: NameDisplay is how the community shows people in its channels, member list, mentions and cards, as
+	// its admins chose (ShowUsername, ShowNicknameFullName or ShowFullName), instead of each member's own choice,
+	// which still applies to direct and group messages. Empty for the server's default (TeamSettings.
+	// TeammateNameDisplay). Whoever refuses to be shown by name in the community shows as their username there.
+	NameDisplay string `json:"name_display"`
+
 	// Not persisted; derived by the store via EXISTS on AccessControlPolicies(Type='team').
 	// Use HasMembershipPolicyAction for enforcement — this is a read-path signal only.
 	PolicyEnforced bool            `json:"policy_enforced"`
@@ -203,6 +215,7 @@ func (o *Team) Auditable() map[string]any {
 		"default_role_id":         o.DefaultRoleId,
 		"kind":                    o.Kind,
 		"member_list_view":        o.MemberListView,
+		"name_display":            o.NameDisplay,
 	}
 }
 
@@ -234,6 +247,7 @@ type TeamPatch struct {
 	DisableJoinLeaveMessages *bool   `json:"disable_join_leave_messages"`
 	Kind                     *string `json:"kind"`
 	MemberListView           *string `json:"member_list_view"`
+	NameDisplay              *string `json:"name_display"`
 }
 
 func (o *TeamPatch) Auditable() map[string]any {
@@ -251,6 +265,7 @@ func (o *TeamPatch) Auditable() map[string]any {
 		"disable_join_leave":      o.DisableJoinLeaveMessages,
 		"kind":                    o.Kind,
 		"member_list_view":        o.MemberListView,
+		"name_display":            o.NameDisplay,
 	}
 }
 
@@ -303,6 +318,10 @@ func (o *Team) IsValid() *AppError {
 
 	if o.MemberListView != "" && o.MemberListView != TeamMemberListViewChoice && o.MemberListView != TeamMemberListViewRoles && o.MemberListView != TeamMemberListViewTeams {
 		return NewAppError("Team.IsValid", "model.team.is_valid.member_list_view.app_error", nil, "id="+o.Id, http.StatusBadRequest)
+	}
+
+	if !IsValidTeamNameDisplay(o.NameDisplay) {
+		return NewAppError("Team.IsValid", "model.team.is_valid.name_display.app_error", nil, "id="+o.Id, http.StatusBadRequest)
 	}
 
 	if len(o.Onboarding) > TeamOnboardingMaxLength || (o.Onboarding != "" && !json.Valid([]byte(o.Onboarding))) {
@@ -522,6 +541,10 @@ func (o *Team) Patch(patch *TeamPatch) {
 
 	if patch.MemberListView != nil {
 		o.MemberListView = *patch.MemberListView
+	}
+
+	if patch.NameDisplay != nil {
+		o.NameDisplay = *patch.NameDisplay
 	}
 
 	if patch.DefaultChannelId != nil {

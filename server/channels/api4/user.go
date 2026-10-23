@@ -1491,6 +1491,15 @@ func autocompleteUsers(c *Context, w http.ResponseWriter, r *http.Request) {
 	autocomplete.Users = app.FilterHiddenSearchMatches(name, autocomplete.Users, hideProfileDetails(c, autocomplete.Users...))
 	autocomplete.OutOfChannel = app.FilterHiddenSearchMatches(name, autocomplete.OutOfChannel, hideProfileDetails(c, autocomplete.OutOfChannel...))
 
+	// Antimatter: then the people the community knows by their nickname there, which they chose to show there: they
+	// stay, with what else they hide from whoever types hidden.
+	if teamId != "" && name != "" {
+		users, outOfChannel := len(autocomplete.Users), len(autocomplete.OutOfChannel)
+		c.App.AddCommunityNicknameMatches(c.AppContext, teamId, channelId, name, options, &autocomplete)
+		hideProfileDetails(c, autocomplete.Users[users:]...)
+		hideProfileDetails(c, autocomplete.OutOfChannel[outOfChannel:]...)
+	}
+
 	// Fetch agent users for autocomplete
 	agentUsers, appErr := c.App.GetUsersForAgents(c.AppContext, c.AppContext.Session().UserId)
 	if appErr == nil && agentUsers != nil {

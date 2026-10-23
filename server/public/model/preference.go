@@ -157,6 +157,10 @@ func (o *Preference) IsValid() *AppError {
 	if o.Category == PreferenceCategoryUserBlock && (!IsValidId(o.Name) || o.Name == o.UserId || !IsValidUserBlockLevel(o.Value)) {
 		return NewAppError("Preference.IsValid", "model.preference.is_valid.user_block.app_error", nil, "name="+o.Name+", value="+o.Value, http.StatusBadRequest)
 	}
+	// Antimatter: someone's profile in a community, named after it.
+	if o.Category == PreferenceCategoryCommunityProfile && !isValidCommunityProfilePreference(o) {
+		return NewAppError("Preference.IsValid", "model.preference.is_valid.community_profile.app_error", nil, "name="+o.Name, http.StatusBadRequest)
+	}
 	if o.Category == PreferenceCategoryDMPrivacy && ((o.Name != PreferenceNameDMPrivacyDefault && !IsValidId(o.Name)) || !IsValidDMPrivacy(o.Value)) {
 		return NewAppError("Preference.IsValid", "model.preference.is_valid.dm_privacy.app_error", nil, "name="+o.Name+", value="+o.Value, http.StatusBadRequest)
 	}
