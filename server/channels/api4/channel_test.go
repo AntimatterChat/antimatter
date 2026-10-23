@@ -3265,7 +3265,7 @@ func TestGetAllChannels(t *testing.T) {
 		CheckOKStatus(t, resp)
 		require.True(t, len(channels) > 0)
 		for _, channel := range channels {
-			if channel.DisplayName != "Off-Topic" && channel.DisplayName != "General" {
+			if channel.DisplayName != "Off-Topic" && channel.DisplayName != "General" && channel.DisplayName != "Welcome" {
 				require.NotEqual(t, "", channel.CreatorId)
 				require.NotEqual(t, "", channel.Name)
 			}
@@ -3276,7 +3276,7 @@ func TestGetAllChannels(t *testing.T) {
 		CheckOKStatus(t, resp)
 		require.True(t, len(channels) > 0)
 		for _, channel := range channels {
-			if channel.DisplayName != "Off-Topic" && channel.DisplayName != "General" {
+			if channel.DisplayName != "Off-Topic" && channel.DisplayName != "General" && channel.DisplayName != "Welcome" {
 				require.NotEqual(t, "", channel.CreatorId)
 				require.NotEqual(t, "", channel.Name)
 			}
@@ -3721,7 +3721,7 @@ func TestSearchAllChannels(t *testing.T) {
 		CheckOKStatus(t, resp)
 		require.True(t, len(channels) > 0)
 		for _, channel := range channels {
-			if channel.DisplayName != "Off-Topic" && channel.DisplayName != "General" {
+			if channel.DisplayName != "Off-Topic" && channel.DisplayName != "General" && channel.DisplayName != "Welcome" {
 				require.NotEqual(t, "", channel.CreatorId)
 				require.NotEqual(t, "", channel.Name)
 			}
@@ -3732,7 +3732,7 @@ func TestSearchAllChannels(t *testing.T) {
 		CheckOKStatus(t, resp)
 		require.True(t, len(channels) > 0)
 		for _, channel := range channels {
-			if channel.DisplayName != "Off-Topic" && channel.DisplayName != "General" {
+			if channel.DisplayName != "Off-Topic" && channel.DisplayName != "General" && channel.DisplayName != "Welcome" {
 				require.NotEqual(t, "", channel.CreatorId)
 				require.NotEqual(t, "", channel.Name)
 			}

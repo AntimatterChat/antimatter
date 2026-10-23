@@ -53,7 +53,7 @@ func TestCreateTeamWithExperimentalDefaultChannels(t *testing.T) {
 
 	channels, err := th.service.channelStore.GetAll(team.Id)
 	require.NoError(t, err)
-	require.Len(t, channels, 3)
+	require.Len(t, channels, 4, "general, welcome and the two experimental default channels")
 
 	ch, err := th.service.channelStore.GetByName(team.Id, model.DefaultChannelName, false)
 	require.NoError(t, err)
@@ -62,6 +62,13 @@ func TestCreateTeamWithExperimentalDefaultChannels(t *testing.T) {
 
 	_, err = th.service.channelStore.GetByName(team.Id, model.LegacyDefaultChannelName, false)
 	require.Error(t, err, "and no town-square")
+
+	ch, err = th.service.channelStore.GetByName(team.Id, model.WelcomeChannelName, false)
+	require.NoError(t, err, "and welcome, for the community's join and leave messages")
+	require.NotNil(t, ch)
+
+	_, err = th.service.channelStore.GetByName(team.Id, "off-topic", false)
+	require.Error(t, err, "nor off-topic, which welcome replaced")
 
 	ch, err = th.service.channelStore.GetByName(team.Id, "channel-1", false)
 	require.NoError(t, err)

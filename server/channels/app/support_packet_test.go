@@ -523,14 +523,19 @@ func TestGetSupportPacketStats(t *testing.T) {
 			cfg.AnalyticsSettings.MaxUsersForStatistics = new(1)
 		})
 
+		// InitBasic(t) already made posts: its own and the join messages, whose number depends on the community's
+		// channels. Counted first, then 5 more.
+		before := generateStats(t, basicTh.Context, basicTh.App)
+		require.NotNil(t, before.Posts)
+		require.Positive(t, *before.Posts)
+
 		for range 5 {
 			p := basicTh.CreatePost(t, basicTh.BasicChannel)
 			require.NotNil(t, p)
 		}
 
-		// InitBasic(t) already creats 5 posts
 		sp := generateStats(t, basicTh.Context, basicTh.App)
-		assertStatValue(t, sp.Posts, 10)
+		assertStatValue(t, sp.Posts, *before.Posts+5)
 	})
 
 	t.Run("channel count is omitted when a channel query fails and errors include every failed stat", func(t *testing.T) {
