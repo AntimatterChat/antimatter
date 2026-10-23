@@ -368,6 +368,7 @@ func Init(srv *app.Server) (*API, error) {
 	api.InitBot()
 	api.InitTeam()
 	api.InitTeamAutolink()
+	api.InitTeamDefaultRole()
 	api.InitChannel()
 	api.InitChannelOverrides()
 	api.InitModeration()

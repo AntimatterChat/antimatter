@@ -105,9 +105,12 @@ func createTeam(c *Context, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Antimatter: new communities have everyone in all their channels, unless the server says otherwise.
-	team.AllChannelsMembership = *c.App.Config().TeamSettings.AllChannelsMembershipForNewTeams
-	team.DefaultChannelId = ""
+	// Antimatter: a community can be created without an address (the server makes one from its name); guilds have
+	// everyone in all their channels, unless the server says otherwise, workspaces don't.
+	if appErr := c.App.PrepareNewTeam(&team); appErr != nil {
+		c.Err = appErr
+		return
+	}
 
 	rteam, err := c.App.CreateTeamWithUser(c.AppContext, &team, c.AppContext.Session().UserId)
 	if err != nil {

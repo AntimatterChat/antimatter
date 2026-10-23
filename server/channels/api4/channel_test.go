@@ -2582,7 +2582,7 @@ func TestGetDeletedChannelsForTeam(t *testing.T) {
 	team := th.BasicTeam
 
 	// Antimatter: members archive the private channels they created in a workplace, not in a community.
-	_, _, kindErr := th.SystemAdminClient.PatchTeam(context.Background(), team.Id, &model.TeamPatch{Kind: model.NewPointer(model.TeamKindWorkplace)})
+	_, _, kindErr := th.SystemAdminClient.PatchTeam(context.Background(), team.Id, &model.TeamPatch{Kind: model.NewPointer(model.TeamKindWorkspace)})
 	require.NoError(t, kindErr)
 
 	th.LoginTeamAdmin(t)
@@ -3097,7 +3097,8 @@ func TestGetChannelsForUser(t *testing.T) {
 
 	numPrivate := 0
 	numPublic := 0
-	numOffTopic := 0
+	// Antimatter: communities get Welcome where they got Off-Topic.
+	numWelcome := 0
 	numGeneral := 0
 	for _, ch := range channels {
 		if ch.Type == model.ChannelTypeOpen {
@@ -3106,8 +3107,8 @@ func TestGetChannelsForUser(t *testing.T) {
 			numPrivate++
 		}
 
-		if ch.DisplayName == "Off-Topic" {
-			numOffTopic++
+		if ch.DisplayName == "Welcome" {
+			numWelcome++
 		} else if ch.DisplayName == "General" {
 			numGeneral++
 		}
@@ -3116,7 +3117,7 @@ func TestGetChannelsForUser(t *testing.T) {
 	assert.Len(t, channels, 9)
 	assert.Equal(t, 2, numPrivate)
 	assert.Equal(t, 7, numPublic)
-	assert.Equal(t, 2, numOffTopic)
+	assert.Equal(t, 2, numWelcome)
 	assert.Equal(t, 2, numGeneral)
 
 	// Creating some more channels to be exactly 100 to test page size boundaries.
@@ -3915,7 +3916,7 @@ func TestDeleteChannel(t *testing.T) {
 
 	// Antimatter: in a workplace community, members archive the channels they created, as upstream; in a community
 	// they don't (TestArchiveChannelRights).
-	_, _, patchErr := th.SystemAdminClient.PatchTeam(context.Background(), team.Id, &model.TeamPatch{Kind: model.NewPointer(model.TeamKindWorkplace)})
+	_, _, patchErr := th.SystemAdminClient.PatchTeam(context.Background(), team.Id, &model.TeamPatch{Kind: model.NewPointer(model.TeamKindWorkspace)})
 	require.NoError(t, patchErr)
 
 	// successful delete of public channel
@@ -6425,20 +6426,20 @@ func TestAutocompleteChannels(t *testing.T) {
 			th.BasicTeam.Id,
 			"gene",
 			[]string{model.DefaultChannelName},
-			[]string{"off-topic", "town", "tower"},
+			[]string{model.WelcomeChannelName, "town", "tower"},
 		},
 		{
 			"Basic town",
 			th.BasicTeam.Id,
 			"town",
 			[]string{"town"},
-			[]string{model.DefaultChannelName, "off-topic", "tower"},
+			[]string{model.DefaultChannelName, model.WelcomeChannelName, "tower"},
 		},
 		{
-			"Basic off-topic",
+			"Basic welcome",
 			th.BasicTeam.Id,
-			"off-to",
-			[]string{"off-topic"},
+			"welc",
+			[]string{model.WelcomeChannelName},
 			[]string{model.DefaultChannelName, "town", "tower"},
 		},
 		{
@@ -6446,7 +6447,7 @@ func TestAutocompleteChannels(t *testing.T) {
 			th.BasicTeam.Id,
 			"tow",
 			[]string{"tower", "town"},
-			[]string{model.DefaultChannelName, "off-topic"},
+			[]string{model.DefaultChannelName, model.WelcomeChannelName},
 		},
 	} {
 		t.Run(tc.description, func(t *testing.T) {
@@ -6541,20 +6542,20 @@ func TestAutocompleteChannelsForSearch(t *testing.T) {
 			th.BasicTeam.Id,
 			"gene",
 			[]string{model.DefaultChannelName},
-			[]string{"off-topic", "town", "townpriv"},
+			[]string{model.WelcomeChannelName, "town", "townpriv"},
 		},
 		{
 			"Basic townpriv",
 			th.BasicTeam.Id,
 			"town",
 			[]string{"townpriv"},
-			[]string{model.DefaultChannelName, "off-topic", "town"},
+			[]string{model.DefaultChannelName, model.WelcomeChannelName, "town"},
 		},
 		{
-			"Basic off-topic",
+			"Basic welcome",
 			th.BasicTeam.Id,
-			"off-to",
-			[]string{"off-topic"},
+			"welc",
+			[]string{model.WelcomeChannelName},
 			[]string{model.DefaultChannelName, "town", "townpriv"},
 		},
 		{
@@ -6562,7 +6563,7 @@ func TestAutocompleteChannelsForSearch(t *testing.T) {
 			th.BasicTeam.Id,
 			"tow",
 			[]string{"townpriv"},
-			[]string{model.DefaultChannelName, "off-topic", "town"},
+			[]string{model.DefaultChannelName, model.WelcomeChannelName, "town"},
 		},
 		{
 			"Direct and group messages",
@@ -6676,14 +6677,14 @@ func TestAutocompleteChannelsForSearchGuestUsers(t *testing.T) {
 			th.BasicTeam.Id,
 			"town",
 			[]string{"town", "townpriv"},
-			[]string{model.DefaultChannelName, "off-topic"},
+			[]string{model.DefaultChannelName, model.WelcomeChannelName},
 		},
 		{
 			"Should return empty if not member of the searched channels",
 			th.BasicTeam.Id,
-			"off-to",
+			"welc",
 			[]string{},
-			[]string{"off-topic", model.DefaultChannelName, "town", "townpriv"},
+			[]string{model.WelcomeChannelName, model.DefaultChannelName, "town", "townpriv"},
 		},
 		{
 			"Should return direct and group messages",

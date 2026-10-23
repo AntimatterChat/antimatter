@@ -177,8 +177,9 @@ func (s *Server) maxUsersPerTeamSetFromEnvironment() bool {
 }
 
 // doCommunityKindsMigration gives every community that has no kind yet (all of them, on the first start of the
-// version that brought kinds) TeamSettings.DefaultCommunityKind, as it is when it runs: a server set to workplace
-// before upgrading makes all its communities workplaces. Each community's row is written explicitly, as for new ones,
+// version that brought kinds) TeamSettings.DefaultCommunityKind, as it is when it runs: a server set to workspace
+// before upgrading makes all its communities workspaces. The rows keep the kinds' former names
+// (model.TeamKindStoredValue). Each community's row is written explicitly, as for new ones,
 // so that apps reading the Systems table (Calls) find it; a kind already set is kept. Admins change each community's
 // kind afterwards.
 func (s *Server) doCommunityKindsMigration() error {
@@ -186,9 +187,9 @@ func (s *Server) doCommunityKindsMigration() error {
 		return err
 	}
 
-	kind := model.TeamKindCommunity
-	if k := s.Config().TeamSettings.DefaultCommunityKind; k != nil && *k == model.TeamKindWorkplace {
-		kind = model.TeamKindWorkplace
+	kind := model.TeamKindStoredGuild
+	if k := s.Config().TeamSettings.DefaultCommunityKind; k != nil && model.NormalizeTeamKind(*k) == model.TeamKindWorkspace {
+		kind = model.TeamKindStoredWorkspace
 	}
 	teams, err := s.Store().Team().GetAll()
 	if err != nil {

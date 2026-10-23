@@ -19,7 +19,8 @@ import (
 // member is in every public channel of the community, and in every private channel their roles open (a role-gated
 // channel: see SetChannelRoleAccess). Members can't leave those channels, nor be removed from them: they mute them;
 // moderation goes through the community (removal, timeouts) or the channel's permissions. Guests and bots aren't
-// concerned: they're in the channels they're added to. Invite-only private channels stay as they are.
+// concerned: they're in the channels they're added to. Invite-only private channels stay as they are. Channels there
+// tell nobody joining nor leaving them: the community's Welcome channel tells who joins and leaves it.
 //
 // Memberships follow: someone joining the community joins its channels, a channel created, made public or unarchived
 // gets everyone, and turning the setting on fills every channel in the background. Roles already bring their members
@@ -70,6 +71,17 @@ func (a *App) IsAllChannelsMembership(rctx request.CTX, channel *model.Channel, 
 		return len(outside) == 0, nil
 	}
 	return true, nil
+}
+
+// channelMembershipMessagesOff tells whether a channel's own messages about who joins, leaves, is added to or removed
+// from it are left out: in a community that has everyone in all its channels, those are the community's, told in its
+// Welcome channel (GetJoinLeaveChannelForTeam).
+func (a *App) channelMembershipMessagesOff(channel *model.Channel) bool {
+	if channel == nil || channel.TeamId == "" || channel.IsGroupOrDirect() {
+		return false
+	}
+	team, appErr := a.GetTeam(channel.TeamId)
+	return appErr == nil && team.AllChannelsMembership
 }
 
 // checkAllChannelsLeave refuses someone leaving, or being removed from, a channel they're in through their community.

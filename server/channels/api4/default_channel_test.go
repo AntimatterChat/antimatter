@@ -23,7 +23,7 @@ func TestDeleteDefaultChannels(t *testing.T) {
 	_, _, err := client2.Login(context.Background(), th.BasicUser2.Email, th.BasicUser2.Password)
 	require.NoError(t, err)
 
-	for _, name := range []string{model.DefaultChannelName, "off-topic"} {
+	for _, name := range []string{model.DefaultChannelName, model.WelcomeChannelName} {
 		channel, appErr := th.App.GetChannelByName(th.Context, name, th.BasicTeam.Id, false)
 		require.Nil(t, appErr)
 

@@ -11,6 +11,39 @@ import (
 	"github.com/mattermost/mattermost/server/public/shared/mlog"
 )
 
+// InitTeamDefaultRole adds the way to a community's default role (Team.DefaultRoleId), made the first time.
+func (api *API) InitTeamDefaultRole() {
+	api.BaseRoutes.Team.Handle("/default_role", api.APISessionRequired(ensureTeamDefaultRole)).Methods(http.MethodPost)
+}
+
+// ensureTeamDefaultRole gives a community's default role, making it the first time, to those who manage its roles.
+func ensureTeamDefaultRole(c *Context, w http.ResponseWriter, r *http.Request) {
+	c.RequireTeamId()
+	if c.Err != nil {
+		return
+	}
+	if !c.App.SessionHasPermissionToTeam(*c.AppContext.Session(), c.Params.TeamId, model.PermissionManageTeamRoles) {
+		c.SetPermissionError(model.PermissionManageTeamRoles)
+		return
+	}
+
+	auditRec := c.MakeAuditRecord(model.AuditEventCreateGroup, model.AuditStatusFail)
+	defer c.LogAuditRec(auditRec)
+	model.AddEventParameterToAuditRec(auditRec, "team_id", c.Params.TeamId)
+
+	group, appErr := c.App.EnsureTeamDefaultRole(c.AppContext, c.Params.TeamId)
+	if appErr != nil {
+		c.Err = appErr
+		return
+	}
+
+	auditRec.Success()
+	auditRec.AddEventResultState(group)
+	if err := json.NewEncoder(w).Encode(group); err != nil {
+		c.Logger.Warn("Error while writing response", mlog.Err(err))
+	}
+}
+
 // getTeamRole gives the Mattermost role an Antimatter role grants, with its permissions, to its team's members.
 func getTeamRole(c *Context, w http.ResponseWriter, r *http.Request) {
 	c.RequireGroupId()

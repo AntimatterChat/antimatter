@@ -120,10 +120,10 @@ func TestCommunityKind(t *testing.T) {
 	h := newRightsHelper(t, "")
 	ctx := context.Background()
 
-	assert.Equal(t, model.TeamKindCommunity, h.team.Kind, "a new community is of the community kind")
+	assert.Equal(t, model.TeamKindGuild, h.team.Kind, "a new community is a guild")
 
 	_, member := h.member(t)
-	_, resp, err := member.PatchTeam(ctx, h.team.Id, &model.TeamPatch{Kind: model.NewPointer(model.TeamKindWorkplace)})
+	_, resp, err := member.PatchTeam(ctx, h.team.Id, &model.TeamPatch{Kind: model.NewPointer(model.TeamKindWorkspace)})
 	require.Error(t, err, "members don't change the kind")
 	CheckForbiddenStatus(t, resp)
 
@@ -132,16 +132,16 @@ func TestCommunityKind(t *testing.T) {
 	CheckBadRequestStatus(t, resp)
 
 	_, admin := h.admin(t)
-	patched, _, err := admin.PatchTeam(ctx, h.team.Id, &model.TeamPatch{Kind: model.NewPointer(model.TeamKindWorkplace)})
+	patched, _, err := admin.PatchTeam(ctx, h.team.Id, &model.TeamPatch{Kind: model.NewPointer(model.TeamKindWorkspace)})
 	require.NoError(t, err, "the community's admins change it")
-	assert.Equal(t, model.TeamKindWorkplace, patched.Kind)
+	assert.Equal(t, model.TeamKindWorkspace, patched.Kind)
 	fetched, _, err := member.GetTeam(ctx, h.team.Id, "")
 	require.NoError(t, err)
-	assert.Equal(t, model.TeamKindWorkplace, fetched.Kind, "everyone sees it")
+	assert.Equal(t, model.TeamKindWorkspace, fetched.Kind, "everyone sees it")
 
-	patched, _, err = admin.PatchTeam(ctx, h.team.Id, &model.TeamPatch{Kind: model.NewPointer(model.TeamKindCommunity)})
+	patched, _, err = admin.PatchTeam(ctx, h.team.Id, &model.TeamPatch{Kind: model.NewPointer(model.TeamKindGuild)})
 	require.NoError(t, err)
-	assert.Equal(t, model.TeamKindCommunity, patched.Kind)
+	assert.Equal(t, model.TeamKindGuild, patched.Kind)
 }
 
 func TestArchiveChannelRights(t *testing.T) {
@@ -149,7 +149,7 @@ func TestArchiveChannelRights(t *testing.T) {
 	ctx := context.Background()
 
 	t.Run("in a community, members don't archive channels, even those they created", func(t *testing.T) {
-		h := newRightsHelper(t, model.TeamKindCommunity)
+		h := newRightsHelper(t, model.TeamKindGuild)
 		user, client := h.member(t)
 		other, _ := h.member(t)
 		for _, channelType := range []model.ChannelType{model.ChannelTypeOpen, model.ChannelTypePrivate} {
@@ -168,7 +168,7 @@ func TestArchiveChannelRights(t *testing.T) {
 	})
 
 	t.Run("in a community, its admins, system admins and moderators who manage channels archive them", func(t *testing.T) {
-		h := newRightsHelper(t, model.TeamKindCommunity)
+		h := newRightsHelper(t, model.TeamKindGuild)
 		user, client := h.member(t)
 		_, admin := h.admin(t)
 		_, manager, _ := h.withRole(t, model.PermissionManagePublicChannelProperties.Id, model.PermissionManagePrivateChannelProperties.Id,
@@ -196,7 +196,7 @@ func TestArchiveChannelRights(t *testing.T) {
 	})
 
 	t.Run("in a workplace community, members archive the channels they created, not the others", func(t *testing.T) {
-		h := newRightsHelper(t, model.TeamKindWorkplace)
+		h := newRightsHelper(t, model.TeamKindWorkspace)
 		user, client := h.member(t)
 		other, otherClient := h.member(t)
 		for _, channelType := range []model.ChannelType{model.ChannelTypeOpen, model.ChannelTypePrivate} {
@@ -223,7 +223,7 @@ func TestArchiveChannelRights(t *testing.T) {
 	})
 
 	t.Run("in a workplace community, the default channels stay with its admins", func(t *testing.T) {
-		h := newRightsHelper(t, model.TeamKindWorkplace)
+		h := newRightsHelper(t, model.TeamKindWorkspace)
 		user, client := h.member(t)
 		generalChannel, appErr := h.th.App.GetChannelByName(h.th.Context, model.DefaultChannelName, h.team.Id, false)
 		require.Nil(t, appErr)
@@ -235,7 +235,7 @@ func TestArchiveChannelRights(t *testing.T) {
 	})
 
 	t.Run("a member role a system admin gave archiving to still archives", func(t *testing.T) {
-		h := newRightsHelper(t, model.TeamKindCommunity)
+		h := newRightsHelper(t, model.TeamKindGuild)
 		defaults := h.th.SaveDefaultRolePermissions(t)
 		defer h.th.RestoreDefaultRolePermissions(t, defaults)
 		h.th.AddPermissionToRole(t, model.PermissionDeletePublicChannel.Id, model.ChannelUserRoleId)
@@ -251,7 +251,7 @@ func TestOnTopRights(t *testing.T) {
 	mainHelper.Parallel(t)
 	ctx := context.Background()
 
-	for _, kind := range []string{model.TeamKindCommunity, model.TeamKindWorkplace} {
+	for _, kind := range []string{model.TeamKindGuild, model.TeamKindWorkspace} {
 		t.Run("in a "+kind+" community", func(t *testing.T) {
 			h := newRightsHelper(t, kind)
 			user, client := h.member(t)
@@ -463,7 +463,7 @@ func TestCommunityMemberListView(t *testing.T) {
 	patched, _, err := admin.PatchTeam(ctx, h.team.Id, &model.TeamPatch{Description: model.NewPointer("about")})
 	require.NoError(t, err)
 	assert.Equal(t, model.TeamMemberListViewTeams, patched.MemberListView)
-	assert.Equal(t, model.TeamKindCommunity, patched.Kind)
+	assert.Equal(t, model.TeamKindGuild, patched.Kind)
 }
 
 // Antimatter: communities made through the API are of the server's default kind, unless created with one.
@@ -477,19 +477,19 @@ func TestCreateTeamKind(t *testing.T) {
 
 	team, _, err := th.Client.CreateTeam(ctx, newTeam(""))
 	require.NoError(t, err)
-	assert.Equal(t, model.TeamKindCommunity, team.Kind)
+	assert.Equal(t, model.TeamKindGuild, team.Kind)
 
-	th.App.UpdateConfig(func(cfg *model.Config) { *cfg.TeamSettings.DefaultCommunityKind = model.TeamKindWorkplace })
+	th.App.UpdateConfig(func(cfg *model.Config) { *cfg.TeamSettings.DefaultCommunityKind = model.TeamKindWorkspace })
 	team, _, err = th.Client.CreateTeam(ctx, newTeam(""))
 	require.NoError(t, err)
-	assert.Equal(t, model.TeamKindWorkplace, team.Kind)
+	assert.Equal(t, model.TeamKindWorkspace, team.Kind)
 	fetched, _, err := th.Client.GetTeam(ctx, team.Id, "")
 	require.NoError(t, err)
-	assert.Equal(t, model.TeamKindWorkplace, fetched.Kind)
+	assert.Equal(t, model.TeamKindWorkspace, fetched.Kind)
 
-	team, _, err = th.Client.CreateTeam(ctx, newTeam(model.TeamKindCommunity))
+	team, _, err = th.Client.CreateTeam(ctx, newTeam(model.TeamKindGuild))
 	require.NoError(t, err)
-	assert.Equal(t, model.TeamKindCommunity, team.Kind, "the kind asked for wins")
+	assert.Equal(t, model.TeamKindGuild, team.Kind, "the kind asked for wins")
 
 	_, resp, err := th.Client.CreateTeam(ctx, newTeam("castle"))
 	require.Error(t, err)

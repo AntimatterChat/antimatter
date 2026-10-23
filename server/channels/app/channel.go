@@ -32,21 +32,23 @@ const (
 //
 // By default the list will be (not necessarily in this order):
 //
-//	['general', 'off-topic']
+//	['general', 'welcome', 'off-topic']
 //
 // However, if TeamSettings.ExperimentalDefaultChannels contains a list of channels then that list will replace
-// 'off-topic' and be included in the return results in addition to 'general'. For example:
+// 'off-topic' and be included in the return results in addition to 'general' and 'welcome'. For example:
 //
-//	['general', 'game-of-thrones', 'wow']
+//	['general', 'welcome', 'game-of-thrones', 'wow']
 //
-// Antimatter: 'town-square', the default channel's old name, in that list stands for 'general' (no second channel).
+// Antimatter: new communities get General and Welcome (teams.DefaultChannelNames); Off-Topic, which they got before
+// Welcome, stays one of the default channels of the communities that have it. 'town-square', the default channel's
+// old name, in that list stands for 'general' (no second channel).
 func (a *App) DefaultChannelNames(rctx request.CTX) []string {
-	names := []string{model.DefaultChannelName}
+	names := []string{model.DefaultChannelName, model.WelcomeChannelName}
 
 	if len(a.Config().TeamSettings.ExperimentalDefaultChannels) == 0 {
 		names = append(names, "off-topic")
 	} else {
-		seenChannels := map[string]bool{model.DefaultChannelName: true, model.LegacyDefaultChannelName: true}
+		seenChannels := map[string]bool{model.DefaultChannelName: true, model.LegacyDefaultChannelName: true, model.WelcomeChannelName: true}
 		for _, channelName := range a.Config().TeamSettings.ExperimentalDefaultChannels {
 			if !seenChannels[channelName] {
 				names = append(names, channelName)
@@ -83,6 +85,11 @@ func (a *App) JoinDefaultChannels(rctx request.CTX, teamID string, user *model.U
 	if chosen := a.GetDefaultChannelForTeam(rctx, team); chosen != nil {
 		defaultChannels = append(defaultChannels, chosen)
 	}
+	// And its Welcome channel, the one it chose for its join and leave messages.
+	if welcome := a.getWelcomeChannel(team); welcome != nil && !slices.ContainsFunc(defaultChannels, func(c *model.Channel) bool { return c.Id == welcome.Id }) {
+		defaultChannels = append(defaultChannels, welcome)
+	}
+	joinLeave := a.GetJoinLeaveChannelForTeam(rctx, team)
 	for _, channelName := range a.DefaultChannelNames(rctx) {
 		channel, channelErr := a.Srv().Store().Channel().GetByName(teamID, channelName, false)
 		if channelErr != nil {
@@ -117,7 +124,7 @@ func (a *App) JoinDefaultChannels(rctx request.CTX, teamID string, user *model.U
 		}
 
 		if *a.Config().ServiceSettings.ExperimentalEnableDefaultChannelLeaveJoinMessages {
-			if aErr := a.postJoinMessageForDefaultChannel(rctx, user, requestor, channel); aErr != nil {
+			if aErr := a.postJoinMessageForDefaultChannel(rctx, team, joinLeave, user, requestor, channel); aErr != nil {
 				rctx.Logger().Warn("Failed to post join/leave message", mlog.Err(aErr))
 			}
 		}
@@ -130,8 +137,9 @@ func (a *App) JoinDefaultChannels(rctx request.CTX, teamID string, user *model.U
 		a.Publish(message)
 	}
 
-	// Antimatter: in a community that has everyone in all its channels, all of them.
+	// Antimatter: in a community that has everyone in all its channels, all of them; and its default role.
 	a.joinCommunityChannels(rctx, team, user)
+	a.joinTeamDefaultRole(rctx, team, user)
 
 	if nErr != nil {
 		var appErr *model.AppError
@@ -151,8 +159,17 @@ func (a *App) JoinDefaultChannels(rctx request.CTX, teamID string, user *model.U
 	return nil
 }
 
-func (a *App) postJoinMessageForDefaultChannel(rctx request.CTX, user *model.User, requestor *model.User, channel *model.Channel) *model.AppError {
-	if a.isDefaultChannel(rctx, channel) {
+// postJoinMessageForDefaultChannel tells of someone joining a community in one of its default channels: that they
+// joined the community in its join and leave channel (joinLeave, nil when it has none or turned them off), nothing in
+// its default and Welcome channels otherwise (everyone is in those), and that they joined the channel in the others,
+// unless the community has everyone in all its channels (whose joining is the community's).
+func (a *App) postJoinMessageForDefaultChannel(rctx request.CTX, team *model.Team, joinLeave *model.Channel, user *model.User, requestor *model.User, channel *model.Channel) *model.AppError {
+	if joinLeave == nil || joinLeave.Id != channel.Id {
+		if a.isDefaultChannel(rctx, channel) || channel.Id == team.WelcomeChannelId || team.AllChannelsMembership {
+			return nil
+		}
+	}
+	if joinLeave != nil && joinLeave.Id == channel.Id {
 		if requestor == nil {
 			if err := a.postJoinTeamMessage(rctx, user, channel); err != nil {
 				return err
@@ -2873,6 +2890,11 @@ func (a *App) JoinChannel(rctx request.CTX, channel *model.Channel, userID strin
 }
 
 func (a *App) postJoinChannelMessage(rctx request.CTX, user *model.User, channel *model.Channel) *model.AppError {
+	// Antimatter: not in a community that has everyone in all its channels.
+	if a.channelMembershipMessagesOff(channel) {
+		return nil
+	}
+
 	message := fmt.Sprintf(i18n.T("api.channel.join_channel.post_and_forget"), user.Username)
 	postType := model.PostTypeJoinChannel
 
@@ -2985,6 +3007,11 @@ func (a *App) LeaveChannel(rctx request.CTX, channelID string, userID string) *m
 }
 
 func (a *App) postLeaveChannelMessage(rctx request.CTX, user *model.User, channel *model.Channel) *model.AppError {
+	// Antimatter: not in a community that has everyone in all its channels.
+	if a.channelMembershipMessagesOff(channel) {
+		return nil
+	}
+
 	post := &model.Post{
 		ChannelId: channel.Id,
 		// Message here embeds `@username`, not just `username`, to ensure that mentions
@@ -3006,6 +3033,11 @@ func (a *App) postLeaveChannelMessage(rctx request.CTX, user *model.User, channe
 }
 
 func (a *App) PostAddToChannelMessage(rctx request.CTX, user *model.User, addedUser *model.User, channel *model.Channel, postRootId string) *model.AppError {
+	// Antimatter: not in a community that has everyone in all its channels.
+	if a.channelMembershipMessagesOff(channel) {
+		return nil
+	}
+
 	message := fmt.Sprintf(i18n.T("api.channel.add_member.added"), addedUser.Username, user.Username)
 	postType := model.PostTypeAddToChannel
 
@@ -3057,6 +3089,11 @@ func (a *App) postAddToTeamMessage(rctx request.CTX, user *model.User, addedUser
 }
 
 func (a *App) postRemoveFromChannelMessage(rctx request.CTX, removerUserId string, removedUser *model.User, channel *model.Channel) *model.AppError {
+	// Antimatter: not in a community that has everyone in all its channels.
+	if a.channelMembershipMessagesOff(channel) {
+		return nil
+	}
+
 	messageUserId := removerUserId
 	if messageUserId == "" {
 		systemBot, err := a.GetSystemBot(rctx)

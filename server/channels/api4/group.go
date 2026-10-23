@@ -277,6 +277,12 @@ func patchGroup(c *Context, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Antimatter: a community's default role stays below the others, closed and not mentioned.
+	if appErr := c.App.CheckTeamDefaultRoleChange(group, &groupPatch, false, false); appErr != nil {
+		c.Err = appErr
+		return
+	}
+
 	// Antimatter: a role can't be moved above its manager's own highest role.
 	if group.IsRole() && groupPatch.Position != nil {
 		if lowest := c.App.LowestTeamRolePositionFor(*c.AppContext.Session(), group.TeamId); lowest >= 0 && *groupPatch.Position < lowest {
@@ -1256,6 +1262,12 @@ func deleteGroup(c *Context, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Antimatter: a community's default role stays.
+	if appErr := c.App.CheckTeamDefaultRoleChange(group, nil, true, false); appErr != nil {
+		c.Err = appErr
+		return
+	}
+
 	auditRec := c.MakeAuditRecord(model.AuditEventDeleteGroup, model.AuditStatusFail)
 	defer c.LogAuditRec(auditRec)
 	model.AddEventParameterToAuditRec(auditRec, "group_id", c.Params.GroupId)
@@ -1371,6 +1383,12 @@ func addGroupMembers(c *Context, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Antimatter: everyone has a community's default role; nobody gives it.
+	if appErr := c.App.CheckTeamDefaultRoleChange(group, nil, false, true); appErr != nil {
+		c.Err = appErr
+		return
+	}
+
 	auditRec := c.MakeAuditRecord(model.AuditEventAddGroupMembers, model.AuditStatusFail)
 	defer c.LogAuditRec(auditRec)
 	model.AddEventParameterToAuditRec(auditRec, "addGroupMembers_userids", newMembers.UserIds)
@@ -1433,6 +1451,12 @@ func deleteGroupMembers(c *Context, w http.ResponseWriter, r *http.Request) {
 	if !c.App.SessionCanSelfAssignRole(c.AppContext, *c.AppContext.Session(), group, deleteBody.UserIds) &&
 		!c.App.SessionHasPermissionToGroup(*c.AppContext.Session(), c.Params.GroupId, model.PermissionManageCustomGroupMembers) {
 		c.SetPermissionError(model.PermissionManageCustomGroupMembers)
+		return
+	}
+
+	// Antimatter: nor takes it away.
+	if appErr := c.App.CheckTeamDefaultRoleChange(group, nil, false, true); appErr != nil {
+		c.Err = appErr
 		return
 	}
 

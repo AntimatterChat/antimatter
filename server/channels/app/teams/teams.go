@@ -49,7 +49,11 @@ func (ts *TeamService) GetTeams(teamIDs []string) ([]*model.Team, error) {
 func (ts *TeamService) createDefaultChannels(rctx request.CTX, teamID string) ([]*model.Channel, error) {
 	displayNames := map[string]string{
 		model.DefaultChannelName: i18n.T("api.channel.create_default_channels.general"),
+		model.WelcomeChannelName: i18n.T("api.channel.create_default_channels.welcome"),
 		"off-topic":              i18n.T("api.channel.create_default_channels.off_topic"),
+	}
+	purposes := map[string]string{
+		model.WelcomeChannelName: i18n.T("api.channel.create_default_channels.welcome_purpose"),
 	}
 	channels := []*model.Channel{}
 	defaultChannelNames := ts.DefaultChannelNames()
@@ -62,7 +66,7 @@ func (ts *TeamService) createDefaultChannels(rctx request.CTX, teamID string) ([
 			// we don't have to translate
 			displayName = name
 		}
-		channel := &model.Channel{DisplayName: displayName, Name: name, Type: model.ChannelTypeOpen, TeamId: teamID}
+		channel := &model.Channel{DisplayName: displayName, Name: name, Type: model.ChannelTypeOpen, TeamId: teamID, Purpose: purposes[name]}
 		// We should use the channel service here (coming soon). Ideally, we should just emit an event
 		// and let the subscribers do the job, in this case it would be the channels service.
 		// Currently we are adding services to the server and because of that we are using

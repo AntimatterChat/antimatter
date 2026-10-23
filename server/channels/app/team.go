@@ -139,6 +139,9 @@ func (a *App) CreateTeam(rctx request.CTX, team *model.Team) (*model.Team, *mode
 		}
 	}
 
+	// Antimatter: its join and leave messages go to its Welcome channel.
+	rteam = a.setUpWelcomeChannel(rctx, rteam)
+
 	return rteam, nil
 }
 
@@ -282,10 +285,11 @@ func (a *App) PatchTeam(teamID string, patch *model.TeamPatch) (*model.Team, *mo
 		}
 	}
 
-	// Antimatter: the default channel is one of the community's public channels; turning on all-channels membership
-	// fills its channels.
-	var wasAllChannels, newDefaultChannel bool
-	if patch.DefaultChannelId != nil || patch.AllChannelsMembership != nil {
+	// Antimatter: the default and Welcome channels are public channels of the community; changing its kind sets
+	// whether everyone is in all its channels (on for a guild, off for a workspace), unless the patch sets that too;
+	// turning on all-channels membership fills its channels.
+	var wasAllChannels, newDefaultChannel, newWelcomeChannel bool
+	if patch.DefaultChannelId != nil || patch.AllChannelsMembership != nil || patch.Kind != nil || patch.WelcomeChannelId != nil {
 		existing, appErr := a.GetTeam(teamID)
 		if appErr != nil {
 			return nil, appErr
@@ -296,6 +300,17 @@ func (a *App) PatchTeam(teamID string, patch *model.TeamPatch) (*model.Team, *mo
 				return nil, appErr
 			}
 			newDefaultChannel = *patch.DefaultChannelId != ""
+		}
+		if patch.WelcomeChannelId != nil && *patch.WelcomeChannelId != existing.WelcomeChannelId {
+			if appErr := a.checkWelcomeChannelChoice(teamID, *patch.WelcomeChannelId); appErr != nil {
+				return nil, appErr
+			}
+			newWelcomeChannel = *patch.WelcomeChannelId != ""
+		}
+		if patch.Kind != nil && patch.AllChannelsMembership == nil {
+			if kind := model.NormalizeTeamKind(*patch.Kind); model.IsValidTeamKind(kind) && kind != model.NormalizeTeamKind(existing.Kind) {
+				patch.AllChannelsMembership = model.NewPointer(kind == model.TeamKindGuild)
+			}
 		}
 	}
 
@@ -328,6 +343,9 @@ func (a *App) PatchTeam(teamID string, patch *model.TeamPatch) (*model.Team, *mo
 	}
 	if newDefaultChannel {
 		a.FillDefaultChannelInBackground(request.EmptyContext(a.Log()), team)
+	}
+	if newWelcomeChannel {
+		a.FillWelcomeChannelInBackground(request.EmptyContext(a.Log()), team)
 	}
 
 	return team, nil
@@ -1450,9 +1468,10 @@ func (a *App) leaveTeam(rctx request.CTX, team *model.Team, user *model.User, re
 		}
 	}
 
-	// Antimatter: in the community's default channel, when it has one (it can be archived or deleted).
+	// Antimatter: in the community's join and leave channel (its Welcome channel, or its default channel), when it has
+	// one (it can be archived or deleted, or turned off).
 	if *a.Config().ServiceSettings.ExperimentalEnableDefaultChannelLeaveJoinMessages {
-		if channel := a.GetDefaultChannelForTeam(rctx, team); channel != nil {
+		if channel := a.GetJoinLeaveChannelForTeam(rctx, team); channel != nil {
 			if requestorId == user.Id {
 				if err = a.postLeaveTeamMessage(rctx, user, channel); err != nil {
 					rctx.Logger().Warn("Failed to post join/leave message", mlog.Err(err))

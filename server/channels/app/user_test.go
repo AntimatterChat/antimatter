@@ -2520,14 +2520,14 @@ func TestGetViewUsersRestrictions(t *testing.T) {
 	team1channel1 := th.CreateChannel(t, team1)
 	team1channel2 := th.CreateChannel(t, team1)
 	th.CreateChannel(t, team1) // Another channel
-	team1offtopic, err := th.App.GetChannelByName(th.Context, "off-topic", team1.Id, false)
+	team1offtopic, err := th.App.GetChannelByName(th.Context, model.WelcomeChannelName, team1.Id, false)
 	require.Nil(t, err)
 	team1general, err := th.App.GetChannelByName(th.Context, model.DefaultChannelName, team1.Id, false)
 	require.Nil(t, err)
 
 	team2channel1 := th.CreateChannel(t, team2)
 	th.CreateChannel(t, team2) // Another channel
-	team2offtopic, err := th.App.GetChannelByName(th.Context, "off-topic", team2.Id, false)
+	team2offtopic, err := th.App.GetChannelByName(th.Context, model.WelcomeChannelName, team2.Id, false)
 	require.Nil(t, err)
 	team2general, err := th.App.GetChannelByName(th.Context, model.DefaultChannelName, team2.Id, false)
 	require.Nil(t, err)

@@ -192,15 +192,17 @@ func (a *App) syncTeamRoleForAllMembers(rctx request.CTX, group *model.Group, gr
 }
 
 // highestTeamRolePosition is the place of someone's highest role in a team (0 = highest); -1 without any. Roles anyone
-// can take don't rank: taking one mustn't lift someone above the roles they manage.
+// can take don't rank: taking one mustn't lift someone above the roles they manage; nor does the default role, which
+// everyone has.
 func (a *App) highestTeamRolePosition(userID, teamID string) int {
 	groups, err := a.Srv().Store().Group().GetGroups(0, 1000, model.GroupSearchOpts{FilterHasMember: userID, Source: model.GroupSourceCustom}, nil)
 	if err != nil {
 		return -1
 	}
+	defaultRole := a.teamDefaultRoleID(teamID)
 	highest := -1
 	for _, g := range groups {
-		if g.TeamId == teamID && g.IsRole() && g.DeleteAt == 0 && !g.SelfAssignable && (highest == -1 || g.Position < highest) {
+		if g.TeamId == teamID && g.IsRole() && g.DeleteAt == 0 && !g.SelfAssignable && g.Id != defaultRole && (highest == -1 || g.Position < highest) {
 			highest = g.Position
 		}
 	}
@@ -219,15 +221,16 @@ func (a *App) LowestTeamRolePositionFor(session model.Session, teamID string) in
 	return a.nextTeamRolePosition(teamID)
 }
 
-// nextTeamRolePosition is the place below all of a team's roles.
+// nextTeamRolePosition is the place below all of a team's roles, but its default role, which stays below them.
 func (a *App) nextTeamRolePosition(teamID string) int {
 	groups, err := a.Srv().Store().Group().GetGroups(0, 1000, model.GroupSearchOpts{Source: model.GroupSourceCustom}, nil)
 	if err != nil {
 		return model.GroupPositionMax
 	}
+	defaultRole := a.teamDefaultRoleID(teamID)
 	next := 0
 	for _, g := range groups {
-		if g.TeamId == teamID && g.IsRole() && g.DeleteAt == 0 && g.Position >= next {
+		if g.TeamId == teamID && g.IsRole() && g.DeleteAt == 0 && g.Id != defaultRole && g.Position >= next {
 			next = min(g.Position+1, model.GroupPositionMax)
 		}
 	}
