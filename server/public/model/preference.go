@@ -161,6 +161,14 @@ func (o *Preference) IsValid() *AppError {
 		return NewAppError("Preference.IsValid", "model.preference.is_valid.dm_privacy.app_error", nil, "name="+o.Name+", value="+o.Value, http.StatusBadRequest)
 	}
 
+	// Antimatter: the tools someone turned off for the agents they talk to.
+	if o.Category == PreferenceCategoryAITools {
+		var choices AIToolChoices
+		if o.Name != PreferenceNameAIToolChoices || json.Unmarshal([]byte(o.Value), &choices) != nil || choices.IsValid() != nil {
+			return NewAppError("Preference.IsValid", "model.preference.is_valid.ai_tools.app_error", nil, "name="+o.Name, http.StatusBadRequest)
+		}
+	}
+
 	if o.Category == PreferenceCategorySidebarSettings && o.Name == PreferenceLimitVisibleDmsGms {
 		visibleDmsGmsValue, convErr := strconv.Atoi(o.Value)
 		if convErr != nil || visibleDmsGmsValue < 1 || visibleDmsGmsValue > PreferenceMaxLimitVisibleDmsGmsValue {

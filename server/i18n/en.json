@@ -16090,6 +16090,76 @@
     "description": "Validation error of an AI model connection (Antimatter) when it is created or changed."
   },
   {
+    "id": "model.ai_mcp_server.auth.app_error",
+    "translation": "Choose how people use the MCP server: no sign-in, each person signs in, or a shared service account.",
+    "description": "Validation error of an MCP server (a source of tools for agents, Antimatter): its sign-in kind is invalid."
+  },
+  {
+    "id": "model.ai_mcp_server.headers.app_error",
+    "translation": "A service account needs its headers (at most 16, for example Authorization), and only a service account has headers.",
+    "description": "Validation error of an MCP server (a source of tools for agents, Antimatter): a shared service account is set up with the HTTP headers it sends."
+  },
+  {
+    "id": "model.ai_mcp_server.id.app_error",
+    "translation": "The MCP server's ID is invalid.",
+    "description": "Validation error of an MCP server (a source of tools for agents, Antimatter) when it is added or changed."
+  },
+  {
+    "id": "model.ai_mcp_server.name.app_error",
+    "translation": "An MCP server needs a name of at most 64 characters.",
+    "description": "Validation error of an MCP server (a source of tools for agents, Antimatter) when it is added or changed."
+  },
+  {
+    "id": "model.ai_mcp_server.needs_attention.app_error",
+    "translation": "The note on what needs attention is too long.",
+    "description": "Validation error of an MCP server (a source of tools for agents, Antimatter)."
+  },
+  {
+    "id": "model.ai_mcp_server.oauth.app_error",
+    "translation": "The MCP server's OAuth client ID, secret or scopes are invalid.",
+    "description": "Validation error of an MCP server (a source of tools for agents, Antimatter) when it is added or changed."
+  },
+  {
+    "id": "model.ai_mcp_server.scope.app_error",
+    "translation": "An MCP server is server-wide or a community's.",
+    "description": "Validation error of an MCP server (a source of tools for agents, Antimatter) when it is added or changed."
+  },
+  {
+    "id": "model.ai_mcp_server.sharing.app_error",
+    "translation": "The communities the MCP server is shared with are invalid.",
+    "description": "Validation error of a server-wide MCP server (a source of tools for agents, Antimatter) when it is added or changed."
+  },
+  {
+    "id": "model.ai_mcp_server.slug.app_error",
+    "translation": "The short name must be 1 to 32 lowercase letters, digits, _ or -, starting with a letter or digit. Its tools are named mcp.<short name>.<tool>.",
+    "description": "Validation error of an MCP server (a source of tools for agents, Antimatter). Keep 'mcp.<short name>.<tool>' as is: it shows how tools are named."
+  },
+  {
+    "id": "model.ai_mcp_server.times.app_error",
+    "translation": "The MCP server's times are missing.",
+    "description": "Validation error of an MCP server (a source of tools for agents, Antimatter)."
+  },
+  {
+    "id": "model.ai_mcp_server.url.app_error",
+    "translation": "The MCP server's address must be an http or https URL without a user name or password.",
+    "description": "Validation error of an MCP server (a source of tools for agents, Antimatter) when it is added or changed."
+  },
+  {
+    "id": "model.ai_tool.choices.app_error",
+    "translation": "The tools you turned off can't be saved: too many, or a name is invalid.",
+    "description": "Error when a person saves which agents' tools they turned off for themselves (Antimatter)."
+  },
+  {
+    "id": "model.ai_tool.definition.app_error",
+    "translation": "A tool an app registered is invalid: its name (letters, digits, _ and - only), title, description, kind (read, write or external_write) or permissions.",
+    "description": "Error when an app (plugin) registers a tool for agents (Antimatter) that doesn't pass validation."
+  },
+  {
+    "id": "model.ai_tool.schema.app_error",
+    "translation": "A tool's input schema must be a JSON object of at most 64 KB.",
+    "description": "Error when an app (plugin) registers a tool for agents (Antimatter) whose input JSON schema isn't valid."
+  },
+  {
     "id": "model.authorize.is_valid.auth_code.app_error",
     "translation": "Invalid authorization code.",
     "description": "API validation error during the OAuth 2.0 authorization flow when the generated authorization code field is malformed; developer/integration-facing."
@@ -18746,6 +18816,11 @@
     "id": "model.post.query_params.invalid_time_field",
     "translation": "Invalid time field.",
     "description": "API error when the time field query parameter of a post listing request names an unsupported timestamp column."
+  },
+  {
+    "id": "model.preference.is_valid.ai_tools.app_error",
+    "translation": "Invalid choice of tools for agents.",
+    "description": "Error returned when saving the preference that lists the tools a person turned off for the agents they talk to (Antimatter), with an invalid name or value."
   },
   {
     "id": "model.preference.is_valid.category.app_error",
