@@ -4,6 +4,7 @@
 package app
 
 import (
+	"database/sql"
 	"errors"
 	"io"
 	"mime/multipart"
@@ -47,8 +48,9 @@ func (a *App) GetCommunityProfiles(rctx request.CTX, teamID string) ([]*model.Co
 func (a *App) GetCommunityProfile(teamID, userID string) (*model.CommunityProfile, *model.AppError) {
 	pref, err := a.Srv().Store().Preference().Get(userID, model.PreferenceCategoryCommunityProfile, teamID)
 	if err != nil {
+		// The preference store tells a missing preference by sql.ErrNoRows.
 		var nfErr *store.ErrNotFound
-		if errors.As(err, &nfErr) {
+		if errors.As(err, &nfErr) || errors.Is(err, sql.ErrNoRows) {
 			return &model.CommunityProfile{TeamId: teamID, UserId: userID}, nil
 		}
 		return nil, model.NewAppError("GetCommunityProfile", "app.community_profile.get.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
@@ -305,12 +307,13 @@ func nicknameMatches(nickname, term string) bool {
 // messages keep the recipient's choice and the global names. (The sender's names the recipient may not see are
 // taken off by the profile privacy, before or after: a community nickname isn't one of them.)
 func (a *App) communityNotificationNames(notification *PostNotification, nameFormat string) (string, *PostNotification) {
-	if notification == nil || notification.Channel == nil || notification.Channel.TeamId == "" || notification.Sender == nil {
+	// Without full names on the server (PrivacySettings.ShowFullName), everyone shows by username, as the recipient's
+	// format already says.
+	if notification == nil || notification.Channel == nil || notification.Channel.TeamId == "" || notification.Sender == nil || !*a.Config().PrivacySettings.ShowFullName {
 		return nameFormat, notification
 	}
 	teamID := notification.Channel.TeamId
-	// Without full names on the server (PrivacySettings.ShowFullName), everyone shows by username.
-	if team, appErr := a.GetTeam(teamID); appErr == nil && team.NameDisplay != "" && *a.Config().PrivacySettings.ShowFullName {
+	if team, appErr := a.GetTeam(teamID); appErr == nil && team.NameDisplay != "" {
 		nameFormat = team.NameDisplay
 	}
 	if nameFormat != model.ShowNicknameFullName {

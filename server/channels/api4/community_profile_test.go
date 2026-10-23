@@ -165,7 +165,7 @@ func TestCommunityNicknameAutocomplete(t *testing.T) {
 	h := newRightsHelper(t, model.TeamKindWorkspace)
 	ctx := context.Background()
 	person, personClient := h.member(t)
-	_, otherClient := h.member(t)
+	other, otherClient := h.member(t)
 	_, _, err := personClient.PatchCommunityProfile(ctx, h.team.Id, person.Id, &model.CommunityProfilePatch{Nickname: model.NewPointer("Zephyr Quill")})
 	require.NoError(t, err)
 
@@ -190,7 +190,8 @@ func TestCommunityNicknameAutocomplete(t *testing.T) {
 		assert.NotEqual(t, person.Id, u.Id)
 	}
 
-	channel := h.channel(t, h.th.SystemAdminClient, model.ChannelTypeOpen)
+	// The one typing is in the channel, the person isn't.
+	channel := h.channel(t, h.th.SystemAdminClient, model.ChannelTypeOpen, other)
 	ac, _, err = otherClient.AutocompleteUsersInChannel(ctx, h.team.Id, channel.Id, "zephyr", 100, "")
 	require.NoError(t, err)
 	var outside bool
