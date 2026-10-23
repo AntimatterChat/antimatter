@@ -15,7 +15,11 @@ import ToolPolicyField from './tool_policy_field';
 const catalogue: AIToolCatalogue = {
     sources: [
         {
-            key: 'builtin', source: 'builtin', source_id: '', name: 'Antimatter', namespace: 'antimatter',
+            key: 'builtin',
+            source: 'builtin',
+            source_id: '',
+            name: 'Antimatter',
+            namespace: 'antimatter',
             tools: [
                 {name: 'antimatter.search_messages', title: 'Search messages', description: '', kind: 'read', on: true, auto_run: false},
                 {name: 'antimatter.post_message', title: 'Post a message', description: '', kind: 'write', on: true, auto_run: false},

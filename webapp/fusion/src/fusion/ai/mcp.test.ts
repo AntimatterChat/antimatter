@@ -61,8 +61,15 @@ describe('fusion/ai/mcp', () => {
     test('a new server-wide server is shared with every community; a community\'s with none', () => {
         const draft = {...newMCPDraft('server'), name: ' Tracker ', slug: 'tracker', url: 'https://mcp.example.com/mcp', clientSecret: 's3cret'};
         expect(mcpRequestOf(draft, 'server')).toEqual({
-            name: 'Tracker', slug: 'tracker', scope: 'server', url: 'https://mcp.example.com/mcp', auth: 'oauth',
-            sharing: {all_teams: true, team_ids: []}, oauth_client_id: '', oauth_client_secret: 's3cret', oauth_scopes: '',
+            name: 'Tracker',
+            slug: 'tracker',
+            scope: 'server',
+            url: 'https://mcp.example.com/mcp',
+            auth: 'oauth',
+            sharing: {all_teams: true, team_ids: []},
+            oauth_client_id: '',
+            oauth_client_secret: 's3cret',
+            oauth_scopes: '',
         });
         expect(mcpRequestOf({...newMCPDraft('team1'), name: 'T', slug: 't', url: 'https://x.example'}, 'team1').sharing).toEqual({all_teams: false, team_ids: []});
     });
