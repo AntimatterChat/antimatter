@@ -31,8 +31,9 @@ import './team_settings_modal.scss';
 
 const SHOW_PANEL_ERROR_STATE_TAB_SWITCH_TIMEOUT = 3000;
 
-// The tabs the Fusion UI draws itself; the others are the classic web app's.
-export type FusionTeamSettingsTab = 'info' | 'roles' | 'members' | 'attributes' | 'teams' | 'onboarding' | 'ai' | 'autolinks';
+// The tabs the Fusion UI draws itself; the others are the classic web app's. Openers may still name the tabs merged into
+// others (MERGED_TABS).
+export type FusionTeamSettingsTab = 'info' | 'roles' | 'members' | 'attributes' | 'teams' | 'onboarding' | 'ai' | 'autolinks' | 'channels' | 'layout' | 'rules' | 'ai_connections' | 'agents';
 const FUSION_TABS = new Set<string>(['info', 'roles', 'members', 'attributes', 'teams', 'onboarding', 'ai', 'autolinks']);
 
 // The tabs that became parts of others: the channels and the layout are in General, the rules with the onboarding,
