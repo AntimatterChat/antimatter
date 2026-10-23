@@ -28,8 +28,13 @@ func TestMarketplaceReplaceablePlugin(t *testing.T) {
 	require.True(t, ch.marketplaceReplaceablePlugin("some.other.plugin", true))
 
 	// A plugin Antimatter ships its own build of: replaceable until it is installed.
-	require.True(t, ch.marketplaceReplaceablePlugin("focalboard", false))
-	require.False(t, ch.marketplaceReplaceablePlugin("focalboard", true))
+	require.True(t, ch.marketplaceReplaceablePlugin("jira", false))
+	require.False(t, ch.marketplaceReplaceablePlugin("jira", true))
+
+	// Boards and Playbooks aren't bundled any more: the Marketplace may always replace them,
+	// installed or not, even without AllowMarketplaceToReplaceAntimatterPlugins.
+	require.True(t, ch.marketplaceReplaceablePlugin("focalboard", true))
+	require.True(t, ch.marketplaceReplaceablePlugin("playbooks", true))
 
 	// A prepackaged bundle signed with the Antimatter key, installed or not.
 	ch.antimatterPrepackagedPlugins.Store("some.other.plugin", struct{}{})
@@ -40,6 +45,16 @@ func TestMarketplaceReplaceablePlugin(t *testing.T) {
 	})
 	require.True(t, ch.marketplaceReplaceablePlugin("some.other.plugin", false))
 	require.True(t, ch.marketplaceReplaceablePlugin("focalboard", true))
+}
+
+func TestAntimatterPluginIDsLeavesOutBoardsAndPlaybooks(t *testing.T) {
+	mainHelper.Parallel(t)
+
+	// Boards (focalboard) and Playbooks are no longer bundled with the server: admins install
+	// them from their own GitHub releases, so they're not treated as an Antimatter build any
+	// more, and the Marketplace's own builds of them are never left out on their account.
+	require.False(t, slices.Contains(antimatterPluginIDs, model.PluginIdFocalboard))
+	require.False(t, slices.Contains(antimatterPluginIDs, model.PluginIdPlaybooks))
 }
 
 func TestGetMarketplacePluginsLeavesOutAntimatterBuilds(t *testing.T) {
