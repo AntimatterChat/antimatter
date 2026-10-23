@@ -70,6 +70,11 @@ func TestResolvePersistentNotification(t *testing.T) {
 		mockStore.On("User").Return(&mockUser)
 		mockUser.On("GetAllProfilesInChannel", mock.Anything, mock.Anything, mock.Anything).Return(profileMap, nil)
 
+		// The members' notification settings for the channel's community (none here).
+		mockPreference := storemocks.PreferenceStore{}
+		mockStore.On("Preference").Return(&mockPreference)
+		mockPreference.On("GetCategoryAndName", model.PreferenceCategoryCommunityNotify, team.Id).Return(model.Preferences{}, nil)
+
 		mockGroup := storemocks.GroupStore{}
 		mockStore.On("Group").Return(&mockGroup)
 		mockGroup.On("GetGroups", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return([]*model.Group{}, nil)
@@ -130,6 +135,11 @@ func TestResolvePersistentNotification(t *testing.T) {
 		mockUser := storemocks.UserStore{}
 		mockStore.On("User").Return(&mockUser)
 		mockUser.On("GetAllProfilesInChannel", mock.Anything, mock.Anything, mock.Anything).Return(profileMap, nil)
+
+		// The members' notification settings for the channel's community (none here).
+		mockPreference := storemocks.PreferenceStore{}
+		mockStore.On("Preference").Return(&mockPreference)
+		mockPreference.On("GetCategoryAndName", model.PreferenceCategoryCommunityNotify, team.Id).Return(model.Preferences{}, nil)
 
 		mockGroup := storemocks.GroupStore{}
 		mockStore.On("Group").Return(&mockGroup)
@@ -220,6 +230,11 @@ func TestForEachPersistentNotificationPost(t *testing.T) {
 		mockStore.On("User").Return(&mockUser)
 		mockUser.On("GetAllProfilesInChannel", mock.Anything, mock.Anything, mock.Anything).Return(profileMap, nil)
 
+		// The members' notification settings for the channel's community (none here).
+		mockPreference := storemocks.PreferenceStore{}
+		mockStore.On("Preference").Return(&mockPreference)
+		mockPreference.On("GetCategoryAndName", model.PreferenceCategoryCommunityNotify, team.Id).Return(model.Preferences{}, nil)
+
 		mockGroup := storemocks.GroupStore{}
 		mockStore.On("Group").Return(&mockGroup)
 		mockGroup.On("GetGroups", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return([]*model.Group{}, nil)
@@ -277,6 +292,11 @@ func TestForEachPersistentNotificationPost(t *testing.T) {
 		mockUser := storemocks.UserStore{}
 		mockStore.On("User").Return(&mockUser)
 		mockUser.On("GetAllProfilesInChannel", mock.Anything, mock.Anything, mock.Anything).Return(profileMap, nil)
+
+		// The members' notification settings for the channel's community (none here).
+		mockPreference := storemocks.PreferenceStore{}
+		mockStore.On("Preference").Return(&mockPreference)
+		mockPreference.On("GetCategoryAndName", model.PreferenceCategoryCommunityNotify, team.Id).Return(model.Preferences{}, nil)
 
 		mockGroup := storemocks.GroupStore{}
 		mockStore.On("Group").Return(&mockGroup)
