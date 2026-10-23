@@ -209,7 +209,13 @@ const getNotificationUsername = (state: GlobalState, post: Post, msgProps: NewPo
         return displayUsername(userFromPost, getTeammateNameDisplaySetting(state), false);
     }
     if (msgProps.sender_name) {
-        return msgProps.sender_name;
+        // Antimatter: msgProps.sender_name comes from the server's GetSenderName, which already
+        // prefixes a username-format name with "@" (model.User.GetDisplayNameWithPrefix). The
+        // caller (getNotificationBody) always adds its own "@{username}", so this must return a
+        // bare name — otherwise a post whose sender isn't loaded in the store yet (common for a
+        // bot that rarely posts to this user, e.g. the Playbooks bot) shows "@@botname" in the
+        // desktop notification.
+        return msgProps.sender_name.replace(/^@+/, '');
     }
     return Utils.localizeMessage({id: 'channel_loader.someone', defaultMessage: 'Someone'});
 };
