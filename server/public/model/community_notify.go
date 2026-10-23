@@ -5,6 +5,7 @@ package model
 
 import (
 	"encoding/json"
+	"maps"
 	"unicode/utf8"
 )
 
@@ -77,8 +78,6 @@ func (u *User) WithCommunityNotifyProps(props StringMap) *User {
 	if copied.NotifyProps == nil {
 		copied.NotifyProps = StringMap{}
 	}
-	for key, value := range props {
-		copied.NotifyProps[key] = value
-	}
+	maps.Copy(copied.NotifyProps, props)
 	return copied
 }

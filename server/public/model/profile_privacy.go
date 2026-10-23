@@ -6,6 +6,7 @@ package model
 import (
 	"encoding/json"
 	"slices"
+	"strings"
 )
 
 // Profile privacy (Antimatter): which details of their profile someone shows to the people of each community. It's
@@ -193,11 +194,11 @@ func (u *User) HideProfileFields(hidden map[string]bool) {
 
 // ProfileFieldsKey names a set of hidden details, for etags: the same profile reads differently to different people.
 func ProfileFieldsKey(hidden map[string]bool) string {
-	key := ""
+	var key strings.Builder
 	for i, field := range ProfileFields {
 		if hidden[field] {
-			key += string(rune('a' + i))
+			key.WriteRune(rune('a' + i))
 		}
 	}
-	return key
+	return key.String()
 }
