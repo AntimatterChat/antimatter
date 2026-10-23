@@ -17,9 +17,8 @@ jest.mock('components/admin_console/custom_plugin_settings', () => ({
 // AI › AI chat app is the AI chat app's own settings page, the one it had under Plugins.
 describe('components/admin_console/ai/AIChatAppPage', () => {
     test('draws the AI chat app\'s settings page, whatever the address', () => {
-        renderWithContext(
-            <AIChatAppPage {...{match: {params: {}}, isDisabled: true} as never}/>,
-        );
+        const props = {match: {params: {}}, isDisabled: true} as unknown as React.ComponentProps<typeof AIChatAppPage>;
+        renderWithContext(<AIChatAppPage {...props}/>);
         expect(screen.getByTestId('plugin-settings')).toHaveTextContent('mattermost-ai|true');
     });
 });
