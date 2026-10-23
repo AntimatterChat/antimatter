@@ -170,8 +170,8 @@ func TestCommunityNicknameAutocomplete(t *testing.T) {
 	require.NoError(t, err)
 
 	for _, term := range []string{"zeph", "quill", "@Zephyr"} {
-		ac, _, err := otherClient.AutocompleteUsersInTeam(ctx, h.team.Id, term, 100, "")
-		require.NoError(t, err, term)
+		ac, _, acErr := otherClient.AutocompleteUsersInTeam(ctx, h.team.Id, term, 100, "")
+		require.NoError(t, acErr, term)
 		found := 0
 		for _, u := range ac.Users {
 			if u.Id == person.Id {

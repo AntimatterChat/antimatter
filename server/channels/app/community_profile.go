@@ -289,7 +289,7 @@ func nicknameMatches(nickname, term string) bool {
 	nickname = strings.ToLower(nickname)
 	words := strings.Fields(nickname)
 	found := false
-	for _, word := range strings.Fields(strings.ToLower(term)) {
+	for word := range strings.FieldsSeq(strings.ToLower(term)) {
 		word = strings.TrimPrefix(word, "@")
 		if word == "" {
 			continue
