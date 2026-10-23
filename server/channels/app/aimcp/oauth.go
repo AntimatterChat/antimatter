@@ -84,16 +84,16 @@ type ClientCredentials struct {
 func CheckEndpoint(raw string, mcpURL *url.URL) (*url.URL, error) {
 	u, err := url.Parse(raw)
 	if err != nil || u.Host == "" || u.User != nil || u.Fragment != "" {
-		return nil, fmt.Errorf("the MCP server's metadata gives an invalid address")
+		return nil, errors.New("the MCP server's metadata gives an invalid address")
 	}
 	switch u.Scheme {
 	case "https":
 	case "http":
 		if mcpURL == nil || !strings.EqualFold(u.Host, mcpURL.Host) {
-			return nil, fmt.Errorf("the MCP server's metadata gives an address without https")
+			return nil, errors.New("the MCP server's metadata gives an address without https")
 		}
 	default:
-		return nil, fmt.Errorf("the MCP server's metadata gives an invalid address")
+		return nil, errors.New("the MCP server's metadata gives an invalid address")
 	}
 	return u, nil
 }
