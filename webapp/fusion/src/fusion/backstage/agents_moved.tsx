@@ -19,12 +19,14 @@ import type {GlobalState} from 'types/store';
 // The System Console's page of the server-wide agents (with the model connections).
 export const SERVER_AGENTS_PATH = '/admin_console/ai/model_connections';
 
-// The community settings' tab of the community's own agents (its AI tab).
-export const COMMUNITY_AGENTS_TAB: FusionTeamSettingsTab = 'agents';
+// The community settings' AI tab (the community's model connections and agents), from branch community-settings-1023,
+// which merges the two tabs into one "ai" tab. Until that branch is merged the tab type doesn't know it (the modal then
+// opens on its first tab): drop the cast once it does.
+export const COMMUNITY_AI_TAB = 'ai' as string;
 
 // AgentsMoved is what's left of Integrations › Agents (/<team>/integrations/agents, where the AI chat's old agents
 // page and its "Set up an agent" also lead): agents are made in the AI settings now. A system admin is sent to the
-// System Console's AI › Connections and agents; a community's admin to the community's settings, on its agents; anyone
+// System Console's AI › Connections and agents; a community's admin to the community's settings, on its AI tab; anyone
 // else back to the integrations.
 export default function AgentsMoved({team}: {team: Team}) {
     const dispatch = useDispatch();
@@ -34,7 +36,7 @@ export default function AgentsMoved({team}: {team: Team}) {
 
     useEffect(() => {
         if (openCommunitySettings) {
-            dispatch(openTeamSettings(COMMUNITY_AGENTS_TAB));
+            dispatch(openTeamSettings(COMMUNITY_AI_TAB as FusionTeamSettingsTab));
         }
     }, [openCommunitySettings, dispatch]);
 

@@ -7,7 +7,7 @@ import React from 'react';
 import {renderWithContext} from 'tests/react_testing_utils';
 import {TestHelper} from 'utils/test_helper';
 
-import AgentsMoved, {COMMUNITY_AGENTS_TAB, SERVER_AGENTS_PATH} from './agents_moved';
+import AgentsMoved, {COMMUNITY_AI_TAB, SERVER_AGENTS_PATH} from './agents_moved';
 
 const mockOpenTeamSettings = jest.fn((tab?: string) => ({type: 'MOCK_OPEN_TEAM_SETTINGS', tab}));
 jest.mock('fusion/utils/modals', () => ({
@@ -45,10 +45,11 @@ describe('fusion/backstage/AgentsMoved', () => {
         expect(mockOpenTeamSettings).not.toHaveBeenCalled();
     });
 
-    test('a community\'s admin goes to the community, its settings open on its agents', () => {
+    test('a community\'s admin goes to the community, its settings open on the AI tab', () => {
         const history = render('system_user', 'team_user team_admin', {system_user: [], team_user: [], team_admin: ['manage_team']});
         expect(history.location.pathname).toBe('/lab');
-        expect(mockOpenTeamSettings).toHaveBeenCalledWith(COMMUNITY_AGENTS_TAB);
+        expect(COMMUNITY_AI_TAB).toBe('ai');
+        expect(mockOpenTeamSettings).toHaveBeenCalledWith('ai');
     });
 
     test('anyone else goes back to the integrations', () => {
