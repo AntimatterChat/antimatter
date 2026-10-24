@@ -15,3 +15,9 @@ export function permalinkPath(teamName: string, postId: string): string {
 // The address's state once a permalink's message is no longer in it (a few seconds after it opened): the message
 // the conversation's list stays around.
 export type PermalinkAnchorState = {permalinkAnchor?: string};
+
+// A forum topic's own address (Antimatter channel types, design §4.4): the topics view (which replaces the message
+// list in a forum channel) is left for the topic page, first post and replies, at this URL.
+export function topicPath(teamName: string, channel: Pick<Channel, 'name'>, rootId: string): string {
+    return `${channelPath(teamName, channel)}/topics/${rootId}`;
+}

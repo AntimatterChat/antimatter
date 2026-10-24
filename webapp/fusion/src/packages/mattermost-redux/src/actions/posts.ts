@@ -9,7 +9,7 @@ import type {FetchPaginatedThreadOptions} from '@mattermost/types/client4';
 import type {Group} from '@mattermost/types/groups';
 import type {PostActionIntegrationFormat} from '@mattermost/types/integration_actions';
 import {isMessageAttachmentArray} from '@mattermost/types/message_attachments';
-import type {Post, PostList, PostAcknowledgement} from '@mattermost/types/posts';
+import type {ForumTopicPatch, Post, PostList, PostAcknowledgement} from '@mattermost/types/posts';
 import type {Reaction} from '@mattermost/types/reactions';
 import type {GlobalState} from '@mattermost/types/store';
 import type {UserProfile} from '@mattermost/types/users';
@@ -392,6 +392,17 @@ export function editPost(post: Post) {
         params: [
             post,
         ],
+    });
+}
+
+// patchForumTopic (Antimatter forums) accepts or unaccepts an answer (Q&A) or sets a status (Ideas) on a topic's
+// root post; only PATCH /posts/{root_id}/topic writes props.am_accepted_answer and props.am_topic_status, bound
+// like editPost. The server enforces who may: the UI only shows the right menu items (fusion/messages/message_menu).
+export function patchForumTopic(postId: string, patch: ForumTopicPatch): ActionFuncAsync<Post> {
+    return bindClientFunc({
+        clientFunc: Client4.patchForumTopic,
+        onSuccess: PostTypes.RECEIVED_POST,
+        params: [postId, patch],
     });
 }
 
