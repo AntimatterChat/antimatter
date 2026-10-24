@@ -113,8 +113,8 @@ export default function ChannelView({resolvingPermalink = false}: Props) {
 
     // A forum (Antimatter channel types, design §4.4) has no loose messages: the topics view replaces the message
     // list and the composer. A permalink still falls through to the message list below, so a linked reply shows in
-    // context. TODO(B5 forum-fusion-imageboard): once the image board view lands, render it instead of TopicsView
-    // when the person's own fusion_forum_view preference (or the channel's own am_forum_view default) picks it.
+    // context. TopicsView itself picks between its own row list and the image board view, by the person's own
+    // fusion_forum_view preference (or the channel's own am_forum_view default).
     if (channelTypeInfo?.type === 'forum' && !anchorPostId) {
         return (
             <>

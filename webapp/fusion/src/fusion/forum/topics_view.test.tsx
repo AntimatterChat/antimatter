@@ -20,7 +20,16 @@ jest.mock('mattermost-redux/client', () => {
     return actual;
 });
 jest.mock('mattermost-redux/actions/preferences', () => ({savePreferences: jest.fn(() => ({type: 'MOCK_SAVE'}))}));
-jest.mock('./new_topic_form', () => ({__esModule: true, default: () => <div>{'New topic form'}</div>}));
+
+let newTopicFormProps: Record<string, unknown> | undefined;
+jest.mock('./new_topic_form', () => ({
+    __esModule: true,
+    default: (props: Record<string, unknown>) => {
+        newTopicFormProps = props;
+        return <div>{'New topic form'}</div>;
+    },
+}));
+jest.mock('./imageboard_view', () => ({__esModule: true, default: () => <div>{'Image board view'}</div>}));
 
 describe('fusion/forum/TopicsView', () => {
     const channel = TestHelper.getChannelMock({id: 'c1', team_id: 'team', purpose: 'Keep it on topic.'});
@@ -51,7 +60,25 @@ describe('fusion/forum/TopicsView', () => {
         ...extra,
     } as never);
 
+    // A state with the row list's own channelTypes.view default and/or the person's own fusion_forum_view
+    // preference (view_preference.ts, already unit-tested there): only what the view switch needs to pick between.
+    const stateWithView = (channelView: 'topics' | 'imageboard', ownPreference?: 'topics' | 'imageboard') => ({
+        entities: {
+            users: {currentUserId: 'me', profiles: {ada: asker}},
+            teams: {currentTeamId: 'team', teams: {team: TestHelper.getTeamMock({id: 'team', name: 'lumen-labs'})}},
+            channels: {
+                currentChannelId: 'c1',
+                channels: {c1: channel},
+                myMembers: {c1: TestHelper.getChannelMembershipMock({channel_id: 'c1', user_id: 'me', last_viewed_at: 1500}, {})},
+                channelTypes: {c1: {type: 'forum', mode: 'discussion', root_posts: 'members', view: channelView, preset: ''}},
+            },
+            threads: {threads: {}},
+            preferences: {myPreferences: ownPreference ? {'fusion_forum_view--c1': {category: 'fusion_forum_view', name: 'c1', value: ownPreference}} : {}},
+        },
+    } as never);
+
     beforeEach(() => {
+        newTopicFormProps = undefined;
         jest.mocked(Client4.getForumTopics).mockReset();
         jest.mocked(Client4.getForumTopics).mockResolvedValue({topics: [], next_cursor: ''});
     });
@@ -159,5 +186,42 @@ describe('fusion/forum/TopicsView', () => {
         renderWithContext(<TopicsView channel={channel}/>, baseState('discussion'));
 
         expect(await screen.findByText('Guidelines: Keep it on topic.')).toBeInTheDocument();
+    });
+
+    test('renders the image board when the channel\'s own default picks it', async () => {
+        renderWithContext(<TopicsView channel={channel}/>, stateWithView('imageboard'));
+
+        expect(await screen.findByText('Image board view')).toBeInTheDocument();
+        expect(screen.queryByRole('searchbox')).not.toBeInTheDocument();
+    });
+
+    test('renders the row list when the channel\'s own default picks it', async () => {
+        renderWithContext(<TopicsView channel={channel}/>, stateWithView('topics'));
+
+        expect(await screen.findByText('No topics yet.')).toBeInTheDocument();
+        expect(screen.queryByText('Image board view')).not.toBeInTheDocument();
+    });
+
+    test('the person\'s own preference overrides the channel\'s default', async () => {
+        renderWithContext(<TopicsView channel={channel}/>, stateWithView('topics', 'imageboard'));
+
+        expect(await screen.findByText('Image board view')).toBeInTheDocument();
+    });
+
+    test('the image board view leads the New topic form with the attachment area', async () => {
+        renderWithContext(<TopicsView channel={channel}/>, stateWithView('imageboard'));
+
+        await userEvent.click(await screen.findByRole('button', {name: 'New topic'}));
+
+        expect(screen.getByText('New topic form')).toBeInTheDocument();
+        expect(newTopicFormProps?.leadWithAttachment).toBe(true);
+    });
+
+    test('the topics view doesn\'t lead the New topic form with the attachment area', async () => {
+        renderWithContext(<TopicsView channel={channel}/>, stateWithView('topics'));
+
+        await userEvent.click(await screen.findByRole('button', {name: 'New topic'}));
+
+        expect(newTopicFormProps?.leadWithAttachment).toBe(false);
     });
 });

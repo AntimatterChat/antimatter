@@ -6,20 +6,17 @@ import {useIntl} from 'react-intl';
 import {useDispatch, useSelector} from 'react-redux';
 
 import type {Channel, ChannelKindMode} from '@mattermost/types/channels';
-import type {FileInfo} from '@mattermost/types/files';
-import type {ForumTopic, ForumTopicSort, Post} from '@mattermost/types/posts';
+import type {ForumTopic, ForumTopicSort} from '@mattermost/types/posts';
 
 import {getChannelTypeInfo} from 'mattermost-redux/selectors/entities/channel_types';
 import {canStartConversations} from 'mattermost-redux/selectors/entities/roles';
 import {getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
 import {getThread} from 'mattermost-redux/selectors/entities/threads';
-import {getFilePreviewUrl, getFileUrl} from 'mattermost-redux/utils/file_utils';
 
 import {FORUM_VIEW_OPTIONS} from 'fusion/channel/channel_type_presets';
 import Avatar from 'fusion/components/avatar';
 import Icon from 'fusion/components/icon';
 import {useDisplayName, useUser} from 'fusion/hooks/users';
-import {isImage} from 'fusion/messages/content/files';
 import {getThreadTitle} from 'fusion/messages/thread_title';
 import {useWhen} from 'fusion/messages/time';
 import {am} from 'fusion/utils/class_names';
@@ -29,23 +26,16 @@ import {getHistory} from 'utils/browser_history';
 
 import type {GlobalState} from 'types/store';
 
+import ImageboardView from './imageboard_view';
 import {openTopicLabel} from './labels';
 import NewTopicForm from './new_topic_form';
 import {buildTopicsQuery, defaultSortForMode, filtersForMode, sortsForMode} from './query';
 import type {TopicFilter} from './query';
 import {topicStatusLabel} from './status';
+import {firstImageFile, thumbSrc} from './topic_image';
 import {useForumTopics} from './topics_data';
 import {isTopicUnread} from './unread';
 import {getForumView, setForumView} from './view_preference';
-
-function firstImageFile(post: Post): FileInfo | undefined {
-    return post.metadata?.files?.find((f) => isImage(f, false));
-}
-
-function thumbSrc(file: FileInfo): string {
-    const ext = (file.extension || '').toLowerCase();
-    return file.has_preview_image && ext !== 'gif' ? getFilePreviewUrl(file.id) : getFileUrl(file.id);
-}
 
 function TopicRow({topic, channel, mode}: {topic: ForumTopic; channel: Channel; mode: ChannelKindMode}) {
     const {formatMessage} = useIntl();
@@ -138,8 +128,58 @@ function TopicRow({topic, channel, mode}: {topic: ForumTopic; channel: Channel; 
     );
 }
 
+// TopicsRowList is the topics view's own list (design §4.4): one row per topic, a "Load more" button paging
+// through the server's cursor. Split out of TopicsView so switching to the image board doesn't also fetch this
+// list's own page (each view fetches only what it shows, per channel_view.tsx's former TODO).
+function TopicsRowList({channel, mode, sort, filter, search}: {channel: Channel; mode: ChannelKindMode; sort: ForumTopicSort; filter: TopicFilter; search: string}) {
+    const {formatMessage} = useIntl();
+    const lastViewedAt = useSelector((state: GlobalState) => state.entities.channels.myMembers[channel.id]?.last_viewed_at || 0);
+    const threads = useSelector((state: GlobalState) => state.entities.threads.threads);
+
+    const query = useMemo(() => buildTopicsQuery(sort, filter, search), [sort, filter, search]);
+    const {topics: fetched, loading, error, hasMore, loadMore} = useForumTopics(channel.id, query);
+
+    // The server has no "unread" filter (GET /channels/{id}/topics's parameters, design §3.3): it's the one filter
+    // applied to the fetched page here, on the client.
+    const topics = filter === 'unread' ? fetched.filter((t) => isTopicUnread(t, lastViewedAt, threads[t.post.id])) : fetched;
+    const empty = !loading && topics.length === 0;
+
+    return (
+        <>
+            {error && <div className={am('note-box')}>{error}</div>}
+            {empty && !error && (
+                <div className={am('empty')}>
+                    {search.trim() ?
+                        formatMessage({id: 'fusion.forum.noResults', defaultMessage: 'No topics found for "{search}".', description: 'The forum topics view\'s empty state while searching.'}, {search: search.trim()}) :
+                        formatMessage({id: 'fusion.forum.noTopics', defaultMessage: 'No topics yet.', description: 'The forum topics view\'s empty state, no search in progress.'})}
+                </div>
+            )}
+            {topics.map((topic) => (
+                <TopicRow
+                    key={topic.post.id}
+                    topic={topic}
+                    channel={channel}
+                    mode={mode}
+                />
+            ))}
+            {hasMore && !loading && (
+                <button
+                    type='button'
+                    className={am('load-more')}
+                    onClick={loadMore}
+                >
+                    {formatMessage({id: 'fusion.forum.loadMore', defaultMessage: 'Load more topics', description: 'Button at the end of the forum topics view\'s list, loading the next page.'})}
+                </button>
+            )}
+        </>
+    );
+}
+
 // TopicsView replaces the message list in a forum channel (design §4.4): no bottom composer, its own search and
-// sort/filter bar, and the New topic form opening at the top of the list.
+// sort/filter bar, and the New topic form opening at the top of the list. The view switch (design §4.4, "in the
+// forum header, for every mode") picks which list shows below the bar: this one, row by row, or the image board
+// (fusion/forum/imageboard_view.tsx) — the sort, filter chips and search only apply to the row list, so they're
+// hidden (not shown-but-inert) once the image board is picked, which always fetches its own fixed, bump-order page.
 export default function TopicsView({channel}: {channel: Channel}) {
     const {formatMessage} = useIntl();
     const dispatch = useDispatch();
@@ -152,19 +192,9 @@ export default function TopicsView({channel}: {channel: Channel}) {
     const [filter, setFilter] = useState<TopicFilter>('all');
     const [search, setSearch] = useState('');
     const [composing, setComposing] = useState(false);
-    const lastViewedAt = useSelector((state: GlobalState) => state.entities.channels.myMembers[channel.id]?.last_viewed_at || 0);
-    const threads = useSelector((state: GlobalState) => state.entities.threads.threads);
-
-    const query = useMemo(() => buildTopicsQuery(sort, filter, search), [sort, filter, search]);
-    const {topics: fetched, loading, error, hasMore, loadMore} = useForumTopics(channel.id, query);
-
-    // The server has no "unread" filter (GET /channels/{id}/topics's parameters, design §3.3): it's the one filter
-    // applied to the fetched page here, on the client.
-    const topics = filter === 'unread' ? fetched.filter((t) => isTopicUnread(t, lastViewedAt, threads[t.post.id])) : fetched;
 
     const sorts = sortsForMode(mode);
     const filters = filtersForMode(mode);
-    const empty = !loading && topics.length === 0;
 
     return (
         <div className={am('forum-view')}>
@@ -193,14 +223,16 @@ export default function TopicsView({channel}: {channel: Channel}) {
                         {formatMessage(FORUM_VIEW_OPTIONS.find((o) => o.id === 'imageboard')!.label)}
                     </button>
                 </div>
-                <input
-                    type='search'
-                    className={am('forum-search')}
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    placeholder={formatMessage({id: 'fusion.forum.searchPlaceholder', defaultMessage: 'Search topics…', description: 'The forum topics view\'s own search box.'})}
-                    aria-label={formatMessage({id: 'fusion.forum.searchPlaceholder', defaultMessage: 'Search topics…', description: 'The forum topics view\'s own search box.'})}
-                />
+                {view === 'topics' && (
+                    <input
+                        type='search'
+                        className={am('forum-search')}
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        placeholder={formatMessage({id: 'fusion.forum.searchPlaceholder', defaultMessage: 'Search topics…', description: 'The forum topics view\'s own search box.'})}
+                        aria-label={formatMessage({id: 'fusion.forum.searchPlaceholder', defaultMessage: 'Search topics…', description: 'The forum topics view\'s own search box.'})}
+                    />
+                )}
                 {canOpen && (
                     <button
                         type='button'
@@ -216,75 +248,69 @@ export default function TopicsView({channel}: {channel: Channel}) {
                     {formatMessage({id: 'fusion.forum.guidelines', defaultMessage: 'Guidelines: {purpose}', description: 'The forum\'s own guidelines, shown from the channel\'s purpose.'}, {purpose: channel.purpose})}
                 </div>
             )}
-            <div className={am('forum-filters')}>
-                <div
-                    className={am('chips')}
-                    role='radiogroup'
-                    aria-label={formatMessage({id: 'fusion.forum.filterLabel', defaultMessage: 'Filter topics', description: 'The forum topics view\'s filter chips (All, Unread, Mine, Following, and the mode\'s own).'})}
-                >
-                    {filters.map((f) => (
-                        <button
-                            key={f.id}
-                            type='button'
-                            role='radio'
-                            aria-checked={filter === f.id}
-                            className={am('chip-btn', {on: filter === f.id})}
-                            onClick={() => setFilter(f.id)}
-                        >
-                            {formatMessage(f.label)}
-                        </button>
-                    ))}
-                </div>
-                <label className={am('forum-sort')}>
-                    <span>{formatMessage({id: 'fusion.forum.sortLabel', defaultMessage: 'Sort', description: 'Label of the forum topics view\'s sort dropdown.'})}</span>
-                    <select
-                        value={sort}
-                        onChange={(e) => setSort(e.target.value as ForumTopicSort)}
+            {view === 'topics' && (
+                <div className={am('forum-filters')}>
+                    <div
+                        className={am('chips')}
+                        role='radiogroup'
+                        aria-label={formatMessage({id: 'fusion.forum.filterLabel', defaultMessage: 'Filter topics', description: 'The forum topics view\'s filter chips (All, Unread, Mine, Following, and the mode\'s own).'})}
                     >
-                        {sorts.map((s) => (
-                            <option
-                                key={s.id}
-                                value={s.id}
+                        {filters.map((f) => (
+                            <button
+                                key={f.id}
+                                type='button'
+                                role='radio'
+                                aria-checked={filter === f.id}
+                                className={am('chip-btn', {on: filter === f.id})}
+                                onClick={() => setFilter(f.id)}
                             >
-                                {formatMessage(s.label)}
-                            </option>
+                                {formatMessage(f.label)}
+                            </button>
                         ))}
-                    </select>
-                </label>
-            </div>
+                    </div>
+                    <label className={am('forum-sort')}>
+                        <span>{formatMessage({id: 'fusion.forum.sortLabel', defaultMessage: 'Sort', description: 'Label of the forum topics view\'s sort dropdown.'})}</span>
+                        <select
+                            value={sort}
+                            onChange={(e) => setSort(e.target.value as ForumTopicSort)}
+                        >
+                            {sorts.map((s) => (
+                                <option
+                                    key={s.id}
+                                    value={s.id}
+                                >
+                                    {formatMessage(s.label)}
+                                </option>
+                            ))}
+                        </select>
+                    </label>
+                </div>
+            )}
             <div
                 className={am('topic-list')}
-                role='list'
+                role={view === 'topics' ? 'list' : undefined}
             >
                 {composing && (
                     <NewTopicForm
                         channel={channel}
                         mode={mode}
+                        leadWithAttachment={view === 'imageboard'}
                         onClose={() => setComposing(false)}
                     />
                 )}
-                {error && <div className={am('note-box')}>{error}</div>}
-                {empty && !error && (
-                    <div className={am('empty')}>
-                        {search.trim() ? formatMessage({id: 'fusion.forum.noResults', defaultMessage: 'No topics found for "{search}".', description: 'The forum topics view\'s empty state while searching.'}, {search: search.trim()}) : formatMessage({id: 'fusion.forum.noTopics', defaultMessage: 'No topics yet.', description: 'The forum topics view\'s empty state, no search in progress.'})}
-                    </div>
-                )}
-                {topics.map((topic) => (
-                    <TopicRow
-                        key={topic.post.id}
-                        topic={topic}
+                {view === 'imageboard' ? (
+                    <ImageboardView
                         channel={channel}
                         mode={mode}
                     />
-                ))}
-                {hasMore && !loading && (
-                    <button
-                        type='button'
-                        className={am('load-more')}
-                        onClick={loadMore}
-                    >
-                        {formatMessage({id: 'fusion.forum.loadMore', defaultMessage: 'Load more topics', description: 'Button at the end of the forum topics view\'s list, loading the next page.'})}
-                    </button>
+                ) : (
+                    <TopicsRowList
+                        channel={channel}
+                        mode={mode}
+                        sort={sort}
+                        filter={filter}
+                        search={search}
+                    />
                 )}
             </div>
         </div>
