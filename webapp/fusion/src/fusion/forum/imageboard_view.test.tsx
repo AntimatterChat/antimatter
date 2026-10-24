@@ -55,7 +55,11 @@ describe('fusion/forum/ImageboardView', () => {
             ],
             next_cursor: '',
         });
-        const {container} = renderWithContext(<ImageboardView channel={channel} mode='discussion'/>, baseState);
+        const {container} = renderWithContext(
+            <ImageboardView
+                channel={channel}
+                mode='discussion'
+            />, baseState);
 
         await screen.findByRole('button', {name: 'Beam with a picture'});
         const cards = container.querySelectorAll('.am-board-card');
@@ -68,7 +72,11 @@ describe('fusion/forum/ImageboardView', () => {
     });
 
     test('fetches a fixed page of 10, the latest 3 replies, in bump order', async () => {
-        renderWithContext(<ImageboardView channel={channel} mode='discussion'/>, baseState);
+        renderWithContext(
+            <ImageboardView
+                channel={channel}
+                mode='discussion'
+            />, baseState);
 
         await waitFor(() => expect(Client4.getForumTopics).toHaveBeenCalledWith('c1', {sort: 'activity', replies: 3, per_page: 10}));
     });
@@ -82,7 +90,11 @@ describe('fusion/forum/ImageboardView', () => {
             })],
             next_cursor: '',
         });
-        renderWithContext(<ImageboardView channel={channel} mode='discussion'/>, baseState);
+        renderWithContext(
+            <ImageboardView
+                channel={channel}
+                mode='discussion'
+            />, baseState);
 
         expect(await screen.findByText('34 replies, 2 images')).toBeInTheDocument();
         expect(screen.getByRole('button', {name: 'Open topic'})).toBeInTheDocument();
@@ -98,7 +110,11 @@ describe('fusion/forum/ImageboardView', () => {
             })],
             next_cursor: '',
         });
-        renderWithContext(<ImageboardView channel={channel} mode='discussion'/>, baseState);
+        renderWithContext(
+            <ImageboardView
+                channel={channel}
+                mode='discussion'
+            />, baseState);
 
         expect(await screen.findByText('first reply text')).toBeInTheDocument();
         expect(screen.getByText('second reply text')).toBeInTheDocument();
@@ -106,7 +122,11 @@ describe('fusion/forum/ImageboardView', () => {
 
     test('shows the vote button in qa and ideas modes, not discussion (the author\'s own vote not counting is VoteButton\'s own rule)', async () => {
         jest.mocked(Client4.getForumTopics).mockResolvedValue({topics: [topic()], next_cursor: ''});
-        const {container} = renderWithContext(<ImageboardView channel={channel} mode='qa'/>, baseState);
+        const {container} = renderWithContext(
+            <ImageboardView
+                channel={channel}
+                mode='qa'
+            />, baseState);
 
         await screen.findByRole('button', {name: 'How the beam looks today'});
 
@@ -115,7 +135,11 @@ describe('fusion/forum/ImageboardView', () => {
 
     test('doesn\'t show the vote button in discussion mode', async () => {
         jest.mocked(Client4.getForumTopics).mockResolvedValue({topics: [topic()], next_cursor: ''});
-        const {container} = renderWithContext(<ImageboardView channel={channel} mode='discussion'/>, baseState);
+        const {container} = renderWithContext(
+            <ImageboardView
+                channel={channel}
+                mode='discussion'
+            />, baseState);
 
         await screen.findByRole('button', {name: 'How the beam looks today'});
 
@@ -124,7 +148,11 @@ describe('fusion/forum/ImageboardView', () => {
 
     test('pages on scroll, with the cursor, once near the bottom', async () => {
         jest.mocked(Client4.getForumTopics).mockResolvedValueOnce({topics: [topic()], next_cursor: 'cursor-2'});
-        const {container} = renderWithContext(<ImageboardView channel={channel} mode='discussion'/>, baseState);
+        const {container} = renderWithContext(
+            <ImageboardView
+                channel={channel}
+                mode='discussion'
+            />, baseState);
 
         await waitFor(() => expect(Client4.getForumTopics).toHaveBeenCalledTimes(1));
 
@@ -140,7 +168,11 @@ describe('fusion/forum/ImageboardView', () => {
 
     test('doesn\'t page on scroll once there\'s no next cursor', async () => {
         jest.mocked(Client4.getForumTopics).mockResolvedValueOnce({topics: [topic()], next_cursor: ''});
-        const {container} = renderWithContext(<ImageboardView channel={channel} mode='discussion'/>, baseState);
+        const {container} = renderWithContext(
+            <ImageboardView
+                channel={channel}
+                mode='discussion'
+            />, baseState);
 
         await waitFor(() => expect(Client4.getForumTopics).toHaveBeenCalledTimes(1));
 
@@ -155,7 +187,11 @@ describe('fusion/forum/ImageboardView', () => {
     });
 
     test('empty state: no topics', async () => {
-        renderWithContext(<ImageboardView channel={channel} mode='discussion'/>, baseState);
+        renderWithContext(
+            <ImageboardView
+                channel={channel}
+                mode='discussion'
+            />, baseState);
 
         expect(await screen.findByText('No topics yet.')).toBeInTheDocument();
     });
