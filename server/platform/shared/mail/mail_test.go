@@ -809,6 +809,22 @@ func TestSendMailMIMEStructure(t *testing.T) {
 		assert.Contains(t, data, `filename="invite.ics"`, "the attachment must keep its file name")
 		assert.Contains(t, data, base64.StdEncoding.EncodeToString(m.attachmentData), "the attachment's data must be sent (base64-encoded)")
 	})
+
+	t.Run("an attachment content type with a line break is refused, not written into the headers", func(t *testing.T) {
+		mocm := &mockMailer{}
+		m := mailData{
+			mimeTo:                "test@example.com",
+			smtpTo:                "test@example.com",
+			from:                  mail.Address{Address: "from@example.com"},
+			htmlBody:              "<p>You're invited</p>",
+			attachmentName:        "invite.ics",
+			attachmentContentType: "text/calendar\r\nBcc: victim@example.com",
+			attachmentData:        []byte("BEGIN:VCALENDAR\r\nEND:VCALENDAR\r\n"),
+		}
+		err := sendMail(mocm, m, time.Now(), getConfig())
+		require.Error(t, err)
+		assert.NotContains(t, string(mocm.data), "victim@example.com")
+	})
 }
 
 // TestSendMailDateHeader verifies a Date header is present and RFC 5322 shaped

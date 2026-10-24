@@ -13,6 +13,7 @@ import (
 	"net/mail"
 	"net/smtp"
 	"slices"
+	"strings"
 	"time"
 
 	"github.com/jaytaylor/html2text"
@@ -415,6 +416,10 @@ func sendMail(c smtpClient, mail mailData, date time.Time, config *SMTPConfig) e
 	}
 
 	if mail.attachmentName != "" {
+		// go-mail writes the content type into the part's headers verbatim.
+		if strings.ContainsAny(mail.attachmentContentType, "\r\n") {
+			return errors.New("invalid attachment content type")
+		}
 		opts := []gomail.FileOption{}
 		if mail.attachmentContentType != "" {
 			opts = append(opts, gomail.WithFileContentType(gomail.ContentType(mail.attachmentContentType)))
