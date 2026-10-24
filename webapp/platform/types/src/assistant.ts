@@ -25,13 +25,15 @@ export type AssistantEntityMatch = {
     text: string;
 };
 
-// Why a card appeared: the pattern and the words that matched (rules), or the model's probabilities (model).
+// Why a card appeared: the pattern and the words that matched (rules), or the model's probabilities (model); app
+// is the app whose post it came from (its ID), for a card from a trusted app's post.
 export type AssistantWhy = {
     engine: AssistantEngine;
     pattern?: string;
     words?: string[];
     entities?: AssistantEntityMatch[];
     probabilities?: Record<string, number>;
+    app?: string;
 };
 
 // An action's offer as the person sees it.
@@ -149,6 +151,8 @@ export type AssistantSettings = {
     Patterns: AssistantPattern[] | null;
     SeedEntities: AssistantEntity[] | null;
     DictionarySources: AssistantDictionarySource[] | null;
+    TriggeringApps: string[];
+    AppWindowsPerChannelHour: number;
 };
 
 export type AssistantPattern = {

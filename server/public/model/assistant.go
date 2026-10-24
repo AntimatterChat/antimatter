@@ -62,6 +62,13 @@ const (
 	AssistantMaxSeedEntities   = 2000
 	AssistantMaxDictionaryKind = 32
 	AssistantEntityMaxRunes    = 80
+
+	// AssistantDefaultTriggeringApp is the app whose posts start the assistant unless the settings say otherwise:
+	// the Alertmanager app's alerts.
+	AssistantDefaultTriggeringApp = "com.antimatterchat.alertmanager"
+	AssistantMaxTriggeringApps    = 50
+	// AssistantAppTextMaxRunes is the most the engines read of an app's post (its text and its attachments').
+	AssistantAppTextMaxRunes = 2000
 )
 
 // AssistantSettings are the assistant's server settings (Config.AssistantSettings). It's off until a system admin turns
@@ -94,6 +101,11 @@ type AssistantSettings struct {
 	Patterns          json.RawMessage `access:"integrations_integration_management"`
 	SeedEntities      json.RawMessage `access:"integrations_integration_management"`
 	DictionarySources json.RawMessage `access:"integrations_integration_management"`
+	// TriggeringApps are the apps (by ID) whose own posts start the assistant like a person's: a post by a bot the
+	// app owns, while the app runs. AppWindowsPerChannelHour is the most windows such posts start in a channel in an
+	// hour.
+	TriggeringApps           []string `access:"integrations_integration_management"`
+	AppWindowsPerChannelHour *int     `access:"integrations_integration_management"`
 }
 
 func (s *AssistantSettings) SetDefaults() {
@@ -133,6 +145,12 @@ func (s *AssistantSettings) SetDefaults() {
 	if s.AllowedTools == nil {
 		s.AllowedTools = []string{"*"}
 	}
+	if s.TriggeringApps == nil {
+		s.TriggeringApps = []string{AssistantDefaultTriggeringApp}
+	}
+	if s.AppWindowsPerChannelHour == nil {
+		s.AppWindowsPerChannelHour = NewPointer(30)
+	}
 }
 
 func (s *AssistantSettings) isValid() *AppError {
@@ -152,12 +170,13 @@ func (s *AssistantSettings) isValid() *AppError {
 		value    *int
 		min, max int
 	}{
-		"ThresholdPercent":        {s.ThresholdPercent, 1, 100},
-		"DecisionsPerUserHour":    {s.DecisionsPerUserHour, 0, 10000},
-		"DecisionsPerChannelHour": {s.DecisionsPerChannelHour, 0, 10000},
-		"CardsPerUserHour":        {s.CardsPerUserHour, 0, 10000},
-		"DebounceSeconds":         {s.DebounceSeconds, 0, 60},
-		"OfferTimeoutSeconds":     {s.OfferTimeoutSeconds, 10, 3600},
+		"ThresholdPercent":         {s.ThresholdPercent, 1, 100},
+		"DecisionsPerUserHour":     {s.DecisionsPerUserHour, 0, 10000},
+		"DecisionsPerChannelHour":  {s.DecisionsPerChannelHour, 0, 10000},
+		"CardsPerUserHour":         {s.CardsPerUserHour, 0, 10000},
+		"DebounceSeconds":          {s.DebounceSeconds, 0, 60},
+		"OfferTimeoutSeconds":      {s.OfferTimeoutSeconds, 10, 3600},
+		"AppWindowsPerChannelHour": {s.AppWindowsPerChannelHour, 0, 10000},
 	} {
 		if bounds.value != nil && (*bounds.value < bounds.min || *bounds.value > bounds.max) {
 			return invalid(field)
@@ -169,6 +188,14 @@ func (s *AssistantSettings) isValid() *AppError {
 	for _, pattern := range s.AllowedTools {
 		if pattern != "*" && !IsValidAIAgentToolName(pattern) {
 			return invalid("AllowedTools")
+		}
+	}
+	if len(s.TriggeringApps) > AssistantMaxTriggeringApps {
+		return invalid("TriggeringApps")
+	}
+	for i, appID := range s.TriggeringApps {
+		if !IsValidPluginId(appID) || slices.Contains(s.TriggeringApps[:i], appID) {
+			return invalid("TriggeringApps")
 		}
 	}
 	if _, appErr := ParseAssistantPatterns(s.Patterns); appErr != nil {
@@ -422,6 +449,8 @@ type AssistantWhy struct {
 	Words         []string               `json:"words,omitempty"`
 	Entities      []AssistantEntityMatch `json:"entities,omitempty"`
 	Probabilities map[string]float64     `json:"probabilities,omitempty"`
+	// App is the app whose post the card came from (its ID), when it came from an app's post (TriggeringApps).
+	App string `json:"app,omitempty"`
 }
 
 // AssistantCandidate is what an engine proposes: a tool call, with where it came from and why.

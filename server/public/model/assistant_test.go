@@ -4,6 +4,7 @@
 package model
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -41,6 +42,63 @@ func TestAssistantCommunitySettingsIsValid(t *testing.T) {
 	assert.Nil(t, (&AssistantCommunitySettings{Enabled: NewPointer(false), Engine: AssistantEngineModel, ConnectionId: NewId()}).IsValid())
 	assert.NotNil(t, (&AssistantCommunitySettings{Engine: "chat"}).IsValid())
 	assert.NotNil(t, (&AssistantCommunitySettings{ConnectionId: "x"}).IsValid())
+}
+
+// The apps whose posts start the assistant: the Alertmanager app by default, a list of app IDs (none twice, at most
+// AssistantMaxTriggeringApps), and the hourly cap of their windows per channel.
+func TestAssistantSettingsTriggeringApps(t *testing.T) {
+	defaults := func() *AssistantSettings {
+		s := &AssistantSettings{}
+		s.SetDefaults()
+		return s
+	}
+	s := defaults()
+	assert.Equal(t, []string{"com.antimatterchat.alertmanager"}, s.TriggeringApps)
+	assert.Equal(t, 30, *s.AppWindowsPerChannelHour)
+	assert.Nil(t, s.isValid())
+
+	t.Run("an empty list stays empty", func(t *testing.T) {
+		s := &AssistantSettings{TriggeringApps: []string{}}
+		s.SetDefaults()
+		assert.Empty(t, s.TriggeringApps, "an admin who turned every app off keeps it so")
+		assert.Nil(t, s.isValid())
+	})
+
+	many := make([]string, AssistantMaxTriggeringApps+1)
+	for i := range many {
+		many[i] = "com.example.app" + strings.Repeat("x", i)
+	}
+	for name, tc := range map[string]struct {
+		apps  []string
+		cap   int
+		valid bool
+	}{
+		"two apps":                {[]string{"com.antimatterchat.alertmanager", "com.example.uptime"}, 30, true},
+		"no cap: no app windows":  {[]string{"com.antimatterchat.alertmanager"}, 0, true},
+		"the most apps":           {many[:AssistantMaxTriggeringApps], 30, true},
+		"too many apps":           {many, 30, false},
+		"an app twice":            {[]string{"com.example.uptime", "com.example.uptime"}, 30, false},
+		"an empty ID":             {[]string{""}, 30, false},
+		"an ID with a space":      {[]string{"com.example uptime"}, 30, false},
+		"an ID with a colon":      {[]string{"antimatter:assistant"}, 30, false},
+		"an ID too short":         {[]string{"ab"}, 30, false},
+		"a negative cap":          {[]string{"com.example.uptime"}, -1, false},
+		"a cap past ten thousand": {[]string{"com.example.uptime"}, 10001, false},
+	} {
+		t.Run(name, func(t *testing.T) {
+			s := defaults()
+			s.TriggeringApps = tc.apps
+			s.AppWindowsPerChannelHour = NewPointer(tc.cap)
+			appErr := s.isValid()
+			if tc.valid {
+				assert.Nil(t, appErr)
+				return
+			}
+			if assert.NotNil(t, appErr) {
+				assert.Equal(t, "model.config.is_valid.assistant.app_error", appErr.Id)
+			}
+		})
+	}
 }
 
 // A pattern's slots become groups that capture the entity's index; plain regular-expression braces stay.

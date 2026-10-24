@@ -755,7 +755,9 @@
         "AllowedTools": null,
         "Patterns": null,
         "SeedEntities": null,
-        "DictionarySources": null
+        "DictionarySources": null,
+        "TriggeringApps": null,
+        "AppWindowsPerChannelHour": null
     },
     "IPFilteringSettings": {
         "Rules": null
