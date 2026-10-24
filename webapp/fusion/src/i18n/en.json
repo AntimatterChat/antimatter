@@ -26139,6 +26139,146 @@
     "defaultMessage": "Show",
     "description": "Link after a folded message of someone you ignore or block, which shows the message."
   },
+  "fusion.forum.allTopics": {
+    "defaultMessage": "All topics",
+    "description": "Link back from a topic page to the forum's topics view."
+  },
+  "fusion.forum.answered": {
+    "defaultMessage": "Answered",
+    "description": "A Q&A topic row: it has an accepted answer."
+  },
+  "fusion.forum.askQuestion": {
+    "defaultMessage": "Ask a question",
+    "description": "Button that opens the New topic form in a Q&A forum."
+  },
+  "fusion.forum.bodyPlaceholder": {
+    "defaultMessage": "Write the first post…",
+    "description": "Placeholder of the New topic form's message box."
+  },
+  "fusion.forum.cancelTopic": {
+    "defaultMessage": "Cancel",
+    "description": "Closes the New topic form without posting."
+  },
+  "fusion.forum.filterAll": {
+    "defaultMessage": "All",
+    "description": "Topic list filter: every topic."
+  },
+  "fusion.forum.filterFollowing": {
+    "defaultMessage": "Following",
+    "description": "Topic list filter: topics I follow."
+  },
+  "fusion.forum.filterLabel": {
+    "defaultMessage": "Filter topics",
+    "description": "The forum topics view's filter chips (All, Unread, Mine, Following, and the mode's own)."
+  },
+  "fusion.forum.filterMine": {
+    "defaultMessage": "Mine",
+    "description": "Topic list filter: topics I opened."
+  },
+  "fusion.forum.filterUnanswered": {
+    "defaultMessage": "Unanswered",
+    "description": "Topic list filter, Q&A forums: questions without an accepted answer."
+  },
+  "fusion.forum.filterUnread": {
+    "defaultMessage": "Unread",
+    "description": "Topic list filter: topics with something new."
+  },
+  "fusion.forum.guidelines": {
+    "defaultMessage": "Guidelines: {purpose}",
+    "description": "The forum's own guidelines, shown from the channel's purpose."
+  },
+  "fusion.forum.ideaPlaceholder": {
+    "defaultMessage": "What's your idea?",
+    "description": "Placeholder of the title field of the New topic form in an Ideas forum."
+  },
+  "fusion.forum.loadMore": {
+    "defaultMessage": "Load more topics",
+    "description": "Button at the end of the forum topics view's list, loading the next page."
+  },
+  "fusion.forum.newTopic": {
+    "defaultMessage": "New topic",
+    "description": "Button that opens the New topic form in a discussion or announcement forum."
+  },
+  "fusion.forum.noResults": {
+    "defaultMessage": "No topics found for \"{search}\".",
+    "description": "The forum topics view's empty state while searching."
+  },
+  "fusion.forum.noTopics": {
+    "defaultMessage": "No topics yet.",
+    "description": "The forum topics view's empty state, no search in progress."
+  },
+  "fusion.forum.questionPlaceholder": {
+    "defaultMessage": "What do you want to ask?",
+    "description": "Placeholder of the title field of the New topic form in a Q&A forum."
+  },
+  "fusion.forum.replyCount": {
+    "defaultMessage": "{count, plural, one {# reply} other {# replies}}",
+    "description": "A forum topic row: how many replies it has."
+  },
+  "fusion.forum.searchPlaceholder": {
+    "defaultMessage": "Search topics…",
+    "description": "The forum topics view's own search box."
+  },
+  "fusion.forum.sortActivity": {
+    "defaultMessage": "Latest activity",
+    "description": "Topic list sort: topics with the newest reply, or newest if no reply, first."
+  },
+  "fusion.forum.sortLabel": {
+    "defaultMessage": "Sort",
+    "description": "Label of the forum topics view's sort dropdown."
+  },
+  "fusion.forum.sortNewest": {
+    "defaultMessage": "Newest",
+    "description": "Topic list sort: newest topics first."
+  },
+  "fusion.forum.sortStatus": {
+    "defaultMessage": "Status",
+    "description": "Topic list sort, Ideas forums: grouped by status (in progress, planned, open, done, declined)."
+  },
+  "fusion.forum.sortUnanswered": {
+    "defaultMessage": "Unanswered first",
+    "description": "Topic list sort, Q&A forums: questions without an accepted answer first."
+  },
+  "fusion.forum.sortVotes": {
+    "defaultMessage": "Most voted",
+    "description": "Topic list sort: most 👍 votes first."
+  },
+  "fusion.forum.suggestIdea": {
+    "defaultMessage": "Suggest an idea",
+    "description": "Button that opens the New topic form in an Ideas forum."
+  },
+  "fusion.forum.titleLabel": {
+    "defaultMessage": "Title",
+    "description": "Label of the New topic form's title field."
+  },
+  "fusion.forum.titlePlaceholder": {
+    "defaultMessage": "Give your topic a title",
+    "description": "Placeholder of the title field of the New topic form in a discussion or announcement forum."
+  },
+  "fusion.forum.titleRequired": {
+    "defaultMessage": "A topic needs a title.",
+    "description": "The New topic form's title field, inline validation shown when it's left empty and Ctrl/Cmd+Enter is pressed there."
+  },
+  "fusion.forum.unansweredMark": {
+    "defaultMessage": "Unanswered",
+    "description": "A Q&A topic row: it has no accepted answer yet."
+  },
+  "fusion.forum.viewSwitch": {
+    "defaultMessage": "Forum view",
+    "description": "The Topics/Image board view switch in a forum channel."
+  },
+  "fusion.forum.vote": {
+    "defaultMessage": "Vote for this",
+    "description": "Accessible label and tooltip of a forum topic's or reply's 👍 vote button, before you've voted."
+  },
+  "fusion.forum.voteCount": {
+    "defaultMessage": "{count} votes",
+    "description": "A forum topic row: its 👍 vote count."
+  },
+  "fusion.forum.voteRemove": {
+    "defaultMessage": "Remove your vote",
+    "description": "Accessible label and tooltip of a forum topic's or reply's 👍 vote button, once you've voted."
+  },
   "fusion.group.addPeople": {
     "defaultMessage": "Add people…",
     "description": ""
@@ -27143,6 +27283,10 @@
     "defaultMessage": "Sent to {name}",
     "description": "Short notice after someone picks an integration in a message's More actions: the message was sent to it. {name} is the integration's title."
   },
+  "fusion.messageMenu.accept": {
+    "defaultMessage": "Accept answer",
+    "description": "A Q&A forum reply's ⋯ menu, shown to the asker and moderators: marks it as the accepted answer."
+  },
   "fusion.messageMenu.copy": {
     "defaultMessage": "Copy text",
     "description": ""
@@ -27263,6 +27407,14 @@
     "defaultMessage": "Save",
     "description": ""
   },
+  "fusion.messageMenu.setStatus": {
+    "defaultMessage": "Set status",
+    "description": "An Ideas forum topic's ⋯ menu, moderators only: opens the list of statuses."
+  },
+  "fusion.messageMenu.setStatusMenuLabel": {
+    "defaultMessage": "Set this idea's status",
+    "description": "Accessible label of the Ideas forum's Set status submenu."
+  },
   "fusion.messageMenu.stopReading": {
     "defaultMessage": "Stop reading",
     "description": ""
@@ -27270,6 +27422,10 @@
   "fusion.messageMenu.toNotes": {
     "defaultMessage": "Save to notes",
     "description": ""
+  },
+  "fusion.messageMenu.unaccept": {
+    "defaultMessage": "Unaccept answer",
+    "description": "A Q&A forum reply's ⋯ menu: clears it as the question's accepted answer."
   },
   "fusion.messageMenu.unfollow": {
     "defaultMessage": "Unfollow thread",
@@ -30867,6 +31023,10 @@
     "defaultMessage": "Time out {name}",
     "description": ""
   },
+  "fusion.toast.acceptFailed": {
+    "defaultMessage": "The answer couldn't be accepted",
+    "description": "Toast shown when accepting a Q&A answer fails."
+  },
   "fusion.toast.addedCount": {
     "defaultMessage": "{count, plural, one {Added {names} to {where}} other {Added {names} to {where}}}",
     "description": ""
@@ -31019,6 +31179,10 @@
     "defaultMessage": "Status set to {status}",
     "description": ""
   },
+  "fusion.toast.statusFailed": {
+    "defaultMessage": "The status couldn't be set",
+    "description": "Toast shown when setting an Ideas topic's status fails."
+  },
   "fusion.toast.teamBadge": {
     "defaultMessage": "Team badge: {tag}",
     "description": ""
@@ -31082,6 +31246,26 @@
   "fusion.topic.renameTitle": {
     "defaultMessage": "Rename the topic",
     "description": "Title of the dialog that renames a topic (Antimatter's named conversation inside a channel)."
+  },
+  "fusion.topicStatus.declined": {
+    "defaultMessage": "Declined",
+    "description": "An Ideas topic's status: not going ahead."
+  },
+  "fusion.topicStatus.done": {
+    "defaultMessage": "Done",
+    "description": "An Ideas topic's status: shipped."
+  },
+  "fusion.topicStatus.inProgress": {
+    "defaultMessage": "In progress",
+    "description": "An Ideas topic's status: being worked on."
+  },
+  "fusion.topicStatus.open": {
+    "defaultMessage": "Open",
+    "description": "An Ideas topic's status: not yet looked at (the default, missing on the server)."
+  },
+  "fusion.topicStatus.planned": {
+    "defaultMessage": "Planned",
+    "description": "An Ideas topic's status: picked, not started yet."
   },
   "fusion.translation.original": {
     "defaultMessage": "Original message",
