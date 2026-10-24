@@ -229,7 +229,7 @@ export default function TopicsView({channel}: {channel: Channel}) {
                             type='button'
                             role='radio'
                             aria-checked={filter === f.id}
-                            className={am('chip', {on: filter === f.id})}
+                            className={am('chip-btn', {on: filter === f.id})}
                             onClick={() => setFilter(f.id)}
                         >
                             {formatMessage(f.label)}

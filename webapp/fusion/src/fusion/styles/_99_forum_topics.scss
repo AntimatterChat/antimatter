@@ -1,0 +1,202 @@
+@use 'breakpoints' as *;
+
+// Antimatter forums: the topics view (fusion/forum/topics_view.tsx), the topic page (fusion/forum/topic_page.tsx)
+// and the New topic form (fusion/forum/new_topic_form.tsx) — design §4.4. Light and dark themes come from the
+// shared tokens (_00_tokens.scss); nothing here is colour-coded by theme on its own.
+
+:is(.am-app, .am-layer) .am-forum-view { display: flex; flex-direction: column; min-height: 0; flex: 1; overflow-y: auto; }
+
+:is(.am-app, .am-layer) .am-forum-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--am-line);
+}
+:is(.am-app, .am-layer) .am-forum-search {
+  flex: 1;
+  min-width: 140px;
+  height: 34px;
+  padding: 0 12px;
+  border-radius: 8px;
+  border: 1px solid var(--am-line);
+  background: var(--am-side);
+  color: var(--am-text);
+  outline: none;
+}
+:is(.am-app, .am-layer) .am-forum-search:focus { border-color: var(--am-matter); }
+
+:is(.am-app, .am-layer) .am-forum-guidelines {
+  padding: 8px 16px;
+  font-size: 13px;
+  color: var(--am-muted);
+  border-bottom: 1px solid var(--am-line);
+  background: var(--am-side);
+}
+
+:is(.am-app, .am-layer) .am-forum-filters {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--am-line);
+}
+:is(.am-app, .am-layer) .am-forum-filters .am-chips { display: flex; gap: 6px; flex-wrap: wrap; }
+:is(.am-app, .am-layer) .am-forum-sort { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--am-muted); flex: none; }
+:is(.am-app, .am-layer) .am-forum-sort select {
+  height: 30px;
+  padding: 0 8px;
+  border-radius: 7px;
+  border: 1px solid var(--am-line);
+  background: var(--am-side);
+  color: var(--am-text);
+}
+
+:is(.am-app, .am-layer) .am-topic-list { display: flex; flex-direction: column; min-height: 0; }
+
+:is(.am-app, .am-layer) .am-topic-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  align-items: start;
+  gap: 10px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--am-line);
+}
+:is(.am-app, .am-layer) .am-topic-row.am-unread .am-topic-title { font-weight: 700; }
+:is(.am-app, .am-layer) .am-topic-thumb { width: 44px; height: 44px; border-radius: 8px; object-fit: cover; }
+:is(.am-app, .am-layer) .am-topic-main { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+:is(.am-app, .am-layer) .am-topic-title {
+  align-self: flex-start;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 15px;
+  color: var(--am-text);
+  text-align: left;
+  cursor: pointer;
+}
+:is(.am-app, .am-layer) .am-topic-title:hover { text-decoration: underline; }
+:is(.am-app, .am-layer) .am-topic-line {
+  font-size: 13px;
+  color: var(--am-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+:is(.am-app, .am-layer) .am-topic-people { display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--am-faint); }
+:is(.am-app, .am-layer) .am-topic-people > span { margin-right: 4px; }
+:is(.am-app, .am-layer) .am-topic-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  font-size: 12px;
+  color: var(--am-muted);
+  white-space: nowrap;
+}
+:is(.am-app, .am-layer) .am-topic-answered { display: flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 600; color: var(--am-faint); }
+:is(.am-app, .am-layer) .am-topic-answered.am-on { color: var(--am-ok); }
+:is(.am-app, .am-layer) .am-topic-votes { display: flex; align-items: center; gap: 4px; font-size: 13px; color: var(--am-muted); }
+
+:is(.am-app, .am-layer) .am-topic-status { font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 10px; background: var(--am-raise); color: var(--am-muted); white-space: nowrap; }
+:is(.am-app, .am-layer) .am-topic-status.am-planned { color: var(--am-anti); background: var(--am-anti-soft); }
+:is(.am-app, .am-layer) .am-topic-status.am-in_progress { color: var(--am-spark); background: rgba(240, 178, 50, 0.16); }
+:is(.am-app, .am-layer) .am-topic-status.am-done { color: var(--am-ok); background: rgba(35, 165, 90, 0.16); }
+:is(.am-app, .am-layer) .am-topic-status.am-declined { color: var(--am-danger); background: rgba(242, 63, 67, 0.12); }
+
+:is(.am-app, .am-layer) .am-load-more {
+  margin: 10px auto 16px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--am-line);
+  background: var(--am-side);
+  color: var(--am-text-2);
+  font-weight: 600;
+  font-size: 13px;
+}
+:is(.am-app, .am-layer) .am-load-more:hover { background: var(--am-raise-2); color: var(--am-text); }
+
+// The vote button (fusion/forum/vote_button.tsx): a plain 👍 and its count, filled in once voted.
+:is(.am-app, .am-layer) .am-vote-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 28px;
+  padding: 0 10px;
+  border-radius: 8px;
+  background: var(--am-raise);
+  color: var(--am-text-2);
+  font-size: 13px;
+  font-weight: 600;
+}
+:is(.am-app, .am-layer) .am-vote-btn:hover { background: var(--am-raise-2); }
+:is(.am-app, .am-layer) .am-vote-btn.am-on { background: var(--am-matter-soft); color: var(--am-matter); }
+
+// The New topic form (opens at the top of the list).
+:is(.am-app, .am-layer) .am-new-topic {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--am-line);
+  background: var(--am-side);
+}
+:is(.am-app, .am-layer) .am-new-topic-title {
+  height: 38px;
+  padding: 0 12px;
+  border-radius: 8px;
+  border: 1px solid var(--am-line);
+  background: var(--am-main);
+  color: var(--am-text);
+  font-size: 15px;
+  font-weight: 600;
+  outline: none;
+}
+:is(.am-app, .am-layer) .am-new-topic-title:focus { border-color: var(--am-matter); }
+:is(.am-app, .am-layer) .am-field-error { font-size: 12px; color: var(--am-danger); }
+:is(.am-app, .am-layer) .am-link-btn {
+  align-self: flex-end;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--am-muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+:is(.am-app, .am-layer) .am-link-btn:hover { color: var(--am-text); text-decoration: underline; }
+
+// The topic page's own head (back link, title, vote/status), above the thread view's own body.
+:is(.am-app, .am-layer) .am-topic-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--am-line);
+}
+:is(.am-app, .am-layer) .am-topic-head h2 { flex: 1; min-width: 0; margin: 0; font: 600 16px var(--am-font-display); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+:is(.am-app, .am-layer) .am-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex: none;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--am-muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+:is(.am-app, .am-layer) .am-back-link:hover { color: var(--am-text); }
+:is(.am-app, .am-layer) .am-topic-body { flex: 1; min-height: 0; overflow-y: auto; }
+
+// Phone width (design §4.4, §4.1's own rule: no horizontal scroll, controls wrap or stack).
+@media #{$phone} {
+  :is(.am-app, .am-layer) .am-forum-bar { flex-direction: column; align-items: stretch; }
+  :is(.am-app, .am-layer) .am-forum-filters { flex-direction: column; align-items: stretch; }
+  :is(.am-app, .am-layer) .am-topic-row { grid-template-columns: 1fr; }
+  :is(.am-app, .am-layer) .am-topic-meta { flex-direction: row; align-items: center; justify-content: space-between; }
+}
