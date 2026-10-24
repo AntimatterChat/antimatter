@@ -7,15 +7,15 @@ import {shallowEqual, useDispatch, useSelector} from 'react-redux';
 
 import type {Team} from '@mattermost/types/teams';
 
-import {removeChannelMember} from 'mattermost-redux/actions/channels';
+import {removeChannelMember, updateChannelMemberSchemeRoles} from 'mattermost-redux/actions/channels';
 import {addUserToTeam} from 'mattermost-redux/actions/teams';
 import {Client4} from 'mattermost-redux/client';
 import {Permissions} from 'mattermost-redux/constants';
-import {canManageAnyChannelMembersInCurrentTeam, getCurrentChannel} from 'mattermost-redux/selectors/entities/channels';
+import {canManageAnyChannelMembersInCurrentTeam, getChannelMember, getCurrentChannel} from 'mattermost-redux/selectors/entities/channels';
 import {haveIChannelPermission, haveITeamPermission, getMemberTimeout} from 'mattermost-redux/selectors/entities/roles';
 import {getCurrentTeam, getMyTeams, getTeamMember} from 'mattermost-redux/selectors/entities/teams';
 import {getCurrentUserId} from 'mattermost-redux/selectors/entities/users';
-import {isSystemAdmin} from 'mattermost-redux/utils/user_utils';
+import {isChannelAdmin as isChannelAdminRole, isGuest as isGuestRole, isSystemAdmin} from 'mattermost-redux/utils/user_utils';
 
 import {openDirectChannelToUserId} from 'actions/channel_actions';
 
@@ -84,6 +84,16 @@ export function UserMenu({target, onProfile, onClose}: {target: Target; onProfil
             haveITeamPermission(state, team.id, Permissions.REMOVE_USER_FROM_TEAM);
     });
     const canRemoveFromTeam = useSelector((state: GlobalState) => Boolean(team) && haveITeamPermission(state, team!.id, Permissions.REMOVE_USER_FROM_TEAM));
+
+    // Making someone a channel admin or back to a member: the server's manage_channel_roles permission, in a public
+    // or private channel they're a member of (a direct or group message has no channel roles).
+    const canChangeChannelRole = useSelector((state: GlobalState) => {
+        if (!channel || !team || (channel.type !== Constants.OPEN_CHANNEL && channel.type !== Constants.PRIVATE_CHANNEL) || channel.delete_at) {
+            return false;
+        }
+        return haveIChannelPermission(state, team.id, channel.id, Permissions.MANAGE_CHANNEL_ROLES);
+    });
+    const channelMember = useSelector((state: GlobalState) => (channel ? getChannelMember(state, channel.id, userId) : undefined));
     const canModerate = useSelector((state: GlobalState) => Boolean(team) && canModerateTeam(state, team!.id));
     const timedOut = useSelector((state: GlobalState) => Boolean(team) && Boolean(getMemberTimeout(state, team!.id, userId)));
     const dialogs = useDialogs();
@@ -155,7 +165,24 @@ export function UserMenu({target, onProfile, onClose}: {target: Target; onProfil
         toast('error' in result && result.error ? ((result.error as {message?: string}).message || formatMessage({id: 'fusion.timeout.liftFailed', defaultMessage: 'The timeout couldn\'t be lifted.'})) : formatMessage({id: 'fusion.timeout.lifted', defaultMessage: '{name}\'s timeout is lifted'}, {name}));
     };
 
+    const isChannelAdminMember = Boolean(channelMember) && (isChannelAdminRole(channelMember!.roles) || Boolean(channelMember!.scheme_admin));
+    const canChangeThisChannelRole = canChangeChannelRole && inChannel && !user.remote_id;
+    const canMakeChannelAdmin = canChangeThisChannelRole && !isChannelAdminMember && !isGuestRole(user.roles);
+    const canMakeChannelMember = canChangeThisChannelRole && isChannelAdminMember;
+    const changeChannelRole = (schemeAdmin: boolean) => async () => {
+        if (!channel) {
+            return;
+        }
+        const result = await dispatch(updateChannelMemberSchemeRoles(channel.id, userId, true, schemeAdmin));
+        if (!(result && 'error' in result && result.error)) {
+            toast(schemeAdmin ?
+                formatMessage({id: 'fusion.toast.madeChannelAdmin', defaultMessage: '{name} is now a channel admin'}, {name}) :
+                formatMessage({id: 'fusion.toast.madeChannelMember', defaultMessage: '{name} is now a member'}, {name}));
+        }
+    };
+
     const moderation = !isMe && ((canRemoveFromChannel && inChannel) || canRemoveFromTeam || canModerate);
+    const channelRoles = canMakeChannelAdmin || canMakeChannelMember;
     return (
         <Popover
             point={target.point}
@@ -238,7 +265,21 @@ export function UserMenu({target, onProfile, onClose}: {target: Target; onProfil
                     onClick={run(() => blocking.toggleBlock())}
                 />
             )}
-            {moderation && <MenuSeparator/>}
+            {(moderation || channelRoles) && <MenuSeparator/>}
+            {canMakeChannelAdmin && (
+                <MenuItem
+                    icon='shield'
+                    label={formatMessage({id: 'fusion.userMenu.makeChannelAdmin', defaultMessage: 'Make channel admin'})}
+                    onClick={run(changeChannelRole(true))}
+                />
+            )}
+            {canMakeChannelMember && (
+                <MenuItem
+                    icon='shield'
+                    label={formatMessage({id: 'fusion.userMenu.makeMember', defaultMessage: 'Make member'})}
+                    onClick={run(changeChannelRole(false))}
+                />
+            )}
             {moderation && canModerate && (
                 <MenuItem
                     icon='shield'

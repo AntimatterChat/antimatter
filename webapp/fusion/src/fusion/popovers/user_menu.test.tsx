@@ -23,6 +23,12 @@ jest.mock('mattermost-redux/selectors/entities/channels', () => ({
     canManageAnyChannelMembersInCurrentTeam: jest.fn(() => mockCanManage),
 }));
 
+const mockUpdateRoles = jest.fn(() => ({type: 'NOOP_ROLES'}));
+jest.mock('mattermost-redux/actions/channels', () => ({
+    ...jest.requireActual('mattermost-redux/actions/channels'),
+    updateChannelMemberSchemeRoles: (...args: unknown[]) => mockUpdateRoles(...args),
+}));
+
 const mockBlocking = {enabled: true, level: '' as '' | 'ignore' | 'block', toggleIgnore: jest.fn(), toggleBlock: jest.fn(), block: jest.fn()};
 jest.mock('fusion/privacy/message_requests', () => ({useBlockActions: () => mockBlocking}));
 
@@ -45,7 +51,7 @@ jest.mock('./user_popover', () => ({userId}: {userId: string}) => (
 const user = (id: string, roles = 'system_user') => ({id, username: id, roles, delete_at: 0, first_name: '', last_name: '', nickname: ''});
 const channel = (id: string, name: string, extra = {}) => ({id, team_id: 't1', type: 'O', name, display_name: name, delete_at: 0, ...extra});
 
-function state({timedOut = false, allChannels = false, channelName = 'dev', otherInT2 = false} = {}) {
+function state({timedOut = false, allChannels = false, channelName = 'dev', channelType = 'O', otherInT2 = false, membersInChannel = {}} = {}) {
     return {
         entities: {
             general: {config: {}},
@@ -69,9 +75,10 @@ function state({timedOut = false, allChannels = false, channelName = 'dev', othe
             },
             channels: {
                 currentChannelId: 'c1',
-                channels: {c1: channel('c1', channelName)},
+                channels: {c1: channel('c1', channelName, {type: channelType})},
                 channelsInTeam: {t1: new Set(['c1'])},
                 myMembers: {c1: {channel_id: 'c1', user_id: 'me', roles: 'channel_user'}},
+                membersInChannel: {c1: membersInChannel},
             },
             preferences: {myPreferences: {}},
         },
@@ -96,6 +103,7 @@ describe('fusion/popovers/UserMenu', () => {
         mockCanManage = false;
         mockBlocking.enabled = true;
         mockBlocking.level = '';
+        mockUpdateRoles.mockClear();
     });
 
     const render = (userId: string, s = state(), onClose = jest.fn(), profile = true) => {
@@ -212,6 +220,66 @@ describe('fusion/popovers/UserMenu', () => {
         mockPerms = new Set(['c1:manage_public_channel_members', 'c1:manage_channel_roles']);
         render('sofia', state({allChannels: true}));
         expect(screen.queryByRole('menuitem', {name: 'Remove from channel'})).not.toBeInTheDocument();
+    });
+
+    test('a plain member offers neither channel role action', () => {
+        render('sofia');
+        expect(screen.queryByRole('menuitem', {name: 'Make channel admin'})).not.toBeInTheDocument();
+        expect(screen.queryByRole('menuitem', {name: 'Make member'})).not.toBeInTheDocument();
+    });
+
+    test('someone allowed to manage channel roles may make a member a channel admin', async () => {
+        mockPerms = new Set(['c1:manage_channel_roles']);
+        render('sofia');
+        expect(screen.queryByRole('menuitem', {name: 'Make member'})).not.toBeInTheDocument();
+        await userEvent.click(screen.getByRole('menuitem', {name: 'Make channel admin'}));
+        expect(mockUpdateRoles).toHaveBeenCalledWith('c1', 'sofia', true, true);
+        await waitFor(() => expect(mockToast).toHaveBeenCalledWith('sofia is now a channel admin'));
+    });
+
+    test('and may make a channel admin a plain member again', async () => {
+        mockPerms = new Set(['c1:manage_channel_roles']);
+        render('sofia', state({membersInChannel: {sofia: {channel_id: 'c1', user_id: 'sofia', roles: 'channel_user', scheme_admin: true}}}));
+        expect(screen.queryByRole('menuitem', {name: 'Make channel admin'})).not.toBeInTheDocument();
+        await userEvent.click(screen.getByRole('menuitem', {name: 'Make member'}));
+        expect(mockUpdateRoles).toHaveBeenCalledWith('c1', 'sofia', true, false);
+        await waitFor(() => expect(mockToast).toHaveBeenCalledWith('sofia is now a member'));
+    });
+
+    test('without the permission, nobody offers either channel role action, even a channel admin', () => {
+        render('sofia', state({membersInChannel: {sofia: {channel_id: 'c1', user_id: 'sofia', roles: 'channel_user', scheme_admin: true}}}));
+        expect(screen.queryByRole('menuitem', {name: 'Make channel admin'})).not.toBeInTheDocument();
+        expect(screen.queryByRole('menuitem', {name: 'Make member'})).not.toBeInTheDocument();
+    });
+
+    test('a guest is never offered channel admin', () => {
+        mockPerms = new Set(['c1:manage_channel_roles']);
+        render('sofia', {
+            ...state(),
+            entities: {
+                ...state().entities,
+                users: {...state().entities.users, profiles: {...state().entities.users.profiles, sofia: user('sofia', 'system_guest')}},
+            },
+        });
+        expect(screen.queryByRole('menuitem', {name: 'Make channel admin'})).not.toBeInTheDocument();
+    });
+
+    test('a direct message has no channel roles to change', () => {
+        mockPerms = new Set(['c1:manage_channel_roles']);
+        render('sofia', state({channelType: 'D'}));
+        expect(screen.queryByRole('menuitem', {name: 'Make channel admin'})).not.toBeInTheDocument();
+    });
+
+    test('someone not a member of the channel is not offered a channel role either', () => {
+        mockPerms = new Set(['c1:manage_channel_roles']);
+        render('sofia', {
+            ...state(),
+            entities: {
+                ...state().entities,
+                users: {...state().entities.users, profilesInChannel: {c1: new Set(['me', 'boss'])}},
+            },
+        });
+        expect(screen.queryByRole('menuitem', {name: 'Make channel admin'})).not.toBeInTheDocument();
     });
 
     test('offers to add someone to a channel only with the permission', () => {

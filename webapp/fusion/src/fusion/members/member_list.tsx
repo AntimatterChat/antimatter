@@ -49,6 +49,17 @@ import type {Grouping, MemberRole} from './member_groups';
 
 const PER_PAGE = 100;
 
+// matchesSearch tells whether a typed term matches a member's name, as the member search box filters the list:
+// their username, nickname or full name, case-insensitively.
+export function matchesSearch(user: UserProfile, term: string): boolean {
+    const needle = term.trim().toLowerCase();
+    if (!needle) {
+        return true;
+    }
+    return [user.username, user.nickname, user.first_name, user.last_name, `${user.first_name} ${user.last_name}`].
+        some((value) => Boolean(value) && value.toLowerCase().includes(needle));
+}
+
 type MemberProps = {
     user: UserProfile;
     off: boolean;
@@ -145,7 +156,10 @@ export default function MemberList({inPanel = false}: {inPanel?: boolean}) {
     const membersChoose = !view || view === 'choice';
     const listAttribute = useMemberListAttribute(channel?.type === 'D' || channel?.type === 'G' ? undefined : teamId, profiles);
     const shownProfiles = listAttribute.filtering ? profiles.filter((u) => listAttribute.shown(u.id)) : profiles;
-    const groups = useMemberGroups(shownProfiles, roles, grouping);
+    const [search, setSearch] = useState('');
+    const term = search.trim();
+    const searchedProfiles = term ? shownProfiles.filter((u) => matchesSearch(u, term)) : shownProfiles;
+    const groups = useMemberGroups(searchedProfiles, roles, grouping);
     const canAdd = useCanAddPeople(channel);
     const [popover, setPopover] = useState<{userId: string; anchor: HTMLElement} | null>(null);
     const [adding, setAdding] = useState(false);
@@ -246,6 +260,22 @@ export default function MemberList({inPanel = false}: {inPanel?: boolean}) {
                     </button>
                 )}
             </div>
+            {!direct && (
+                <label className={am('dm-find', 'mem-search')}>
+                    <Icon
+                        name='search'
+                        size='sm'
+                    />
+                    <input
+                        type='search'
+                        value={search}
+                        placeholder={formatMessage({id: 'fusion.members.search', defaultMessage: 'Search members'})}
+                        aria-label={formatMessage({id: 'fusion.members.search', defaultMessage: 'Search members'})}
+                        autoComplete='off'
+                        onChange={(e) => setSearch(e.target.value)}
+                    />
+                </label>
+            )}
             {canManageRequests && joinRequests.length > 0 && (
                 <div className={am('join-requests')}>
                     <PendingJoinRequests
@@ -286,6 +316,9 @@ export default function MemberList({inPanel = false}: {inPanel?: boolean}) {
                     ))}
                 </React.Fragment>
             ))}
+            {term && searchedProfiles.length === 0 && (
+                <p className={am('pick-empty')}>{formatMessage({id: 'fusion.members.noMatch', defaultMessage: 'No member matches.'})}</p>
+            )}
             {popover && (
                 <UserPopover
                     userId={popover.userId}
