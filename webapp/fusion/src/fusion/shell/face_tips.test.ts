@@ -37,6 +37,23 @@ describe('fusion/shell/useFaceTips', () => {
         unmount();
     });
 
+    test('hides the tooltip on Escape, whether the pointer or the keyboard showed it', () => {
+        const {unmount} = renderHook(() => useFaceTips());
+        const mark = document.getElementById('mark')!;
+
+        fireEvent.mouseOver(mark);
+        expect(screen.getByRole('tooltip')).toHaveTextContent('Private');
+        fireEvent.keyDown(document.body, {key: 'Escape'});
+        expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
+
+        jest.spyOn(mark, 'matches').mockImplementation((selector: string) => selector === ':focus-visible');
+        fireEvent.focusIn(mark);
+        expect(screen.getByRole('tooltip')).toHaveTextContent('Private');
+        fireEvent.keyDown(mark, {key: 'Escape'});
+        expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
+        unmount();
+    });
+
     test('keeps the tooltip of the pointer when the focus moves elsewhere', () => {
         const {unmount} = renderHook(() => useFaceTips());
 

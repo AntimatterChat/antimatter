@@ -58,7 +58,7 @@ export function placeTip(rect: Box, tip: {width: number; height: number}, view: 
 
 // useFaceTips shows the mockup's .tip above (or, with no room there, below) a stacked face or a data-am-tip element under
 // the pointer, in the layer; and by a data-am-tip element the keyboard moves to, as browsers show no title tooltip
-// there.
+// there. Escape hides it.
 export function useFaceTips() {
     useEffect(() => {
         let tip: HTMLDivElement | null = null;
@@ -128,9 +128,15 @@ export function useFaceTips() {
                 fromFocus = false;
             }
         };
+        const onKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') {
+                hide();
+            }
+        };
         document.addEventListener('mouseover', onOver);
         document.addEventListener('focusin', onFocus);
         document.addEventListener('focusout', onBlur);
+        document.addEventListener('keydown', onKeyDown);
         document.addEventListener('scroll', hide, true);
         document.addEventListener('pointerdown', hide, true);
         return () => {
@@ -138,6 +144,7 @@ export function useFaceTips() {
             document.removeEventListener('mouseover', onOver);
             document.removeEventListener('focusin', onFocus);
             document.removeEventListener('focusout', onBlur);
+            document.removeEventListener('keydown', onKeyDown);
             document.removeEventListener('scroll', hide, true);
             document.removeEventListener('pointerdown', hide, true);
         };
