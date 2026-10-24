@@ -17,16 +17,19 @@ import type {
     CallsModMute,
     CallsMoveRequest,
     CallsParticipant,
+    CallsStage,
+    CallsStageInvite,
     CallsUnmuteRequest,
     LocalCall,
 } from './plugin_api/calls_public_api';
 import type {AntimatterVoiceChannelsAPI, VoiceParticipant as VoicePluginParticipant} from './plugin_api/voice_channels_public_api';
 
-export type {AntimatterCallsAPI, AntimatterVoiceChannelsAPI, CallsCall, CallsErrorEvent, CallsIncomingCall, CallsModMute, CallsMoveRequest, CallsParticipant, CallsUnmuteRequest, LocalCall};
+export type {AntimatterCallsAPI, AntimatterVoiceChannelsAPI, CallsCall, CallsErrorEvent, CallsIncomingCall, CallsModMute, CallsMoveRequest, CallsParticipant, CallsStage, CallsStageInvite, CallsUnmuteRequest, LocalCall};
 
 // Someone in a call or a voice channel, as the call UI shows them: deafened in voice channels (by themselves or a
-// moderator), and whether a moderator muted or deafened them (which Calls knows, not the voice channels plugin).
-export type VoiceParticipant = VoicePluginParticipant & {modMuted: boolean; modDeafened: boolean};
+// moderator), whether a moderator muted or deafened them (which Calls knows, not the voice channels plugin), and in a
+// stage's call, whether they're in its audience (not a speaker; false elsewhere).
+export type VoiceParticipant = VoicePluginParticipant & {modMuted: boolean; modDeafened: boolean; audience?: boolean};
 
 // Not in version 1 of the API: the channels that have a call. Calls' state is read when it's missing.
 type CallsSelectorsNext = AntimatterCallsAPI['selectors'] & {
@@ -106,10 +109,17 @@ export function getModDeafens(state: GlobalState, channelId: string): CallsModMu
     return (calls && channelId && calls.selectors.getModDeafens?.(state, channelId)) || NO_MOD_MUTES;
 }
 
-const converted = new WeakMap<object, {mutes: CallsModMute[]; deafens: CallsModMute[]; result: VoiceParticipant[]}>();
+// getStage tells whether the call of a channel is a stage's, and who its speakers are: null for other calls, and with
+// a Calls version that has no stages (its calls are all talk).
+export function getStage(state: GlobalState, channelId: string): CallsStage | null {
+    const calls = getCallsAPI();
+    return (calls && channelId && calls.selectors.getStage?.(state, channelId)) || null;
+}
 
-// getParticipants lists the people in a channel's call, with whether they are deafened in voice channels, and muted
-// or deafened by a moderator.
+const converted = new WeakMap<object, {mutes: CallsModMute[]; deafens: CallsModMute[]; stage: CallsStage | null; result: VoiceParticipant[]}>();
+
+// getParticipants lists the people in a channel's call, with whether they are deafened in voice channels, muted or
+// deafened by a moderator, and in a stage's audience.
 export function getParticipants(state: GlobalState, channelId: string): VoiceParticipant[] {
     if (!channelId) {
         return NO_PARTICIPANTS;
@@ -127,19 +137,21 @@ export function getParticipants(state: GlobalState, channelId: string): VoicePar
     }
     const mutes = getModMutes(state, channelId);
     const deafens = getModDeafens(state, channelId);
+    const stage = getStage(state, channelId);
 
     // The plugins keep their arrays stable while unchanged, so the converted one can be too.
     const cached = converted.get(list);
-    if (cached && cached.mutes === mutes && cached.deafens === deafens) {
+    if (cached && cached.mutes === mutes && cached.deafens === deafens && cached.stage === stage) {
         return cached.result;
     }
     const muted = new Set(mutes.map((m) => m.userId));
     const deafened = new Set(deafens.map((m) => m.userId));
+    const speakers = stage ? new Set(stage.speakers) : null;
     const result = list.map((p) => {
         const modDeafened = deafened.has(p.userId);
-        return {...p, deafened: ('deafened' in p && p.deafened) || modDeafened, modMuted: muted.has(p.userId), modDeafened};
+        return {...p, deafened: ('deafened' in p && p.deafened) || modDeafened, modMuted: muted.has(p.userId), modDeafened, audience: Boolean(speakers && !speakers.has(p.userId))};
     });
-    converted.set(list, {mutes, deafens, result});
+    converted.set(list, {mutes, deafens, stage, result});
     return result;
 }
 
@@ -170,7 +182,7 @@ export function participantsEqual(a: VoiceParticipant[], b: VoiceParticipant[]):
         return p.sessionId === q.sessionId && p.userId === q.userId && p.muted === q.muted && p.deafened === q.deafened &&
             p.video === q.video && p.screenSharing === q.screenSharing && p.speaking === q.speaking &&
             p.raisedHand === q.raisedHand && p.isHost === q.isHost && p.isMe === q.isMe && p.modMuted === q.modMuted &&
-            p.modDeafened === q.modDeafened;
+            p.modDeafened === q.modDeafened && Boolean(p.audience) === Boolean(q.audience);
     });
 }
 

@@ -22,12 +22,13 @@ import {
     getCallsAPI,
     getLocalCall,
     getParticipants,
+    getStage,
     getVoiceAPI,
     isVoiceChannel,
     participantsEqual,
     useCallsAPIs,
 } from './calls_api';
-import type {CallsCall, LocalCall, VoiceParticipant} from './calls_api';
+import type {CallsCall, CallsStage, LocalCall, VoiceParticipant} from './calls_api';
 
 // useCallsAvailable tells whether the Calls plugin drives calls here.
 export function useCallsAvailable(): boolean {
@@ -49,6 +50,13 @@ export function useCall(channelId?: string): CallsCall | null {
 export function useParticipants(channelId?: string): VoiceParticipant[] {
     useCallsAPIs();
     return useSelector((state: GlobalState) => getParticipants(state, channelId || ''), participantsEqual);
+}
+
+// useStage is the stage of a channel's call: its speakers, or null when the call isn't a stage's (or Calls has no
+// stages, where every call is a talk).
+export function useStage(channelId?: string): CallsStage | null {
+    useCallsAPIs();
+    return useSelector((state: GlobalState) => (channelId ? getStage(state, channelId) : null));
 }
 
 // useLocalCall is the call this client is in, from any window of it.
@@ -78,8 +86,13 @@ export type MyCallState = {
 
     // Someone else shares their screen: there's one screen share per call.
     otherSharing: boolean;
+
+    // Not for a stage's audience.
     videoAllowed: boolean;
     screenAllowed: boolean;
+
+    // In a stage's call, they're in its audience: they can't unmute, and request to speak by raising their hand.
+    audience?: boolean;
 };
 
 // useMyCall is the local user's call and their state in it, or null when not in a call.
@@ -108,6 +121,7 @@ export function useMyCall(): MyCallState | null {
         }
         const me = participants.find((p) => p.isMe) || participants.find((p) => p.sessionId === call.sessionId);
         const screen = Boolean(flags.sharingSession) && flags.sharingSession === call.sessionId;
+        const audience = Boolean(me?.audience);
         return {
             call,
             me,
@@ -121,8 +135,9 @@ export function useMyCall(): MyCallState | null {
             modMuted: Boolean(me?.modMuted),
             modDeafened: Boolean(me?.modDeafened),
             otherSharing: Boolean(flags.sharingSession) && !screen,
-            videoAllowed: flags.videoAllowed,
-            screenAllowed: flags.screenAllowed,
+            videoAllowed: flags.videoAllowed && !audience,
+            screenAllowed: flags.screenAllowed && !audience,
+            audience,
         };
     }, [call, flags, participants, voice]);
 }

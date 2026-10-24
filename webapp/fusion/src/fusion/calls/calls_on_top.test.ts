@@ -3,7 +3,7 @@
 
 import type {Channel} from '@mattermost/types/channels';
 
-import {getParticipants} from './calls_api';
+import {getParticipants, getStage} from './calls_api';
 import {callsOnTop} from './calls_on_top';
 import type {AntimatterCallsAPI, CallsModMute, CallsParticipant} from './plugin_api/calls_public_api';
 import type {AntimatterVoiceChannelsAPI, VoiceParticipant} from './plugin_api/voice_channels_public_api';
@@ -55,7 +55,7 @@ describe('getParticipants', () => {
         callsAPI([], [{userId: 'u1', byUserId: 'mod'}]);
         window.antimatterVoiceChannels = {version: 1, selectors: {isVoiceChannel: () => true, getParticipants: () => voice}} as unknown as AntimatterVoiceChannelsAPI;
 
-        expect(getParticipants(state, 'room')).toEqual([{sessionId: 's1', userId: 'u1', deafened: true, modMuted: true, modDeafened: false}]);
+        expect(getParticipants(state, 'room')).toEqual([{sessionId: 's1', userId: 'u1', deafened: true, modMuted: true, modDeafened: false, audience: false}]);
     });
 
     test('tells who a moderator deafened: they show deafened', () => {
@@ -66,6 +66,30 @@ describe('getParticipants', () => {
         const result = getParticipants(state, 'room');
         expect(result.map((p) => [p.userId, p.deafened, p.modDeafened, p.modMuted])).toEqual([['u1', false, false, false], ['u2', true, true, false]]);
         expect(getParticipants(state, 'room')).toBe(result);
+    });
+
+    test('in a stage\'s call, those who aren\'t its speakers are its audience', () => {
+        const voice = [{sessionId: 's1', userId: 'u1'}, {sessionId: 's2', userId: 'u2'}] as VoiceParticipant[];
+        const stage = {speakers: ['u1']};
+        window.antimatterCalls = {
+            version: 1,
+            selectors: {getParticipants: () => [], getModMutes: () => [], getModDeafens: () => [], getStage: () => stage},
+        } as unknown as AntimatterCallsAPI;
+        window.antimatterVoiceChannels = {version: 1, selectors: {isVoiceChannel: () => true, getParticipants: () => voice}} as unknown as AntimatterVoiceChannelsAPI;
+
+        const result = getParticipants(state, 'room');
+        expect(result.map((p) => [p.userId, p.audience])).toEqual([['u1', false], ['u2', true]]);
+        expect(getParticipants(state, 'room')).toBe(result);
+        expect(getStage(state, 'room')).toBe(stage);
+    });
+
+    test('an older Calls has no stages: everyone in its calls may speak', () => {
+        const voice = [{sessionId: 's1', userId: 'u1'}] as VoiceParticipant[];
+        callsAPI([], []);
+        window.antimatterVoiceChannels = {version: 1, selectors: {isVoiceChannel: () => true, getParticipants: () => voice}} as unknown as AntimatterVoiceChannelsAPI;
+
+        expect(getStage(state, 'room')).toBeNull();
+        expect(getParticipants(state, 'room')[0].audience).toBe(false);
     });
 
     test('older Calls versions have no moderator mutes', () => {

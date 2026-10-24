@@ -65,15 +65,35 @@ export type CallsLastingMute = {
 };
 
 // What the user may do to a participant of a call from its menu, as the server works it out for them: mute them
-// (also with a moderator mute), deafen and move them (in voice channels), and disconnect them. Nobody may act on
-// someone at or above their rank, and those who may not moderate the call may do nothing. The controls still check
-// for themselves: menus use it to hide what would be refused.
+// (also with a moderator mute), deafen and move them (in voice channels), and disconnect them; in stages, invite
+// them to speak, and move them back to the audience (also themselves, when invited). Nobody may act on someone at or
+// above their rank, and those who may not moderate the call may do nothing else. The controls still check for
+// themselves: menus use it to hide what would be refused.
 export type CallsParticipantPermissions = {
     sessionId: string;
     canMute: boolean;
     canDeafen: boolean;
     canMove: boolean;
     canKick: boolean;
+
+    // Optional: older versions lack them (take them as false).
+    canInviteToSpeak?: boolean;
+    canMoveToAudience?: boolean;
+};
+
+// The call of a stage (a voice channel with the stage mode): its speakers are those who may moderate it and those a
+// moderator invited to speak. Everyone else in it is the audience: they can't unmute, share their screen or turn
+// their camera on, and ask to speak by raising their hand.
+export type CallsStage = {
+
+    // User IDs, also of speakers who left the call a moment ago.
+    speakers: string[];
+};
+
+// A moderator invites the user to speak on a stage: they may unmute now.
+export type CallsStageInvite = {
+    channelId: string;
+    byUserId: string;
 };
 
 // A moderator moves the user from the call of a voice channel to another voice channel.
@@ -156,6 +176,9 @@ export type CallsErrorEvent =
     // The user can't unmute: a moderator muted them for the call, or deafened them.
     {kind: 'mod-muted' | 'mod-deafened'} |
 
+    // In the audience of a stage, the user can't unmute, share their screen or turn their camera on.
+    {kind: 'stage-audience'} |
+
     // Any other error of the calls client.
     {kind: 'other'; error: Error};
 
@@ -215,7 +238,7 @@ export type CallsCaption = {
     captionId: string;
 };
 
-export type CallsEvent = 'change' | 'error' | 'unmute-request' | 'move';
+export type CallsEvent = 'change' | 'error' | 'unmute-request' | 'move' | 'stage-invite';
 
 export type AntimatterCallsAPI = {
     version: 1;
@@ -258,6 +281,10 @@ export type AntimatterCallsAPI = {
 
         // Who a moderator deafened in the call of a voice channel. Optional: older versions lack it.
         getModDeafens?(state: CallsGlobalState, channelId: string): CallsModMute[];
+
+        // The stage of a channel's call, or null when its call isn't a stage's (or there is none). Optional: older
+        // versions have no stages, and their calls are all talk.
+        getStage?(state: CallsGlobalState, channelId: string): CallsStage | null;
     };
 
     // Joins (or starts) the call of a channel, through the same checks as Calls' own call button.
@@ -309,11 +336,13 @@ export type AntimatterCallsAPI = {
     // re-read the getters then. 'error' gets a CallsErrorEvent. 'unmute-request' fires when a
     // moderator asks the user, muted in the call of this window, to unmute. 'move' fires when a
     // moderator moves the user to another voice channel: Calls switches to its call itself, the UI
-    // follows. Returns the unsubscribe function.
+    // follows. 'stage-invite' fires when a moderator invites the user, in the audience of the stage whose call this
+    // window has, to speak. Returns the unsubscribe function.
     on(event: 'change', cb: () => void): () => void;
     on(event: 'error', cb: (event: CallsErrorEvent) => void): () => void;
     on(event: 'unmute-request', cb: (request: CallsUnmuteRequest) => void): () => void;
     on(event: 'move', cb: (request: CallsMoveRequest) => void): () => void;
+    on(event: 'stage-invite', cb: (invite: CallsStageInvite) => void): () => void;
 
     // Host controls on the call of this window (or of the desktop app's call window), or on the call of the given
     // channel, for the call's moderators.
@@ -348,6 +377,12 @@ export type AntimatterCallsAPI = {
         // What the user may do to a participant (session ID) of the call of a channel, for its menu. Optional: older
         // versions lack it, and their menus offer every control.
         participantPermissions?(channelId: string, sessionId: string): Promise<CallsParticipantPermissions>;
+
+        // In stages: invites someone of the audience to speak (their hand is lowered; they unmute themselves), and
+        // moves an invited speaker back to the audience (muting them), which they may also do themselves. Optional:
+        // older versions lack them.
+        inviteToSpeak?(channelId: string, userId: string): Promise<void>;
+        moveToAudience?(channelId: string, userId: string): Promise<void>;
     };
 
     // Starts or stops the transcription of the call of this window (host only). While it runs, each participant's
