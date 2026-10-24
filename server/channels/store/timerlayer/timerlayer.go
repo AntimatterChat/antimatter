@@ -8763,6 +8763,22 @@ func (s *TimerLayerPostStore) GetFlaggedPostsForTeam(userID string, teamID strin
 	return result, err
 }
 
+func (s *TimerLayerPostStore) GetForumTopics(rctx request.CTX, opts model.ForumTopicsOptions) (*model.ForumTopicList, error) {
+	start := time.Now()
+
+	result, err := s.PostStore.GetForumTopics(rctx, opts)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("PostStore.GetForumTopics", success, elapsed)
+	}
+	return result, err
+}
+
 func (s *TimerLayerPostStore) GetMaxPostSize() int {
 	start := time.Now()
 

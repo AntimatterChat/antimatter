@@ -371,6 +371,36 @@ func (_m *PostStore) GetFlaggedPostsForTeam(userID string, teamID string, offset
 	return r0, r1
 }
 
+// GetForumTopics provides a mock function with given fields: rctx, opts
+func (_m *PostStore) GetForumTopics(rctx request.CTX, opts model.ForumTopicsOptions) (*model.ForumTopicList, error) {
+	ret := _m.Called(rctx, opts)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetForumTopics")
+	}
+
+	var r0 *model.ForumTopicList
+	var r1 error
+	if rf, ok := ret.Get(0).(func(request.CTX, model.ForumTopicsOptions) (*model.ForumTopicList, error)); ok {
+		return rf(rctx, opts)
+	}
+	if rf, ok := ret.Get(0).(func(request.CTX, model.ForumTopicsOptions) *model.ForumTopicList); ok {
+		r0 = rf(rctx, opts)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*model.ForumTopicList)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(request.CTX, model.ForumTopicsOptions) error); ok {
+		r1 = rf(rctx, opts)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // GetMaxPostSize provides a mock function with no fields
 func (_m *PostStore) GetMaxPostSize() int {
 	ret := _m.Called()

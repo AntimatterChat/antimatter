@@ -442,6 +442,9 @@ type PostStore interface {
 	ClearCaches()
 	InvalidateLastPostTimeCache(channelID string)
 	GetPostsCreatedAt(channelID string, timestamp int64) ([]*model.Post, error)
+	// GetForumTopics gives a page of a forum's topics (Antimatter): its live, non-system root posts with their thread
+	// counts and votes, sorted and filtered as the options ask, and the latest replies of each when asked.
+	GetForumTopics(rctx request.CTX, opts model.ForumTopicsOptions) (*model.ForumTopicList, error)
 	Overwrite(rctx request.CTX, post *model.Post) (*model.Post, error)
 	OverwriteMultiple(rctx request.CTX, posts []*model.Post) ([]*model.Post, int, error)
 	GetPostsByIds(postIds []string) ([]*model.Post, error)
