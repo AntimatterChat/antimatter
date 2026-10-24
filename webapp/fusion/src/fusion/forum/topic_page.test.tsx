@@ -4,6 +4,7 @@
 import React from 'react';
 
 import {renderWithContext, screen, userEvent} from 'tests/react_testing_utils';
+import {getHistory} from 'utils/browser_history';
 import {TestHelper} from 'utils/test_helper';
 
 import TopicPage from './topic_page';
@@ -45,8 +46,8 @@ describe('fusion/forum/TopicPage', () => {
     });
 
     test('Q&A: the question and its replies, accepted answer first', () => {
-        const r1 = TestHelper.getPostMock({id: 'r1', channel_id: 'c1', root_id: 'r0', user_id: 'maya', create_at: 100});
-        const r2 = TestHelper.getPostMock({id: 'r2', channel_id: 'c1', root_id: 'r0', user_id: 'ivy', create_at: 200});
+        const r1 = TestHelper.getPostMock({id: 'r1', channel_id: 'c1', root_id: 'r0', user_id: 'maya', create_at: 100, type: ''});
+        const r2 = TestHelper.getPostMock({id: 'r2', channel_id: 'c1', root_id: 'r0', user_id: 'ivy', create_at: 200, type: ''});
         renderWithContext(
             <TopicPage
                 channel={channel}
@@ -59,12 +60,13 @@ describe('fusion/forum/TopicPage', () => {
             ),
         );
 
+        // No accepted answer and no votes: oldest first (reply_order.test.ts covers the ordering itself).
         const messages = screen.getAllByText(/^Message:/).map((el) => el.textContent);
-        expect(messages).toEqual(['Message:r0', 'Message:r2', 'Message:r1']);
+        expect(messages).toEqual(['Message:r0', 'Message:r1', 'Message:r2']);
     });
 
     test('shows "N replies" above the replies', () => {
-        const r1 = TestHelper.getPostMock({id: 'r1', channel_id: 'c1', root_id: 'r0', create_at: 100});
+        const r1 = TestHelper.getPostMock({id: 'r1', channel_id: 'c1', root_id: 'r0', create_at: 100, type: ''});
         renderWithContext(
             <TopicPage
                 channel={channel}
@@ -77,6 +79,7 @@ describe('fusion/forum/TopicPage', () => {
     });
 
     test('"All topics" goes back to the channel', async () => {
+        const push = jest.spyOn(getHistory(), 'push').mockImplementation(() => undefined);
         renderWithContext(
             <TopicPage
                 channel={channel}
@@ -87,7 +90,7 @@ describe('fusion/forum/TopicPage', () => {
 
         await userEvent.click(screen.getByRole('button', {name: 'All topics'}));
 
-        expect(window.location.pathname).toBe('/lumen-labs/channels/beam-questions');
+        expect(push).toHaveBeenCalledWith('/lumen-labs/channels/beam-questions');
     });
 
     test('Ideas: the status chip shows under the title', () => {
