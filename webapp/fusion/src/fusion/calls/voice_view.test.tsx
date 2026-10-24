@@ -7,7 +7,6 @@ import {renderWithContext, screen, userEvent} from 'tests/react_testing_utils';
 import {TestHelper} from 'utils/test_helper';
 
 import type {MyCallState} from './hooks';
-
 import VoiceView from './voice_view';
 
 const mockJoinVoice = jest.fn();
