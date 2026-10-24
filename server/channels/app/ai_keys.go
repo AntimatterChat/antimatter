@@ -29,6 +29,9 @@ type aiServerState struct {
 	// node runs the apps).
 	mcp      aiMCPState
 	appTools aiAppToolsState
+
+	// assistant is the ambient assistant's state on the node (assistant.go).
+	assistant assistantState
 }
 
 // agentDirectory gives the node's list of agents.

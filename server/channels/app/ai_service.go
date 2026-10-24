@@ -39,6 +39,9 @@ type AICall struct {
 	PluginID string
 	// AgentID is the agent the server's agent runtime calls the model for, on UserID's behalf.
 	AgentID string
+	// Assistant marks the assistant's decisions for UserID (assistant_model.go): a person's call, held to the
+	// connection's audience like theirs.
+	Assistant bool
 	// ChannelID and TeamID are where the call happens; both may be empty. A channel's community wins: a team ID that
 	// isn't the channel's is refused.
 	ChannelID string
@@ -54,6 +57,8 @@ func (c AICall) usagePurpose() string {
 		return "plugin:" + c.PluginID
 	case c.AgentID != "":
 		return "agent:" + c.AgentID
+	case c.Assistant:
+		return "assistant"
 	default:
 		return ""
 	}
@@ -165,6 +170,10 @@ func (a *App) prepareAICall(rctx request.CTX, call AICall, connectionID, request
 	if call.Purpose != "" && call.AgentID != "" {
 		// An agent answers for a person, never as a built-in feature.
 		return nil, model.NewAppError(where, "app.ai.call.purpose.app_error", nil, "agent_id="+call.AgentID, http.StatusBadRequest)
+	}
+	if call.Purpose != "" && call.Assistant {
+		// The assistant decides for a person, never as a built-in feature.
+		return nil, model.NewAppError(where, "app.ai.call.purpose.app_error", nil, "assistant", http.StatusBadRequest)
 	}
 	if call.Purpose != "" && call.PluginID != "" {
 		// Apps call for a person, never as a built-in feature.

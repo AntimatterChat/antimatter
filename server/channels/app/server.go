@@ -753,6 +753,8 @@ func (s *Server) Shutdown() {
 	s.Log().Info("Stopping Server...")
 
 	s.RemoveClusterLeaderChangedListener(s.clusterLeaderListenerId)
+	// Antimatter: the assistant's windows and offers' timers stop first.
+	s.ai.assistant.stop()
 
 	var err error
 	s.serviceMux.RLock()

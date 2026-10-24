@@ -343,6 +343,10 @@ func (a *App) aiToolLookupUser(rctx request.CTX, call *aiToolCall) (string, erro
 }
 
 func (a *App) aiToolPostMessage(rctx request.CTX, call *aiToolCall) (string, error) {
+	if call.agent == nil {
+		// Only an agent's confirmed call posts; the assistant never runs a write on its own.
+		return "", errors.New("no agent posts this message")
+	}
 	var args struct {
 		ChannelID   string `json:"channel_id"`
 		ChannelName string `json:"channel_name"`

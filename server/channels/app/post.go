@@ -531,6 +531,8 @@ func (a *App) CreatePost(rctx request.CTX, post *model.Post, channel *model.Chan
 
 		// Antimatter: a post for an agent (a mention, a direct message, a reply in its thread) starts its turn.
 		a.maybeStartAgentTurns(rctx, rpost, channel)
+		// Antimatter: the assistant follows the conversations people have it open on.
+		a.maybeQueueAssistantPost(rpost, channel)
 	}
 
 	// Normally, we would let the API layer call PreparePostForClient, but we do it here since it also needs

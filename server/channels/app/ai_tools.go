@@ -48,6 +48,8 @@ const (
 	aiToolDecisionConfirmed = "confirmed"
 	aiToolDecisionDeclined  = "declined"
 	aiToolDecisionRefused   = "refused"
+	// aiToolDecisionAssistant is a read the assistant ran for the person viewing a conversation.
+	aiToolDecisionAssistant = "assistant"
 )
 
 var aiToolModelNameInvalid = regexp.MustCompile(`[^a-zA-Z0-9_-]`)
@@ -447,13 +449,17 @@ func (a *App) runResolvedAITool(rctx request.CTX, tc *aiToolCall, rt *aiResolved
 		}
 		return result.Text(), nil
 	case rt.tool.Source == model.AIToolSourceApp:
-		channelID := ""
+		channelID, agentID := "", ""
 		if tc.channel != nil {
 			channelID = tc.channel.Id
 		}
+		if tc.agent != nil {
+			// The assistant's calls are through no agent.
+			agentID = tc.agent.UserId
+		}
 		return a.runAIAppTool(userCtx, rt.tool, &model.AIToolExecution{
 			CallId: tc.callID, Tool: rt.tool.LocalName, Arguments: tc.arguments, UserId: user.Id,
-			ChannelId: channelID, TeamId: tc.teamID, RootId: tc.rootID, AgentId: tc.agent.UserId,
+			ChannelId: channelID, TeamId: tc.teamID, RootId: tc.rootID, AgentId: agentID,
 		})
 	}
 	return "", errors.New("unknown tool")
