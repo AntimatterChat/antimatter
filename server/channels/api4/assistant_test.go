@@ -140,25 +140,25 @@ func TestAssistantAPI(t *testing.T) {
 
 		for name, call := range map[string]func() (*model.Response, error){
 			"dismiss": func() (*model.Response, error) {
-				_, resp, err := client2.DismissAssistantCard(ctx, channel.Id, mine[0].Id)
-				return resp, err
+				_, r, e := client2.DismissAssistantCard(ctx, channel.Id, mine[0].Id)
+				return r, e
 			},
 			"pin": func() (*model.Response, error) {
-				_, resp, err := client2.PinAssistantCard(ctx, channel.Id, mine[0].Id, true)
-				return resp, err
+				_, r, e := client2.PinAssistantCard(ctx, channel.Id, mine[0].Id, true)
+				return r, e
 			},
 			"mute": func() (*model.Response, error) {
-				_, resp, err := client2.MuteAssistantCard(ctx, channel.Id, mine[0].Id)
-				return resp, err
+				_, r, e := client2.MuteAssistantCard(ctx, channel.Id, mine[0].Id)
+				return r, e
 			},
 			"post": func() (*model.Response, error) {
-				_, resp, err := client2.PostAssistantCard(ctx, channel.Id, mine[0].Id)
-				return resp, err
+				_, r, e := client2.PostAssistantCard(ctx, channel.Id, mine[0].Id)
+				return r, e
 			},
 		} {
-			resp, err := call()
-			require.Error(t, err, name)
-			CheckNotFoundStatus(t, resp)
+			got, callErr := call()
+			require.Error(t, callErr, name)
+			CheckNotFoundStatus(t, got)
 		}
 
 		anonymous := th.CreateClient()

@@ -57,12 +57,12 @@ type assistantDecisionCache map[string]*assistantModelOutcome
 func assistantDecisionInput(posts []*model.Post, names map[string]string) string {
 	lines := make([]string, 0, len(posts))
 	total := 0
-	for i := len(posts) - 1; i >= 0; i-- {
-		name := names[posts[i].UserId]
+	for _, post := range slices.Backward(posts) {
+		name := names[post.UserId]
 		if name == "" {
 			name = "someone"
 		}
-		line := name + ": " + strings.Join(strings.Fields(posts[i].Message), " ")
+		line := name + ": " + strings.Join(strings.Fields(post.Message), " ")
 		total += utf8.RuneCountInString(line)
 		if total > assistantModelInputRunes && len(lines) > 0 {
 			break

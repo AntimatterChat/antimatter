@@ -562,11 +562,9 @@ func TestAssistantActionClaimsAreAtomic(t *testing.T) {
 	post := at.post(at.maya, at.channel, "deploy web-app")
 	var wg sync.WaitGroup
 	for range 2 {
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
+		wg.Go(func() {
 			at.run(at.channel, post)
-		}()
+		})
 	}
 	wg.Wait()
 	samCards, oliviaCards := at.feed(at.sam, at.channel), at.feed(at.olivia, at.channel)
@@ -589,15 +587,13 @@ func TestAssistantActionClaimsAreAtomic(t *testing.T) {
 			user *model.User
 			card *model.AssistantCard
 		}{{at.sam, samCards[0]}, {at.olivia, oliviaCards[0]}, {at.sam, samCards[0]}, {at.olivia, oliviaCards[0]}} {
-			wg.Add(1)
-			go func() {
-				defer wg.Done()
+			wg.Go(func() {
 				if card, appErr := th.App.ClaimAssistantCard(th.Context, c.user.Id, at.channel.Id, c.card.Id); appErr == nil && card.Offer.HolderId == c.user.Id {
 					mu.Lock()
 					won = append(won, c.user.Id)
 					mu.Unlock()
 				}
-			}()
+			})
 		}
 		wg.Wait()
 		require.NotEmpty(t, won)
@@ -617,9 +613,7 @@ func TestAssistantActionClaimsAreAtomic(t *testing.T) {
 		ok, conflicts := 0, 0
 		var wg sync.WaitGroup
 		for range 8 {
-			wg.Add(1)
-			go func() {
-				defer wg.Done()
+			wg.Go(func() {
 				_, appErr := th.App.RunAssistantCard(th.Context, holderID, at.channel.Id, card.Id)
 				mu.Lock()
 				defer mu.Unlock()
@@ -629,7 +623,7 @@ func TestAssistantActionClaimsAreAtomic(t *testing.T) {
 				case appErr.StatusCode == http.StatusConflict:
 					conflicts++
 				}
-			}()
+			})
 		}
 		wg.Wait()
 		assert.Equal(t, 1, ok, "it runs once")

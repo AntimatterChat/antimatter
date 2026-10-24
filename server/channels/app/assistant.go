@@ -635,8 +635,8 @@ func (a *App) GetAssistantFeed(rctx request.CTX, userID, channelID string) (*mod
 		Cards:     []*model.AssistantCard{},
 	}
 	stored := a.assistantFeed(userID, channelID)
-	for i := len(stored.Cards) - 1; i >= 0; i-- {
-		c := *stored.Cards[i]
+	for _, card := range slices.Backward(stored.Cards) {
+		c := *card
 		if c.Status == model.AssistantCardStatusDismissed {
 			continue
 		}
