@@ -1841,3 +1841,134 @@ func TestIsSearchParamsListValid(t *testing.T) {
 	appErr = IsSearchParamsListValid([]*SearchParams{})
 	assert.Nil(t, appErr)
 }
+
+func TestParseSearchFlagsHasPinnedMentions(t *testing.T) {
+	for _, testCase := range []struct {
+		Name  string
+		Input string
+		Flags []flag
+	}{
+		{
+			Name:  "has:link is a recognized flag",
+			Input: "has:link",
+			Flags: []flag{{name: "has", value: "link", exclude: false}},
+		},
+		{
+			Name:  "has flag keeps its case as typed",
+			Input: "HAS:Code",
+			Flags: []flag{{name: "has", value: "Code", exclude: false}},
+		},
+		{
+			Name:  "has flag can be excluded",
+			Input: "-has:file",
+			Flags: []flag{{name: "has", value: "file", exclude: true}},
+		},
+		{
+			Name:  "pinned:true is a recognized flag",
+			Input: "pinned:true",
+			Flags: []flag{{name: "pinned", value: "true", exclude: false}},
+		},
+		{
+			Name:  "mentions:@bob is a recognized flag",
+			Input: "mentions:@bob",
+			Flags: []flag{{name: "mentions", value: "@bob", exclude: false}},
+		},
+		{
+			Name:  "mentions flag can be excluded",
+			Input: "-mentions:@bob",
+			Flags: []flag{{name: "mentions", value: "@bob", exclude: true}},
+		},
+	} {
+		t.Run(testCase.Name, func(t *testing.T) {
+			_, flags := parseSearchFlags(splitWords(testCase.Input))
+			require.Equal(t, testCase.Flags, flags)
+		})
+	}
+}
+
+func TestParseSearchParamsHasPinnedMentions(t *testing.T) {
+	for _, testCase := range []struct {
+		Name  string
+		Input string
+
+		HasFlags         []string
+		ExcludedHasFlags []string
+		Pinned           *bool
+		Mentions         []string
+		ExcludedMentions []string
+	}{
+		{
+			Name:     "a single has:link filter",
+			Input:    "has:link",
+			HasFlags: []string{"link"},
+		},
+		{
+			Name:     "several has: filters combine",
+			Input:    "has:link has:code has:thread has:file has:embed",
+			HasFlags: []string{"link", "code", "thread", "file", "embed"},
+		},
+		{
+			Name:     "has: is case insensitive and is normalized to lower case",
+			Input:    "has:LINK",
+			HasFlags: []string{"link"},
+		},
+		{
+			Name:             "an excluded has: filter",
+			Input:            "-has:code",
+			ExcludedHasFlags: []string{"code"},
+		},
+		{
+			Name:   "pinned:true",
+			Input:  "pinned:true",
+			Pinned: NewPointer(true),
+		},
+		{
+			Name:   "pinned:false",
+			Input:  "pinned:false",
+			Pinned: NewPointer(false),
+		},
+		{
+			Name:     "mentions:@user strips the @ and lower-cases the username",
+			Input:    "mentions:@Bob",
+			Mentions: []string{"bob"},
+		},
+		{
+			Name:     "mentions: without the @ also works",
+			Input:    "mentions:bob",
+			Mentions: []string{"bob"},
+		},
+		{
+			Name:             "an excluded mentions: filter",
+			Input:            "-mentions:@bob",
+			ExcludedMentions: []string{"bob"},
+		},
+		{
+			Name:     "has:, pinned: and mentions: combine with plain terms",
+			Input:    "hello has:link pinned:true mentions:@bob",
+			HasFlags: []string{"link"},
+			Pinned:   NewPointer(true),
+			Mentions: []string{"bob"},
+		},
+	} {
+		t.Run(testCase.Name, func(t *testing.T) {
+			paramsList := ParseSearchParams(testCase.Input, 0)
+			require.Len(t, paramsList, 1)
+			params := paramsList[0]
+			assert.Equal(t, testCase.HasFlags, params.HasFlags)
+			assert.Equal(t, testCase.ExcludedHasFlags, params.ExcludedHasFlags)
+			assert.Equal(t, testCase.Pinned, params.Pinned)
+			assert.Equal(t, testCase.Mentions, params.Mentions)
+			assert.Equal(t, testCase.ExcludedMentions, params.ExcludedMentions)
+		})
+	}
+
+	t.Run("has:bogus alone produces no params", func(t *testing.T) {
+		paramsList := ParseSearchParams("has:bogus", 0)
+		require.Empty(t, paramsList)
+	})
+
+	t.Run("pinned:maybe alone produces no params", func(t *testing.T) {
+		paramsList := ParseSearchParams("pinned:maybe", 0)
+		require.Empty(t, paramsList)
+	})
+}

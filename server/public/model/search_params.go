@@ -14,21 +14,32 @@ var searchTermPuncStart = regexp.MustCompile(`^[^\pL\d\s#"]+`)
 var searchTermPuncEnd = regexp.MustCompile(`[^\pL\p{M}\d\s*"]+$`)
 
 type SearchParams struct {
-	Terms                  string   `json:"terms,omitempty"`
-	ExcludedTerms          string   `json:"excluded_terms,omitempty"`
-	IsHashtag              bool     `json:"ishashtag,omitempty"`
-	InChannels             []string `json:"in_channels,omitempty"`
-	ExcludedChannels       []string `json:"excluded_channels,omitempty"`
-	FromUsers              []string `json:"from_users,omitempty"`
-	ExcludedUsers          []string `json:"excluded_users,omitempty"`
-	AfterDate              string   `json:"after_date,omitempty"`
-	ExcludedAfterDate      string   `json:"excluded_after_date,omitempty"`
-	BeforeDate             string   `json:"before_date,omitempty"`
-	ExcludedBeforeDate     string   `json:"excluded_before_date,omitempty"`
-	Extensions             []string `json:"extensions,omitempty"`
-	ExcludedExtensions     []string `json:"excluded_extensions,omitempty"`
-	OnDate                 string   `json:"on_date,omitempty"`
-	ExcludedDate           string   `json:"excluded_date,omitempty"`
+	Terms              string   `json:"terms,omitempty"`
+	ExcludedTerms      string   `json:"excluded_terms,omitempty"`
+	IsHashtag          bool     `json:"ishashtag,omitempty"`
+	InChannels         []string `json:"in_channels,omitempty"`
+	ExcludedChannels   []string `json:"excluded_channels,omitempty"`
+	FromUsers          []string `json:"from_users,omitempty"`
+	ExcludedUsers      []string `json:"excluded_users,omitempty"`
+	AfterDate          string   `json:"after_date,omitempty"`
+	ExcludedAfterDate  string   `json:"excluded_after_date,omitempty"`
+	BeforeDate         string   `json:"before_date,omitempty"`
+	ExcludedBeforeDate string   `json:"excluded_before_date,omitempty"`
+	Extensions         []string `json:"extensions,omitempty"`
+	ExcludedExtensions []string `json:"excluded_extensions,omitempty"`
+	OnDate             string   `json:"on_date,omitempty"`
+	ExcludedDate       string   `json:"excluded_date,omitempty"`
+	// HasFlags and ExcludedHasFlags hold the "has:" filter's subtypes (any of
+	// "link", "code", "thread", "file", "embed"), e.g. has:link -excludedTerm.
+	HasFlags         []string `json:"has,omitempty"`
+	ExcludedHasFlags []string `json:"excluded_has,omitempty"`
+	// Pinned is the "pinned:true" / "pinned:false" filter; nil means no filter.
+	Pinned *bool `json:"pinned,omitempty"`
+	// Mentions and ExcludedMentions hold the "mentions:@user" filter's
+	// usernames (without the leading @), matched against literal @mentions in
+	// the message text.
+	Mentions               []string `json:"mentions,omitempty"`
+	ExcludedMentions       []string `json:"excluded_mentions,omitempty"`
 	OrTerms                bool     `json:"or_terms,omitempty"`
 	IncludeDeletedChannels bool     `json:"include_deleted_channels,omitempty"`
 	TimeZoneOffset         int      `json:"timezone_offset,omitempty"`
@@ -109,7 +120,16 @@ func (p *SearchParams) GetExcludedDateMillis() (int64, int64) {
 	return GetStartOfDayMillis(date, p.TimeZoneOffset), GetEndOfDayMillis(date, p.TimeZoneOffset)
 }
 
-var searchFlags = [...]string{"from", "channel", "in", "before", "after", "on", "ext"}
+var searchFlags = [...]string{"from", "channel", "in", "before", "after", "on", "ext", "has", "pinned", "mentions"}
+
+// validHasFlags are the recognized subtypes of the "has:" filter.
+var validHasFlags = map[string]bool{
+	"link":   true,
+	"code":   true,
+	"thread": true,
+	"file":   true,
+	"embed":  true,
+}
 
 type flag struct {
 	name    string
@@ -270,6 +290,11 @@ func ParseSearchParams(text string, timeZoneOffset int) []*SearchParams {
 	excludedDate := ""
 	excludedExtensions := []string{}
 	extensions := []string{}
+	var hasFlags []string
+	var excludedHasFlags []string
+	var pinned *bool
+	var mentions []string
+	var excludedMentions []string
 
 	for _, flag := range flags {
 		if flag.name == "in" || flag.name == "channel" {
@@ -308,6 +333,33 @@ func ParseSearchParams(text string, timeZoneOffset int) []*SearchParams {
 			} else {
 				extensions = append(extensions, flag.value)
 			}
+		} else if flag.name == "has" {
+			value := strings.ToLower(flag.value)
+			if !validHasFlags[value] {
+				continue
+			}
+			if flag.exclude {
+				excludedHasFlags = append(excludedHasFlags, value)
+			} else {
+				hasFlags = append(hasFlags, value)
+			}
+		} else if flag.name == "pinned" {
+			switch strings.ToLower(flag.value) {
+			case "true":
+				pinned = NewPointer(true)
+			case "false":
+				pinned = NewPointer(false)
+			}
+		} else if flag.name == "mentions" {
+			username := NormalizeUsername(strings.TrimPrefix(flag.value, "@"))
+			if username == "" {
+				continue
+			}
+			if flag.exclude {
+				excludedMentions = append(excludedMentions, username)
+			} else {
+				mentions = append(mentions, username)
+			}
 		}
 	}
 
@@ -330,6 +382,11 @@ func ParseSearchParams(text string, timeZoneOffset int) []*SearchParams {
 			ExcludedExtensions: excludedExtensions,
 			OnDate:             onDate,
 			ExcludedDate:       excludedDate,
+			HasFlags:           hasFlags,
+			ExcludedHasFlags:   excludedHasFlags,
+			Pinned:             pinned,
+			Mentions:           mentions,
+			ExcludedMentions:   excludedMentions,
 			TimeZoneOffset:     timeZoneOffset,
 		})
 	}
@@ -351,6 +408,11 @@ func ParseSearchParams(text string, timeZoneOffset int) []*SearchParams {
 			ExcludedExtensions: excludedExtensions,
 			OnDate:             onDate,
 			ExcludedDate:       excludedDate,
+			HasFlags:           hasFlags,
+			ExcludedHasFlags:   excludedHasFlags,
+			Pinned:             pinned,
+			Mentions:           mentions,
+			ExcludedMentions:   excludedMentions,
 			TimeZoneOffset:     timeZoneOffset,
 		})
 	}
@@ -363,7 +425,9 @@ func ParseSearchParams(text string, timeZoneOffset int) []*SearchParams {
 			len(extensions) != 0 || len(excludedExtensions) != 0 ||
 			afterDate != "" || excludedAfterDate != "" ||
 			beforeDate != "" || excludedBeforeDate != "" ||
-			onDate != "" || excludedDate != "") {
+			onDate != "" || excludedDate != "" ||
+			len(hasFlags) != 0 || len(excludedHasFlags) != 0 ||
+			pinned != nil || len(mentions) != 0 || len(excludedMentions) != 0) {
 		paramsList = append(paramsList, &SearchParams{
 			Terms:              "",
 			ExcludedTerms:      "",
@@ -380,6 +444,11 @@ func ParseSearchParams(text string, timeZoneOffset int) []*SearchParams {
 			ExcludedExtensions: excludedExtensions,
 			OnDate:             onDate,
 			ExcludedDate:       excludedDate,
+			HasFlags:           hasFlags,
+			ExcludedHasFlags:   excludedHasFlags,
+			Pinned:             pinned,
+			Mentions:           mentions,
+			ExcludedMentions:   excludedMentions,
 			TimeZoneOffset:     timeZoneOffset,
 		})
 	}
