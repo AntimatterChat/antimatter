@@ -5,10 +5,9 @@ import React from 'react';
 
 import {RecapStatus} from '@mattermost/types/recaps';
 
+import {LayoutProvider} from 'fusion/shell/layout_context';
 import {renderWithContext, screen} from 'tests/react_testing_utils';
 import {TestHelper} from 'utils/test_helper';
-
-import {LayoutProvider} from 'fusion/shell/layout_context';
 
 import HomeSidebar from './home_sidebar';
 
