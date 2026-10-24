@@ -11,7 +11,9 @@ set -euo pipefail
 
 cd "$(dirname "${BASH_SOURCE[0]}")/../.."
 
-DOCKERFILES=(server/build/Dockerfile.buildenv server/build/Dockerfile.buildenv-fips)
+# Antimatter: only the regular build image is checked. The FIPS one is based on a private registry
+# (cgr.dev/mattermost.com) that Antimatter cannot pull, so its Go pin cannot follow .go-version.
+DOCKERFILES=(server/build/Dockerfile.buildenv)
 
 fail() {
     echo "$*" >&2
