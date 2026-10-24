@@ -305,6 +305,11 @@ var searchPostStoreTests = []searchTest{
 		Fn:   testSearchHasPinnedMentionsFilters,
 		Tags: []string{EngineAll},
 	},
+	{
+		Name: "Should never widen search to unreadable channels or deleted posts with has:, pinned: and mentions:",
+		Fn:   testSearchHasPinnedMentionsFiltersPrivacy,
+		Tags: []string{EngineAll},
+	},
 }
 
 func TestSearchPostStore(t *testing.T, s store.Store, testEngine *SearchTestEngine) {
@@ -2714,5 +2719,84 @@ func testSearchHasPinnedMentionsFilters(t *testing.T, th *SearchTestHelper) {
 			posts := search(t, &model.SearchParams{Terms: "mentionsfilter", ExcludedMentions: []string{th.User2.Username}})
 			require.NotContains(t, posts, mentionsUser2.Id)
 		})
+	})
+}
+
+// testSearchHasPinnedMentionsFiltersPrivacy checks that each has:, pinned:
+// and mentions: filter only ever narrows a search: posts in a channel the
+// searcher isn't a member of, in a deleted channel, or that were deleted stay
+// hidden, with the filter alone or next to search terms.
+func testSearchHasPinnedMentionsFiltersPrivacy(t *testing.T, th *SearchTestHelper) {
+	// createMatchingPost creates a post matching every filter below: a link
+	// outside code, inline code, an @mention, a file, pinned, with a reply.
+	createMatchingPost := func(t *testing.T, channelID string) *model.Post {
+		t.Helper()
+		post := th.createPostModel(th.User.Id, channelID, "privacyfilter see https://example.com and `code` @"+th.User2.Username, "", model.PostTypeDefault, 1000000, true)
+		post.FileIds = model.StringArray{model.NewId()}
+		post, err := th.Store.Post().Save(th.Context, post)
+		require.NoError(t, err)
+		_, err = th.createReply(th.User.Id, "privacyfilter a reply", "", post, 1000001, false)
+		require.NoError(t, err)
+		return post
+	}
+
+	filters := map[string]func() *model.SearchParams{
+		"has:link":   func() *model.SearchParams { return &model.SearchParams{HasFlags: []string{"link"}} },
+		"has:code":   func() *model.SearchParams { return &model.SearchParams{HasFlags: []string{"code"}} },
+		"has:embed":  func() *model.SearchParams { return &model.SearchParams{HasFlags: []string{"embed"}} },
+		"has:file":   func() *model.SearchParams { return &model.SearchParams{HasFlags: []string{"file"}} },
+		"has:thread": func() *model.SearchParams { return &model.SearchParams{HasFlags: []string{"thread"}} },
+		"pinned":     func() *model.SearchParams { return &model.SearchParams{Pinned: model.NewPointer(true)} },
+		"mentions":   func() *model.SearchParams { return &model.SearchParams{Mentions: []string{th.User2.Username}} },
+	}
+
+	search := func(t *testing.T, userID string, params *model.SearchParams) map[string]*model.Post {
+		t.Helper()
+		results, err := th.Store.Post().SearchPostsForUser(th.Context, []*model.SearchParams{params}, userID, th.Team.Id, 0, 20)
+		require.NoError(t, err)
+		return results.Posts
+	}
+
+	t.Run("non-member and deleted channels stay hidden", func(t *testing.T) {
+		// User2 isn't a member of ChannelBasic, and ChannelDeleted is deleted;
+		// User2 is a member of ChannelPrivate, the positive control.
+		hidden := createMatchingPost(t, th.ChannelBasic.Id)
+		inDeletedChannel := createMatchingPost(t, th.ChannelDeleted.Id)
+		visible := createMatchingPost(t, th.ChannelPrivate.Id)
+		defer th.deleteUserPosts(th.User.Id)
+
+		for name, newParams := range filters {
+			for _, terms := range []string{"", "privacyfilter"} {
+				t.Run(name+" terms="+terms, func(t *testing.T) {
+					params := newParams()
+					params.Terms = terms
+					posts := search(t, th.User2.Id, params)
+					th.checkPostInSearchResults(t, visible.Id, posts)
+					for _, p := range posts {
+						require.NotEqual(t, th.ChannelBasic.Id, p.ChannelId, "found a post of a channel the searcher isn't a member of")
+						require.NotEqual(t, th.ChannelDeleted.Id, p.ChannelId, "found a post of a deleted channel")
+					}
+					require.NotContains(t, posts, hidden.Id)
+					require.NotContains(t, posts, inDeletedChannel.Id)
+				})
+			}
+		}
+	})
+
+	t.Run("deleted posts stay hidden", func(t *testing.T) {
+		deleted := createMatchingPost(t, th.ChannelPrivate.Id)
+		defer th.deleteUserPosts(th.User.Id)
+		require.NoError(t, th.Store.Post().Delete(th.Context, deleted.Id, model.GetMillis(), th.User.Id))
+
+		for name, newParams := range filters {
+			for _, terms := range []string{"", "privacyfilter"} {
+				t.Run(name+" terms="+terms, func(t *testing.T) {
+					params := newParams()
+					params.Terms = terms
+					posts := search(t, th.User.Id, params)
+					require.NotContains(t, posts, deleted.Id)
+				})
+			}
+		}
 	})
 }
