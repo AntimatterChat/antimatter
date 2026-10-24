@@ -143,8 +143,17 @@ func TestBuildPostSearch(t *testing.T) {
 		assert.Contains(t, q, `{"term":{"has_code":true}}`)
 		assert.Contains(t, q, `{"term":{"has_file":true}}`, "an excluded has: subtype still queries the same field, under must_not")
 		assert.Contains(t, q, `{"term":{"is_pinned":true}}`)
-		assert.Contains(t, q, `{"terms":{"mentions":["bob"]}}`)
+		assert.Contains(t, q, `{"term":{"mentions":"bob"}}`)
 		assert.Contains(t, q, `{"terms":{"mentions":["alice"]}}`)
+	})
+
+	t.Run("several mentions: filters must all match", func(t *testing.T) {
+		params := &model.SearchParams{Mentions: []string{"bob", "carol"}}
+		body := buildPostSearch(channels, []*model.SearchParams{params}, false, 0, 10)
+		q := toJSON(t, body["query"])
+		assert.Contains(t, q, `{"term":{"mentions":"bob"}}`)
+		assert.Contains(t, q, `{"term":{"mentions":"carol"}}`)
+		assert.NotContains(t, q, `{"terms":{"mentions":["bob","carol"]}}`)
 	})
 
 	t.Run("has:thread isn't part of the query: it's a post-fetch filter", func(t *testing.T) {

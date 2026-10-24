@@ -258,8 +258,10 @@ func hasPinnedMentionsFilters(b *boolQuery, p *model.SearchParams) bool {
 		b.filter = append(b.filter, termQuery("is_pinned", *p.Pinned))
 		used = true
 	}
-	if len(p.Mentions) > 0 {
-		b.filter = append(b.filter, termsQuery("mentions", p.Mentions))
+	// Every mentions:@user must match, like in the database search; a single
+	// terms query would match any of them.
+	for _, username := range p.Mentions {
+		b.filter = append(b.filter, termQuery("mentions", username))
 		used = true
 	}
 	if len(p.ExcludedMentions) > 0 {
