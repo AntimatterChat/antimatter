@@ -277,6 +277,11 @@ func (a *App) SendNotifications(rctx request.CTX, post *model.Post, team *model.
 		mentionedUsersList = make(model.StringArray, 0, len(mentions.Mentions))
 		mentionAutofollowChans := []chan *model.AppError{}
 		threadParticipants := map[string]bool{post.UserId: true}
+		// Antimatter: a forum topic's answer or status reply speaks for the topic, not for the one who changed it:
+		// it doesn't make them follow the thread (its followers are still told).
+		if model.IsTopicSystemReply(post) {
+			delete(threadParticipants, post.UserId)
+		}
 		membershipsMutex := &sync.Mutex{}
 		followersMutex := &sync.Mutex{}
 		if *a.Config().ServiceSettings.ThreadAutoFollow && post.RootId != "" {

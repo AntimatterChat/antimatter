@@ -397,3 +397,36 @@ func TestMoveTopicCarriesItsAnswerAndStatus(t *testing.T) {
 		assert.Nil(t, storedProp(t, th, moved.Id, model.PostPropsAcceptedAnswer), "a text channel")
 	})
 }
+
+// The system reply of an answer or status change doesn't make its actor follow the topic.
+func TestTopicSystemRepliesDontFollow(t *testing.T) {
+	mainHelper.Parallel(t)
+
+	t.Run("a status change", func(t *testing.T) {
+		f := setupForum(t, model.ChannelPresetForumIdeas)
+		th := f.th
+		th.App.UpdateConfig(func(cfg *model.Config) { *cfg.ServiceSettings.ThreadAutoFollow = true })
+		moderator := f.moderator(t)
+		done := model.TopicStatusDone
+		_, appErr := th.App.PatchForumTopic(th.Context, forumSession(moderator), f.topic.Id, &model.ForumTopicPatch{Status: &done})
+		require.Nil(t, appErr)
+		assert.Equal(t, model.PostTypeTopicStatus, f.lastReply(t, f.topic.Id).Type)
+		assert.False(t, isFollowing(th, moderator.Id, f.topic.Id))
+
+		f.post(t, moderator.Id, f.topic.Id, "")
+		assert.True(t, isFollowing(th, moderator.Id, f.topic.Id), "a reply of theirs still does")
+	})
+
+	t.Run("an accepted answer", func(t *testing.T) {
+		f := setupForum(t, model.ChannelPresetForumQA)
+		th := f.th
+		th.App.UpdateConfig(func(cfg *model.Config) { *cfg.ServiceSettings.ThreadAutoFollow = true })
+		answer := f.post(t, th.BasicUser2.Id, f.topic.Id, "")
+		moderator := f.moderator(t)
+		_, appErr := th.App.PatchForumTopic(th.Context, forumSession(moderator), f.topic.Id, &model.ForumTopicPatch{AcceptedAnswerId: &answer.Id})
+		require.Nil(t, appErr)
+		assert.Equal(t, model.PostTypeTopicAnswer, f.lastReply(t, f.topic.Id).Type)
+		assert.False(t, isFollowing(th, moderator.Id, f.topic.Id))
+		assert.True(t, isFollowing(th, th.BasicUser2.Id, f.topic.Id), "the people already in it still follow")
+	})
+}

@@ -13091,12 +13091,12 @@
   },
   {
     "id": "app.topic.answer.accepted",
-    "translation": "@{{.Username}} marked @{{.AuthorUsername}}'s reply as the answer.",
+    "translation": "{{.Username}} marked {{.AuthorUsername}}'s reply as the answer.",
     "description": "System message in a Q&A forum topic when someone accepts a reply as its answer. {{.Username}} is who accepted it, {{.AuthorUsername}} who wrote the reply."
   },
   {
     "id": "app.topic.answer.removed",
-    "translation": "@{{.Username}} removed the accepted answer.",
+    "translation": "{{.Username}} removed the accepted answer.",
     "description": "System message in a Q&A forum topic when someone takes back its accepted answer. {{.Username}} is who did it."
   },
   {
@@ -13121,7 +13121,7 @@
   },
   {
     "id": "app.topic.status.changed",
-    "translation": "@{{.Username}} set the status to {{.Status}}.",
+    "translation": "{{.Username}} set the status to {{.Status}}.",
     "description": "System message in an Ideas forum topic when a moderator changes its status. {{.Username}} is the moderator, {{.Status}} the status name (Open, Planned, In progress, Done or Declined)."
   },
   {

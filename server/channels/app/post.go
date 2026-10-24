@@ -580,8 +580,9 @@ func (a *App) CreatePost(rctx request.CTX, post *model.Post, channel *model.Chan
 		}
 	}
 
-	// Make sure poster is following the thread
-	if *a.Config().ServiceSettings.ThreadAutoFollow && rpost.RootId != "" {
+	// Make sure poster is following the thread (Antimatter: not by a forum topic's answer or status reply, which
+	// speaks for the topic, not for the one who changed it).
+	if *a.Config().ServiceSettings.ThreadAutoFollow && rpost.RootId != "" && !model.IsTopicSystemReply(rpost) {
 		_, err := a.Srv().Store().Thread().MaintainMembership(user.Id, rpost.RootId, store.ThreadMembershipOpts{
 			Following:       true,
 			UpdateFollowing: true,

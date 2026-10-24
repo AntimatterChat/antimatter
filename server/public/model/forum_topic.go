@@ -37,6 +37,11 @@ const (
 	PostTypeTopicStatus = "system_am_topic_status"
 )
 
+// IsTopicSystemReply tells whether a post is the system reply of a topic's answer or status change.
+func IsTopicSystemReply(post *Post) bool {
+	return post != nil && (post.Type == PostTypeTopicAnswer || post.Type == PostTypeTopicStatus)
+}
+
 // PostPropsServerOwned are the props of a topic that only the server writes: creating, updating or patching a post,
 // from a client or an app, drops incoming values and keeps the stored ones.
 var PostPropsServerOwned = []string{
