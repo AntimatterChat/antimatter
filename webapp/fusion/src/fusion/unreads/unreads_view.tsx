@@ -15,6 +15,7 @@ import {getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
 
 import Avatar from 'fusion/components/avatar';
 import Icon from 'fusion/components/icon';
+import type {IconName} from 'fusion/components/icon';
 import {useDisplayName, useUser} from 'fusion/hooks/users';
 import {useWhen} from 'fusion/messages/time';
 import {am} from 'fusion/utils/class_names';
@@ -31,6 +32,18 @@ const READ_DWELL_MS = 1200;
 function Sender({userId}: {userId: string}) {
     const user = useUser(userId);
     return <>{useDisplayName(user)}</>;
+}
+
+// groupGlyph is the simple glyph for a conversation that isn't a direct message (which gets the other person's
+// picture instead): a lock for private channels, people for group messages, a hash for everything else.
+function groupGlyph(channel: Channel): IconName {
+    if (channel.type === 'P') {
+        return 'lock';
+    }
+    if (channel.type === 'G') {
+        return 'users';
+    }
+    return 'hash';
 }
 
 type GroupProps = {
@@ -118,7 +131,7 @@ function UnreadGroup({channel, onRead}: GroupProps) {
                         />
                     ) : (
                         <Icon
-                            name={channel.type === 'P' ? 'lock' : channel.type === 'G' ? 'users' : 'hash'}
+                            name={groupGlyph(channel)}
                             size='sm'
                         />
                     )}
