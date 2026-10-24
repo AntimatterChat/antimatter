@@ -252,6 +252,8 @@ type fakeMCPServer struct {
 	called   []string
 	codes    map[string]string
 	verifier map[string]string
+	// answer, when set, gives a call's text (by the tool, its arguments and whose token it came with).
+	answer func(name string, arguments json.RawMessage, who string) string
 }
 
 func newFakeMCPServer(t *testing.T) *fakeMCPServer {
@@ -348,11 +350,16 @@ func (f *fakeMCPServer) serveMCP(w http.ResponseWriter, r *http.Request) {
 		result = map[string]any{"tools": f.tools}
 	case "tools/call":
 		var params struct {
-			Name string `json:"name"`
+			Name      string          `json:"name"`
+			Arguments json.RawMessage `json:"arguments"`
 		}
 		_ = json.Unmarshal(msg.Params, &params)
 		f.called = append(f.called, params.Name)
-		result = map[string]any{"content": []map[string]any{{"type": "text", "text": "ran " + params.Name + " as " + who}}}
+		text := "ran " + params.Name + " as " + who
+		if f.answer != nil {
+			text = f.answer(params.Name, params.Arguments, who)
+		}
+		result = map[string]any{"content": []map[string]any{{"type": "text", "text": text}}}
 	}
 	out, _ := json.Marshal(map[string]any{"jsonrpc": "2.0", "id": *msg.ID, "result": result})
 	w.Header().Set("Content-Type", "application/json")

@@ -40,6 +40,8 @@ type fakeLLM struct {
 	// modelLists counts the requests for the list of models (a connection's test, also the agents' status checks
 	// that run in the background); they aren't in requests.
 	modelLists int
+	// decide, when set, answers the decisions endpoint (the OpenAI dialect) with the JSON it gives for a request.
+	decide func(body map[string]any) string
 }
 
 type fakeLLMRequest struct {
@@ -60,7 +62,7 @@ func newFakeLLM(t *testing.T, answer string) *fakeLLM {
 		} else {
 			f.requests = append(f.requests, fakeLLMRequest{Path: r.URL.Path, Authorization: r.Header.Get("Authorization"), Body: body})
 		}
-		answer, failStatus, failMessage, chunks, unavailable := f.answer, f.failStatus, f.failMessage, f.chunks, f.unavailable
+		answer, failStatus, failMessage, chunks, unavailable, decide := f.answer, f.failStatus, f.failMessage, f.chunks, f.unavailable, f.decide
 		f.mu.Unlock()
 		switch {
 		case unavailable:
@@ -87,6 +89,9 @@ func newFakeLLM(t *testing.T, answer string) *fakeLLM {
 			fmt.Fprintf(w, `{"error":{"message":%s}}`, msg)
 		case strings.HasSuffix(r.URL.Path, "/models"):
 			fmt.Fprint(w, `{"data":[{"id":"test-model"}]}`)
+		case strings.HasSuffix(r.URL.Path, "/decisions") && decide != nil:
+			w.Header().Set("Content-Type", "application/json")
+			fmt.Fprint(w, decide(body))
 		case strings.HasSuffix(r.URL.Path, "/audio/speech"):
 			w.Header().Set("Content-Type", "audio/mpeg")
 			fmt.Fprint(w, "mp3")
