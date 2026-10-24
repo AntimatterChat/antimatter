@@ -76,7 +76,11 @@ func (c *sourceContent) build(translated []string) (string, json.RawMessage, err
 	return "", data, nil
 }
 
-func contentError(id, details string, status int) *model.AppError {
+// Named newAppError, not contentError: the i18n extractor recognises calls to a local
+// helper named exactly newAppError(id, ...) as it does model.NewAppError itself
+// (see UploadFileTask.newAppError in channels/app/file.go), so the literal ids
+// below survive `make i18n-extract` instead of being dropped as unused.
+func newAppError(id, details string, status int) *model.AppError {
 	return model.NewAppError("AutoTranslation.Translate", id, nil, details, status)
 }
 
@@ -87,15 +91,15 @@ func extractContent(content any) (*sourceContent, *model.AppError) {
 	var c *sourceContent
 	switch v := content.(type) {
 	case nil:
-		return nil, contentError("ent.autotranslation.validate_content.nil_content", "", http.StatusBadRequest)
+		return nil, newAppError("ent.autotranslation.validate_content.nil_content", "", http.StatusBadRequest)
 	case *model.Post:
 		if v == nil {
-			return nil, contentError("ent.autotranslation.extract_post.nil_post", "", http.StatusBadRequest)
+			return nil, newAppError("ent.autotranslation.extract_post.nil_post", "", http.StatusBadRequest)
 		}
 		// Only regular user messages are rendered translated by clients;
 		// system and plugin-typed posts carry generated text.
 		if v.Type != model.PostTypeDefault {
-			return nil, contentError("ent.autotranslation.no_translatable_content", "post type "+v.Type, http.StatusBadRequest)
+			return nil, newAppError("ent.autotranslation.no_translatable_content", "post type "+v.Type, http.StatusBadRequest)
 		}
 		c = &sourceContent{
 			Type:   model.TranslationTypeObject,
@@ -112,23 +116,23 @@ func extractContent(content any) (*sourceContent, *model.AppError) {
 			if err != nil {
 				details = err.Error()
 			}
-			return nil, contentError("ent.autotranslation.validate_content.invalid_json", details, http.StatusBadRequest)
+			return nil, newAppError("ent.autotranslation.validate_content.invalid_json", details, http.StatusBadRequest)
 		}
 		c = objectContent(obj)
 	case []byte:
 		return extractContent(json.RawMessage(v))
 	case map[string]any:
 		if v == nil {
-			return nil, contentError("ent.autotranslation.validate_content.nil_content", "", http.StatusBadRequest)
+			return nil, newAppError("ent.autotranslation.validate_content.nil_content", "", http.StatusBadRequest)
 		}
 		// Round-trip through JSON so the stored copy holds only JSON types.
 		data, err := json.Marshal(v)
 		if err != nil {
-			return nil, contentError("ent.autotranslation.validate_content.invalid_json", err.Error(), http.StatusBadRequest)
+			return nil, newAppError("ent.autotranslation.validate_content.invalid_json", err.Error(), http.StatusBadRequest)
 		}
 		return extractContent(json.RawMessage(data))
 	default:
-		return nil, contentError("ent.autotranslation.validate_content.invalid_type", "", http.StatusBadRequest)
+		return nil, newAppError("ent.autotranslation.validate_content.invalid_type", "", http.StatusBadRequest)
 	}
 
 	size := 0
@@ -142,10 +146,10 @@ func extractContent(content any) (*sourceContent, *model.AppError) {
 		plain = append(plain, s.plain())
 	}
 	if size > maxContentBytes {
-		return nil, contentError("ent.autotranslation.validate_content.text_too_large", "", http.StatusRequestEntityTooLarge)
+		return nil, newAppError("ent.autotranslation.validate_content.text_too_large", "", http.StatusRequestEntityTooLarge)
 	}
 	if !anyTranslatable {
-		return nil, contentError("ent.autotranslation.no_translatable_content", "", http.StatusBadRequest)
+		return nil, newAppError("ent.autotranslation.no_translatable_content", "", http.StatusBadRequest)
 	}
 	c.Plain = strings.Join(plain, "\n")
 	c.NormHash = normHash(c)

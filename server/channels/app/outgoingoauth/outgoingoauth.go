@@ -101,7 +101,12 @@ func (s *Service) checkAudiences(rctx request.CTX, where, action string, conn *m
 	return nil
 }
 
-func storeError(where, id string, err error) *model.AppError {
+// Named newAppError, not storeError, with id as its first parameter: the i18n
+// extractor recognises calls to a local helper named exactly newAppError(id, ...)
+// as it does model.NewAppError itself (see UploadFileTask.newAppError in
+// channels/app/file.go), so the literal ids below survive `make i18n-extract`
+// instead of being dropped as unused.
+func newAppError(id, where string, err error) *model.AppError {
 	var appErr *model.AppError
 	if errors.As(err, &appErr) {
 		return appErr
@@ -124,14 +129,14 @@ func (s *Service) SaveConnection(rctx request.CTX, conn *model.OutgoingOAuthConn
 
 	saved, err := s.store().SaveConnection(rctx, conn)
 	if err != nil {
-		return nil, storeError("SaveConnection", "ent.outgoing_oauth_connections.save_connection.app_error", err)
+		return nil, newAppError("ent.outgoing_oauth_connections.save_connection.app_error", "SaveConnection", err)
 	}
 
 	// The store does not persist the password grant credentials on insert,
 	// so write them with an update right away.
 	if saved.CredentialsUsername != nil || saved.CredentialsPassword != nil {
 		if saved, err = s.store().UpdateConnection(rctx, saved); err != nil {
-			return nil, storeError("SaveConnection", "ent.outgoing_oauth_connections.save_connection.app_error", err)
+			return nil, newAppError("ent.outgoing_oauth_connections.save_connection.app_error", "SaveConnection", err)
 		}
 	}
 	return saved, nil
@@ -148,7 +153,7 @@ func (s *Service) UpdateConnection(rctx request.CTX, conn *model.OutgoingOAuthCo
 
 	updated, err := s.store().UpdateConnection(rctx, conn)
 	if err != nil {
-		return nil, storeError("UpdateConnection", "ent.outgoing_oauth_connections.update_connection.app_error", err)
+		return nil, newAppError("ent.outgoing_oauth_connections.update_connection.app_error", "UpdateConnection", err)
 	}
 	s.tokens.forget(conn.Id)
 	return updated, nil
