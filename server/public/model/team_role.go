@@ -62,6 +62,11 @@ func IsTeamRoleName(name string) bool {
 	return strings.HasPrefix(name, teamRolePrefix)
 }
 
+// TeamRoleGroupID is the Antimatter role (its group's ID) a Mattermost role is granted by, and whether it is one.
+func TeamRoleGroupID(name string) (string, bool) {
+	return strings.CutPrefix(name, teamRolePrefix)
+}
+
 // AreTeamRolePermissions tells whether every permission is one a role may grant.
 func AreTeamRolePermissions(permissions []string) bool {
 	for _, p := range permissions {

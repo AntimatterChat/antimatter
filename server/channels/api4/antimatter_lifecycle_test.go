@@ -215,6 +215,31 @@ func TestAntimatterLifecycles(t *testing.T) {
 		}
 		assert.Contains(t, ids(list(t, th.SystemAdminClient).Groups), role.Id, "a system admin sees every community's")
 
+		// Nor by its name (what mentions look up).
+		byNames, _, err := loggedIn(t, outsider).GetGroupsByNames(context.Background(), []string{*role.Name})
+		require.NoError(t, err)
+		assert.Empty(t, byNames)
+		byNames, _, err = th.Client.GetGroupsByNames(context.Background(), []string{*role.Name})
+		require.NoError(t, err)
+		assert.Equal(t, []string{role.Id}, ids(byNames))
+
+		// Nor what the role may do, read as a Mattermost role.
+		grant(t, role, model.PermissionDeleteOthersPosts.Id)
+		roleName := model.TeamRoleName(role.Id)
+		_, resp, err := loggedIn(t, outsider).GetRoleByName(context.Background(), roleName)
+		require.Error(t, err)
+		CheckForbiddenStatus(t, resp)
+		roles, _, err := loggedIn(t, outsider).GetRolesByNames(context.Background(), []string{roleName, model.SystemUserRoleId})
+		require.NoError(t, err)
+		require.Len(t, roles, 1, "the other roles still come")
+		assert.Equal(t, model.SystemUserRoleId, roles[0].Name)
+		seen, _, err := th.Client.GetRoleByName(context.Background(), roleName)
+		require.NoError(t, err)
+		assert.Contains(t, seen.Permissions, model.PermissionDeleteOthersPosts.Id)
+		_, resp, err = loggedIn(t, outsider).GetRole(context.Background(), seen.Id)
+		require.Error(t, err)
+		CheckForbiddenStatus(t, resp)
+
 		// The total counts what the caller may see (TestGroupStore's GroupCountVisibleTo pins the numbers; other tests
 		// create groups in parallel here).
 		assert.GreaterOrEqual(t, member.TotalCount, int64(len(member.Groups)))

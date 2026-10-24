@@ -6,6 +6,7 @@ package api4
 import (
 	"encoding/json"
 	"net/http"
+	"slices"
 
 	"github.com/mattermost/mattermost/server/public/model"
 	"github.com/mattermost/mattermost/server/public/shared/mlog"
@@ -52,6 +53,20 @@ func getAllRoles(c *Context, w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// teamRoleVisible tells whether the session may see a role: an Antimatter community role (team_role_<group id>) only
+// by those who see its community, as its group (checkCommunityGroupVisible); every other role, as upstream.
+func teamRoleVisible(c *Context, role *model.Role) bool {
+	groupID, ok := model.TeamRoleGroupID(role.Name)
+	if !ok {
+		return true
+	}
+	group, appErr := c.App.GetGroup(groupID, nil, nil)
+	if appErr != nil {
+		return false
+	}
+	return group.TeamId == "" || c.App.SessionHasPermissionToTeam(*c.AppContext.Session(), group.TeamId, model.PermissionViewTeam)
+}
+
 func getRole(c *Context, w http.ResponseWriter, r *http.Request) {
 	c.RequireRoleId()
 	if c.Err != nil {
@@ -61,6 +76,10 @@ func getRole(c *Context, w http.ResponseWriter, r *http.Request) {
 	role, err := c.App.GetRole(c.Params.RoleId)
 	if err != nil {
 		c.Err = err
+		return
+	}
+	if !teamRoleVisible(c, role) {
+		c.SetPermissionError(model.PermissionViewTeam)
 		return
 	}
 
@@ -78,6 +97,10 @@ func getRoleByName(c *Context, w http.ResponseWriter, r *http.Request) {
 	role, err := c.App.GetRoleByName(c.AppContext, c.Params.RoleName)
 	if err != nil {
 		c.Err = err
+		return
+	}
+	if !teamRoleVisible(c, role) {
+		c.SetPermissionError(model.PermissionViewTeam)
 		return
 	}
 
@@ -114,6 +137,7 @@ func getRolesByNames(c *Context, w http.ResponseWriter, r *http.Request) {
 		c.Err = appErr
 		return
 	}
+	roles = slices.DeleteFunc(roles, func(role *model.Role) bool { return !teamRoleVisible(c, role) })
 
 	js, err := json.Marshal(roles)
 	if err != nil {

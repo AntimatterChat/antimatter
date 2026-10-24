@@ -323,6 +323,9 @@ func (s *SqlGroupStore) GetByNames(names []string, opts model.GroupSearchOpts) (
 	if opts.FilterAllowReference {
 		query = query.Where("AllowReference = true")
 	}
+	if opts.FilterVisibleToUserId != "" {
+		query = query.Where(visibleToUserClause(opts.FilterVisibleToUserId))
+	}
 
 	if err := s.GetReplica().SelectBuilder(&groups, query); err != nil {
 		return nil, errors.Wrap(err, "failed to find Groups by names")
@@ -384,6 +387,9 @@ func (s *SqlGroupStore) GetByUser(userID string, opts model.GroupSearchOpts) ([]
 
 	if opts.FilterAllowReference {
 		builder = builder.Where("UserGroups.AllowReference = true")
+	}
+	if opts.FilterVisibleToUserId != "" {
+		builder = builder.Where(visibleToUserClause(opts.FilterVisibleToUserId))
 	}
 
 	if err := s.GetReplica().SelectBuilder(&groups, builder); err != nil {

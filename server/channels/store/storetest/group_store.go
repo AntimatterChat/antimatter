@@ -5712,11 +5712,14 @@ func groupTestGetGroupsVisibleTo(t *testing.T, rctx request.CTX, ss store.Store)
 	role, err := ss.Group().Create(&model.Group{Name: new(prefix + "role"), DisplayName: prefix + "role", Source: model.GroupSourceCustom, AllowReference: true, TeamId: team.Id})
 	require.NoError(t, err)
 	defer ss.Group().Delete(role.Id)
-	_, err = ss.Group().UpsertMembers(role.Id, []string{member})
+	// left still holds the role, as if leaving the community hadn't taken it: the community's role stays hidden.
+	_, err = ss.Group().UpsertMembers(role.Id, []string{member, left})
 	require.NoError(t, err)
 	wide, err := ss.Group().Create(&model.Group{Name: new(prefix + "wide"), DisplayName: prefix + "wide", Source: model.GroupSourceCustom, AllowReference: true})
 	require.NoError(t, err)
 	defer ss.Group().Delete(wide.Id)
+	_, err = ss.Group().UpsertMembers(wide.Id, []string{member, left})
+	require.NoError(t, err)
 
 	listed := func(userID string) []string {
 		t.Helper()
@@ -5732,6 +5735,28 @@ func groupTestGetGroupsVisibleTo(t *testing.T, rctx request.CTX, ss store.Store)
 	assert.ElementsMatch(t, []string{wide.Id}, listed(outsider))
 	assert.ElementsMatch(t, []string{wide.Id}, listed(left), "nor for someone who left the community")
 	assert.ElementsMatch(t, []string{role.Id, wide.Id}, listed(""), "no filter: every group")
+
+	// By names (the mentions' lookup) and by member (someone's groups) too.
+	ids := func(groups []*model.Group) []string {
+		var out []string
+		for _, g := range groups {
+			out = append(out, g.Id)
+		}
+		return out
+	}
+	names := []string{*role.Name, *wide.Name}
+	byNames, err := ss.Group().GetByNames(names, model.GroupSearchOpts{FilterVisibleToUserId: outsider})
+	require.NoError(t, err)
+	assert.ElementsMatch(t, []string{wide.Id}, ids(byNames))
+	byNames, err = ss.Group().GetByNames(names, model.GroupSearchOpts{FilterVisibleToUserId: member})
+	require.NoError(t, err)
+	assert.ElementsMatch(t, []string{role.Id, wide.Id}, ids(byNames))
+	byUser, err := ss.Group().GetByUser(left, model.GroupSearchOpts{FilterVisibleToUserId: left})
+	require.NoError(t, err)
+	assert.ElementsMatch(t, []string{wide.Id}, ids(byUser))
+	byUser, err = ss.Group().GetByUser(member, model.GroupSearchOpts{FilterVisibleToUserId: member})
+	require.NoError(t, err)
+	assert.ElementsMatch(t, []string{role.Id, wide.Id}, ids(byUser))
 
 	// Paging stays right: the filtered group takes no page's place.
 	groups, err := ss.Group().GetGroups(0, 1, model.GroupSearchOpts{Q: prefix, FilterVisibleToUserId: outsider}, nil)

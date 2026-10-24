@@ -3039,6 +3039,38 @@ func TestGetGroupsAllowedForReferenceInChannel(t *testing.T) {
 	})
 }
 
+// Antimatter: a community's roles and teams are mentioned in its own channels only. Anywhere else the sender would
+// learn who holds them, from the list of those the mention didn't notify.
+func TestGetGroupsAllowedForReferenceKeepsCommunities(t *testing.T) {
+	mainHelper.Parallel(t)
+	th := Setup(t).InitBasic(t)
+
+	otherTeam := th.CreateTeam(t)
+	newGroup := func(teamID string) *model.Group {
+		group, appErr := th.App.CreateGroup(&model.Group{
+			Name: new("grp" + model.NewId()[:10]), DisplayName: "grp", Source: model.GroupSourceCustom, AllowReference: true, TeamId: teamID,
+		})
+		require.Nil(t, appErr)
+		return group
+	}
+	ours := newGroup(th.BasicTeam.Id)
+	theirs := newGroup(otherTeam.Id)
+	wide := newGroup("")
+
+	groupsMap, err := th.App.getGroupsAllowedForReferenceInChannel(th.BasicChannel, th.BasicTeam)
+	require.NoError(t, err)
+	assert.Contains(t, groupsMap, ours.Id)
+	assert.Contains(t, groupsMap, wide.Id)
+	assert.NotContains(t, groupsMap, theirs.Id, "another community's role")
+
+	dm := th.CreateDmChannel(t, th.BasicUser2)
+	groupsMap, err = th.App.getGroupsAllowedForReferenceInChannel(dm, nil)
+	require.NoError(t, err)
+	assert.Contains(t, groupsMap, wide.Id)
+	assert.NotContains(t, groupsMap, ours.Id, "no community's role in a direct message")
+	assert.NotContains(t, groupsMap, theirs.Id)
+}
+
 func TestReplyPostNotificationsWithCRT(t *testing.T) {
 	mainHelper.Parallel(t)
 	t.Run("Reply posts only shows badges for explicit mentions in collapsed threads", func(t *testing.T) {

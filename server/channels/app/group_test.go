@@ -679,6 +679,47 @@ func TestPublishReceivedGroupEvent(t *testing.T) {
 	})
 }
 
+// Antimatter: what a community's role may do is its members' to know: its role_updated event goes to the community.
+func TestTeamRoleUpdatedEventStaysInCommunity(t *testing.T) {
+	mainHelper.Parallel(t)
+	th := Setup(t).InitBasic(t)
+
+	testCluster := &testlib.FakeClusterInterface{}
+	realCluster := th.Server.Platform().Cluster()
+	th.Server.Platform().SetCluster(testCluster)
+	defer th.Server.Platform().SetCluster(realCluster)
+
+	roleEvents := func() []*model.WebSocketEvent {
+		var events []*model.WebSocketEvent
+		for _, msg := range testCluster.SelectMessages(func(msg *model.ClusterMessage) bool {
+			return msg.Event == model.ClusterEventPublish
+		}) {
+			ev, err := model.WebSocketEventFromJSON(bytes.NewReader(msg.Data))
+			require.NoError(t, err)
+			if ev.EventType() == model.WebsocketEventRoleUpdated {
+				events = append(events, ev)
+			}
+		}
+		return events
+	}
+
+	group, appErr := th.App.CreateGroup(&model.Group{
+		Name: new("mods" + model.NewId()[:8]), DisplayName: "mods", Source: model.GroupSourceCustom, AllowReference: true, TeamId: th.BasicTeam.Id,
+	})
+	require.Nil(t, appErr)
+
+	testCluster.ClearMessages()
+	require.Nil(t, th.App.sendUpdatedRoleEvent(&model.Role{Name: model.TeamRoleName(group.Id), Permissions: []string{model.PermissionDeleteOthersPosts.Id}}))
+	events := roleEvents()
+	require.Len(t, events, 1)
+	assert.Equal(t, th.BasicTeam.Id, events[0].GetBroadcast().TeamId, "to the community's members, not everyone")
+
+	// A role whose community can't be found isn't told to everyone either.
+	testCluster.ClearMessages()
+	require.Nil(t, th.App.sendUpdatedRoleEvent(&model.Role{Name: model.TeamRoleName(model.NewId())}))
+	assert.Empty(t, roleEvents())
+}
+
 func selectReceivedGroupEvents(t *testing.T, cluster *testlib.FakeClusterInterface) []*model.WebSocketEvent {
 	t.Helper()
 

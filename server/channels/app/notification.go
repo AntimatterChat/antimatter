@@ -5,6 +5,7 @@ package app
 
 import (
 	"encoding/json"
+	"maps"
 	"net/http"
 	"slices"
 	"strings"
@@ -1557,7 +1558,20 @@ func (a *App) allowGroupMentions(rctx request.CTX, post *model.Post) bool {
 }
 
 // getGroupsAllowedForReferenceInChannel returns a map of groups allowed for reference in a given channel and team.
+// Antimatter: a community's roles and teams only in that community's channels: elsewhere (another community, a direct
+// or group message) mentioning one would tell the sender who holds it, in the "didn't get notified" message.
 func (a *App) getGroupsAllowedForReferenceInChannel(channel *model.Channel, team *model.Team) (map[string]*model.Group, error) {
+	groupsMap, err := a.getGroupsAllowedForReferenceInAnyCommunity(channel, team)
+	if err != nil {
+		return nil, err
+	}
+	maps.DeleteFunc(groupsMap, func(_ string, group *model.Group) bool {
+		return group.TeamId != "" && group.TeamId != channel.TeamId
+	})
+	return groupsMap, nil
+}
+
+func (a *App) getGroupsAllowedForReferenceInAnyCommunity(channel *model.Channel, team *model.Team) (map[string]*model.Group, error) {
 	var err error
 	groupsMap := make(map[string]*model.Group)
 	opts := model.GroupSearchOpts{FilterAllowReference: true, IncludeMemberCount: true}

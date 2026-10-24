@@ -288,6 +288,17 @@ func (a *App) sendUpdatedRoleEvent(role *model.Role) *model.AppError {
 		a.Publish(message)
 	}
 
+	// Antimatter: a community role's permissions are its community's business: they go to its members only.
+	if groupID, ok := model.TeamRoleGroupID(role.Name); ok {
+		group, appErr := a.GetGroup(groupID, nil, nil)
+		if appErr != nil || group.TeamId == "" {
+			a.Log().Warn("No community found for a role's event; skipping broadcast", mlog.String("role", role.Name))
+			return nil
+		}
+		publishEvent(group.TeamId, "")
+		return nil
+	}
+
 	// Built-in system roles apply to all users; broadcast globally without a DB lookup.
 	if role.BuiltIn {
 		publishEvent("", "")

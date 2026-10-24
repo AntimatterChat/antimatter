@@ -882,7 +882,8 @@ func getGroupsByUserId(c *Context, w http.ResponseWriter, r *http.Request) {
 	filterAllowReference := !c.App.SessionHasPermissionTo(*c.AppContext.Session(), model.PermissionSysconsoleReadUserManagementGroups)
 
 	opts := model.GroupSearchOpts{
-		FilterAllowReference: filterAllowReference,
+		FilterAllowReference:  filterAllowReference,
+		FilterVisibleToUserId: communityGroupsViewer(c),
 	}
 
 	groups, appErr := c.App.GetGroupsByUserId(c.Params.UserId, opts)
@@ -932,7 +933,8 @@ func getGroupsByNames(c *Context, w http.ResponseWriter, r *http.Request) {
 	filterAllowReference := !c.App.SessionHasPermissionTo(*c.AppContext.Session(), model.PermissionSysconsoleReadUserManagementGroups)
 
 	opts := model.GroupSearchOpts{
-		FilterAllowReference: filterAllowReference,
+		FilterAllowReference:  filterAllowReference,
+		FilterVisibleToUserId: communityGroupsViewer(c),
 	}
 
 	groups, appErr := c.App.GetGroupsByNames(groupNames, opts)
