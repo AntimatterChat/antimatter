@@ -5702,7 +5702,14 @@ func groupTestGetGroupsVisibleTo(t *testing.T, rctx request.CTX, ss store.Store)
 		Type:        model.TeamOpen,
 	})
 	require.NoError(t, err)
-	member, outsider, left := model.NewId(), model.NewId(), model.NewId()
+	// Real users: a group's members must exist.
+	newUser := func() string {
+		t.Helper()
+		user, uErr := ss.User().Save(rctx, &model.User{Email: MakeEmail(), Username: model.NewUsername()})
+		require.NoError(t, uErr)
+		return user.Id
+	}
+	member, outsider, left := newUser(), newUser(), newUser()
 	_, err = ss.Team().SaveMember(rctx, &model.TeamMember{TeamId: team.Id, UserId: member}, -1)
 	require.NoError(t, err)
 	_, err = ss.Team().SaveMember(rctx, &model.TeamMember{TeamId: team.Id, UserId: left, DeleteAt: model.GetMillis()}, -1)
