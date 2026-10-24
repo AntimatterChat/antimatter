@@ -15,6 +15,7 @@ import {getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
 import {getThread} from 'mattermost-redux/selectors/entities/threads';
 import {getFilePreviewUrl, getFileUrl} from 'mattermost-redux/utils/file_utils';
 
+import {FORUM_VIEW_OPTIONS} from 'fusion/channel/channel_type_presets';
 import Avatar from 'fusion/components/avatar';
 import Icon from 'fusion/components/icon';
 import {useDisplayName, useUser} from 'fusion/hooks/users';
@@ -180,7 +181,7 @@ export default function TopicsView({channel}: {channel: Channel}) {
                         className={am({on: view === 'topics'})}
                         onClick={() => dispatch(setForumView(channel.id, 'topics'))}
                     >
-                        {formatMessage({id: 'fusion.channelType.viewTopics', defaultMessage: 'Topics'})}
+                        {formatMessage(FORUM_VIEW_OPTIONS.find((o) => o.id === 'topics')!.label)}
                     </button>
                     <button
                         type='button'
@@ -189,7 +190,7 @@ export default function TopicsView({channel}: {channel: Channel}) {
                         className={am({on: view === 'imageboard'})}
                         onClick={() => dispatch(setForumView(channel.id, 'imageboard'))}
                     >
-                        {formatMessage({id: 'fusion.channelType.viewImageboard', defaultMessage: 'Image board'})}
+                        {formatMessage(FORUM_VIEW_OPTIONS.find((o) => o.id === 'imageboard')!.label)}
                     </button>
                 </div>
                 <input

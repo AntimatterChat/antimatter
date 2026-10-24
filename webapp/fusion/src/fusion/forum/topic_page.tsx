@@ -133,7 +133,7 @@ export default function TopicPage({channel, rootId}: Props) {
                     inThread={true}
                 />
                 <div className={am('replies-sep')}>
-                    {formatMessage({id: 'fusion.thread.replies', defaultMessage: '{count, plural, one {# reply} other {# replies}}', description: 'Separator above a thread\'s or topic\'s replies: how many there are.'}, {count: replies.length})}
+                    {formatMessage({id: 'fusion.thread.replies', defaultMessage: '{count, plural, one {# reply} other {# replies}}'}, {count: replies.length})}
                 </div>
                 {replies.map((reply, i) => (
                     <Message
