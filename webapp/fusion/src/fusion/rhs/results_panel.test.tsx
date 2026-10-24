@@ -45,7 +45,7 @@ describe('fusion/rhs/ResultsPanel: the Files tab', () => {
 // Antimatter forums (design §4.4): a hit in a forum shows its topic's title above it.
 describe('fusion/rhs/ResultsPanel: forum hits', () => {
     const channel = {id: 'c1', team_id: 'team', type: 'O', name: 'beam-questions', display_name: 'Beam questions', delete_at: 0};
-    const root = {id: 'r0', channel_id: 'c1', root_id: '', user_id: 'ada', message: 'How do I reset the beam?', create_at: 0, props: {am_thread_title: 'How do I reset the beam?'}, metadata: {}};
+    const root = {id: 'r0', channel_id: 'c1', root_id: '', user_id: 'ada', message: 'It won\'t power on at all.', create_at: 0, props: {am_thread_title: 'How do I reset the beam?'}, metadata: {}};
     const reply = {id: 'r1', channel_id: 'c1', root_id: 'r0', user_id: 'maya', message: 'Hold the reset switch for 5 seconds.', create_at: 100, props: {}, metadata: {}};
 
     const renderWithHits = (postIds: string[]) => renderWithContext(
