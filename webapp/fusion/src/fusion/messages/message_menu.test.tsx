@@ -5,6 +5,8 @@ import React from 'react';
 
 import type {Post} from '@mattermost/types/posts';
 
+import {Posts} from 'mattermost-redux/constants';
+
 import {renderWithContext, screen, userEvent} from 'tests/react_testing_utils';
 
 import Files from './content/files';
@@ -81,5 +83,51 @@ describe('fusion/messages/MessageMenu: hiding images', () => {
         renderMenu('p2');
         expect(screen.getByRole('menu', {name: 'Message actions'})).toBeInTheDocument();
         expect(screen.queryByRole('menuitem', {name: /image/})).not.toBeInTheDocument();
+    });
+});
+
+// As in the classic menu, Pin is only offered where the server allows it.
+describe('fusion/messages/MessageMenu: pinning', () => {
+    beforeEach(() => {
+        if (!document.getElementById('am-layer')) {
+            const layer = document.createElement('div');
+            layer.id = 'am-layer';
+            document.body.appendChild(layer);
+        }
+    });
+
+    const post = (type = '') => ({id: 'p1', channel_id: 'c1', user_id: 'u1', root_id: '', type, message: 'look', create_at: 0, props: {}, metadata: {}} as unknown as Post);
+    const renderMenu = (p: Post, archived = false) => renderWithContext(
+        <MessageMenu
+            post={p}
+            anchor={null}
+            inThread={false}
+            onClose={jest.fn()}
+            onMoreReactions={jest.fn()}
+        />,
+        {
+            entities: {
+                users: {currentUserId: 'me', profiles: {me: {id: 'me', roles: 'system_user'}}},
+                teams: {currentTeamId: 't1', teams: {t1: {id: 't1', name: 'one', display_name: 'One', delete_at: 0}}},
+                channels: {channels: {c1: {id: 'c1', team_id: 't1', type: 'O', name: 'town', display_name: 'Town', delete_at: archived ? 1 : 0}}},
+                posts: {posts: {p1: p}},
+            },
+        } as never,
+    );
+
+    test('a message can be pinned', () => {
+        renderMenu(post());
+        expect(screen.getByRole('menuitem', {name: 'Pin to channel'})).toBeInTheDocument();
+    });
+
+    test('a burn-on-read message is not offered to pin', () => {
+        renderMenu(post(Posts.POST_TYPES.BURN_ON_READ));
+        expect(screen.getByRole('menu', {name: 'Message actions'})).toBeInTheDocument();
+        expect(screen.queryByRole('menuitem', {name: 'Pin to channel'})).not.toBeInTheDocument();
+    });
+
+    test('nothing is offered to pin in an archived channel', () => {
+        renderMenu(post(), true);
+        expect(screen.queryByRole('menuitem', {name: 'Pin to channel'})).not.toBeInTheDocument();
     });
 });

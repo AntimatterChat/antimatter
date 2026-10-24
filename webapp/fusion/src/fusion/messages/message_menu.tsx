@@ -126,9 +126,11 @@ export default function MessageMenu({post, anchor, inThread, onClose, onMoreReac
     const canName = crt && canEdit && !post.root_id && !isSystemMessage(post) && post.type !== Posts.POST_TYPES.BURN_ON_READ;
     const remindAt = async (at: number) => {
         const result = await dispatch(addPostReminder(me, post.id, Math.floor(at / 1000)));
-        if (!(result && 'error' in result && result.error)) {
-            toast(formatMessage({id: 'fusion.toast.reminder', defaultMessage: 'Reminder set for {time}'}, {time: intl.formatDate(at, {weekday: 'short', hour: 'numeric', minute: '2-digit'})}));
+        if (result && 'error' in result && result.error) {
+            toast(formatMessage({id: 'fusion.toast.reminderFailed', defaultMessage: 'The reminder couldn\'t be set'}));
+            return;
         }
+        toast(formatMessage({id: 'fusion.toast.reminder', defaultMessage: 'Reminder set for {time}'}, {time: intl.formatDate(at, {weekday: 'short', hour: 'numeric', minute: '2-digit'})}));
     };
     const system = isSystemMessage(post);
 
@@ -160,8 +162,10 @@ export default function MessageMenu({post, anchor, inThread, onClose, onMoreReac
         toast(formatMessage({id: 'fusion.ontop.toast.removed', defaultMessage: 'Removed from the top of the channel'}));
     };
 
-    // Burn-on-Read messages can't be replied to or forwarded.
+    // Burn-on-Read messages can't be replied to, forwarded nor pinned; nothing is pinned in an archived channel (as
+    // in the classic menu).
     const burn = post.type === Posts.POST_TYPES.BURN_ON_READ;
+    const canPin = !system && !burn && !archivedChannel;
     const threadId = post.root_id || post.id;
 
     if (namingThread) {
@@ -345,7 +349,7 @@ export default function MessageMenu({post, anchor, inThread, onClose, onMoreReac
                     toast(saved ? formatMessage({id: 'fusion.toast.unsaved', defaultMessage: 'Removed from saved'}) : formatMessage({id: 'fusion.toast.saved', defaultMessage: 'Saved — find it in Saved messages'}));
                 })}
             />
-            {!system && !archivedChannel && (
+            {canPin && (
                 <MenuItem
                     icon='pin'
                     label={post.is_pinned ? formatMessage({id: 'fusion.messageMenu.unpin', defaultMessage: 'Unpin from channel'}) : formatMessage({id: 'fusion.messageMenu.pin', defaultMessage: 'Pin to channel'})}

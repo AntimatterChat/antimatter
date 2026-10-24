@@ -30811,6 +30811,10 @@
     "defaultMessage": "Reminder set for {time}",
     "description": ""
   },
+  "fusion.toast.reminderFailed": {
+    "defaultMessage": "The reminder couldn't be set",
+    "description": "Toast when setting a reminder on a message fails (the message menu's Remind me)"
+  },
   "fusion.toast.removedFromChannel": {
     "defaultMessage": "{name} was removed from {channel}",
     "description": ""
