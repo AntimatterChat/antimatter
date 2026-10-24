@@ -12,7 +12,13 @@ import {TestHelper} from 'utils/test_helper';
 
 import TopicsView from './topics_view';
 
-jest.mock('mattermost-redux/client', () => ({Client4: {getForumTopics: jest.fn()}}));
+// Overriding a prototype method (Avatar's getUsersRoute among them) by spreading Client4 would drop it: mutate
+// the real singleton's own getForumTopics instead, keeping the rest working.
+jest.mock('mattermost-redux/client', () => {
+    const actual = jest.requireActual('mattermost-redux/client');
+    actual.Client4.getForumTopics = jest.fn();
+    return actual;
+});
 jest.mock('mattermost-redux/actions/preferences', () => ({savePreferences: jest.fn(() => ({type: 'MOCK_SAVE'}))}));
 jest.mock('./new_topic_form', () => ({__esModule: true, default: () => <div>{'New topic form'}</div>}));
 
