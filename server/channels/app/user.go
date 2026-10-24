@@ -229,15 +229,11 @@ func (a *App) CreateUserWithInviteId(rctx request.CTX, user *model.User, inviteI
 		return nil, err
 	}
 
-	team, nErr := a.Srv().Store().Team().GetByInviteId(inviteId)
-	if nErr != nil {
-		var nfErr *store.ErrNotFound
-		switch {
-		case errors.As(nErr, &nfErr):
-			return nil, model.NewAppError("CreateUserWithInviteId", "app.team.get_by_invite_id.finding.app_error", nil, "", http.StatusNotFound).Wrap(nErr)
-		default:
-			return nil, model.NewAppError("CreateUserWithInviteId", "app.team.get_by_invite_id.finding.app_error", nil, "", http.StatusInternalServerError).Wrap(nErr)
-		}
+	// Antimatter: the community's permanent invite code, or one of its invite links that still works.
+	team, link, appErr := a.resolveInviteId(rctx, inviteId)
+	if appErr != nil {
+		appErr.Where = "CreateUserWithInviteId"
+		return nil, appErr
 	}
 
 	if team.IsGroupConstrained() {
@@ -250,12 +246,25 @@ func (a *App) CreateUserWithInviteId(rctx request.CTX, user *model.User, inviteI
 
 	user.EmailVerified = false
 
+	// A link's use is taken before the account is made, and given back if neither is.
+	if link != nil {
+		if appErr := a.useInviteLink(rctx, link); appErr != nil {
+			return nil, appErr
+		}
+	}
+
 	ruser, err := a.CreateUser(rctx, user)
 	if err != nil {
+		if link != nil {
+			a.releaseInviteLinkUse(rctx, link)
+		}
 		return nil, err
 	}
 
 	if _, err := a.JoinUserToTeam(rctx, team, ruser, ""); err != nil {
+		if link != nil {
+			a.releaseInviteLinkUse(rctx, link)
+		}
 		return nil, err
 	}
 
@@ -2204,6 +2213,12 @@ func (a *App) permanentDeleteUserData(rctx request.CTX, userID string) error {
 		return err
 	}
 	if err := ss.Moderation().PermanentDeleteTimeoutsByUser(rctx, userID); err != nil {
+		return err
+	}
+	if err := ss.Moderation().PermanentDeleteBansByUser(rctx, userID); err != nil {
+		return err
+	}
+	if err := ss.Moderation().PermanentDeleteInviteLinksByCreator(rctx, userID); err != nil {
 		return err
 	}
 	if err := ss.ChannelOverride().PermanentDeleteForUser(rctx, userID); err != nil {

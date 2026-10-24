@@ -40,6 +40,7 @@ import (
 	"github.com/mattermost/mattermost/server/v8/channels/audit"
 	"github.com/mattermost/mattermost/server/v8/channels/jobs"
 	"github.com/mattermost/mattermost/server/v8/channels/jobs/active_users"
+	"github.com/mattermost/mattermost/server/v8/channels/jobs/ban_purge"
 	"github.com/mattermost/mattermost/server/v8/channels/jobs/cleanup_desktop_tokens"
 	"github.com/mattermost/mattermost/server/v8/channels/jobs/cleanup_expired_access_tokens"
 	"github.com/mattermost/mattermost/server/v8/channels/jobs/dataretention"
@@ -1560,6 +1561,12 @@ func (s *Server) initJobs() {
 		model.JobTypeScheduledRecap,
 		scheduled_recap.MakeWorker(s.Jobs, s.Store(), New(ServerConnector(s.Channels()))),
 		scheduled_recap.MakeScheduler(s.Jobs, s.Store()),
+	)
+
+	s.Jobs.RegisterJobType(
+		model.JobTypeBanPurge,
+		ban_purge.MakeWorker(s.Jobs, New(ServerConnector(s.Channels()))),
+		nil,
 	)
 
 	s.Jobs.RegisterJobType(

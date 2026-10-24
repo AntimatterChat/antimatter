@@ -1845,7 +1845,7 @@ func getInviteInfo(c *Context, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	team, appErr := c.App.GetTeamByInviteId(c.Params.InviteId)
+	team, appErr := c.App.GetTeamByInviteId(c.AppContext, c.Params.InviteId)
 	if appErr != nil {
 		c.Err = appErr
 		return

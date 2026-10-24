@@ -10296,6 +10296,31 @@
     "translation": "The team's admins can't be moderated."
   },
   {
+    "id": "app.moderation.ban.not_found.app_error",
+    "translation": "This person isn't banned from this community.",
+    "description": "Error when lifting a ban that doesn't exist or has already ended."
+  },
+  {
+    "id": "app.moderation.ban.purge.app_error",
+    "translation": "Unable to delete some of the banned person's messages.",
+    "description": "Error when deleting the recent messages of someone banned from a community stops before the end."
+  },
+  {
+    "id": "app.moderation.ban.rank.app_error",
+    "translation": "Only someone at or above the rank of whoever made this ban can lift it.",
+    "description": "Error when a moderator tries to lift a ban made by someone whose role ranks above theirs, or by a community admin."
+  },
+  {
+    "id": "app.moderation.bans.get.app_error",
+    "translation": "Unable to get the community's bans.",
+    "description": "Error when the server can't read a community's bans from the database."
+  },
+  {
+    "id": "app.moderation.bans.save.app_error",
+    "translation": "Unable to save the ban.",
+    "description": "Error when the server can't save or remove a ban in the database."
+  },
+  {
     "id": "app.moderation.not_member.app_error",
     "translation": "They aren't a member of this team."
   },
@@ -12873,6 +12898,11 @@
     "description": "API error when a user tries to join via invitation token a team whose membership is managed by LDAP group sync ('group-constrained')."
   },
   {
+    "id": "app.team.join_user_to_team.banned.app_error",
+    "translation": "This account is banned from this community.",
+    "description": "Error when someone banned from a community tries to join it (by any way: open join, invite link, invitation) or is added to it or one of its channels."
+  },
+  {
     "id": "app.team.join_user_to_team.max_accounts.app_error",
     "translation": "This team has reached the maximum number of allowed accounts. Contact your System Administrator to set a higher limit.",
     "description": "API error when joining a team fails because the team reached its configured maximum number of users."
@@ -12984,6 +13014,41 @@
     "id": "app.team.welcome_channel.app_error",
     "translation": "The channel for join and leave messages must be a public channel of this community.",
     "description": "Error when a community's channel for join and leave messages (its Welcome channel) is set to a channel that isn't one of its public, unarchived channels (Antimatter)."
+  },
+  {
+    "id": "app.team_invite_link.expired.app_error",
+    "translation": "This invite link has expired.",
+    "description": "Error when someone joins or signs up with an invite link whose time has ended."
+  },
+  {
+    "id": "app.team_invite_link.get.app_error",
+    "translation": "Unable to get the community's invite links.",
+    "description": "Error when the server can't read a community's invite links from the database."
+  },
+  {
+    "id": "app.team_invite_link.invalid.app_error",
+    "translation": "This invite link is no longer valid.",
+    "description": "Error when someone uses an invite link whose creator may no longer invite to the community (they left it, were deactivated or lost the right)."
+  },
+  {
+    "id": "app.team_invite_link.not_found.app_error",
+    "translation": "This invite link doesn't exist or was revoked.",
+    "description": "Error when revoking an invite link that isn't one of the community's."
+  },
+  {
+    "id": "app.team_invite_link.save.app_error",
+    "translation": "Unable to save the invite link.",
+    "description": "Error when the server can't save, use or revoke an invite link in the database."
+  },
+  {
+    "id": "app.team_invite_link.too_many.app_error",
+    "translation": "This community has {{.Max}} invite links, the most it may have. Revoke some to make more.",
+    "description": "Error when making an invite link in a community that already has the maximum; Max is the limit."
+  },
+  {
+    "id": "app.team_invite_link.used_up.app_error",
+    "translation": "This invite link has been used as many times as it allows.",
+    "description": "Error when someone joins or signs up with an invite link that has no uses left."
   },
   {
     "id": "app.team_role.default_role.app_error",
@@ -18757,6 +18822,26 @@
     "description": "API error returned when two invitation profiles use the same username."
   },
   {
+    "id": "model.member_ban.delete_messages.app_error",
+    "translation": "A ban deletes messages from up to {{.MaxDays}} days back.",
+    "description": "Error when a ban asks to delete the banned person's messages from further back than allowed; MaxDays is the limit."
+  },
+  {
+    "id": "model.member_ban.expire_at.app_error",
+    "translation": "A ban ends in the future, within {{.MaxDays}} days, or never.",
+    "description": "Error when a ban's end is in the past or too far ahead; MaxDays is the longest a ban that ends may last."
+  },
+  {
+    "id": "model.member_ban.ids.app_error",
+    "translation": "Invalid community or person.",
+    "description": "Error when a ban (Antimatter) names no valid community or person."
+  },
+  {
+    "id": "model.member_ban.reason.app_error",
+    "translation": "A ban's reason is at most {{.Max}} characters.",
+    "description": "Error when the reason given for banning someone from a community is too long; Max is the limit."
+  },
+  {
     "id": "model.member_timeout.ids.app_error",
     "translation": "Invalid team or user."
   },
@@ -19546,6 +19631,21 @@
     "id": "model.team.is_valid.welcome_channel.app_error",
     "translation": "Invalid channel for join and leave messages.",
     "description": "Validation error when a team's Welcome channel id (where its join and leave messages go) isn't a valid id (Antimatter)."
+  },
+  {
+    "id": "model.team_invite_link.expire_at.app_error",
+    "translation": "An invite link ends in the future, within {{.MaxDays}} days, or never.",
+    "description": "Error when an invite link's end is in the past or too far ahead; MaxDays is the longest a link that ends may last."
+  },
+  {
+    "id": "model.team_invite_link.ids.app_error",
+    "translation": "Invalid community or creator.",
+    "description": "Error when an invite link (Antimatter) names no valid community or creator."
+  },
+  {
+    "id": "model.team_invite_link.max_uses.app_error",
+    "translation": "An invite link allows at most {{.Max}} uses.",
+    "description": "Error when an invite link asks for more uses than allowed, or a negative number; Max is the limit."
   },
   {
     "id": "model.team_member.is_valid.roles_limit.app_error",

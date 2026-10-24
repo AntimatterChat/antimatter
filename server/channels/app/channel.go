@@ -1994,6 +1994,12 @@ func (a *App) addUserToChannel(rctx request.CTX, user *model.User, channel *mode
 		return nil, model.NewAppError("AddUserToChannel", "api.channel.add_user_to_channel.type.app_error", nil, "", http.StatusBadRequest)
 	}
 
+	// Antimatter: nobody banned from a community joins one of its channels, even by the ways that don't check the
+	// community's membership first (group-synced channels).
+	if appErr := a.checkNotBanned(rctx, channel.TeamId, user.Id); appErr != nil {
+		return nil, appErr
+	}
+
 	channelMember, nErr := a.Srv().Store().Channel().GetMember(rctx, channel.Id, user.Id)
 	if nErr != nil {
 		var nfErr *store.ErrNotFound

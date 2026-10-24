@@ -199,6 +199,12 @@ func (a *App) DeleteServerCategoriesForTeam(rctx request.CTX, teamID string) *mo
 	if err := a.Srv().Store().Moderation().DeleteTimeoutsForTeam(rctx, teamID); err != nil {
 		return model.NewAppError("DeleteServerCategoriesForTeam", "app.server_category.delete.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
 	}
+	if err := a.Srv().Store().Moderation().DeleteBansForTeam(rctx, teamID); err != nil {
+		return model.NewAppError("DeleteServerCategoriesForTeam", "app.server_category.delete.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
+	}
+	if err := a.Srv().Store().Moderation().DeleteInviteLinksForTeam(rctx, teamID); err != nil {
+		return model.NewAppError("DeleteServerCategoriesForTeam", "app.server_category.delete.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
+	}
 	if err := a.Srv().Store().ChannelOverride().DeleteCategoriesForTeam(rctx, teamID); err != nil {
 		return model.NewAppError("DeleteServerCategoriesForTeam", "app.server_category.delete.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
 	}

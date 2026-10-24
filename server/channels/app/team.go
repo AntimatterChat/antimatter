@@ -747,52 +747,38 @@ func (a *App) AddUserToTeamWithToken(rctx request.CTX, userID string, token *mod
 	return team, teamMember, nil
 }
 
+// AddUserToTeamByInviteId joins someone to a community by its permanent invite code or one of its invite links
+// (Antimatter: which takes one of the link's uses).
 func (a *App) AddUserToTeamByInviteId(rctx request.CTX, inviteId string, userID string) (*model.Team, *model.TeamMember, *model.AppError) {
-	tchan := make(chan store.StoreResult[*model.Team], 1)
-	go func() {
-		team, err := a.Srv().Store().Team().GetByInviteId(inviteId)
-		tchan <- store.StoreResult[*model.Team]{Data: team, NErr: err}
-		close(tchan)
-	}()
-
-	uchan := make(chan store.StoreResult[*model.User], 1)
-	go func() {
-		user, err := a.Srv().Store().User().Get(rctx, userID)
-		uchan <- store.StoreResult[*model.User]{Data: user, NErr: err}
-		close(uchan)
-	}()
-
-	teamChanResult := <-tchan
-	if teamChanResult.NErr != nil {
-		var nfErr *store.ErrNotFound
-		switch {
-		case errors.As(teamChanResult.NErr, &nfErr):
-			return nil, nil, model.NewAppError("AddUserToTeamByInviteId", "app.team.get_by_invite_id.finding.app_error", nil, "", http.StatusNotFound).Wrap(teamChanResult.NErr)
-		default:
-			return nil, nil, model.NewAppError("AddUserToTeamByInviteId", "app.team.get_by_invite_id.finding.app_error", nil, "", http.StatusInternalServerError).Wrap(teamChanResult.NErr)
-		}
+	team, link, appErr := a.resolveInviteId(rctx, inviteId)
+	if appErr != nil {
+		appErr.Where = "AddUserToTeamByInviteId"
+		return nil, nil, appErr
 	}
-	team := teamChanResult.Data
 
 	if team.IsGroupConstrained() {
 		return nil, nil, model.NewAppError("AddUserToTeamByInviteId", "app.team.invite_id.group_constrained.error", nil, "", http.StatusForbidden)
 	}
 
-	userChanResult := <-uchan
-	if userChanResult.NErr != nil {
+	user, nErr := a.Srv().Store().User().Get(rctx, userID)
+	if nErr != nil {
 		var nfErr *store.ErrNotFound
 		switch {
-		case errors.As(userChanResult.NErr, &nfErr):
-			return nil, nil, model.NewAppError("AddUserToTeamByInviteId", MissingAccountError, nil, "", http.StatusNotFound).Wrap(userChanResult.NErr)
+		case errors.As(nErr, &nfErr):
+			return nil, nil, model.NewAppError("AddUserToTeamByInviteId", MissingAccountError, nil, "", http.StatusNotFound).Wrap(nErr)
 		default:
-			return nil, nil, model.NewAppError("AddUserToTeamByInviteId", "app.user.get.app_error", nil, "", http.StatusInternalServerError).Wrap(userChanResult.NErr)
+			return nil, nil, model.NewAppError("AddUserToTeamByInviteId", "app.user.get.app_error", nil, "", http.StatusInternalServerError).Wrap(nErr)
 		}
 	}
-	user := userChanResult.Data
 
-	teamMember, err := a.JoinUserToTeam(rctx, team, user, "")
-	if err != nil {
-		return nil, nil, err
+	var teamMember *model.TeamMember
+	if link != nil {
+		teamMember, appErr = a.joinByInviteLink(rctx, team, link, user)
+	} else {
+		teamMember, appErr = a.JoinUserToTeam(rctx, team, user, "")
+	}
+	if appErr != nil {
+		return nil, nil, appErr
 	}
 
 	return team, teamMember, nil
@@ -800,6 +786,13 @@ func (a *App) AddUserToTeamByInviteId(rctx request.CTX, inviteId string, userID 
 
 func (a *App) JoinUserToTeam(rctx request.CTX, team *model.Team, user *model.User, userRequestorId string) (*model.TeamMember, *model.AppError) {
 	preSaveHook := func(tm *model.TeamMember) (*model.TeamMember, error) {
+		// Antimatter: someone banned from the community doesn't join it by any way, nor is added to it by anyone,
+		// while the ban holds (member_ban.go). Checked here, as the membership is saved (a new one or one coming
+		// back), so that no way in goes round it.
+		if appErr := a.checkNotBanned(rctx, team.Id, user.Id); appErr != nil {
+			return nil, appErr
+		}
+
 		// On public teams the ABAC policy is advisory: join proceeds without the PDP.
 		// Only private teams gate strictly. Key on AllowOpenInvite alone (not
 		// team.Type): the privacy update path flips AllowOpenInvite without syncing
@@ -1025,16 +1018,13 @@ func (a *App) GetTeamByName(name string) (*model.Team, *model.AppError) {
 	return team, nil
 }
 
-func (a *App) GetTeamByInviteId(inviteId string) (*model.Team, *model.AppError) {
-	team, err := a.Srv().Store().Team().GetByInviteId(inviteId)
-	if err != nil {
-		var nfErr *store.ErrNotFound
-		switch {
-		case errors.As(err, &nfErr):
-			return nil, model.NewAppError("GetTeamByInviteId", "app.team.get_by_invite_id.finding.app_error", nil, "", http.StatusNotFound).Wrap(err)
-		default:
-			return nil, model.NewAppError("GetTeamByInviteId", "app.team.get_by_invite_id.finding.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
-		}
+// GetTeamByInviteId gives the community an invite code (its permanent one, or one of its invite links that still
+// works) lets one into.
+func (a *App) GetTeamByInviteId(rctx request.CTX, inviteId string) (*model.Team, *model.AppError) {
+	team, _, appErr := a.resolveInviteId(rctx, inviteId)
+	if appErr != nil {
+		appErr.Where = "GetTeamByInviteId"
+		return nil, appErr
 	}
 
 	return team, nil
@@ -2358,7 +2348,7 @@ func (a *App) GetTeamIdFromQuery(rctx request.CTX, query url.Values) (string, *m
 		return tokenData["teamId"], nil
 	}
 	if inviteId != "" {
-		team, err := a.Srv().Store().Team().GetByInviteId(inviteId)
+		team, _, err := a.resolveInviteId(rctx, inviteId)
 		if err == nil {
 			return team.Id, nil
 		}
