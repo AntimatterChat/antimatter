@@ -1,6 +1,7 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
+import type {Channel} from '@mattermost/types/channels';
 import type {ChannelOverride} from '@mattermost/types/channel_overrides';
 import type {GroupMembership, GroupPermissions} from '@mattermost/types/groups';
 import type {MemberTimeout} from '@mattermost/types/moderation';
@@ -9,6 +10,7 @@ import type {GlobalState} from '@mattermost/types/store';
 
 import {General, Permissions} from 'mattermost-redux/constants';
 import {createSelector} from 'mattermost-redux/selectors/create_selector';
+import {getChannelTypeInfo} from 'mattermost-redux/selectors/entities/channel_types';
 import {getCurrentChannelId, getCurrentUserId} from 'mattermost-redux/selectors/entities/common';
 import type {PermissionsOptions} from 'mattermost-redux/selectors/entities/roles_helpers';
 import {
@@ -354,6 +356,49 @@ export function applyChannelOverrides(has: boolean, permission: string, roleIds:
         }
     }
     return result;
+}
+
+// isChannelModerator tells whether someone moderates a team channel (Antimatter channel types, §2.1): system admins,
+// the community's admins (manage_team), the channel's admins (manage_channel_roles there) and the community's
+// moderators (delete_others_posts there, through their roles or an override). Mirrors the server's
+// App.IsChannelModerator.
+export function isChannelModerator(state: GlobalState, teamId: string, channelId: string): boolean {
+    if (getMySystemPermissions(state).has(Permissions.MANAGE_SYSTEM)) {
+        return true;
+    }
+    if (haveITeamPermission(state, teamId, Permissions.MANAGE_TEAM)) {
+        return true;
+    }
+    return haveIChannelPermission(state, teamId, channelId, Permissions.MANAGE_CHANNEL_ROLES) ||
+        haveIChannelPermission(state, teamId, channelId, Permissions.DELETE_OTHERS_POSTS);
+}
+
+// canStartConversations tells whether I may start a conversation (a root post) in a channel, or open a topic in a
+// forum (Antimatter channel types, §2.1 of the design; mirrors the server's App.CanStartConversations). Direct and
+// group messages have no such rule. A channel where members start conversations and no override is about it answers
+// at once, as any channel did before channel types. Otherwise the baseline is "members start conversations" or being
+// a channel moderator; overrides on create_root_post apply on top (a role's deny, then its allow, then the person's
+// own), unless I'm a team admin, who passes over overrides as elsewhere. create_post is still needed on top (its own
+// overrides and a timeout apply through haveIChannelPermission).
+export function canStartConversations(state: GlobalState, channel: Pick<Channel, 'id' | 'team_id' | 'type'>): boolean {
+    if (!channel.team_id || channel.type === General.DM_CHANNEL || channel.type === General.GM_CHANNEL) {
+        return true;
+    }
+    const info = getChannelTypeInfo(state, channel.id);
+    const overrides = state.entities.channels.overrides?.[channel.id] || [];
+    const overridden = overrides.some((o) => o.allow.includes(Permissions.CREATE_ROOT_POST) || o.deny.includes(Permissions.CREATE_ROOT_POST));
+    if (info.root_posts === 'members' && !overridden) {
+        return true;
+    }
+
+    const baseline = info.root_posts === 'members' || isChannelModerator(state, channel.team_id, channel.id);
+    let has = baseline;
+    if (overridden && !haveITeamPermission(state, channel.team_id, Permissions.MANAGE_TEAM)) {
+        const roles = (state.entities.teams.myMembers[channel.team_id]?.roles || '').split(' ');
+        const roleIds = roles.filter((r) => r.startsWith(TEAM_ROLE_PREFIX)).map((r) => r.slice(TEAM_ROLE_PREFIX.length));
+        has = applyChannelOverrides(baseline, Permissions.CREATE_ROOT_POST, roleIds, getCurrentUserId(state), overrides);
+    }
+    return has && haveIChannelPermission(state, channel.team_id, channel.id, Permissions.CREATE_POST);
 }
 
 export function haveICurrentTeamPermission(state: GlobalState, permission: string): boolean {
