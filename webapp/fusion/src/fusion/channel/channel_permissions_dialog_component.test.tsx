@@ -131,7 +131,8 @@ describe('CategoryPermissionsDialog', () => {
         );
 
         const deny = await screen.findAllByRole('radio', {name: 'Denied here'});
-        expect(deny).toHaveLength(8);
+        expect(deny).toHaveLength(9);
+        expect(screen.getByRole('radiogroup', {name: 'Start conversations'})).toBeInTheDocument();
         await userEvent.click(deny[0]);
         await waitFor(() => expect(save).toHaveBeenCalledWith('team', {category: 'Community', target_type: 'role', target_id: 'mods', allow: [], deny: ['create_post']}));
     });
