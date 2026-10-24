@@ -77,7 +77,9 @@ describe('fusion/unreads/UnreadsView', () => {
         expect(mockGetPostsSince).toHaveBeenCalledWith('alice-dm');
         const names = screen.getAllByRole('button', {name: /^(Alice|#general)$/}).map((el) => el.textContent);
         expect(names).toEqual(['Alice', '#general']);
-        expect(screen.getByText('hi from alice-dm')).toBeInTheDocument();
+
+        // The posts land a tick after the call count does (setPosts runs once the dispatched promise settles).
+        await waitFor(() => expect(screen.getByText('hi from alice-dm')).toBeInTheDocument());
         expect(screen.getByText('hi from general')).toBeInTheDocument();
     });
 
