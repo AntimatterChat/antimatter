@@ -158,6 +158,7 @@ describe('fusion/messages/MessageMenu: forums', () => {
             posts: {posts: {r0: rootPost, r1: reply()}},
             files: {files: {}, fileIdsByPostId: {}},
             preferences: {myPreferences: {}},
+            roles: {roles: {system_user: {name: 'system_user', permissions: []}, system_admin: {name: 'system_admin', permissions: ['manage_system']}}},
         },
     } as never);
 
