@@ -29,6 +29,7 @@ import {getHistory} from 'utils/browser_history';
 
 import type {GlobalState} from 'types/store';
 
+import {ACCEPTED_ANSWER_PROP, TOPIC_STATUS_PROP} from './props';
 import {orderReplies} from './reply_order';
 import {topicStatusLabel} from './status';
 import VoteButton from './vote_button';
@@ -84,7 +85,7 @@ export default function TopicPage({channel, rootId}: Props) {
     }, [threadsOn, team, thread, following, rootId, me, dispatch]);
 
     const replies = useMemo(
-        () => orderReplies(posts.filter((p) => p.id !== rootId), mode, root?.props?.am_accepted_answer as string | undefined, reactionsByPost),
+        () => orderReplies(posts.filter((p) => p.id !== rootId), mode, root?.props?.[ACCEPTED_ANSWER_PROP] as string | undefined, reactionsByPost),
         [posts, rootId, mode, root, reactionsByPost],
     );
 
@@ -99,7 +100,7 @@ export default function TopicPage({channel, rootId}: Props) {
     }
 
     const title = getThreadTitle(root) || formatMessage({id: 'fusion.thread.title', defaultMessage: 'Thread'});
-    const status = (root.props?.am_topic_status as ForumTopicStatus) || 'open';
+    const status = (root.props?.[TOPIC_STATUS_PROP] as ForumTopicStatus) || 'open';
 
     return (
         <>

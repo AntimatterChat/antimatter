@@ -8,6 +8,8 @@ import {makeAsyncComponent} from 'components/async_load';
 import ChannelIdentifierRouter from 'components/channel_layout/channel_identifier_router';
 import LoadingScreen from 'components/loading_screen';
 
+import ForumTopicRoute from 'fusion/forum/topic_route';
+
 import {SCHEDULED_POST_URL_SUFFIX} from 'utils/constants';
 import {IDENTIFIER_PATH_PATTERN, ID_PATH_PATTERN, TEAM_NAME_PATH_PATTERN} from 'utils/path';
 
@@ -75,6 +77,12 @@ export default class CenterChannel extends React.PureComponent<Props, State> {
         return (
             <div className='am-center'>
                 <Switch>
+                    {/* A forum topic's own page (Antimatter channel types, design §4.4), ahead of the plain channel
+                        route below so a topic's address doesn't fall into it as a highlighted post. */}
+                    <Route
+                        path={`/:team(${TEAM_NAME_PATH_PATTERN})/channels/:identifier(${IDENTIFIER_PATH_PATTERN})/topics/:rootId(${ID_PATH_PATTERN})`}
+                        component={ForumTopicRoute}
+                    />
                     {/* A permalink and a conversation are one route, so that the conversation view stays mounted
                         while a permalink resolves to its conversation: no empty page between the two. */}
                     <Route

@@ -23,6 +23,7 @@ import {useCallsUI} from 'fusion/calls/ui_state';
 import VoiceView from 'fusion/calls/voice_view';
 import Icon from 'fusion/components/icon';
 import Composer, {DROP_FILES_EVENT} from 'fusion/composer/composer';
+import TopicsView from 'fusion/forum/topics_view';
 import MessageList from 'fusion/messages/message_list';
 import {getBlockLevel, isChannelMessageRequest} from 'fusion/privacy/blocking';
 import {BlockedNote, RequestBar} from 'fusion/privacy/message_requests';
@@ -106,6 +107,22 @@ export default function ChannelView({resolvingPermalink = false}: Props) {
             <>
                 <ChannelHeader channel={channel}/>
                 <VoiceView channel={channel}/>
+            </>
+        );
+    }
+
+    // A forum (Antimatter channel types, design §4.4) has no loose messages: the topics view replaces the message
+    // list and the composer. A permalink still falls through to the message list below, so a linked reply shows in
+    // context. TODO(B5 forum-fusion-imageboard): once the image board view lands, render it instead of TopicsView
+    // when the person's own fusion_forum_view preference (or the channel's own am_forum_view default) picks it.
+    if (channelTypeInfo?.type === 'forum' && !anchorPostId) {
+        return (
+            <>
+                <ChannelHeader channel={channel}/>
+                <CallBanner channel={channel}/>
+                <SharedBanner channel={channel}/>
+                <ChannelBanner channelId={channel.id}/>
+                <TopicsView channel={channel}/>
             </>
         );
     }

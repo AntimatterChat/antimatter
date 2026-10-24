@@ -131,3 +131,105 @@ describe('fusion/messages/MessageMenu: pinning', () => {
         expect(screen.queryByRole('menuitem', {name: 'Pin to channel'})).not.toBeInTheDocument();
     });
 });
+
+// Antimatter forums (design §3.3, §4.4): Accept answer on a Q&A reply (the asker and moderators only), Set status
+// on an Ideas topic's root (moderators only). The UI only mirrors the server's rules.
+describe('fusion/messages/MessageMenu: forums', () => {
+    beforeEach(() => {
+        if (!document.getElementById('am-layer')) {
+            const layer = document.createElement('div');
+            layer.id = 'am-layer';
+            document.body.appendChild(layer);
+        }
+    });
+
+    const reply = (override: Partial<Post> = {}) => ({id: 'r1', channel_id: 'c1', user_id: 'maya', root_id: 'r0', type: '', message: 'Try the reset switch.', create_at: 100, props: {}, metadata: {}, ...override} as unknown as Post);
+    const root = (override: Partial<Post> = {}) => ({id: 'r0', channel_id: 'c1', user_id: 'ada', root_id: '', type: '', message: 'How do I reset the beam?', create_at: 0, props: {am_thread_title: 'How do I reset the beam?'}, metadata: {}, ...override} as unknown as Post);
+
+    const stateFor = (mode: 'qa' | 'ideas', systemRoles: string, rootPost: Post) => ({
+        entities: {
+            general: {serverVersion: ''},
+            users: {currentUserId: 'me', profiles: {me: {id: 'me', roles: systemRoles}}},
+            teams: {currentTeamId: 't1', teams: {t1: {id: 't1', name: 'one', display_name: 'One', delete_at: 0}}},
+            channels: {
+                channels: {c1: {id: 'c1', team_id: 't1', type: 'O', name: 'town', display_name: 'Town', delete_at: 0}},
+                channelTypes: {c1: {type: 'forum', mode, root_posts: 'members', view: 'topics', preset: ''}},
+            },
+            posts: {posts: {r0: rootPost, r1: reply()}},
+            files: {files: {}, fileIdsByPostId: {}},
+            preferences: {myPreferences: {}},
+        },
+    } as never);
+
+    const renderMenuFor = (post: Post, state: ReturnType<typeof stateFor>) => renderWithContext(
+        <MessageMenu
+            post={post}
+            anchor={null}
+            inThread={true}
+            onClose={jest.fn()}
+            onMoreReactions={jest.fn()}
+        />,
+        state,
+    );
+
+    test('Q&A: a member who isn\'t the asker gets no Accept answer', () => {
+        renderMenuFor(reply(), stateFor('qa', 'system_user', root()));
+        expect(screen.queryByRole('menuitem', {name: /accept answer/i})).not.toBeInTheDocument();
+    });
+
+    test('Q&A: the asker gets Accept answer on a reply', () => {
+        renderMenuFor(reply(), stateFor('qa', 'system_user', root({user_id: 'me'})));
+        expect(screen.getByRole('menuitem', {name: 'Accept answer'})).toBeInTheDocument();
+    });
+
+    test('Q&A: a moderator gets Accept answer even when they didn\'t ask', () => {
+        renderMenuFor(reply(), stateFor('qa', 'system_user system_admin', root()));
+        expect(screen.getByRole('menuitem', {name: 'Accept answer'})).toBeInTheDocument();
+    });
+
+    test('Q&A: an already-accepted reply offers Unaccept instead', () => {
+        renderMenuFor(reply(), stateFor('qa', 'system_user', root({user_id: 'me', props: {am_accepted_answer: 'r1'}})));
+        expect(screen.getByRole('menuitem', {name: 'Unaccept answer'})).toBeInTheDocument();
+    });
+
+    test('Q&A: Accept answer isn\'t offered on the question itself', () => {
+        renderMenuFor(root({user_id: 'me'}), stateFor('qa', 'system_user', root({user_id: 'me'})));
+        expect(screen.queryByRole('menuitem', {name: /accept answer/i})).not.toBeInTheDocument();
+    });
+
+    test('Ideas: a member gets no Set status', () => {
+        renderMenuFor(root(), stateFor('ideas', 'system_user', root()));
+        expect(screen.queryByRole('menuitem', {name: 'Set status'})).not.toBeInTheDocument();
+    });
+
+    test('Ideas: a moderator gets Set status on the topic\'s root, listing every status', () => {
+        renderMenuFor(root(), stateFor('ideas', 'system_user system_admin', root()));
+        expect(screen.getByRole('menuitem', {name: 'Set status'})).toBeInTheDocument();
+    });
+
+    test('Ideas: Set status isn\'t offered on a reply', () => {
+        renderMenuFor(reply(), stateFor('ideas', 'system_user system_admin', root()));
+        expect(screen.queryByRole('menuitem', {name: 'Set status'})).not.toBeInTheDocument();
+    });
+
+    test('a discussion forum\'s moderator gets Set status from neither (no mode for it)', () => {
+        const discussion = {
+            entities: {
+                general: {serverVersion: ''},
+                users: {currentUserId: 'me', profiles: {me: {id: 'me', roles: 'system_user system_admin'}}},
+                teams: {currentTeamId: 't1', teams: {t1: {id: 't1', name: 'one', display_name: 'One', delete_at: 0}}},
+                channels: {
+                    channels: {c1: {id: 'c1', team_id: 't1', type: 'O', name: 'town', display_name: 'Town', delete_at: 0}},
+                    channelTypes: {c1: {type: 'forum', mode: 'discussion', root_posts: 'members', view: 'topics', preset: ''}},
+                },
+                posts: {posts: {r0: root(), r1: reply()}},
+                files: {files: {}, fileIdsByPostId: {}},
+                preferences: {myPreferences: {}},
+            },
+        } as never;
+
+        renderMenuFor(root(), discussion);
+        expect(screen.queryByRole('menuitem', {name: 'Set status'})).not.toBeInTheDocument();
+        expect(screen.queryByRole('menuitem', {name: /accept answer/i})).not.toBeInTheDocument();
+    });
+});

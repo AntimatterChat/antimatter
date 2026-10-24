@@ -5,17 +5,19 @@ import React, {useState} from 'react';
 import {useIntl} from 'react-intl';
 import {useDispatch, useSelector} from 'react-redux';
 
-import type {Post} from '@mattermost/types/posts';
+import type {ForumTopicStatus, Post} from '@mattermost/types/posts';
 
 import {putPostOnTop, removePostFromTop} from 'mattermost-redux/actions/channels';
-import {addPostReminder} from 'mattermost-redux/actions/posts';
+import {addPostReminder, patchForumTopic} from 'mattermost-redux/actions/posts';
 import {setThreadFollow} from 'mattermost-redux/actions/threads';
 import {Posts} from 'mattermost-redux/constants';
 import {getChannel} from 'mattermost-redux/selectors/entities/channels';
+import {getChannelTypeInfo} from 'mattermost-redux/selectors/entities/channel_types';
 import {getConfig} from 'mattermost-redux/selectors/entities/general';
 import {getOnTopEntry} from 'mattermost-redux/selectors/entities/on_top_posts';
 import {getPost, isPostFlagged} from 'mattermost-redux/selectors/entities/posts';
 import {isCollapsedThreadsEnabled} from 'mattermost-redux/selectors/entities/preferences';
+import {isChannelModerator} from 'mattermost-redux/selectors/entities/roles';
 import {contentFlaggingEnabledInTeam, getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
 import {getCurrentUserId} from 'mattermost-redux/selectors/entities/users';
 
@@ -33,6 +35,8 @@ import Icon from 'fusion/components/icon';
 import {Popover} from 'fusion/components/layer';
 import {Flyout, MenuHeading, MenuItem, MenuSeparator} from 'fusion/components/menu';
 import {CustomTimeForm} from 'fusion/composer/schedule';
+import {ACCEPTED_ANSWER_PROP, TOPIC_STATUS_PROP} from 'fusion/forum/props';
+import {FORUM_TOPIC_STATUS_MENU_ORDER, topicStatusLabel} from 'fusion/forum/status';
 import {useDisplayPrefs} from 'fusion/hooks/display';
 import CopyIdItem from 'fusion/popovers/copy_id_item';
 import {canMoveThread} from 'fusion/rhs/thread_to';
@@ -115,6 +119,19 @@ export default function MessageMenu({post, anchor, inThread, onClose, onMoreReac
         const root = getPost(state, post.root_id || post.id);
         return root !== undefined && post.type !== Posts.POST_TYPES.BURN_ON_READ && canMoveThread(state, root);
     });
+
+    // Antimatter forums: Accept an answer (Q&A, on a reply) and Set status (Ideas, on the topic's root), both
+    // through PATCH /posts/{root_id}/topic (design §3.3). The UI only mirrors who the server lets do this; the
+    // server enforces it.
+    const channelTypeInfo = useSelector((state: GlobalState) => (channel ? getChannelTypeInfo(state, channel.id) : undefined));
+    const topicRoot = useSelector((state: GlobalState) => getPost(state, post.root_id || post.id));
+    const moderator = useSelector((state: GlobalState) => Boolean(channel?.team_id) && isChannelModerator(state, channel!.team_id, channel!.id));
+    const isQaReply = channelTypeInfo?.type === 'forum' && channelTypeInfo.mode === 'qa' && Boolean(post.root_id) && !system;
+    const canAccept = isQaReply && (topicRoot?.user_id === me || moderator);
+    const isAccepted = topicRoot?.props?.[ACCEPTED_ANSWER_PROP] === post.id;
+    const canSetStatus = channelTypeInfo?.type === 'forum' && channelTypeInfo.mode === 'ideas' && !post.root_id && !system && moderator;
+    const currentStatus = (post.props?.[TOPIC_STATUS_PROP] as ForumTopicStatus) || 'open';
+
     const run = (action: () => void) => () => {
         action();
         onClose();
@@ -261,6 +278,44 @@ export default function MessageMenu({post, anchor, inThread, onClose, onMoreReac
                     sub={formatMessage({id: 'fusion.messageMenu.makeTopicSub', defaultMessage: 'A named conversation, listed under the channel'})}
                     onClick={() => setNamingThread(true)}
                 />
+            )}
+            {canAccept && (
+                <MenuItem
+                    icon='check'
+                    label={isAccepted ?
+                        formatMessage({id: 'fusion.messageMenu.unaccept', defaultMessage: 'Unaccept answer', description: 'A Q&A forum reply\'s ⋯ menu: clears it as the question\'s accepted answer.'}) :
+                        formatMessage({id: 'fusion.messageMenu.accept', defaultMessage: 'Accept answer', description: 'A Q&A forum reply\'s ⋯ menu, shown to the asker and moderators: marks it as the accepted answer.'})}
+                    onClick={run(async () => {
+                        const result = await dispatch(patchForumTopic(topicRoot!.id, {accepted_answer_id: isAccepted ? '' : post.id}));
+                        if (result && 'error' in result && result.error) {
+                            toast((result.error as {message?: string}).message || formatMessage({id: 'fusion.toast.acceptFailed', defaultMessage: 'The answer couldn\'t be accepted', description: 'Toast shown when accepting a Q&A answer fails.'}));
+                        }
+                    })}
+                />
+            )}
+            {canSetStatus && (
+                <Flyout
+                    icon='idea'
+                    label={formatMessage({id: 'fusion.messageMenu.setStatus', defaultMessage: 'Set status', description: 'An Ideas forum topic\'s ⋯ menu, moderators only: opens the list of statuses.'})}
+                    menuLabel={formatMessage({id: 'fusion.messageMenu.setStatusMenuLabel', defaultMessage: 'Set this idea\'s status', description: 'Accessible label of the Ideas forum\'s Set status submenu.'})}
+                >
+                    {FORUM_TOPIC_STATUS_MENU_ORDER.map((s) => (
+                        <button
+                            key={s}
+                            type='button'
+                            role='menuitem'
+                            disabled={s === currentStatus}
+                            onClick={run(async () => {
+                                const result = await dispatch(patchForumTopic(post.id, {status: s}));
+                                if (result && 'error' in result && result.error) {
+                                    toast((result.error as {message?: string}).message || formatMessage({id: 'fusion.toast.statusFailed', defaultMessage: 'The status couldn\'t be set', description: 'Toast shown when setting an Ideas topic\'s status fails.'}));
+                                }
+                            })}
+                        >
+                            {formatMessage(topicStatusLabel(s))}
+                        </button>
+                    ))}
+                </Flyout>
             )}
             {!system && canMove && (
                 <MenuItem

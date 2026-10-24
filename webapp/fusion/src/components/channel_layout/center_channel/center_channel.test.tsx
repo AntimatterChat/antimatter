@@ -25,6 +25,17 @@ jest.mock('components/channel_layout/channel_identifier_router', () => {
     return {__esModule: true, default: MockChannelIdentifierRouter};
 });
 
+// A forum topic's own route (Antimatter channel types, design §4.4): a stand-in that says what it was given.
+const mockTopicRouteRendered = jest.fn();
+jest.mock('fusion/forum/topic_route', () => {
+    const {useParams} = jest.requireActual('react-router-dom');
+    function MockForumTopicRoute() {
+        mockTopicRouteRendered(useParams());
+        return null;
+    }
+    return {__esModule: true, default: MockForumTopicRoute};
+});
+
 describe('components/channel_layout/CenterChannel', () => {
     const props = {
         location: {
@@ -95,5 +106,24 @@ describe('components/channel_layout/CenterChannel', () => {
         expect(mockRouterRendered).toHaveBeenLastCalledWith(expect.objectContaining({params: expect.objectContaining({identifier: 'ops-oncall', postid: postId})}));
 
         expect(mockRouterMounted).toHaveBeenCalledTimes(1);
+    });
+
+    test('a forum topic\'s own address (Antimatter channel types) goes to its page, ahead of the plain channel route', () => {
+        const rootId = 'abcdefghijklmnopqrstuvwxyz';
+        const history = createMemoryHistory({initialEntries: [`/lumen/channels/beam-questions/topics/${rootId}`]});
+        const view = (
+            <Router history={history}>
+                <CenterChannel
+                    {...props}
+                    location={history.location as OwnProps['location']}
+                    match={{url: '/lumen', params: {team: 'lumen'}} as OwnProps['match']}
+                    lastChannelPath='/lumen/channels/town'
+                />
+            </Router>
+        );
+        render(view);
+
+        expect(mockTopicRouteRendered).toHaveBeenCalledWith({team: 'lumen', identifier: 'beam-questions', rootId});
+        expect(mockRouterRendered).not.toHaveBeenCalled();
     });
 });
