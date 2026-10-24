@@ -52,12 +52,15 @@ func (a *App) createDefaultChannelMemberships(rctx request.CTX, params model.Cre
 		if tmem == nil {
 			_, err = a.AddTeamMember(rctx, channel.TeamId, userChannel.UserID)
 			if err != nil {
-				if err.Id == "api.team.join_user_to_team.allowed_domains.app_error" {
+				switch err.Id {
+				case "api.team.join_user_to_team.allowed_domains.app_error":
 					logger.Info(
 						"User not added to channel - the domain associated with the user is not in the list of allowed team domains",
 						mlog.String("team_id", channel.TeamId),
 					)
-				} else {
+				case bannedFromTeamErrorID:
+					logger.Info("User not added to channel - they are banned from its team", mlog.String("team_id", channel.TeamId))
+				default:
 					multiErr = multierror.Append(multiErr, fmt.Errorf("failed to add team member for default channel membership: %w", err))
 				}
 				continue
@@ -69,9 +72,12 @@ func (a *App) createDefaultChannelMemberships(rctx request.CTX, params model.Cre
 			SkipTeamMemberIntegrityCheck: true,
 		})
 		if err != nil {
-			if err.Id == "api.channel.add_user.to.channel.failed.deleted.app_error" {
+			switch err.Id {
+			case "api.channel.add_user.to.channel.failed.deleted.app_error":
 				logger.Info("Not adding user to channel because they have already left the team")
-			} else {
+			case bannedFromTeamErrorID:
+				logger.Info("Not adding user to channel because they are banned from its team")
+			default:
 				multiErr = multierror.Append(multiErr, fmt.Errorf("failed to add channel member for default channel membership: %w", err))
 			}
 			continue
@@ -107,9 +113,14 @@ func (a *App) createDefaultTeamMemberships(rctx request.CTX, params model.Create
 
 		_, err := a.AddTeamMember(rctx, userTeam.TeamID, userTeam.UserID)
 		if err != nil {
-			if err.Id == "api.team.join_user_to_team.allowed_domains.app_error" {
+			switch err.Id {
+			case "api.team.join_user_to_team.allowed_domains.app_error":
 				logger.Info("User not added to team - the domain associated with the user is not in the list of allowed team domains")
-			} else {
+			case bannedFromTeamErrorID:
+				// Antimatter: a ban keeps them out, as it should; it isn't the sync failing (which would stop the
+				// channels' sync for everyone).
+				logger.Info("User not added to team - they are banned from it")
+			default:
 				multiErr = multierror.Append(multiErr, fmt.Errorf("failed to add team member for default team membership: %w", err))
 			}
 			continue

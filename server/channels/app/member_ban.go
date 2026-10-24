@@ -22,6 +22,9 @@ import (
 // lift the ban lifts it first, from the ban list.
 
 const (
+	// bannedFromTeamErrorID is the error of every join a ban refuses.
+	bannedFromTeamErrorID = "app.team.join_user_to_team.banned.app_error"
+
 	// banPurgeAtOnce is how many messages a ban deletes in its request; more are deleted by a job.
 	banPurgeAtOnce = 100
 
