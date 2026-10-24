@@ -11,7 +11,7 @@ import {channelTypes} from './channels';
 // payload that wasn't filled in (a direct message, or one from a code path §1.3 doesn't name) never erases a known
 // type.
 describe('channelTypes reducer', () => {
-    const typed = {id: 'c1', props: {am_type: 'forum', am_mode: 'qa', am_root_posts: 'members', am_forum_view: 'topics', am_preset: 'forum_qa'}} as ServerChannel;
+    const typed = {id: 'c1', props: {am_type: 'forum', am_mode: 'qa', am_root_posts: 'members', am_forum_view: 'topics', am_preset: 'forum_qa'}} as unknown as ServerChannel;
 
     test('a filled-in channel is stored, normalised', () => {
         const state = channelTypes(undefined, {type: ChannelTypes.RECEIVED_CHANNEL, data: typed});

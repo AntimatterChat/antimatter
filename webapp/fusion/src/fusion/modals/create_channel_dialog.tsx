@@ -147,10 +147,15 @@ export default function CreateChannelDialog({categoryId, onMoreOptions, onClose}
             return;
         }
         const channel = {
-            team_id: team.id, name: url, display_name: name.trim(), purpose: '', header: '', type,
+            team_id: team.id,
+            name: url,
+            display_name: name.trim(),
+            purpose: '',
+            header: '',
+            type,
             props: {am_preset: preset},
             ...(serverName ? {managed_category_name: serverName} : {}),
-        } as Channel;
+        } as unknown as Channel;
         const result = await dispatch(createChannel(channel, ''));
         setSaving(false);
         if (result && 'error' in result && result.error) {

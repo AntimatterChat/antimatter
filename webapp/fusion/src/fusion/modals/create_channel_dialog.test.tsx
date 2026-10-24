@@ -3,7 +3,7 @@
 
 import React from 'react';
 
-import type {Channel} from '@mattermost/types/channels';
+import type {Channel, ServerChannel} from '@mattermost/types/channels';
 
 import {Client4} from 'mattermost-redux/client';
 
@@ -48,7 +48,7 @@ describe('CreateChannelDialog', () => {
     });
 
     test('creating a text channel sends its preset as props.am_preset', async () => {
-        const create = jest.spyOn(Client4, 'createChannel').mockResolvedValue({id: 'new', name: 'beam', display_name: 'Beam', team_id: 'team', type: 'O', create_at: 0} as Channel);
+        const create = jest.spyOn(Client4, 'createChannel').mockResolvedValue({id: 'new', name: 'beam', display_name: 'Beam', team_id: 'team', type: 'O', create_at: 0} as ServerChannel);
         render();
 
         await userEvent.type(screen.getByLabelText('Name'), 'Beam');
@@ -61,7 +61,7 @@ describe('CreateChannelDialog', () => {
     });
 
     test('picking another preset sends it, and switching type picks that type\'s default', async () => {
-        const create = jest.spyOn(Client4, 'createChannel').mockResolvedValue({id: 'new', name: 'news', display_name: 'News', team_id: 'team', type: 'O', create_at: 0} as Channel);
+        const create = jest.spyOn(Client4, 'createChannel').mockResolvedValue({id: 'new', name: 'news', display_name: 'News', team_id: 'team', type: 'O', create_at: 0} as ServerChannel);
         render();
 
         await userEvent.click(screen.getByRole('radio', {name: /^Announcement/}));
@@ -73,7 +73,7 @@ describe('CreateChannelDialog', () => {
     });
 
     test('switching to Forum shows forum presets, and the first is sent', async () => {
-        const create = jest.spyOn(Client4, 'createChannel').mockResolvedValue({id: 'new', name: 'help', display_name: 'Help', team_id: 'team', type: 'O', create_at: 0} as Channel);
+        const create = jest.spyOn(Client4, 'createChannel').mockResolvedValue({id: 'new', name: 'help', display_name: 'Help', team_id: 'team', type: 'O', create_at: 0} as ServerChannel);
         render();
 
         await userEvent.click(screen.getByRole('radio', {name: 'Forum'}));
