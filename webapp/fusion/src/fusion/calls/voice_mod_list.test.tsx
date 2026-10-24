@@ -42,10 +42,13 @@ const state = {
     },
 } as never;
 
+// Calls' selectors are memoized: the same list until it changes.
+const noMutes: never[] = [];
+
 function mockCalls(listModMutes: jest.Mock) {
     window.antimatterCalls = {
         version: 1,
-        selectors: {getModMutes: () => [], getModDeafens: () => []},
+        selectors: {getModMutes: () => noMutes, getModDeafens: () => noMutes},
         moderation: {listModMutes},
     } as unknown as AntimatterCallsAPI;
 }
