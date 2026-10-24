@@ -10,7 +10,7 @@ import {TestHelper} from 'utils/test_helper';
 
 import CollectionsPopover from './collections_popover';
 
-const mockMarkAllRead = jest.fn((..._args: unknown[]) => ({type: 'NOOP_MARK_ALL_READ'}));
+const mockMarkAllRead = jest.fn<{type: string}, unknown[]>(() => ({type: 'NOOP_MARK_ALL_READ'}));
 jest.mock('mattermost-redux/actions/threads', () => ({
     ...jest.requireActual('mattermost-redux/actions/threads'),
     markAllThreadsInTeamRead: (...args: unknown[]) => mockMarkAllRead(...args),

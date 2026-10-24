@@ -23,7 +23,7 @@ jest.mock('mattermost-redux/selectors/entities/channels', () => ({
     canManageAnyChannelMembersInCurrentTeam: jest.fn(() => mockCanManage),
 }));
 
-const mockUpdateRoles = jest.fn((..._args: unknown[]) => ({type: 'NOOP_ROLES'}));
+const mockUpdateRoles = jest.fn<{type: string}, unknown[]>(() => ({type: 'NOOP_ROLES'}));
 jest.mock('mattermost-redux/actions/channels', () => ({
     ...jest.requireActual('mattermost-redux/actions/channels'),
     updateChannelMemberSchemeRoles: (...args: unknown[]) => mockUpdateRoles(...args),
