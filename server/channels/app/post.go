@@ -287,6 +287,12 @@ func (a *App) CreatePost(rctx request.CTX, post *model.Post, channel *model.Chan
 		}
 	}
 
+	// Antimatter: the channel's type rules (who starts conversations), for everyone but apps, system messages and the
+	// copies of moved threads (checkChannelPostingRules).
+	if err = a.checkChannelPostingRules(rctx, post, channel, flags); err != nil {
+		return nil, false, err
+	}
+
 	if flags.FromIncomingWebhook {
 		post.AddProp(model.PostPropsFromWebhook, "true")
 	}
@@ -3452,6 +3458,10 @@ func (a *App) MoveThread(rctx request.CTX, postID string, sourceChannelID, chann
 
 	// Antimatter: the copies aren't held back by the target community's rules; the one moving them is.
 	if appErr = a.checkCommunityRules(rctx, user, targetChannel); appErr != nil {
+		return appErr
+	}
+	// Antimatter: nor by the target's rule on who starts conversations; the one moving them is.
+	if appErr = a.CanStartConversations(rctx, user.Id, targetChannel); appErr != nil {
 		return appErr
 	}
 

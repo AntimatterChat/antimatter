@@ -60,12 +60,7 @@ func (a *App) SessionCanChangeOnTop(rctx request.CTX, session model.Session, cha
 	if channel.IsGroupOrDirect() {
 		return nil
 	}
-	for _, p := range []*model.Permission{model.PermissionManageChannelRoles, model.PermissionDeleteOthersPosts} {
-		if ok, _ := a.SessionHasPermissionToChannel(rctx, session, channel.Id, p); ok {
-			return nil
-		}
-	}
-	if a.SessionHasPermissionToTeam(session, channel.TeamId, model.PermissionManageTeam) {
+	if a.SessionIsChannelModerator(rctx, session, channel) {
 		return nil
 	}
 	return model.NewAppError("SessionCanChangeOnTop", "app.on_top_post.moderators_only.app_error", nil, "", http.StatusForbidden)

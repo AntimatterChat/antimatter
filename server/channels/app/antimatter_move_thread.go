@@ -23,22 +23,12 @@ import (
 const antimatterThreadTitleProp = "am_thread_title"
 
 // IsThreadModerator says whether a user moderates the threads of the channel
-// source: its channel admins, the community's admins, those with "Manage
-// messages" in the channel (deleting others' messages, as moving deletes the
-// originals) and system admins. They may move any of its threads to another
-// channel of the community.
+// source: its channel moderators (IsChannelModerator: its channel admins, the
+// community's admins and moderators, who manage messages, as moving deletes
+// the originals, and system admins). They may move any of its threads to
+// another channel of the community.
 func (a *App) IsThreadModerator(rctx request.CTX, userID string, source *model.Channel) bool {
-	if a.HasPermissionTo(rctx, userID, model.PermissionManageSystem) {
-		return true
-	}
-	if source.TeamId != "" && a.HasPermissionToTeam(rctx, userID, source.TeamId, model.PermissionManageTeam) {
-		return true
-	}
-	if member, appErr := a.GetChannelMember(rctx, source.Id, userID); appErr == nil && member.SchemeAdmin {
-		return true
-	}
-	has, _ := a.HasPermissionToChannel(rctx, userID, source.Id, model.PermissionDeleteOthersPosts)
-	return has
+	return a.IsChannelModerator(rctx, userID, source)
 }
 
 // CanMoveThread says whether a user may move the thread (posts, its first
@@ -126,6 +116,11 @@ func (a *App) MoveThreadToChannel(rctx request.CTX, postID, targetChannelID stri
 	}
 	if canPost, _ := a.HasPermissionToChannel(rctx, user.Id, target.Id, model.PermissionCreatePost); !canPost {
 		return nil, moveThreadError("api.post.move_thread.cannot_post.app_error", nil, http.StatusForbidden)
+	}
+	// The moved thread starts a conversation there (its replies too, flattened): the target's rule on who starts
+	// them holds the one moving it (its copies skip it).
+	if appErr = a.CanStartConversations(rctx, user.Id, target); appErr != nil {
+		return nil, appErr
 	}
 	// The copies aren't held back by the community's rules (their authors aren't speaking anew); the one moving is.
 	if appErr = a.checkCommunityRules(rctx, user, target); appErr != nil {
