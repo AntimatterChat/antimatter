@@ -127,7 +127,7 @@ describe('fusion/composer/Composer', () => {
             await userEvent.type(screen.getByRole('textbox', {name: 'Write to General'}), 'Body text');
             await userEvent.click(screen.getByRole('button', {name: 'Send'}));
 
-            await waitFor(() => expect(onSubmit).toHaveBeenCalledWith('c1', '', expect.objectContaining({props: expect.objectContaining(extraProps)}), {}));
+            await waitFor(() => expect(onSubmit).toHaveBeenCalledWith('c1', '', expect.objectContaining({props: expect.objectContaining(extraProps)}), {}, undefined));
         });
 
         test('merges extraProps onto a message scheduled for later', async () => {
@@ -148,7 +148,7 @@ describe('fusion/composer/Composer', () => {
             expect(send).toBeInstanceOf(Function);
             await act(async () => send!());
 
-            await waitFor(() => expect(onSubmit).toHaveBeenCalledWith('c1', '', expect.objectContaining({message: 'Body text', props: expect.objectContaining(extraProps)}), {}));
+            await waitFor(() => expect(onSubmit).toHaveBeenCalledWith('c1', '', expect.objectContaining({message: 'Body text', props: expect.objectContaining(extraProps)}), {}, undefined));
         });
     });
 
