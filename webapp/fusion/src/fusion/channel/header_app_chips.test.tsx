@@ -26,12 +26,12 @@ describe('fusion/channel/HeaderAppChips', () => {
     });
 
     test('gives each app\'s chip the conversation, in order', () => {
-        const Chip = ({channel: c, label}: {channel: Channel; label: string}) => <span className='am-head-chip'>{`${label} ${c.display_name}`}</span>;
+        const chip = (label: string) => ({channel: c}: {channel: Channel}) => <span className='am-head-chip'>{`${label} ${c.display_name}`}</span>;
         renderWithContext(
             <HeaderAppChips channel={channel}/>,
             state([
-                {id: 'a', pluginId: 'calendar', component: (props: {channel: Channel}) => <Chip {...props} label='Next call in'/>},
-                {id: 'b', pluginId: 'other', component: (props: {channel: Channel}) => <Chip {...props} label='Other in'/>},
+                {id: 'a', pluginId: 'calendar', component: chip('Next call in')},
+                {id: 'b', pluginId: 'other', component: chip('Other in')},
             ]),
         );
         const chips = screen.getAllByText(/ Standup$/);
