@@ -7117,6 +7117,66 @@
     "description": "Internal API error when computing site statistics for the System Console analytics pages fails; admin-facing."
   },
   {
+    "id": "app.assistant.access.app_error",
+    "translation": "The assistant isn't available to you in this channel.",
+    "description": "Error (Antimatter) when someone asks for the assistant's feed, presence or cards in a channel they may not read (not a member of a private channel, direct or group message), or as a bot or deactivated account."
+  },
+  {
+    "id": "app.assistant.busy.app_error",
+    "translation": "The assistant is busy with this right now. Please try again.",
+    "description": "Error (Antimatter) when the assistant couldn't save a change because others changed the same thing at the same moment, several times in a row."
+  },
+  {
+    "id": "app.assistant.card_not_found.app_error",
+    "translation": "This card isn't in your assistant's feed.",
+    "description": "Error (Antimatter) when someone acts on an assistant card (dismiss, pin, mute, post, claim, run) that doesn't exist, was dismissed, or is another person's: nobody can act on another person's cards."
+  },
+  {
+    "id": "app.assistant.community_connection.app_error",
+    "translation": "This community can't use that model connection for the assistant.",
+    "description": "Error (Antimatter) when a community's admins pick a decision model connection for the assistant that isn't the community's own nor a server-wide connection shared with it."
+  },
+  {
+    "id": "app.assistant.community_override.app_error",
+    "translation": "The server doesn't let communities change the assistant's settings.",
+    "description": "Error (Antimatter) when a community's admins try to change the assistant's settings for their community while the server's setting AllowCommunityOverride is off."
+  },
+  {
+    "id": "app.assistant.not_an_action.app_error",
+    "translation": "Only an action card can be claimed or run.",
+    "description": "Error (Antimatter) when someone tries to claim or run an assistant card that shows information (an insight) rather than proposing an action."
+  },
+  {
+    "id": "app.assistant.off.app_error",
+    "translation": "The assistant is off in this channel.",
+    "description": "Error (Antimatter) when someone claims or runs an action card while the assistant is turned off for the channel (by the server, the community or themselves), or the channel is archived."
+  },
+  {
+    "id": "app.assistant.offer_done.app_error",
+    "translation": "This action was already run.",
+    "description": "Error (Antimatter, HTTP 409) when someone runs or claims an assistant action that was already run: running it marks it done for everyone, and a second run is refused."
+  },
+  {
+    "id": "app.assistant.offer_gone.app_error",
+    "translation": "This action is no longer offered.",
+    "description": "Error (Antimatter) when someone claims or runs an assistant action whose offer expired (after a day)."
+  },
+  {
+    "id": "app.assistant.offer_not_yours.app_error",
+    "translation": "This action is offered to someone else right now.",
+    "description": "Error (Antimatter) when someone runs or claims an assistant action that is offered to another person: only the person it's offered to may run it; it moves on when they dismiss or ignore it."
+  },
+  {
+    "id": "app.assistant.post_insight_only.app_error",
+    "translation": "Only a card with information can be posted to the channel.",
+    "description": "Error (Antimatter) when someone tries to post an assistant action card (or a card without content) to the channel: only insight cards have content to post."
+  },
+  {
+    "id": "app.assistant.save.app_error",
+    "translation": "The assistant's settings couldn't be saved.",
+    "description": "Error (Antimatter) when a community's assistant settings couldn't be stored."
+  },
+  {
     "id": "app.audit.get.finding.app_error",
     "translation": "We encountered an error finding the audits.",
     "description": "Internal error when fetching audit log records from the database fails; admin-facing."
@@ -16550,6 +16610,31 @@
     "description": "Error when an app (plugin) registers a tool for agents (Antimatter) whose input JSON schema isn't valid."
   },
   {
+    "id": "model.assistant.community_settings.app_error",
+    "translation": "The community's assistant settings aren't valid.",
+    "description": "Validation error (Antimatter) for a community's assistant settings: an unknown engine (only rules or model), a malformed connection ID, or a model name that's too long."
+  },
+  {
+    "id": "model.assistant.entities.app_error",
+    "translation": "The assistant's seed entities aren't valid.",
+    "description": "Validation error (Antimatter) for the assistant's seed entities (AISettings.Assistant.SeedEntities): not a JSON list, too many, a type that isn't lower case, or a value or alias that's empty or too long."
+  },
+  {
+    "id": "model.assistant.muted_tools.app_error",
+    "translation": "The list of muted tools isn't valid.",
+    "description": "Validation error (Antimatter) for the tools someone muted for the assistant (\"don't suggest this kind again\"): too many, or a name that's empty, too long or has spaces."
+  },
+  {
+    "id": "model.assistant.patterns.app_error",
+    "translation": "The assistant's patterns aren't valid.",
+    "description": "Validation error (Antimatter) for the assistant's intent patterns (AISettings.Assistant.Patterns): not a JSON list, too many, a pattern ID used twice, an unknown kind (insight or action), an expression that doesn't compile, or no tools."
+  },
+  {
+    "id": "model.assistant.sources.app_error",
+    "translation": "The assistant's dictionary sources aren't valid.",
+    "description": "Validation error (Antimatter) for the assistant's dictionary sources (AISettings.Assistant.DictionarySources): not a JSON list, too many, or a source without a tool, an entity type or a field."
+  },
+  {
     "id": "model.authorize.is_valid.auth_code.app_error",
     "translation": "Invalid authorization code.",
     "description": "API validation error during the OAuth 2.0 authorization flow when the generated authorization code field is malformed; developer/integration-facing."
@@ -17228,6 +17313,11 @@
     "id": "model.config.is_valid.access_control_sync_interval.app_error",
     "translation": "Invalid access control sync job interval. Must be at least 60 seconds.",
     "description": "Configuration validation error shown to a system admin when the access control sync job interval setting is below the 60 second minimum. Blocks saving the configuration."
+  },
+  {
+    "id": "model.config.is_valid.ai.assistant.app_error",
+    "translation": "The assistant's setting {{.Setting}} isn't valid.",
+    "description": "Config validation error (Antimatter): one of the assistant's settings (AISettings.Assistant) is out of range or malformed. {{.Setting}} is the setting's name, not translated."
   },
   {
     "id": "model.config.is_valid.ai.connection_id.app_error",
@@ -19246,6 +19336,11 @@
     "id": "model.preference.is_valid.ai_tools.app_error",
     "translation": "Invalid choice of tools for agents.",
     "description": "Error returned when saving the preference that lists the tools a person turned off for the agents they talk to (Antimatter), with an invalid name or value."
+  },
+  {
+    "id": "model.preference.is_valid.assistant.app_error",
+    "translation": "The assistant preference isn't valid.",
+    "description": "Validation error (Antimatter) for a preference of the assistant's category: a channel's switch must be named by the channel's ID with on or off, and the muted tools must be a valid list."
   },
   {
     "id": "model.preference.is_valid.category.app_error",
