@@ -126,6 +126,7 @@ export default function MessageMenu({post, anchor, inThread, onClose, onMoreReac
     const channelTypeInfo = useSelector((state: GlobalState) => (channel ? getChannelTypeInfo(state, channel.id) : undefined));
     const topicRoot = useSelector((state: GlobalState) => getPost(state, post.root_id || post.id));
     const moderator = useSelector((state: GlobalState) => Boolean(channel?.team_id) && isChannelModerator(state, channel!.team_id, channel!.id));
+    const system = isSystemMessage(post);
     const isQaReply = channelTypeInfo?.type === 'forum' && channelTypeInfo.mode === 'qa' && Boolean(post.root_id) && !system;
     const canAccept = isQaReply && (topicRoot?.user_id === me || moderator);
     const isAccepted = topicRoot?.props?.[ACCEPTED_ANSWER_PROP] === post.id;
@@ -149,7 +150,6 @@ export default function MessageMenu({post, anchor, inThread, onClose, onMoreReac
         }
         toast(formatMessage({id: 'fusion.toast.reminder', defaultMessage: 'Reminder set for {time}'}, {time: intl.formatDate(at, {weekday: 'short', hour: 'numeric', minute: '2-digit'})}));
     };
-    const system = isSystemMessage(post);
 
     // Putting the message on top of its channel, where the server allows it (not in an archived channel nor a
     // restricted direct message, and where one may post), nor system or burn-on-read messages.
