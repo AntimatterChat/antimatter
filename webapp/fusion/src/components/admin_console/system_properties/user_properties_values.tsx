@@ -185,6 +185,7 @@ const UserPropertyValues = ({
                     />
                 </a>
             ),
+
             // No admin-facing edit action exists for an OpenID Connect claim
             // mapping on this page (it's set through the SSO configuration), so
             // this chip is plain text rather than the clickable AD/LDAP/SAML ones.

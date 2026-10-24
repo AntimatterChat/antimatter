@@ -10,9 +10,9 @@ import {CheckIcon, ChevronRightIcon, DotsHorizontalIcon, EyeOutlineIcon, FormatL
 import type {FieldVisibility} from '@mattermost/types/properties';
 import type {UserPropertyField} from '@mattermost/types/properties_user';
 
-import {openModal} from 'actions/views/modals';
-
 import {isPropertyFieldSynced} from 'mattermost-redux/utils/property_utils';
+
+import {openModal} from 'actions/views/modals';
 
 import * as Menu from 'components/menu';
 import Toggle from 'components/toggle';

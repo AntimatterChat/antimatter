@@ -387,7 +387,10 @@ describe('UserPropertyDotMenu', () => {
         const menuButton = screen.getByTestId(`user-property-field_dotmenu-${openidSyncedField.id}`);
         await userEvent.click(menuButton);
 
-        expect(screen.queryByText(/OpenID/)).not.toBeInTheDocument();
+        // No menu item offers to link/unlink OpenID Connect (that mapping comes from the
+        // SSO configuration, not this page) — scoped to menu items, since the synced-help
+        // text elsewhere on the menu legitimately names OpenID Connect as a sync source.
+        expect(screen.queryByRole('menuitem', {name: /OpenID/})).not.toBeInTheDocument();
         expect(screen.getByText('Link attribute to AD/LDAP')).toBeInTheDocument();
         expect(screen.getByText('Link attribute to SAML')).toBeInTheDocument();
     });
