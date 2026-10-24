@@ -1182,6 +1182,41 @@ func (api *PluginAPI) SendMail(to, subject, htmlBody string) *model.AppError {
 	return nil
 }
 
+// maxPluginMailAttachmentSize bounds the size of the attachment a plugin can send through
+// SendMailWithAttachment, so a plugin can't tie up the mail queue with huge messages.
+const maxPluginMailAttachmentSize = 10 * 1024 * 1024
+
+// SendMailWithAttachment sends an email with a single file attached, such as a calendar invite.
+// attachmentContentType is sent as is, so a plugin can set parameters on it (for example
+// "text/calendar; method=REQUEST").
+func (api *PluginAPI) SendMailWithAttachment(to, subject, htmlBody, attachmentName, attachmentContentType string, attachmentData []byte) *model.AppError {
+	if to == "" {
+		return model.NewAppError("SendMailWithAttachment", "plugin_api.send_mail.missing_to", nil, "", http.StatusBadRequest)
+	}
+
+	if subject == "" {
+		return model.NewAppError("SendMailWithAttachment", "plugin_api.send_mail.missing_subject", nil, "", http.StatusBadRequest)
+	}
+
+	if htmlBody == "" {
+		return model.NewAppError("SendMailWithAttachment", "plugin_api.send_mail.missing_htmlbody", nil, "", http.StatusBadRequest)
+	}
+
+	if attachmentName == "" || len(attachmentData) == 0 {
+		return model.NewAppError("SendMailWithAttachment", "plugin_api.send_mail.missing_attachment", nil, "", http.StatusBadRequest)
+	}
+
+	if len(attachmentData) > maxPluginMailAttachmentSize {
+		return model.NewAppError("SendMailWithAttachment", "plugin_api.send_mail.attachment_too_large", nil, "", http.StatusBadRequest)
+	}
+
+	if err := api.app.Srv().EmailService.SendMailWithAttachment(to, subject, htmlBody, attachmentName, attachmentContentType, attachmentData, "", "", "", ""); err != nil {
+		return model.NewAppError("SendMailWithAttachment", "plugin_api.send_mail.missing_htmlbody", nil, "", http.StatusInternalServerError).Wrap(err)
+	}
+
+	return nil
+}
+
 // Plugin Section
 
 func (api *PluginAPI) GetPlugins() ([]*model.Manifest, *model.AppError) {

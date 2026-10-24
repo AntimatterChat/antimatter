@@ -332,6 +332,24 @@ func (_m *ServiceInterface) SendMailWithEmbeddedFiles(to string, subject string,
 	return r0
 }
 
+// SendMailWithAttachment provides a mock function with given fields: to, subject, htmlBody, attachmentName, attachmentContentType, attachmentData, messageID, inReplyTo, references, category
+func (_m *ServiceInterface) SendMailWithAttachment(to string, subject string, htmlBody string, attachmentName string, attachmentContentType string, attachmentData []byte, messageID string, inReplyTo string, references string, category string) error {
+	ret := _m.Called(to, subject, htmlBody, attachmentName, attachmentContentType, attachmentData, messageID, inReplyTo, references, category)
+
+	if len(ret) == 0 {
+		panic("no return value specified for SendMailWithAttachment")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(string, string, string, string, string, []byte, string, string, string, string) error); ok {
+		r0 = rf(to, subject, htmlBody, attachmentName, attachmentContentType, attachmentData, messageID, inReplyTo, references, category)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
 // SendMfaChangeEmail provides a mock function with given fields: _a0, activated, locale, siteURL
 func (_m *ServiceInterface) SendMfaChangeEmail(_a0 string, activated bool, locale string, siteURL string) error {
 	ret := _m.Called(_a0, activated, locale, siteURL)

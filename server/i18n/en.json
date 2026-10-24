@@ -20138,6 +20138,16 @@
     "description": "Error returned when requesting a public link for a file that isn't attached to a readable post ('post' = chat message)."
   },
   {
+    "id": "plugin_api.send_mail.attachment_too_large",
+    "translation": "The attachment is too large.",
+    "description": "Error returned to plugins calling the send-email-with-attachment API with an attachment over the size limit; developer-facing."
+  },
+  {
+    "id": "plugin_api.send_mail.missing_attachment",
+    "translation": "Missing attachment.",
+    "description": "Error returned to plugins calling the send-email-with-attachment API without an attachment name and data; developer-facing."
+  },
+  {
     "id": "plugin_api.send_mail.missing_htmlbody",
     "translation": "Missing HTML Body.",
     "description": "Error returned to plugins calling the send-email API without an HTML body; developer-facing."

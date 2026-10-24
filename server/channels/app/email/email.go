@@ -891,6 +891,14 @@ func (es *Service) SendMailWithEmbeddedFiles(to, subject, htmlBody string, embed
 	return mail.SendMailWithEmbeddedFilesUsingConfig(to, subject, htmlBody, embeddedFiles, mailConfig, true, messageID, inReplyTo, references, "", "")
 }
 
+// SendMailWithAttachment sends a message with a single file attached. attachmentContentType is
+// sent as is, so a caller can set parameters on it (for example "text/calendar; method=REQUEST").
+func (es *Service) SendMailWithAttachment(to, subject, htmlBody, attachmentName, attachmentContentType string, attachmentData []byte, messageID string, inReplyTo string, references string, category string) error {
+	mailConfig := es.mailServiceConfig("")
+
+	return mail.SendMailWithAttachmentUsingConfig(to, subject, htmlBody, attachmentName, attachmentContentType, attachmentData, mailConfig, true, messageID, inReplyTo, references, "", category)
+}
+
 func (es *Service) InvalidateVerifyEmailTokensForUser(userID string) *model.AppError {
 	tokens, err := es.store.Token().GetAllTokensByType(TokenTypeVerifyEmail)
 	if err != nil {

@@ -672,7 +672,7 @@ func TestSendMail(t *testing.T) {
 
 	for testName, tc := range testCases {
 		t.Run(testName, func(t *testing.T) {
-			md := mailData{"test@example.com", "test@example.com", mail.Address{Address: "from@example.com"}, "", tc.replyTo, "", "", nil, nil, tc.messageID, tc.inReplyTo, tc.references, ""}
+			md := mailData{"test@example.com", "test@example.com", mail.Address{Address: "from@example.com"}, "", tc.replyTo, "", "", nil, "", "", nil, nil, tc.messageID, tc.inReplyTo, tc.references, ""}
 			cfg := getConfig()
 			err = sendMail(mocm, md, time.Now(), cfg)
 			require.NoError(t, err)
@@ -784,6 +784,29 @@ func TestSendMailMIMEStructure(t *testing.T) {
 		assert.Contains(t, lower, "content-id: <logo.png>", "embedded part must carry a Content-ID")
 		assert.Contains(t, lower, "content-disposition: inline", "embedded part must be inline")
 		assert.Contains(t, data, `filename="logo.png"`, "embedded part must reference its filename")
+	})
+
+	t.Run("attachment is sent with its content type and as an attachment, not inline", func(t *testing.T) {
+		mocm := &mockMailer{}
+		m := mailData{
+			mimeTo:                "test@example.com",
+			smtpTo:                "test@example.com",
+			from:                  mail.Address{Address: "from@example.com"},
+			htmlBody:              "<p>You're invited</p>",
+			attachmentName:        "invite.ics",
+			attachmentContentType: "text/calendar; method=REQUEST; charset=UTF-8",
+			attachmentData:        []byte("BEGIN:VCALENDAR\r\nEND:VCALENDAR\r\n"),
+		}
+		err := sendMail(mocm, m, time.Now(), getConfig())
+		require.NoError(t, err)
+
+		data := string(mocm.data)
+		lower := strings.ToLower(data)
+		assert.Contains(t, lower, "content-type: text/calendar", "the attachment's content type must be sent as is")
+		assert.Contains(t, lower, "method=request", "the attachment's content type parameters must be kept")
+		assert.Contains(t, lower, "content-disposition: attachment", "a calendar invite must be a real attachment, not inline")
+		assert.Contains(t, data, `filename="invite.ics"`, "the attachment must keep its file name")
+		assert.Contains(t, data, "BEGIN:VCALENDAR", "the attachment's data must be sent")
 	})
 }
 

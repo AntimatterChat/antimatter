@@ -4,6 +4,7 @@
 package mail
 
 import (
+	"bytes"
 	"context"
 	"crypto/tls"
 	"fmt"
@@ -53,11 +54,20 @@ type mailData struct {
 	subject       string
 	htmlBody      string
 	embeddedFiles map[string]io.Reader
-	mimeHeaders   map[string]string
-	messageID     string
-	inReplyTo     string
-	references    string
-	category      string
+
+	// attachmentName, attachmentContentType and attachmentData describe a single file attached to
+	// the message (as opposed to embeddedFiles, which are inlined for use from the HTML body).
+	// attachmentContentType is sent as is, so a caller can set parameters on it (for example
+	// "text/calendar; method=REQUEST").
+	attachmentName        string
+	attachmentContentType string
+	attachmentData        []byte
+
+	mimeHeaders map[string]string
+	messageID   string
+	inReplyTo   string
+	references  string
+	category    string
 }
 
 // smtpClient is implemented by an smtp.Client. See https://golang.org/pkg/net/smtp/#Client.
@@ -250,6 +260,34 @@ func SendMailWithEmbeddedFilesUsingConfig(to, subject, htmlBody string, embedded
 	return sendMailUsingConfigAdvanced(mail, config)
 }
 
+// SendMailWithAttachmentUsingConfig sends a message with a single file attached (as opposed to
+// an embedded file, it isn't referenced from the HTML body, and clients show it as an attachment).
+// attachmentContentType is used as is; pass parameters on it (for example
+// "text/calendar; method=REQUEST") when the attachment is more than a plain file.
+func SendMailWithAttachmentUsingConfig(to, subject, htmlBody, attachmentName, attachmentContentType string, attachmentData []byte, config *SMTPConfig, enableComplianceFeatures bool, messageID string, inReplyTo string, references string, ccMail string, category string) error {
+	fromMail := mail.Address{Name: config.FeedbackName, Address: config.FeedbackEmail}
+	replyTo := mail.Address{Name: config.FeedbackName, Address: config.ReplyToAddress}
+
+	mail := mailData{
+		mimeTo:                to,
+		smtpTo:                to,
+		from:                  fromMail,
+		cc:                    ccMail,
+		replyTo:               replyTo,
+		subject:               subject,
+		htmlBody:              htmlBody,
+		attachmentName:        attachmentName,
+		attachmentContentType: attachmentContentType,
+		attachmentData:        attachmentData,
+		messageID:             messageID,
+		inReplyTo:             inReplyTo,
+		references:            references,
+		category:              category,
+	}
+
+	return sendMailUsingConfigAdvanced(mail, config)
+}
+
 func SendMailUsingConfig(to, subject, htmlBody string, config *SMTPConfig, enableComplianceFeatures bool, messageID string, inReplyTo string, references string, ccMail, category string) error {
 	return SendMailWithEmbeddedFilesUsingConfig(to, subject, htmlBody, nil, config, enableComplianceFeatures, messageID, inReplyTo, references, ccMail, category)
 }
@@ -373,6 +411,16 @@ func sendMail(c smtpClient, mail mailData, date time.Time, config *SMTPConfig) e
 	for name, reader := range mail.embeddedFiles {
 		if err = m.EmbedReader(name, reader); err != nil {
 			return errors.Wrap(err, fmt.Sprintf("failed to embed file %q", name))
+		}
+	}
+
+	if mail.attachmentName != "" {
+		opts := []gomail.FileOption{}
+		if mail.attachmentContentType != "" {
+			opts = append(opts, gomail.WithFileContentType(gomail.ContentType(mail.attachmentContentType)))
+		}
+		if err = m.AttachReader(mail.attachmentName, bytes.NewReader(mail.attachmentData), opts...); err != nil {
+			return errors.Wrap(err, fmt.Sprintf("failed to attach file %q", mail.attachmentName))
 		}
 	}
 

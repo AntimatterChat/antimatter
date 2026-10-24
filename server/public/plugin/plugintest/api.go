@@ -5936,6 +5936,26 @@ func (_m *API) SendMail(to string, subject string, htmlBody string) *model.AppEr
 	return r0
 }
 
+// SendMailWithAttachment provides a mock function with given fields: to, subject, htmlBody, attachmentName, attachmentContentType, attachmentData
+func (_m *API) SendMailWithAttachment(to string, subject string, htmlBody string, attachmentName string, attachmentContentType string, attachmentData []byte) *model.AppError {
+	ret := _m.Called(to, subject, htmlBody, attachmentName, attachmentContentType, attachmentData)
+
+	if len(ret) == 0 {
+		panic("no return value specified for SendMailWithAttachment")
+	}
+
+	var r0 *model.AppError
+	if rf, ok := ret.Get(0).(func(string, string, string, string, string, []byte) *model.AppError); ok {
+		r0 = rf(to, subject, htmlBody, attachmentName, attachmentContentType, attachmentData)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*model.AppError)
+		}
+	}
+
+	return r0
+}
+
 // SendPushNotification provides a mock function with given fields: notification, userID
 func (_m *API) SendPushNotification(notification *model.PushNotification, userID string) *model.AppError {
 	ret := _m.Called(notification, userID)

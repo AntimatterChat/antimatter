@@ -6907,6 +6907,39 @@ func (s *apiRPCServer) SendMail(args *Z_SendMailArgs, returns *Z_SendMailReturns
 	return nil
 }
 
+type Z_SendMailWithAttachmentArgs struct {
+	A string
+	B string
+	C string
+	D string
+	E string
+	F []byte
+}
+
+type Z_SendMailWithAttachmentReturns struct {
+	A *model.AppError
+}
+
+func (g *apiRPCClient) SendMailWithAttachment(to, subject, htmlBody, attachmentName, attachmentContentType string, attachmentData []byte) *model.AppError {
+	_args := &Z_SendMailWithAttachmentArgs{to, subject, htmlBody, attachmentName, attachmentContentType, attachmentData}
+	_returns := &Z_SendMailWithAttachmentReturns{}
+	if err := g.client.Call("Plugin.SendMailWithAttachment", _args, _returns); err != nil {
+		log.Printf("RPC call to SendMailWithAttachment API failed: %s", err.Error())
+	}
+	return _returns.A
+}
+
+func (s *apiRPCServer) SendMailWithAttachment(args *Z_SendMailWithAttachmentArgs, returns *Z_SendMailWithAttachmentReturns) error {
+	if hook, ok := s.impl.(interface {
+		SendMailWithAttachment(to, subject, htmlBody, attachmentName, attachmentContentType string, attachmentData []byte) *model.AppError
+	}); ok {
+		returns.A = hook.SendMailWithAttachment(args.A, args.B, args.C, args.D, args.E, args.F)
+	} else {
+		return encodableError(fmt.Errorf("API SendMailWithAttachment called but not implemented."))
+	}
+	return nil
+}
+
 type Z_CreateBotArgs struct {
 	A *model.Bot
 }

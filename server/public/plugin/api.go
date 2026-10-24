@@ -1084,6 +1084,13 @@ type API interface {
 	// Minimum server version: 5.7
 	SendMail(to, subject, htmlBody string) *model.AppError
 
+	// SendMailWithAttachment sends an email with a single file attached, such as a calendar
+	// invite. attachmentContentType is sent as is, so a plugin can set parameters on it (for
+	// example "text/calendar; method=REQUEST").
+	//
+	// Minimum server version: 12.0.0
+	SendMailWithAttachment(to, subject, htmlBody, attachmentName, attachmentContentType string, attachmentData []byte) *model.AppError
+
 	// CreateBot creates the given bot and corresponding user.
 	//
 	// @tag Bot
