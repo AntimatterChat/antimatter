@@ -4,6 +4,7 @@
 package searchtest
 
 import (
+	"strings"
 	"testing"
 	"time"
 
@@ -309,6 +310,11 @@ var searchPostStoreTests = []searchTest{
 		Name: "Should never widen search to unreadable channels or deleted posts with has:, pinned: and mentions:",
 		Fn:   testSearchHasPinnedMentionsFiltersPrivacy,
 		Tags: []string{EngineAll},
+	},
+	{
+		Name: "Should find has: and mentions: matches older than the search's row limit",
+		Fn:   testSearchHasMentionsFiltersBeyondRowLimit,
+		Tags: []string{EnginePostgres},
 	},
 }
 
@@ -2799,4 +2805,38 @@ func testSearchHasPinnedMentionsFiltersPrivacy(t *testing.T, th *SearchTestHelpe
 			}
 		}
 	})
+}
+
+// testSearchHasMentionsFiltersBeyondRowLimit checks that the database search
+// narrows its query for the has: and mentions: filters it checks on the
+// fetched rows: a match older than the query's row limit of 100 newer posts
+// is still found.
+func testSearchHasMentionsFiltersBeyondRowLimit(t *testing.T, th *SearchTestHelper) {
+	old := th.createPostModel(th.User.Id, th.ChannelBasic.Id, "rowlimitfilter see www.example.com and `code` @"+strings.ToUpper(th.User2.Username), "", model.PostTypeDefault, 1000000, false)
+	old, err := th.Store.Post().Save(th.Context, old)
+	require.NoError(t, err)
+	_, err = th.createReply(th.User.Id, "rowlimitfilter a reply", "", old, 1000001, false)
+	require.NoError(t, err)
+	defer th.deleteUserPosts(th.User.Id)
+	for i := range 105 {
+		_, err = th.createPost(th.User.Id, th.ChannelBasic.Id, "rowlimitfilter a plain newer post", "", model.PostTypeDefault, int64(2000000+i), false)
+		require.NoError(t, err)
+	}
+
+	for name, params := range map[string]*model.SearchParams{
+		"has:link":   {HasFlags: []string{"link"}},
+		"has:code":   {HasFlags: []string{"code"}},
+		"has:embed":  {HasFlags: []string{"embed"}},
+		"has:thread": {HasFlags: []string{"thread"}},
+		"mentions":   {Mentions: []string{th.User2.Username}},
+	} {
+		for _, terms := range []string{"", "rowlimitfilter"} {
+			t.Run(name+" terms="+terms, func(t *testing.T) {
+				params.Terms = terms
+				results, err := th.Store.Post().SearchPostsForUser(th.Context, []*model.SearchParams{params}, th.User.Id, th.Team.Id, 0, 20)
+				require.NoError(t, err)
+				th.checkPostInSearchResults(t, old.Id, results.Posts)
+			})
+		}
+	}
 }

@@ -2262,6 +2262,37 @@ func (s *SqlPostStore) buildCJKSearchClause(baseQuery sq.SelectBuilder, searchTy
 	return baseQuery
 }
 
+// buildHasMentionsPrefilterClause narrows the search query for the has:link,
+// has:code, has:embed, has:thread and mentions: filters, so that the query's
+// row limit applies to likely matches rather than to all recent posts. Each
+// clause is a superset of its filter: model.PostMatchesSearchFilters, run on
+// the fetched rows, stays the exact definition. Excluded subtypes get no
+// clause here, as the negation of a superset would drop real matches.
+func buildHasMentionsPrefilterClause(params *model.SearchParams, query sq.SelectBuilder) sq.SelectBuilder {
+	// model.HasLink needs "http://", "https://" or "www.", in any case;
+	// model.HasEmbed is a link outside code.
+	if slices.Contains(params.HasFlags, "link") || slices.Contains(params.HasFlags, "embed") {
+		query = query.Where(sq.Or{
+			sq.ILike{"q2.Message": "%http://%"},
+			sq.ILike{"q2.Message": "%https://%"},
+			sq.ILike{"q2.Message": "%www.%"},
+		})
+	}
+	// model.HasCode needs a backtick.
+	if slices.Contains(params.HasFlags, "code") {
+		query = query.Where(sq.Like{"q2.Message": "%`%"})
+	}
+	// The search's ReplyCount counts the undeleted posts of the post's thread.
+	if slices.Contains(params.HasFlags, "thread") {
+		query = query.Where("EXISTS (SELECT 1 FROM Posts r WHERE r.RootId = (CASE WHEN q2.RootId = '' THEN q2.Id ELSE q2.RootId END) AND r.DeleteAt = 0)")
+	}
+	// model.PossibleAtMentions needs "@username", in any case.
+	for _, username := range params.Mentions {
+		query = query.Where(sq.ILike{"q2.Message": "%@" + sanitizeSearchTerm(username, "\\") + "%"})
+	}
+	return query
+}
+
 func (s *SqlPostStore) search(logger mlog.LoggerIFace, teamId string, userId string, params *model.SearchParams, channelsByName bool, userByUsername bool) (*model.PostList, error) {
 	list := model.NewPostList()
 	if params.Terms == "" && params.ExcludedTerms == "" &&
@@ -2301,6 +2332,7 @@ func (s *SqlPostStore) search(logger mlog.LoggerIFace, teamId string, userId str
 	if slices.Contains(params.ExcludedHasFlags, "file") {
 		baseQuery = baseQuery.Where(sq.Eq{"q2.FileIds": "[]"}).Where(sq.Eq{"q2.Filenames": "[]"})
 	}
+	baseQuery = buildHasMentionsPrefilterClause(params, baseQuery)
 
 	termMap := map[string]bool{}
 	terms := params.Terms
