@@ -8,6 +8,7 @@ import (
 	"maps"
 	"net/http"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -471,4 +472,91 @@ func TestCreateVoiceChannelNeedsApp(t *testing.T) {
 		assert.Equal(t, model.AMChannelTypeVoice, channel.Props[model.ChannelPropType])
 		assert.Equal(t, model.ChannelPresetVoiceStage, channel.Props[model.ChannelPropPreset])
 	})
+}
+
+// TestChannelHasBeenCreatedSeesVoiceType covers B6 (§3.4 of the design): the voice-channels app decides whether
+// to set up a new channel's call purely from the channel.Props it receives on the ChannelHasBeenCreated hook
+// (see its server/hooks.go, isVoiceChannel), not through a separate call back into the plugin API. Unlike
+// App.FillInChannelTypes being exercised through GetChannel and friends (plugin_api_test.go), this confirms the
+// hook's own argument already carries am_type by the time plugins see it.
+func TestChannelHasBeenCreatedSeesVoiceType(t *testing.T) {
+	mainHelper.Parallel(t)
+	th := Setup(t).InitBasic(t)
+
+	// Both plugins must be registered in the same setupMultiPluginAPITest call: each call installs a fresh
+	// plugins environment (see SetPluginsEnvironment in plugin_api_test.go), so a second, separate call to
+	// activate this test's observer plugin would silently deactivate the voice-channels app stand-in again.
+	voiceChannelsCode := `
+		package main
+
+		import (
+			"github.com/mattermost/mattermost/server/public/plugin"
+		)
+
+		type MyPlugin struct {
+			plugin.MattermostPlugin
+		}
+
+		func main() {
+			plugin.ClientMain(&MyPlugin{})
+		}
+	`
+	voiceChannelsManifest := `{"id": "` + voiceChannelsPluginID + `", "server": {"executable": "backend.exe"}}`
+
+	observerPluginID := "testplugin"
+	observerCode := `
+		package main
+
+		import (
+			"github.com/mattermost/mattermost/server/public/model"
+			"github.com/mattermost/mattermost/server/public/plugin"
+		)
+
+		const adminUserID = "` + th.SystemAdminUser.Id + `"
+
+		type MyPlugin struct {
+			plugin.MattermostPlugin
+		}
+
+		func (p *MyPlugin) ChannelHasBeenCreated(c *plugin.Context, channel *model.Channel) {
+			amType, _ := channel.Props["am_type"].(string)
+			_, appErr := p.API.CreatePost(&model.Post{
+				UserId:    adminUserID,
+				ChannelId: channel.Id,
+				Message:   "am_type=" + amType,
+			})
+			if appErr != nil {
+				panic(appErr)
+			}
+		}
+
+		func main() {
+			plugin.ClientMain(&MyPlugin{})
+		}
+	`
+	observerManifest := `{"id": "` + observerPluginID + `", "server": {"executable": "backend.exe"}}`
+
+	setupMultiPluginAPITest(t,
+		[]string{voiceChannelsCode, observerCode},
+		[]string{voiceChannelsManifest, observerManifest},
+		[]string{voiceChannelsPluginID, observerPluginID},
+		true, th.App, th.Context)
+
+	channel, appErr := th.App.CreateChannel(th.Context, &model.Channel{
+		DisplayName: "Voice", Name: "voice-" + model.NewId(), Type: model.ChannelTypeOpen, TeamId: th.BasicTeam.Id, CreatorId: th.BasicUser.Id,
+		Props: map[string]any{model.ChannelPropPreset: model.ChannelPresetVoiceTalk},
+	}, false)
+	require.Nil(t, appErr)
+	require.Equal(t, model.AMChannelTypeVoice, channel.Props[model.ChannelPropType], "sanity: the channel itself is a voice channel")
+
+	assert.EventuallyWithT(t, func(c *assert.CollectT) {
+		posts, appErr := th.App.GetPosts(th.Context, channel.Id, 0, 1)
+		if !assert.Nil(c, appErr) {
+			return
+		}
+		if assert.NotEmpty(c, posts.Order) {
+			post := posts.Posts[posts.Order[0]]
+			assert.Equal(c, "am_type="+model.AMChannelTypeVoice, post.Message, "the hook's channel argument must already carry am_type")
+		}
+	}, 5*time.Second, 100*time.Millisecond)
 }
