@@ -9554,6 +9554,27 @@ func (s *RetryLayerLinkMetadataStore) Save(linkMetadata *model.LinkMetadata) (*m
 
 }
 
+func (s *RetryLayerModerationStore) CountInviteLinks(rctx request.CTX, teamID string) (int64, error) {
+
+	tries := 0
+	for {
+		result, err := s.ModerationStore.CountInviteLinks(rctx, teamID)
+		if err == nil {
+			return result, nil
+		}
+		if !isRepeatableError(err) {
+			return result, err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
 func (s *RetryLayerModerationStore) CountPosts(rctx request.CTX, teamID string, userID string, since int64) (int64, error) {
 
 	tries := 0
@@ -9569,6 +9590,90 @@ func (s *RetryLayerModerationStore) CountPosts(rctx request.CTX, teamID string, 
 		if tries >= 3 {
 			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
 			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerModerationStore) DeleteBan(rctx request.CTX, teamID string, userID string) error {
+
+	tries := 0
+	for {
+		err := s.ModerationStore.DeleteBan(rctx, teamID, userID)
+		if err == nil {
+			return nil
+		}
+		if !isRepeatableError(err) {
+			return err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerModerationStore) DeleteBansForTeam(rctx request.CTX, teamID string) error {
+
+	tries := 0
+	for {
+		err := s.ModerationStore.DeleteBansForTeam(rctx, teamID)
+		if err == nil {
+			return nil
+		}
+		if !isRepeatableError(err) {
+			return err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerModerationStore) DeleteInviteLink(rctx request.CTX, id string) error {
+
+	tries := 0
+	for {
+		err := s.ModerationStore.DeleteInviteLink(rctx, id)
+		if err == nil {
+			return nil
+		}
+		if !isRepeatableError(err) {
+			return err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerModerationStore) DeleteInviteLinksForTeam(rctx request.CTX, teamID string) error {
+
+	tries := 0
+	for {
+		err := s.ModerationStore.DeleteInviteLinksForTeam(rctx, teamID)
+		if err == nil {
+			return nil
+		}
+		if !isRepeatableError(err) {
+			return err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return err
 		}
 		timepkg.Sleep(100 * timepkg.Millisecond)
 	}
@@ -9617,6 +9722,111 @@ func (s *RetryLayerModerationStore) DeleteTimeoutsForTeam(rctx request.CTX, team
 
 }
 
+func (s *RetryLayerModerationStore) GetBan(rctx request.CTX, teamID string, userID string, now int64) (*model.MemberBan, error) {
+
+	tries := 0
+	for {
+		result, err := s.ModerationStore.GetBan(rctx, teamID, userID, now)
+		if err == nil {
+			return result, nil
+		}
+		if !isRepeatableError(err) {
+			return result, err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerModerationStore) GetBans(rctx request.CTX, teamID string, now int64) ([]*model.MemberBan, error) {
+
+	tries := 0
+	for {
+		result, err := s.ModerationStore.GetBans(rctx, teamID, now)
+		if err == nil {
+			return result, nil
+		}
+		if !isRepeatableError(err) {
+			return result, err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerModerationStore) GetInviteLink(rctx request.CTX, id string) (*model.TeamInviteLink, error) {
+
+	tries := 0
+	for {
+		result, err := s.ModerationStore.GetInviteLink(rctx, id)
+		if err == nil {
+			return result, nil
+		}
+		if !isRepeatableError(err) {
+			return result, err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerModerationStore) GetInviteLinks(rctx request.CTX, teamID string) ([]*model.TeamInviteLink, error) {
+
+	tries := 0
+	for {
+		result, err := s.ModerationStore.GetInviteLinks(rctx, teamID)
+		if err == nil {
+			return result, nil
+		}
+		if !isRepeatableError(err) {
+			return result, err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerModerationStore) GetPostIdsInRange(rctx request.CTX, teamID string, userID string, since int64, before int64, limit int) ([]string, error) {
+
+	tries := 0
+	for {
+		result, err := s.ModerationStore.GetPostIdsInRange(rctx, teamID, userID, since, before, limit)
+		if err == nil {
+			return result, nil
+		}
+		if !isRepeatableError(err) {
+			return result, err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
 func (s *RetryLayerModerationStore) GetTimeouts(rctx request.CTX, teamID string, now int64) ([]*model.MemberTimeout, error) {
 
 	tries := 0
@@ -9632,6 +9842,48 @@ func (s *RetryLayerModerationStore) GetTimeouts(rctx request.CTX, teamID string,
 		if tries >= 3 {
 			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
 			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerModerationStore) PermanentDeleteBansByUser(rctx request.CTX, userID string) error {
+
+	tries := 0
+	for {
+		err := s.ModerationStore.PermanentDeleteBansByUser(rctx, userID)
+		if err == nil {
+			return nil
+		}
+		if !isRepeatableError(err) {
+			return err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerModerationStore) PermanentDeleteInviteLinksByCreator(rctx request.CTX, userID string) error {
+
+	tries := 0
+	for {
+		err := s.ModerationStore.PermanentDeleteInviteLinksByCreator(rctx, userID)
+		if err == nil {
+			return nil
+		}
+		if !isRepeatableError(err) {
+			return err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return err
 		}
 		timepkg.Sleep(100 * timepkg.Millisecond)
 	}
@@ -9659,11 +9911,95 @@ func (s *RetryLayerModerationStore) PermanentDeleteTimeoutsByUser(rctx request.C
 
 }
 
+func (s *RetryLayerModerationStore) ReleaseInviteLinkUse(rctx request.CTX, id string) error {
+
+	tries := 0
+	for {
+		err := s.ModerationStore.ReleaseInviteLinkUse(rctx, id)
+		if err == nil {
+			return nil
+		}
+		if !isRepeatableError(err) {
+			return err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerModerationStore) SaveBan(rctx request.CTX, ban *model.MemberBan) (*model.MemberBan, error) {
+
+	tries := 0
+	for {
+		result, err := s.ModerationStore.SaveBan(rctx, ban)
+		if err == nil {
+			return result, nil
+		}
+		if !isRepeatableError(err) {
+			return result, err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerModerationStore) SaveInviteLink(rctx request.CTX, link *model.TeamInviteLink) (*model.TeamInviteLink, error) {
+
+	tries := 0
+	for {
+		result, err := s.ModerationStore.SaveInviteLink(rctx, link)
+		if err == nil {
+			return result, nil
+		}
+		if !isRepeatableError(err) {
+			return result, err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
 func (s *RetryLayerModerationStore) SaveTimeout(rctx request.CTX, timeout *model.MemberTimeout) (*model.MemberTimeout, error) {
 
 	tries := 0
 	for {
 		result, err := s.ModerationStore.SaveTimeout(rctx, timeout)
+		if err == nil {
+			return result, nil
+		}
+		if !isRepeatableError(err) {
+			return result, err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerModerationStore) UseInviteLink(rctx request.CTX, id string, now int64) (bool, error) {
+
+	tries := 0
+	for {
+		result, err := s.ModerationStore.UseInviteLink(rctx, id, now)
 		if err == nil {
 			return result, nil
 		}

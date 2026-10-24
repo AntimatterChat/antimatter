@@ -52,6 +52,7 @@ const (
 	JobTypeAutoTranslationRecovery       = "autotranslation_recovery"
 	JobTypeCleanupExpiredAccessTokens    = "cleanup_expired_access_tokens"
 	JobTypeNotifyExpiringAccessTokens    = "notify_expiring_access_tokens"
+	JobTypeBanPurge                      = "ban_purge" // Antimatter: delete a banned person's messages in a community
 
 	JobStatusPending         = "pending"
 	JobStatusInProgress      = "in_progress"

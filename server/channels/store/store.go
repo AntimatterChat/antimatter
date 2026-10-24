@@ -1182,7 +1182,8 @@ type ChannelOverrideStore interface {
 	PermanentDeleteForUser(rctx request.CTX, userID string) error
 }
 
-// ModerationStore keeps what moderators of a team use (Antimatter): its members' timeouts, and how much they post.
+// ModerationStore keeps what a team's moderators and those who invite use to say who's in it (Antimatter): its
+// members' timeouts, how much they post, its bans and its invite links.
 type ModerationStore interface {
 	GetTimeouts(rctx request.CTX, teamID string, now int64) ([]*model.MemberTimeout, error)
 	SaveTimeout(rctx request.CTX, timeout *model.MemberTimeout) (*model.MemberTimeout, error)
@@ -1191,6 +1192,36 @@ type ModerationStore interface {
 	// PermanentDeleteTimeoutsByUser deletes someone's timeouts, in every team.
 	PermanentDeleteTimeoutsByUser(rctx request.CTX, userID string) error
 	CountPosts(rctx request.CTX, teamID, userID string, since int64) (int64, error)
+	// GetPostIdsInRange gives up to limit of someone's messages in a team's channels created in [since, before), not
+	// deleted, their system messages left out: those a ban deletes.
+	GetPostIdsInRange(rctx request.CTX, teamID, userID string, since, before int64, limit int) ([]string, error)
+
+	// GetBan gives someone's ban from a team that still holds at a time, or a not found error.
+	GetBan(rctx request.CTX, teamID, userID string, now int64) (*model.MemberBan, error)
+	// GetBans gives a team's bans that still hold at a time, the latest first.
+	GetBans(rctx request.CTX, teamID string, now int64) ([]*model.MemberBan, error)
+	// SaveBan bans someone, in place of a ban they had.
+	SaveBan(rctx request.CTX, ban *model.MemberBan) (*model.MemberBan, error)
+	DeleteBan(rctx request.CTX, teamID, userID string) error
+	DeleteBansForTeam(rctx request.CTX, teamID string) error
+	// PermanentDeleteBansByUser deletes someone's bans, in every team.
+	PermanentDeleteBansByUser(rctx request.CTX, userID string) error
+
+	SaveInviteLink(rctx request.CTX, link *model.TeamInviteLink) (*model.TeamInviteLink, error)
+	// GetInviteLink gives an invite link by its id (its code), or a not found error.
+	GetInviteLink(rctx request.CTX, id string) (*model.TeamInviteLink, error)
+	// GetInviteLinks gives a team's invite links, the latest first.
+	GetInviteLinks(rctx request.CTX, teamID string) ([]*model.TeamInviteLink, error)
+	CountInviteLinks(rctx request.CTX, teamID string) (int64, error)
+	// UseInviteLink counts one more use of a link, only while it hasn't ended at a time nor been used up: whether it
+	// did, at once, so that two people never take its last use.
+	UseInviteLink(rctx request.CTX, id string, now int64) (bool, error)
+	// ReleaseInviteLinkUse gives a use back, when the join it was taken for failed.
+	ReleaseInviteLinkUse(rctx request.CTX, id string) error
+	DeleteInviteLink(rctx request.CTX, id string) error
+	DeleteInviteLinksForTeam(rctx request.CTX, teamID string) error
+	// PermanentDeleteInviteLinksByCreator deletes the links someone made, in every team.
+	PermanentDeleteInviteLinksByCreator(rctx request.CTX, userID string) error
 }
 
 // OnTopPostStore keeps the messages put on top of their channels (Antimatter), each until it expires or is removed.

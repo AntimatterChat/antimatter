@@ -92,6 +92,10 @@ const (
 	AuditEventSaveChannelOverride               = "saveChannelOverride"               // set what a role or person may do in a channel
 	AuditEventSaveCategoryOverride              = "saveCategoryOverride"              // set what a role or person may do in a server category's channels
 	AuditEventSetMemberTimeout                  = "setMemberTimeout"                  // time a team's member out, or lift it
+	AuditEventBanTeamMember                     = "banTeamMember"                     // ban someone from a community (and delete their recent messages there)
+	AuditEventUnbanTeamMember                   = "unbanTeamMember"                   // lift someone's ban from a community
+	AuditEventCreateTeamInviteLink              = "createTeamInviteLink"              // make one of a community's invite links
+	AuditEventRevokeTeamInviteLink              = "revokeTeamInviteLink"              // revoke one of a community's invite links
 	AuditEventPatchCommunityProfile             = "patchCommunityProfile"             // change one's nickname in a community, or whether one is shown by name there
 	AuditEventSetCommunityAvatar                = "setCommunityAvatar"                // set one's picture for a community
 	AuditEventResetCommunityProfile             = "resetCommunityProfile"             // take a nickname or a picture off a community profile (oneself, or a moderator)

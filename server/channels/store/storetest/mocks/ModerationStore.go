@@ -16,6 +16,34 @@ type ModerationStore struct {
 	mock.Mock
 }
 
+// CountInviteLinks provides a mock function with given fields: rctx, teamID
+func (_m *ModerationStore) CountInviteLinks(rctx request.CTX, teamID string) (int64, error) {
+	ret := _m.Called(rctx, teamID)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CountInviteLinks")
+	}
+
+	var r0 int64
+	var r1 error
+	if rf, ok := ret.Get(0).(func(request.CTX, string) (int64, error)); ok {
+		return rf(rctx, teamID)
+	}
+	if rf, ok := ret.Get(0).(func(request.CTX, string) int64); ok {
+		r0 = rf(rctx, teamID)
+	} else {
+		r0 = ret.Get(0).(int64)
+	}
+
+	if rf, ok := ret.Get(1).(func(request.CTX, string) error); ok {
+		r1 = rf(rctx, teamID)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // CountPosts provides a mock function with given fields: rctx, teamID, userID, since
 func (_m *ModerationStore) CountPosts(rctx request.CTX, teamID string, userID string, since int64) (int64, error) {
 	ret := _m.Called(rctx, teamID, userID, since)
@@ -42,6 +70,78 @@ func (_m *ModerationStore) CountPosts(rctx request.CTX, teamID string, userID st
 	}
 
 	return r0, r1
+}
+
+// DeleteBan provides a mock function with given fields: rctx, teamID, userID
+func (_m *ModerationStore) DeleteBan(rctx request.CTX, teamID string, userID string) error {
+	ret := _m.Called(rctx, teamID, userID)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteBan")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(request.CTX, string, string) error); ok {
+		r0 = rf(rctx, teamID, userID)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// DeleteBansForTeam provides a mock function with given fields: rctx, teamID
+func (_m *ModerationStore) DeleteBansForTeam(rctx request.CTX, teamID string) error {
+	ret := _m.Called(rctx, teamID)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteBansForTeam")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(request.CTX, string) error); ok {
+		r0 = rf(rctx, teamID)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// DeleteInviteLink provides a mock function with given fields: rctx, id
+func (_m *ModerationStore) DeleteInviteLink(rctx request.CTX, id string) error {
+	ret := _m.Called(rctx, id)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteInviteLink")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(request.CTX, string) error); ok {
+		r0 = rf(rctx, id)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// DeleteInviteLinksForTeam provides a mock function with given fields: rctx, teamID
+func (_m *ModerationStore) DeleteInviteLinksForTeam(rctx request.CTX, teamID string) error {
+	ret := _m.Called(rctx, teamID)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteInviteLinksForTeam")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(request.CTX, string) error); ok {
+		r0 = rf(rctx, teamID)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
 }
 
 // DeleteTimeout provides a mock function with given fields: rctx, teamID, userID
@@ -80,6 +180,156 @@ func (_m *ModerationStore) DeleteTimeoutsForTeam(rctx request.CTX, teamID string
 	return r0
 }
 
+// GetBan provides a mock function with given fields: rctx, teamID, userID, now
+func (_m *ModerationStore) GetBan(rctx request.CTX, teamID string, userID string, now int64) (*model.MemberBan, error) {
+	ret := _m.Called(rctx, teamID, userID, now)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetBan")
+	}
+
+	var r0 *model.MemberBan
+	var r1 error
+	if rf, ok := ret.Get(0).(func(request.CTX, string, string, int64) (*model.MemberBan, error)); ok {
+		return rf(rctx, teamID, userID, now)
+	}
+	if rf, ok := ret.Get(0).(func(request.CTX, string, string, int64) *model.MemberBan); ok {
+		r0 = rf(rctx, teamID, userID, now)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*model.MemberBan)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(request.CTX, string, string, int64) error); ok {
+		r1 = rf(rctx, teamID, userID, now)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// GetBans provides a mock function with given fields: rctx, teamID, now
+func (_m *ModerationStore) GetBans(rctx request.CTX, teamID string, now int64) ([]*model.MemberBan, error) {
+	ret := _m.Called(rctx, teamID, now)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetBans")
+	}
+
+	var r0 []*model.MemberBan
+	var r1 error
+	if rf, ok := ret.Get(0).(func(request.CTX, string, int64) ([]*model.MemberBan, error)); ok {
+		return rf(rctx, teamID, now)
+	}
+	if rf, ok := ret.Get(0).(func(request.CTX, string, int64) []*model.MemberBan); ok {
+		r0 = rf(rctx, teamID, now)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]*model.MemberBan)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(request.CTX, string, int64) error); ok {
+		r1 = rf(rctx, teamID, now)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// GetInviteLink provides a mock function with given fields: rctx, id
+func (_m *ModerationStore) GetInviteLink(rctx request.CTX, id string) (*model.TeamInviteLink, error) {
+	ret := _m.Called(rctx, id)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetInviteLink")
+	}
+
+	var r0 *model.TeamInviteLink
+	var r1 error
+	if rf, ok := ret.Get(0).(func(request.CTX, string) (*model.TeamInviteLink, error)); ok {
+		return rf(rctx, id)
+	}
+	if rf, ok := ret.Get(0).(func(request.CTX, string) *model.TeamInviteLink); ok {
+		r0 = rf(rctx, id)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*model.TeamInviteLink)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(request.CTX, string) error); ok {
+		r1 = rf(rctx, id)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// GetInviteLinks provides a mock function with given fields: rctx, teamID
+func (_m *ModerationStore) GetInviteLinks(rctx request.CTX, teamID string) ([]*model.TeamInviteLink, error) {
+	ret := _m.Called(rctx, teamID)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetInviteLinks")
+	}
+
+	var r0 []*model.TeamInviteLink
+	var r1 error
+	if rf, ok := ret.Get(0).(func(request.CTX, string) ([]*model.TeamInviteLink, error)); ok {
+		return rf(rctx, teamID)
+	}
+	if rf, ok := ret.Get(0).(func(request.CTX, string) []*model.TeamInviteLink); ok {
+		r0 = rf(rctx, teamID)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]*model.TeamInviteLink)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(request.CTX, string) error); ok {
+		r1 = rf(rctx, teamID)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// GetPostIdsInRange provides a mock function with given fields: rctx, teamID, userID, since, before, limit
+func (_m *ModerationStore) GetPostIdsInRange(rctx request.CTX, teamID string, userID string, since int64, before int64, limit int) ([]string, error) {
+	ret := _m.Called(rctx, teamID, userID, since, before, limit)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetPostIdsInRange")
+	}
+
+	var r0 []string
+	var r1 error
+	if rf, ok := ret.Get(0).(func(request.CTX, string, string, int64, int64, int) ([]string, error)); ok {
+		return rf(rctx, teamID, userID, since, before, limit)
+	}
+	if rf, ok := ret.Get(0).(func(request.CTX, string, string, int64, int64, int) []string); ok {
+		r0 = rf(rctx, teamID, userID, since, before, limit)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]string)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(request.CTX, string, string, int64, int64, int) error); ok {
+		r1 = rf(rctx, teamID, userID, since, before, limit)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // GetTimeouts provides a mock function with given fields: rctx, teamID, now
 func (_m *ModerationStore) GetTimeouts(rctx request.CTX, teamID string, now int64) ([]*model.MemberTimeout, error) {
 	ret := _m.Called(rctx, teamID, now)
@@ -110,6 +360,42 @@ func (_m *ModerationStore) GetTimeouts(rctx request.CTX, teamID string, now int6
 	return r0, r1
 }
 
+// PermanentDeleteBansByUser provides a mock function with given fields: rctx, userID
+func (_m *ModerationStore) PermanentDeleteBansByUser(rctx request.CTX, userID string) error {
+	ret := _m.Called(rctx, userID)
+
+	if len(ret) == 0 {
+		panic("no return value specified for PermanentDeleteBansByUser")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(request.CTX, string) error); ok {
+		r0 = rf(rctx, userID)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// PermanentDeleteInviteLinksByCreator provides a mock function with given fields: rctx, userID
+func (_m *ModerationStore) PermanentDeleteInviteLinksByCreator(rctx request.CTX, userID string) error {
+	ret := _m.Called(rctx, userID)
+
+	if len(ret) == 0 {
+		panic("no return value specified for PermanentDeleteInviteLinksByCreator")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(request.CTX, string) error); ok {
+		r0 = rf(rctx, userID)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
 // PermanentDeleteTimeoutsByUser provides a mock function with given fields: rctx, userID
 func (_m *ModerationStore) PermanentDeleteTimeoutsByUser(rctx request.CTX, userID string) error {
 	ret := _m.Called(rctx, userID)
@@ -126,6 +412,84 @@ func (_m *ModerationStore) PermanentDeleteTimeoutsByUser(rctx request.CTX, userI
 	}
 
 	return r0
+}
+
+// ReleaseInviteLinkUse provides a mock function with given fields: rctx, id
+func (_m *ModerationStore) ReleaseInviteLinkUse(rctx request.CTX, id string) error {
+	ret := _m.Called(rctx, id)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ReleaseInviteLinkUse")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(request.CTX, string) error); ok {
+		r0 = rf(rctx, id)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// SaveBan provides a mock function with given fields: rctx, ban
+func (_m *ModerationStore) SaveBan(rctx request.CTX, ban *model.MemberBan) (*model.MemberBan, error) {
+	ret := _m.Called(rctx, ban)
+
+	if len(ret) == 0 {
+		panic("no return value specified for SaveBan")
+	}
+
+	var r0 *model.MemberBan
+	var r1 error
+	if rf, ok := ret.Get(0).(func(request.CTX, *model.MemberBan) (*model.MemberBan, error)); ok {
+		return rf(rctx, ban)
+	}
+	if rf, ok := ret.Get(0).(func(request.CTX, *model.MemberBan) *model.MemberBan); ok {
+		r0 = rf(rctx, ban)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*model.MemberBan)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(request.CTX, *model.MemberBan) error); ok {
+		r1 = rf(rctx, ban)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// SaveInviteLink provides a mock function with given fields: rctx, link
+func (_m *ModerationStore) SaveInviteLink(rctx request.CTX, link *model.TeamInviteLink) (*model.TeamInviteLink, error) {
+	ret := _m.Called(rctx, link)
+
+	if len(ret) == 0 {
+		panic("no return value specified for SaveInviteLink")
+	}
+
+	var r0 *model.TeamInviteLink
+	var r1 error
+	if rf, ok := ret.Get(0).(func(request.CTX, *model.TeamInviteLink) (*model.TeamInviteLink, error)); ok {
+		return rf(rctx, link)
+	}
+	if rf, ok := ret.Get(0).(func(request.CTX, *model.TeamInviteLink) *model.TeamInviteLink); ok {
+		r0 = rf(rctx, link)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*model.TeamInviteLink)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(request.CTX, *model.TeamInviteLink) error); ok {
+		r1 = rf(rctx, link)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // SaveTimeout provides a mock function with given fields: rctx, timeout
@@ -151,6 +515,34 @@ func (_m *ModerationStore) SaveTimeout(rctx request.CTX, timeout *model.MemberTi
 
 	if rf, ok := ret.Get(1).(func(request.CTX, *model.MemberTimeout) error); ok {
 		r1 = rf(rctx, timeout)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// UseInviteLink provides a mock function with given fields: rctx, id, now
+func (_m *ModerationStore) UseInviteLink(rctx request.CTX, id string, now int64) (bool, error) {
+	ret := _m.Called(rctx, id, now)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UseInviteLink")
+	}
+
+	var r0 bool
+	var r1 error
+	if rf, ok := ret.Get(0).(func(request.CTX, string, int64) (bool, error)); ok {
+		return rf(rctx, id, now)
+	}
+	if rf, ok := ret.Get(0).(func(request.CTX, string, int64) bool); ok {
+		r0 = rf(rctx, id, now)
+	} else {
+		r0 = ret.Get(0).(bool)
+	}
+
+	if rf, ok := ret.Get(1).(func(request.CTX, string, int64) error); ok {
+		r1 = rf(rctx, id, now)
 	} else {
 		r1 = ret.Error(1)
 	}

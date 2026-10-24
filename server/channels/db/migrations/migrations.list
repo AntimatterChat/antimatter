@@ -513,3 +513,7 @@ channels/db/migrations/postgres/1000023_antimatter_create_aimcpservers.down.sql
 channels/db/migrations/postgres/1000023_antimatter_create_aimcpservers.up.sql
 channels/db/migrations/postgres/1000024_antimatter_create_aimcpusertokens.down.sql
 channels/db/migrations/postgres/1000024_antimatter_create_aimcpusertokens.up.sql
+channels/db/migrations/postgres/1000025_antimatter_create_memberbans.down.sql
+channels/db/migrations/postgres/1000025_antimatter_create_memberbans.up.sql
+channels/db/migrations/postgres/1000026_antimatter_create_teaminvitelinks.down.sql
+channels/db/migrations/postgres/1000026_antimatter_create_teaminvitelinks.up.sql

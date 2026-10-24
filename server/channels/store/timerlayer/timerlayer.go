@@ -7708,6 +7708,22 @@ func (s *TimerLayerLinkMetadataStore) Save(linkMetadata *model.LinkMetadata) (*m
 	return result, err
 }
 
+func (s *TimerLayerModerationStore) CountInviteLinks(rctx request.CTX, teamID string) (int64, error) {
+	start := time.Now()
+
+	result, err := s.ModerationStore.CountInviteLinks(rctx, teamID)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("ModerationStore.CountInviteLinks", success, elapsed)
+	}
+	return result, err
+}
+
 func (s *TimerLayerModerationStore) CountPosts(rctx request.CTX, teamID string, userID string, since int64) (int64, error) {
 	start := time.Now()
 
@@ -7722,6 +7738,70 @@ func (s *TimerLayerModerationStore) CountPosts(rctx request.CTX, teamID string, 
 		s.Root.Metrics.ObserveStoreMethodDuration("ModerationStore.CountPosts", success, elapsed)
 	}
 	return result, err
+}
+
+func (s *TimerLayerModerationStore) DeleteBan(rctx request.CTX, teamID string, userID string) error {
+	start := time.Now()
+
+	err := s.ModerationStore.DeleteBan(rctx, teamID, userID)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("ModerationStore.DeleteBan", success, elapsed)
+	}
+	return err
+}
+
+func (s *TimerLayerModerationStore) DeleteBansForTeam(rctx request.CTX, teamID string) error {
+	start := time.Now()
+
+	err := s.ModerationStore.DeleteBansForTeam(rctx, teamID)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("ModerationStore.DeleteBansForTeam", success, elapsed)
+	}
+	return err
+}
+
+func (s *TimerLayerModerationStore) DeleteInviteLink(rctx request.CTX, id string) error {
+	start := time.Now()
+
+	err := s.ModerationStore.DeleteInviteLink(rctx, id)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("ModerationStore.DeleteInviteLink", success, elapsed)
+	}
+	return err
+}
+
+func (s *TimerLayerModerationStore) DeleteInviteLinksForTeam(rctx request.CTX, teamID string) error {
+	start := time.Now()
+
+	err := s.ModerationStore.DeleteInviteLinksForTeam(rctx, teamID)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("ModerationStore.DeleteInviteLinksForTeam", success, elapsed)
+	}
+	return err
 }
 
 func (s *TimerLayerModerationStore) DeleteTimeout(rctx request.CTX, teamID string, userID string) error {
@@ -7756,6 +7836,86 @@ func (s *TimerLayerModerationStore) DeleteTimeoutsForTeam(rctx request.CTX, team
 	return err
 }
 
+func (s *TimerLayerModerationStore) GetBan(rctx request.CTX, teamID string, userID string, now int64) (*model.MemberBan, error) {
+	start := time.Now()
+
+	result, err := s.ModerationStore.GetBan(rctx, teamID, userID, now)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("ModerationStore.GetBan", success, elapsed)
+	}
+	return result, err
+}
+
+func (s *TimerLayerModerationStore) GetBans(rctx request.CTX, teamID string, now int64) ([]*model.MemberBan, error) {
+	start := time.Now()
+
+	result, err := s.ModerationStore.GetBans(rctx, teamID, now)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("ModerationStore.GetBans", success, elapsed)
+	}
+	return result, err
+}
+
+func (s *TimerLayerModerationStore) GetInviteLink(rctx request.CTX, id string) (*model.TeamInviteLink, error) {
+	start := time.Now()
+
+	result, err := s.ModerationStore.GetInviteLink(rctx, id)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("ModerationStore.GetInviteLink", success, elapsed)
+	}
+	return result, err
+}
+
+func (s *TimerLayerModerationStore) GetInviteLinks(rctx request.CTX, teamID string) ([]*model.TeamInviteLink, error) {
+	start := time.Now()
+
+	result, err := s.ModerationStore.GetInviteLinks(rctx, teamID)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("ModerationStore.GetInviteLinks", success, elapsed)
+	}
+	return result, err
+}
+
+func (s *TimerLayerModerationStore) GetPostIdsInRange(rctx request.CTX, teamID string, userID string, since int64, before int64, limit int) ([]string, error) {
+	start := time.Now()
+
+	result, err := s.ModerationStore.GetPostIdsInRange(rctx, teamID, userID, since, before, limit)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("ModerationStore.GetPostIdsInRange", success, elapsed)
+	}
+	return result, err
+}
+
 func (s *TimerLayerModerationStore) GetTimeouts(rctx request.CTX, teamID string, now int64) ([]*model.MemberTimeout, error) {
 	start := time.Now()
 
@@ -7770,6 +7930,38 @@ func (s *TimerLayerModerationStore) GetTimeouts(rctx request.CTX, teamID string,
 		s.Root.Metrics.ObserveStoreMethodDuration("ModerationStore.GetTimeouts", success, elapsed)
 	}
 	return result, err
+}
+
+func (s *TimerLayerModerationStore) PermanentDeleteBansByUser(rctx request.CTX, userID string) error {
+	start := time.Now()
+
+	err := s.ModerationStore.PermanentDeleteBansByUser(rctx, userID)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("ModerationStore.PermanentDeleteBansByUser", success, elapsed)
+	}
+	return err
+}
+
+func (s *TimerLayerModerationStore) PermanentDeleteInviteLinksByCreator(rctx request.CTX, userID string) error {
+	start := time.Now()
+
+	err := s.ModerationStore.PermanentDeleteInviteLinksByCreator(rctx, userID)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("ModerationStore.PermanentDeleteInviteLinksByCreator", success, elapsed)
+	}
+	return err
 }
 
 func (s *TimerLayerModerationStore) PermanentDeleteTimeoutsByUser(rctx request.CTX, userID string) error {
@@ -7788,6 +7980,54 @@ func (s *TimerLayerModerationStore) PermanentDeleteTimeoutsByUser(rctx request.C
 	return err
 }
 
+func (s *TimerLayerModerationStore) ReleaseInviteLinkUse(rctx request.CTX, id string) error {
+	start := time.Now()
+
+	err := s.ModerationStore.ReleaseInviteLinkUse(rctx, id)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("ModerationStore.ReleaseInviteLinkUse", success, elapsed)
+	}
+	return err
+}
+
+func (s *TimerLayerModerationStore) SaveBan(rctx request.CTX, ban *model.MemberBan) (*model.MemberBan, error) {
+	start := time.Now()
+
+	result, err := s.ModerationStore.SaveBan(rctx, ban)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("ModerationStore.SaveBan", success, elapsed)
+	}
+	return result, err
+}
+
+func (s *TimerLayerModerationStore) SaveInviteLink(rctx request.CTX, link *model.TeamInviteLink) (*model.TeamInviteLink, error) {
+	start := time.Now()
+
+	result, err := s.ModerationStore.SaveInviteLink(rctx, link)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("ModerationStore.SaveInviteLink", success, elapsed)
+	}
+	return result, err
+}
+
 func (s *TimerLayerModerationStore) SaveTimeout(rctx request.CTX, timeout *model.MemberTimeout) (*model.MemberTimeout, error) {
 	start := time.Now()
 
@@ -7800,6 +8040,22 @@ func (s *TimerLayerModerationStore) SaveTimeout(rctx request.CTX, timeout *model
 			success = "true"
 		}
 		s.Root.Metrics.ObserveStoreMethodDuration("ModerationStore.SaveTimeout", success, elapsed)
+	}
+	return result, err
+}
+
+func (s *TimerLayerModerationStore) UseInviteLink(rctx request.CTX, id string, now int64) (bool, error) {
+	start := time.Now()
+
+	result, err := s.ModerationStore.UseInviteLink(rctx, id, now)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("ModerationStore.UseInviteLink", success, elapsed)
 	}
 	return result, err
 }
