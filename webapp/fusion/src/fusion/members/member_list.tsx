@@ -49,6 +49,11 @@ import type {Grouping, MemberRole} from './member_groups';
 
 const PER_PAGE = 100;
 
+// A stable reference: makeGetProfilesInChannel memoises on this object's identity, and a fresh {active: true}
+// literal on every render (the search box re-renders MemberList on each keystroke) defeated that, recomputing the
+// selector and warning that it "returned a different result when called with the same parameters".
+const ACTIVE_ONLY = {active: true};
+
 // matchesSearch tells whether a typed term matches a member's name, as the member search box filters the list:
 // their username, nickname or full name, case-insensitively.
 export function matchesSearch(user: UserProfile, term: string): boolean {
@@ -141,7 +146,7 @@ export default function MemberList({inPanel = false}: {inPanel?: boolean}) {
     const getProfilesInChannel = useMemo(() => makeGetProfilesInChannel(), []);
     const channelId = useSelector(getCurrentChannelId);
     const channel = useSelector(getCurrentChannel);
-    const profiles = useSelector((state: GlobalState) => getProfilesInChannel(state, channelId, {active: true}));
+    const profiles = useSelector((state: GlobalState) => getProfilesInChannel(state, channelId, ACTIVE_ONLY));
     const memberCount = useSelector((state: GlobalState) => getAllChannelStats(state)[channelId]?.member_count);
     const roles = useMemberRoles(profiles, channelId);
 
