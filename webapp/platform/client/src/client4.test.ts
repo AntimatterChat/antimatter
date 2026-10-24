@@ -48,6 +48,81 @@ describe('Client4', () => {
         });
     });
 
+    describe('assistant', () => {
+        let client: Client4;
+
+        beforeEach(() => {
+            client = new Client4();
+            client.setUrl('http://mattermost.example.com');
+        });
+
+        test('getAssistantFeed should GET the caller\'s feed of the channel', async () => {
+            const feed = {channel_id: 'ch1', enabled: true, on: true, engine: 'rules', cards: []};
+            nock(client.getBaseRoute()).
+                get('/assistant/channels/ch1/feed').
+                reply(200, feed);
+
+            expect(await client.getAssistantFeed('ch1')).toEqual(feed);
+        });
+
+        test('setAssistantPresence should POST whether the panel is open', async () => {
+            const presence = {following: true, ttl_seconds: 90, heartbeat_seconds: 30};
+            nock(client.getBaseRoute()).
+                post('/assistant/channels/ch1/presence', {open: true}).
+                reply(200, presence);
+
+            expect(await client.setAssistantPresence('ch1', true)).toEqual(presence);
+        });
+
+        test('setAssistantChannelOn should PUT the switch', async () => {
+            nock(client.getBaseRoute()).
+                put('/assistant/channels/ch1/enabled', {on: false}).
+                reply(200, {on: false});
+
+            expect(await client.setAssistantChannelOn('ch1', false)).toEqual({on: false});
+        });
+
+        test('card actions should POST to the card\'s routes', async () => {
+            const card = {id: 'c1', channel_id: 'ch1', kind: 'action'};
+            nock(client.getBaseRoute()).
+                post('/assistant/channels/ch1/cards/c1/dismiss').reply(200, card).
+                post('/assistant/channels/ch1/cards/c1/pin', {pinned: true}).reply(200, card).
+                post('/assistant/channels/ch1/cards/c1/mute').reply(200, card).
+                post('/assistant/channels/ch1/cards/c1/claim').reply(200, card).
+                post('/assistant/channels/ch1/cards/c1/run').reply(200, {card, executed: false}).
+                post('/assistant/channels/ch1/cards/c1/post').reply(201, {id: 'p1'});
+
+            expect(await client.dismissAssistantCard('ch1', 'c1')).toEqual(card);
+            expect(await client.pinAssistantCard('ch1', 'c1', true)).toEqual(card);
+            expect(await client.muteAssistantCard('ch1', 'c1')).toEqual(card);
+            expect(await client.claimAssistantCard('ch1', 'c1')).toEqual(card);
+            expect(await client.runAssistantCard('ch1', 'c1')).toEqual({card, executed: false});
+            expect((await client.postAssistantCard('ch1', 'c1')).id).toBe('p1');
+        });
+
+        test('a second run should reject with the conflict', async () => {
+            nock(client.getBaseRoute()).
+                post('/assistant/channels/ch1/cards/c1/run').
+                reply(409, {id: 'app.assistant.offer_done.app_error', message: 'done', status_code: 409});
+
+            await expect(client.runAssistantCard('ch1', 'c1')).rejects.toThrow(ClientError);
+        });
+
+        test('muted tools and a community\'s settings', async () => {
+            const settings = {enabled: false, engine: 'rules' as const, connection_id: '', model: ''};
+            nock(client.getBaseRoute()).
+                get('/assistant/muted_tools').reply(200, {tools: []}).
+                put('/assistant/muted_tools', {tools: ['mcp.grafana.query']}).reply(200, {tools: ['mcp.grafana.query']}).
+                get('/assistant/communities/t1/settings').reply(200, {team_id: 't1', server_enabled: true, may_override: true, settings}).
+                put('/assistant/communities/t1/settings', settings).reply(200, {team_id: 't1', server_enabled: true, may_override: true, settings});
+
+            expect(await client.getAssistantMutedTools()).toEqual({tools: []});
+            expect(await client.setAssistantMutedTools(['mcp.grafana.query'])).toEqual({tools: ['mcp.grafana.query']});
+            expect((await client.getAssistantCommunitySettings('t1')).may_override).toBe(true);
+            expect((await client.setAssistantCommunitySettings('t1', settings)).settings).toEqual(settings);
+        });
+    });
+
     describe('forum topics', () => {
         let client: Client4;
 

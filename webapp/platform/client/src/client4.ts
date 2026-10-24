@@ -10,6 +10,7 @@ import type {AgentActivity, AgentActivityRequest, AIAgentDetails, AIAgentPatch, 
 import type {AIConnection, AIConnectionInfo, AIConnectionPatch, AIConnectionRequest, AIConnectionTestResult, AIConnectionUsage, AIModelInfo} from '@mattermost/types/ai_connections';
 import type {AIMCPOAuthConnect, AIMCPServer, AIMCPServerPatch, AIMCPServerRequest, AIToolCallSummary, AIToolCatalogue, AIToolSourceInfo} from '@mattermost/types/ai_tools';
 import type {AppBinding, AppCallRequest, AppCallResponse} from '@mattermost/types/apps';
+import type {AssistantCard, AssistantCommunitySettings, AssistantCommunitySettingsInfo, AssistantFeed, AssistantMutedTools, AssistantPresence, AssistantRunResult} from '@mattermost/types/assistant';
 import type {Audit} from '@mattermost/types/audits';
 import type {UserAutocomplete, AutocompleteSuggestion} from '@mattermost/types/autocomplete';
 import type {Bot, BotPatch} from '@mattermost/types/bots';
@@ -4197,6 +4198,116 @@ export default class Client4 {
         return this.doFetch<StatusOK>(
             `${this.getAIMCPServersRoute()}/${encodeURIComponent(serverId)}/oauth`,
             {method: 'delete'},
+        );
+    };
+
+    // Antimatter: the assistant. Everything is the caller's own: their feed in a channel, their panel's presence (a
+    // heartbeat every heartbeat_seconds while it's open), their switch per channel, their cards and muted tools.
+    getAssistantRoute() {
+        return `${this.getBaseRoute()}/assistant`;
+    }
+
+    getAssistantChannelRoute(channelId: string) {
+        return `${this.getAssistantRoute()}/channels/${encodeURIComponent(channelId)}`;
+    }
+
+    getAssistantCardRoute(channelId: string, cardId: string) {
+        return `${this.getAssistantChannelRoute(channelId)}/cards/${encodeURIComponent(cardId)}`;
+    }
+
+    getAssistantFeed = (channelId: string) => {
+        return this.doFetch<AssistantFeed>(
+            `${this.getAssistantChannelRoute(channelId)}/feed`,
+            {method: 'get'},
+        );
+    };
+
+    setAssistantPresence = (channelId: string, open: boolean) => {
+        return this.doFetch<AssistantPresence>(
+            `${this.getAssistantChannelRoute(channelId)}/presence`,
+            {method: 'post', body: JSON.stringify({open})},
+        );
+    };
+
+    // The caller's switch for the assistant in a channel; off forgets their feed there.
+    setAssistantChannelOn = (channelId: string, on: boolean) => {
+        return this.doFetch<{on: boolean}>(
+            `${this.getAssistantChannelRoute(channelId)}/enabled`,
+            {method: 'put', body: JSON.stringify({on})},
+        );
+    };
+
+    dismissAssistantCard = (channelId: string, cardId: string) => {
+        return this.doFetch<AssistantCard>(
+            `${this.getAssistantCardRoute(channelId, cardId)}/dismiss`,
+            {method: 'post'},
+        );
+    };
+
+    pinAssistantCard = (channelId: string, cardId: string, pinned: boolean) => {
+        return this.doFetch<AssistantCard>(
+            `${this.getAssistantCardRoute(channelId, cardId)}/pin`,
+            {method: 'post', body: JSON.stringify({pinned})},
+        );
+    };
+
+    // "Don't suggest this kind again": the card's tool is muted for the caller, and the card dismissed.
+    muteAssistantCard = (channelId: string, cardId: string) => {
+        return this.doFetch<AssistantCard>(
+            `${this.getAssistantCardRoute(channelId, cardId)}/mute`,
+            {method: 'post'},
+        );
+    };
+
+    // Takes an action offered to nobody.
+    claimAssistantCard = (channelId: string, cardId: string) => {
+        return this.doFetch<AssistantCard>(
+            `${this.getAssistantCardRoute(channelId, cardId)}/claim`,
+            {method: 'post'},
+        );
+    };
+
+    // Runs an action offered to the caller: 403 for anyone else, 409 once it's done.
+    runAssistantCard = (channelId: string, cardId: string) => {
+        return this.doFetch<AssistantRunResult>(
+            `${this.getAssistantCardRoute(channelId, cardId)}/run`,
+            {method: 'post'},
+        );
+    };
+
+    // Posts an insight card's content to its channel as the caller.
+    postAssistantCard = (channelId: string, cardId: string) => {
+        return this.doFetch<Post>(
+            `${this.getAssistantCardRoute(channelId, cardId)}/post`,
+            {method: 'post'},
+        );
+    };
+
+    getAssistantMutedTools = () => {
+        return this.doFetch<AssistantMutedTools>(
+            `${this.getAssistantRoute()}/muted_tools`,
+            {method: 'get'},
+        );
+    };
+
+    setAssistantMutedTools = (tools: string[]) => {
+        return this.doFetch<AssistantMutedTools>(
+            `${this.getAssistantRoute()}/muted_tools`,
+            {method: 'put', body: JSON.stringify({tools})},
+        );
+    };
+
+    getAssistantCommunitySettings = (teamId: string) => {
+        return this.doFetch<AssistantCommunitySettingsInfo>(
+            `${this.getAssistantRoute()}/communities/${encodeURIComponent(teamId)}/settings`,
+            {method: 'get'},
+        );
+    };
+
+    setAssistantCommunitySettings = (teamId: string, settings: AssistantCommunitySettings) => {
+        return this.doFetch<AssistantCommunitySettingsInfo>(
+            `${this.getAssistantRoute()}/communities/${encodeURIComponent(teamId)}/settings`,
+            {method: 'put', body: JSON.stringify(settings)},
         );
     };
 

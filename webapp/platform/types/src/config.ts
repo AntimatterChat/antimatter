@@ -1,6 +1,7 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
+import type {AssistantSettings} from './assistant';
 import type {ContentFlaggingEvent, NotificationTarget} from './content_flagging';
 
 export type LockProfileFieldsSetting = 'none' | 'name_and_username' | 'all';
@@ -1156,6 +1157,9 @@ export type AISettings = {
     Recaps: AIFeatureSettings;
     AutoTranslation: AIFeatureSettings;
     TextToSpeech: AIFeatureSettings;
+
+    // Antimatter: the assistant (assistant.ts).
+    Assistant: AssistantSettings;
 };
 
 export type AIRecapSettings = {
