@@ -6,6 +6,7 @@ import {defineMessage, useIntl} from 'react-intl';
 import type {MessageDescriptor} from 'react-intl';
 import {useDispatch, useSelector} from 'react-redux';
 
+import type {ChannelKindType} from '@mattermost/types/channels';
 import type {ChannelOverride} from '@mattermost/types/channel_overrides';
 
 import {getMissingProfilesByIds} from 'mattermost-redux/actions/users';
@@ -22,8 +23,17 @@ import type {GlobalState} from 'types/store';
 // An override as edited: for a role or a person, the permissions allowed and denied (a channel's, or a category's).
 export type Override = Pick<ChannelOverride, 'target_type' | 'target_id' | 'allow' | 'deny'>;
 
+// A line's label, fixed or depending on the channel's type (Antimatter channel types: create_root_post reads "Start
+// conversations" for text and voice, "Open topics" for forums). A category spans channels of any type, so it keeps
+// the generic wording.
+type Label = MessageDescriptor | ((channelKind: ChannelKindType) => MessageDescriptor);
+
+export function lineLabel(label: Label, channelKind: ChannelKindType): MessageDescriptor {
+    return typeof label === 'function' ? label(channelKind) : label;
+}
+
 // What an override can change, each line covering the permissions it stands for.
-export const LINES: Array<{key: string; label: MessageDescriptor; permissions: string[]}> = [
+export const LINES: Array<{key: string; label: Label; permissions: string[]}> = [
     {key: 'post', label: defineMessage({id: 'fusion.overrides.post', defaultMessage: 'Send messages'}), permissions: [Permissions.CREATE_POST]},
     {key: 'react', label: defineMessage({id: 'fusion.overrides.react', defaultMessage: 'Add reactions'}), permissions: [Permissions.ADD_REACTION, Permissions.REMOVE_REACTION]},
     {key: 'files', label: defineMessage({id: 'fusion.overrides.files', defaultMessage: 'Attach files'}), permissions: [Permissions.UPLOAD_FILE]},
@@ -32,6 +42,13 @@ export const LINES: Array<{key: string; label: MessageDescriptor; permissions: s
     {key: 'messages', label: defineMessage({id: 'fusion.overrides.messages', defaultMessage: 'Manage messages'}), permissions: [Permissions.DELETE_OTHERS_POSTS, Permissions.EDIT_OTHERS_POSTS]},
     {key: 'members', label: defineMessage({id: 'fusion.overrides.members', defaultMessage: 'Manage members'}), permissions: [Permissions.MANAGE_PUBLIC_CHANNEL_MEMBERS, Permissions.MANAGE_PRIVATE_CHANNEL_MEMBERS]},
     {key: 'settings', label: defineMessage({id: 'fusion.overrides.settings', defaultMessage: 'Manage the channel'}), permissions: [Permissions.MANAGE_PUBLIC_CHANNEL_PROPERTIES, Permissions.MANAGE_PRIVATE_CHANNEL_PROPERTIES]},
+    {
+        key: 'rootPost',
+        label: (channelKind: ChannelKindType) => (channelKind === 'forum' ?
+            defineMessage({id: 'fusion.overrides.openTopics', defaultMessage: 'Open topics', description: 'Permissions editor row (Antimatter channel types): who may open a new topic in a forum.'}) :
+            defineMessage({id: 'fusion.overrides.startConversations', defaultMessage: 'Start conversations', description: 'Permissions editor row (Antimatter channel types): who may start a new conversation in a text or voice channel.'})),
+        permissions: [Permissions.CREATE_ROOT_POST],
+    },
 ];
 
 export type State = 'deny' | 'inherit' | 'allow';
@@ -133,11 +150,15 @@ type EditorProps = {
     editable: boolean;
     onChange: (target: Override, edit: (o: Override) => Override) => void;
     onAdd: (target: Override) => void;
+
+    // The channel's type (Antimatter channel types), for the create_root_post line's wording. Left out for a
+    // category, which spans channels of any type: it keeps the generic "Start conversations" wording.
+    channelKind?: ChannelKindType;
 };
 
 // OverridesEditor lists the roles and people with an override, each line denied, as elsewhere, or allowed, and adds
 // roles and people.
-export function OverridesEditor({teamId, overrides, inherited = [], editable, onChange, onAdd}: EditorProps) {
+export function OverridesEditor({teamId, overrides, inherited = [], editable, onChange, onAdd, channelKind = 'text'}: EditorProps) {
     const {formatMessage} = useIntl();
     const dispatch = useDispatch();
     const roles = useSelector((state: GlobalState) => getTeamRoles(state, teamId));
@@ -169,6 +190,7 @@ export function OverridesEditor({teamId, overrides, inherited = [], editable, on
                     override={o}
                     inherited={inherited.find((i) => sameTarget(i, o))}
                     disabled={!editable}
+                    channelKind={channelKind}
                     onChange={(edit) => onChange(o, edit)}
                 />
             ))}
@@ -207,7 +229,7 @@ export function OverridesEditor({teamId, overrides, inherited = [], editable, on
     );
 }
 
-function OverrideRow({override, inherited, disabled, onChange}: {override: Override; inherited?: Override; disabled: boolean; onChange: (edit: (o: Override) => Override) => void}) {
+function OverrideRow({override, inherited, disabled, channelKind, onChange}: {override: Override; inherited?: Override; disabled: boolean; channelKind: ChannelKindType; onChange: (edit: (o: Override) => Override) => void}) {
     const {formatMessage} = useIntl();
     const role = useSelector((state: GlobalState) => (override.target_type === 'role' ? state.entities.groups.groups[override.target_id] : undefined));
     const states: Array<[State, string, string]> = [
@@ -253,13 +275,14 @@ function OverrideRow({override, inherited, disabled, onChange}: {override: Overr
             {LINES.map((line) => {
                 const current = lineState(override, line.permissions);
                 const fromCategory = inherited ? lineState(inherited, line.permissions) : 'inherit';
+                const label = lineLabel(line.label, channelKind);
                 return (
                     <div
                         key={line.key}
                         className={am('override-line')}
                     >
                         <span>
-                            {formatMessage(line.label)}
+                            {formatMessage(label)}
                             {current === 'inherit' && fromCategory !== 'inherit' && (
                                 <small className={am('override-from')}>
                                     {fromCategory === 'deny' ? formatMessage({id: 'fusion.overrides.categoryDenies', defaultMessage: 'denied by the category'}) : formatMessage({id: 'fusion.overrides.categoryAllows', defaultMessage: 'allowed by the category'})}
@@ -269,7 +292,7 @@ function OverrideRow({override, inherited, disabled, onChange}: {override: Overr
                         <div
                             className={am('tri')}
                             role='radiogroup'
-                            aria-label={formatMessage(line.label)}
+                            aria-label={formatMessage(label)}
                         >
                             {states.map(([state, glyph, label]) => (
                                 <button

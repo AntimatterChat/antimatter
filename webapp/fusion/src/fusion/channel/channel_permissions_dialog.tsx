@@ -9,6 +9,7 @@ import type {Channel} from '@mattermost/types/channels';
 
 import {Client4} from 'mattermost-redux/client';
 import {getManagedCategoryMappings} from 'mattermost-redux/selectors/entities/channel_categories';
+import {getChannelTypeInfo} from 'mattermost-redux/selectors/entities/channel_types';
 
 import {Dialog} from 'fusion/components/layer';
 import {useToast} from 'fusion/shell/toast_context';
@@ -30,6 +31,7 @@ export default function ChannelPermissionsDialog({channel, onClose}: {channel: C
     const toast = useToast();
     const roles = useSelector((state: GlobalState) => getTeamRoles(state, channel.team_id));
     const category = useSelector((state: GlobalState) => getManagedCategoryMappings(state, channel.team_id)?.[channel.id] || '');
+    const channelKind = useSelector((state: GlobalState) => getChannelTypeInfo(state, channel.id).type);
     const [access, setAccess] = useState<string[]>([]);
     const [inherited, setInherited] = useState<Override[]>([]);
     const isPrivate = channel.type === 'P';
@@ -133,6 +135,7 @@ export default function ChannelPermissionsDialog({channel, onClose}: {channel: C
                     overrides={list.overrides}
                     inherited={inherited}
                     editable={list.editable}
+                    channelKind={channelKind}
                     onChange={list.change}
                     onAdd={list.add}
                 />
