@@ -124,7 +124,7 @@ import type {
     PluginsResponse,
     PluginStatus,
 } from '@mattermost/types/plugins';
-import type {OnTopPost, Post, PostList, PostSearchResults, PostsUsageResponse, TeamsUsageResponse, PaginatedPostList, FilesUsageResponse, PostAcknowledgement, PostAnalytics, PostInfo} from '@mattermost/types/posts';
+import type {ForumTopicList, ForumTopicPatch, ForumTopicsQuery, OnTopPost, Post, PostList, PostSearchResults, PostsUsageResponse, TeamsUsageResponse, PaginatedPostList, FilesUsageResponse, PostAcknowledgement, PostAnalytics, PostInfo} from '@mattermost/types/posts';
 import type {PreferenceType} from '@mattermost/types/preferences';
 import type {ProductNotices} from '@mattermost/types/product_notices';
 import type {NameMappedPropertyFields, PropertyField, PropertyFieldOptionPage, PropertyValue} from '@mattermost/types/properties';
@@ -1282,10 +1282,11 @@ export default class Client4 {
 
     // Antimatter: moves a thread to another channel of its community; flatten makes its replies messages of the
     // channel. Returns the moved first message.
-    moveThreadToChannel = (postId: string, channelId: string, flatten = false) => {
+    // A forum takes only topics: title names the thread there (without one it keeps its own).
+    moveThreadToChannel = (postId: string, channelId: string, flatten = false, title?: string) => {
         return this.doFetch<Post>(
             this.getPostRoute(postId) + '/move_to_channel',
-            {method: 'post', body: JSON.stringify({channel_id: channelId, flatten})},
+            {method: 'post', body: JSON.stringify({channel_id: channelId, flatten, title})},
         );
     };
 
@@ -2938,6 +2939,21 @@ export default class Client4 {
         return this.doFetch<OnTopPost[]>(
             `${this.getChannelRoute(channelId)}/on_top`,
             {method: 'get'},
+        );
+    };
+
+    // Antimatter forums: a page of a forum's topics, and a topic's accepted answer (Q&A) or status (Ideas).
+    getForumTopics = (channelId: string, query: ForumTopicsQuery = {}) => {
+        return this.doFetch<ForumTopicList>(
+            `${this.getChannelRoute(channelId)}/topics${buildQueryString(query)}`,
+            {method: 'get'},
+        );
+    };
+
+    patchForumTopic = (postId: string, patch: ForumTopicPatch) => {
+        return this.doFetch<Post>(
+            `${this.getPostRoute(postId)}/topic`,
+            {method: 'patch', body: JSON.stringify(patch)},
         );
     };
 

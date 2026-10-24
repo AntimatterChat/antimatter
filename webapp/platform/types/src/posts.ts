@@ -37,6 +37,8 @@ export type PostType = 'system_add_remove' |
 'system_autotranslation' |
 'burn_on_read' |
 'system_shared_chan_state' |
+'system_am_topic_answer' |
+'system_am_topic_status' |
 '';
 
 export type PostEmbedType = 'image' | 'link' | 'message_attachment' | 'opengraph' | 'permalink';
@@ -64,6 +66,58 @@ export type OnTopPost = {
     created_by: string;
     create_at: number;
     expires_at: number;
+};
+
+// Antimatter forums: a forum holds only topics, each a first post with props.am_thread_title and replies. Votes are
+// 👍 reactions (the author's own doesn't count). A Q&A topic may have an accepted answer, an Ideas topic a status;
+// only PATCH /posts/{root_id}/topic writes them (props.am_accepted_answer, props.am_topic_status).
+export type ForumTopicStatus = 'open' | 'planned' | 'in_progress' | 'done' | 'declined';
+
+export type ForumTopicSort = 'activity' | 'newest' | 'votes' | 'unanswered' | 'status';
+
+export type ForumTopic = {
+    post: Post;
+    reply_count: number;
+    last_reply_at: number;
+    participant_ids: string[];
+    votes: number;
+
+    // Given in Q&A forums only.
+    accepted_answer_id?: string;
+
+    // Given in Ideas forums only; a topic without one is open.
+    status?: ForumTopicStatus;
+    on_top: boolean;
+
+    // The latest replies, oldest first, when asked for (replies).
+    replies?: Post[];
+};
+
+export type ForumTopicList = {
+    topics: ForumTopic[];
+
+    // '' on the last page.
+    next_cursor: string;
+};
+
+// GET /channels/{channel_id}/topics's query. unanswered and answered are for Q&A forums, status (sort and filter) for
+// Ideas ones. before is a page's next_cursor; per_page is 25 by default, at most 100; replies is 0 to 5.
+export type ForumTopicsQuery = {
+    sort?: ForumTopicSort;
+    answered?: boolean;
+    status?: ForumTopicStatus;
+    mine?: boolean;
+    following?: boolean;
+    q?: string;
+    before?: string;
+    per_page?: number;
+    replies?: number;
+};
+
+// PATCH /posts/{root_id}/topic's body: accepted_answer_id '' takes the answer back. A field left out stays.
+export type ForumTopicPatch = {
+    accepted_answer_id?: string;
+    status?: ForumTopicStatus;
 };
 
 export type PostAcknowledgement = {

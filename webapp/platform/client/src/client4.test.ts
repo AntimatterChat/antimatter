@@ -48,6 +48,58 @@ describe('Client4', () => {
         });
     });
 
+    describe('forum topics', () => {
+        let client: Client4;
+
+        beforeEach(() => {
+            client = new Client4();
+            client.setUrl('http://mattermost.example.com');
+        });
+
+        test('getForumTopics should GET the channel\'s topics with the query', async () => {
+            const list = {topics: [], next_cursor: ''};
+            nock(client.getBaseRoute()).
+                get('/channels/ch1/topics').
+                query({sort: 'votes', answered: 'false', q: 'beam align', before: 'abc', per_page: '10', replies: '3'}).
+                reply(200, list);
+
+            const result = await client.getForumTopics('ch1', {sort: 'votes', answered: false, q: 'beam align', before: 'abc', per_page: 10, replies: 3});
+
+            expect(result).toEqual(list);
+        });
+
+        test('getForumTopics should leave the query out when there is none', async () => {
+            nock(client.getBaseRoute()).
+                get('/channels/ch1/topics').
+                reply(200, {topics: [], next_cursor: ''});
+
+            const result = await client.getForumTopics('ch1');
+
+            expect(result.next_cursor).toBe('');
+        });
+
+        test('patchForumTopic should PATCH the topic route', async () => {
+            const post = {id: 'p1', props: {am_accepted_answer: 'r1'}};
+            nock(client.getBaseRoute()).
+                patch('/posts/p1/topic', {accepted_answer_id: 'r1'}).
+                reply(200, post);
+
+            const result = await client.patchForumTopic('p1', {accepted_answer_id: 'r1'});
+
+            expect(result).toEqual(post);
+        });
+
+        test('moveThreadToChannel should send the title a forum needs', async () => {
+            nock(client.getBaseRoute()).
+                post('/posts/p1/move_to_channel', {channel_id: 'ch1', flatten: false, title: 'Beam alignment'}).
+                reply(200, {id: 'p2'});
+
+            const result = await client.moveThreadToChannel('p1', 'ch1', false, 'Beam alignment');
+
+            expect(result.id).toBe('p2');
+        });
+    });
+
     describe('property field routes', () => {
         let client: Client4;
 
