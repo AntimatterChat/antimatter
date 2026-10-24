@@ -22,6 +22,7 @@ import emojiRegex from 'emoji-regex';
 import isPlainObject from 'lodash/isPlainObject';
 import {common, createLowlight} from 'lowlight';
 import React, {forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState} from 'react';
+import {flushSync} from 'react-dom';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {getConfig} from 'mattermost-redux/selectors/entities/general';
@@ -249,9 +250,21 @@ const WysiwygEditor = forwardRef<WysiwygEditorHandle, Props>(({
     }, []);
     const debouncedFlushPendingChange = useDebounce(flushPendingChange, SERIALIZE_DEBOUNCE_MS);
 
-    const handleSuggestionSubmit = useCallback(() => {
+    // handleUpdate debounces the emit to its owner by up to SERIALIZE_DEBOUNCE_MS, so sending right after typing —
+    // pressing Enter within that window — otherwise sends the draft before the owner has the last keystrokes.
+    // flushSync forces the owner's state update (and therefore its own onSubmit, read from a ref that's refreshed
+    // on every render) to apply before onSubmit runs, not just before this function returns.
+    const submitNow = useCallback(() => {
+        flushSync(() => {
+            debouncedFlushPendingChange.cancel();
+            flushPendingChange();
+        });
         onSubmitRef.current();
-    }, [onSubmitRef]);
+    }, [debouncedFlushPendingChange, flushPendingChange, onSubmitRef]);
+
+    const handleSuggestionSubmit = useCallback(() => {
+        submitNow();
+    }, [submitNow]);
 
     const handleUpdate = useCallback(({editor}: {editor: Editor}) => {
         const content = jsonMode ? JSON.stringify(editor.getJSON()) : serializeToMarkdown(editor);
@@ -555,7 +568,7 @@ const WysiwygEditor = forwardRef<WysiwygEditorHandle, Props>(({
                             return false;
                         }
                         event.preventDefault();
-                        onSubmitRef.current();
+                        submitNow();
                         return true;
                     }
                     return false;
@@ -564,7 +577,7 @@ const WysiwygEditor = forwardRef<WysiwygEditorHandle, Props>(({
                 if (sendCodeBlockOnCtrlEnterRef.current && insideCodeBlock) {
                     if (ctrlOrMeta && !event.shiftKey && !event.altKey) {
                         event.preventDefault();
-                        onSubmitRef.current();
+                        submitNow();
                         return true;
                     }
                     return false;
@@ -579,7 +592,7 @@ const WysiwygEditor = forwardRef<WysiwygEditorHandle, Props>(({
                 }
 
                 event.preventDefault();
-                onSubmitRef.current();
+                submitNow();
                 return true;
             },
         },

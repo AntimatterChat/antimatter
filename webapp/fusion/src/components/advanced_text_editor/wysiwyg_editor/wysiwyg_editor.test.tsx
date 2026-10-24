@@ -786,4 +786,86 @@ describe('WysiwygEditor', () => {
             expect(mockChainCalls.current).toEqual(['focus', 'splitBlock', 'setNode', 'run']);
         });
     });
+
+    // handleUpdate debounces the emit to onChange (SERIALIZE_DEBOUNCE_MS): pressing Enter within that window must
+    // not send before the owner (the composer) has the last keystrokes.
+    describe('Enter right after typing', () => {
+        const paragraphView = () => ({
+            state: {
+                selection: {
+                    $from: {
+                        depth: 1,
+                        node: () => ({type: {name: 'paragraph'}}),
+                    },
+                },
+                schema: {nodes: {listItem: {}}},
+            },
+            dom: globalThis.document.createElement('div'),
+            dispatch: jest.fn(),
+        });
+
+        const enterEvent = () => ({
+            key: 'Enter',
+            shiftKey: false,
+            metaKey: false,
+            ctrlKey: false,
+            altKey: false,
+            preventDefault: jest.fn(),
+        });
+
+        test('flushes the latest keystroke to onChange before calling onSubmit, without waiting for the debounce', () => {
+            jest.useFakeTimers();
+            const callOrder: string[] = [];
+            const onChange = jest.fn(() => callOrder.push('onChange'));
+            const onSubmit = jest.fn(() => callOrder.push('onSubmit'));
+
+            renderWithContext(
+                <WysiwygEditor
+                    {...baseProps}
+                    onChange={onChange}
+                    onSubmit={onSubmit}
+                />,
+            );
+
+            // Typing the last character: the emit to the owner is debounced, so onChange hasn't fired yet.
+            mockCapturedConfig.current?.onUpdate?.({editor: {getJSON: () => ({}), getMarkdown: () => 'hello world'} as any});
+            expect(onChange).not.toHaveBeenCalled();
+
+            // Enter, immediately — no timer advanced, so a fix that only waits for the debounce would still be
+            // sending the draft without the last keystroke.
+            const event = enterEvent();
+            const handled = mockCapturedConfig.current.editorProps.handleKeyDown(
+                paragraphView() as any,
+                event as unknown as KeyboardEvent,
+            );
+
+            expect(handled).toBe(true);
+            expect(event.preventDefault).toHaveBeenCalled();
+            expect(onChange).toHaveBeenCalledWith('hello world');
+            expect(onSubmit).toHaveBeenCalled();
+            expect(callOrder).toEqual(['onChange', 'onSubmit']);
+        });
+
+        test('does not flush or send when there is no pending change', () => {
+            const onChange = jest.fn();
+            const onSubmit = jest.fn();
+
+            renderWithContext(
+                <WysiwygEditor
+                    {...baseProps}
+                    onChange={onChange}
+                    onSubmit={onSubmit}
+                />,
+            );
+
+            const event = enterEvent();
+            mockCapturedConfig.current.editorProps.handleKeyDown(
+                paragraphView() as any,
+                event as unknown as KeyboardEvent,
+            );
+
+            expect(onChange).not.toHaveBeenCalled();
+            expect(onSubmit).toHaveBeenCalled();
+        });
+    });
 });
