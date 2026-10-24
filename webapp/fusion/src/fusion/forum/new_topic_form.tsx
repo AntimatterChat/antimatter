@@ -19,12 +19,16 @@ type Props = {
     channel: Channel;
     mode: ChannelKindMode;
     onClose: () => void;
+
+    // The image board view (design §4.4: "the same form leads with the attachment area"): the same form, with the
+    // composer (which carries the attachments) ahead of the title field instead of after it.
+    leadWithAttachment?: boolean;
 };
 
 // NewTopicForm opens at the top of the topics list (design §4.4): a title, Enter in it moves to the body, then the
 // full composer (formatting, attachments, emoji). The server is the one place that enforces the title (strict
 // everywhere, design §3.1): a title left empty still sends, and the composer shows the server's error inline.
-export default function NewTopicForm({channel, mode, onClose}: Props) {
+export default function NewTopicForm({channel, mode, onClose, leadWithAttachment = false}: Props) {
     const {formatMessage} = useIntl();
     const [title, setTitle] = useState('');
     const [titleError, setTitleError] = useState('');
@@ -45,8 +49,8 @@ export default function NewTopicForm({channel, mode, onClose}: Props) {
         sendRef.current?.();
     };
 
-    return (
-        <div className={am('new-topic')}>
+    const titleField = (
+        <>
             <input
                 ref={titleRef}
                 type='text'
@@ -82,17 +86,38 @@ export default function NewTopicForm({channel, mode, onClose}: Props) {
                     {titleError}
                 </div>
             )}
-            <div ref={bodyRef}>
-                <Composer
-                    channelId={channel.id}
-                    placeholder={formatMessage({id: 'fusion.forum.bodyPlaceholder', defaultMessage: 'Write the first post…', description: 'Placeholder of the New topic form\'s message box.'})}
-                    extraProps={{[THREAD_TITLE_PROP]: title.trim()}}
-                    onReady={(submit) => {
-                        sendRef.current = submit;
-                    }}
-                    afterSubmit={onClose}
-                />
-            </div>
+        </>
+    );
+
+    const composerField = (
+        <div ref={bodyRef}>
+            <Composer
+                channelId={channel.id}
+                placeholder={leadWithAttachment ?
+                    formatMessage({id: 'fusion.forum.bodyPlaceholderBoard', defaultMessage: 'Add images, then describe them…', description: 'Placeholder of the New topic form\'s message box, image board view: it leads with the attachment area (design §4.4).'}) :
+                    formatMessage({id: 'fusion.forum.bodyPlaceholder', defaultMessage: 'Write the first post…', description: 'Placeholder of the New topic form\'s message box.'})}
+                extraProps={{[THREAD_TITLE_PROP]: title.trim()}}
+                onReady={(submit) => {
+                    sendRef.current = submit;
+                }}
+                afterSubmit={onClose}
+            />
+        </div>
+    );
+
+    return (
+        <div className={am('new-topic', {'lead-attachment': leadWithAttachment})}>
+            {leadWithAttachment ? (
+                <>
+                    {composerField}
+                    {titleField}
+                </>
+            ) : (
+                <>
+                    {titleField}
+                    {composerField}
+                </>
+            )}
             <button
                 type='button'
                 className={am('link-btn')}

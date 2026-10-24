@@ -153,4 +153,39 @@ describe('fusion/forum/NewTopicForm', () => {
 
         expect(onClose).toHaveBeenCalled();
     });
+
+    test('in the image board view, leads with the attachment area', () => {
+        renderWithContext(
+            <NewTopicForm
+                channel={channel}
+                mode='discussion'
+                leadWithAttachment={true}
+                onClose={jest.fn()}
+            />,
+        );
+
+        expect(composerProps?.placeholder).toBe('Add images, then describe them…');
+        const composerBox = screen.getByRole('textbox', {name: 'Add images, then describe them…'});
+        const titleBox = screen.getByRole('textbox', {name: 'Title'});
+
+        // eslint-disable-next-line no-bitwise
+        expect(composerBox.compareDocumentPosition(titleBox) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    });
+
+    test('outside the image board view, leads with the title, as before', () => {
+        renderWithContext(
+            <NewTopicForm
+                channel={channel}
+                mode='discussion'
+                onClose={jest.fn()}
+            />,
+        );
+
+        expect(composerProps?.placeholder).toBe('Write the first post…');
+        const titleBox = screen.getByRole('textbox', {name: 'Title'});
+        const composerBox = screen.getByRole('textbox', {name: 'Write the first post…'});
+
+        // eslint-disable-next-line no-bitwise
+        expect(titleBox.compareDocumentPosition(composerBox) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    });
 });
