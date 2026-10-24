@@ -13,9 +13,12 @@ import MemberListTeam from 'components/member_list_team';
 import {MembershipRequirementsBanner} from 'components/team_members_modal/team_members_modal';
 
 import Icon from 'fusion/components/icon';
+import {canBanInTeam} from 'fusion/moderation/moderation';
 import {am} from 'fusion/utils/class_names';
 
 import type {GlobalState} from 'types/store';
+
+import BanList from './ban_list';
 
 type Props = {
 
@@ -25,11 +28,13 @@ type Props = {
 
 // MembersSettings is the Members page of the community settings (the former Manage members dialog): the community's
 // members, to search, with their role; those who manage the community's roles make people its admins or members, and
-// remove them, from each one's role menu. Those who may add people invite more from here.
+// remove them, from each one's role menu. Those who may add people invite more from here. Those who may ban see the
+// bans after the members, and lift them there.
 export default function MembersSettings({onInvite}: Props) {
     const {formatMessage} = useIntl();
     const team = useSelector(getCurrentTeam);
     const canInvite = useSelector((state: GlobalState) => Boolean(team) && (haveITeamPermission(state, team!.id, Permissions.ADD_USER_TO_TEAM) || haveITeamPermission(state, team!.id, Permissions.INVITE_GUEST)));
+    const canBan = useSelector((state: GlobalState) => Boolean(team) && canBanInTeam(state, team!.id));
     if (!team) {
         return null;
     }
@@ -56,6 +61,7 @@ export default function MembersSettings({onInvite}: Props) {
             <div className={'more-modal ' + am('team-members')}>
                 <MemberListTeam teamId={team.id}/>
             </div>
+            {canBan && <BanList teamId={team.id}/>}
         </div>
     );
 }

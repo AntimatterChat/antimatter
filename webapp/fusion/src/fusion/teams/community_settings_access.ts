@@ -27,6 +27,9 @@ export type CommunitySettingsAccess = {
     // people its admins or members and remove them there (the former Manage members).
     manageMembers: boolean;
 
+    // The bans, after the members: for those who may ban (its admins, and those who may remove its members).
+    bans: boolean;
+
     // Teams (a community's user groups) when the server has them: everyone may see them and, as the server allows,
     // create their own; they aren't a reason on their own to show the settings.
     teams: boolean;
@@ -63,6 +66,7 @@ export function getCommunitySettingsAccess(state: GlobalState, teamId: string): 
         teamMembership: Boolean(isTeamMembershipAccessControlEnabled(state)) && accessRules,
         accessPolicies: Boolean(isChannelAccessControlEnabled(state)) && accessRules,
         manageMembers: manageRoles,
+        bans: manage || inTeam(Permissions.REMOVE_USER_FROM_TEAM),
         teams: customGroups,
         roles: manageRoles && customGroups,
         aiConnections: inTeam(Permissions.MANAGE_TEAM_AI_CONNECTIONS),
@@ -73,6 +77,6 @@ export function getCommunitySettingsAccess(state: GlobalState, teamId: string): 
 // canOpenCommunitySettings: whether one may manage something in the community's settings, which its menu then
 // offers. Seeing its members and teams isn't enough: those who only do that find them in the menu itself.
 export function canOpenCommunitySettings(access: CommunitySettingsAccess): boolean {
-    return access.manage || access.teamMembership || access.accessPolicies || access.manageMembers || access.roles ||
-        access.aiConnections || access.integrations;
+    return access.manage || access.teamMembership || access.accessPolicies || access.manageMembers || access.bans ||
+        access.roles || access.aiConnections || access.integrations;
 }

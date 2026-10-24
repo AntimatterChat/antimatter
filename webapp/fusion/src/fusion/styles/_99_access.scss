@@ -1,0 +1,20 @@
+// Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
+// See LICENSE.txt for license information.
+
+// Who's in a community: its bans (Community settings › Members) and its invite links (from Invite people). Rows are
+// the settings' rows; on a phone their buttons go under the text.
+:is(.am-app, .am-layer) .am-ban-list { margin-top: 18px; }
+:is(.am-app, .am-layer) .am-ban-row .am-txt > span { display: block; color: var(--am-muted); font-size: 12.5px; }
+:is(.am-app, .am-layer) .am-ban-row .am-ban-reason { margin-top: 2px; color: var(--am-text-2); white-space: pre-wrap; overflow-wrap: anywhere; }
+:is(.am-app, .am-layer) .am-ban-row .am-btn,
+:is(.am-app, .am-layer) .am-invite-link-actions .am-btn { width: auto; flex: none; }
+:is(.am-app, .am-layer) .am-invite-link-row .am-txt b.am-mono { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
+:is(.am-app, .am-layer) .am-invite-link-row .am-txt > span { display: block; color: var(--am-muted); font-size: 12.5px; }
+:is(.am-app, .am-layer) .am-invite-link-row.am-off .am-txt { opacity: .6; }
+:is(.am-app, .am-layer) .am-invite-link-actions { display: flex; flex: none; gap: 8px; }
+
+@media (max-width: 640px) {
+  :is(.am-app, .am-layer) .am-ban-row,
+  :is(.am-app, .am-layer) .am-invite-link-row { flex-wrap: wrap; }
+  :is(.am-app, .am-layer) .am-invite-link-row .am-txt { flex-basis: 100%; }
+}

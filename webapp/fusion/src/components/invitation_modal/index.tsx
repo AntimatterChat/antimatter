@@ -27,6 +27,7 @@ import {
 
 import {makeAsyncComponent} from 'components/async_load';
 
+import {openInviteLinks} from 'fusion/utils/modals';
 import {Constants, normalizeLockProfileFieldsSetting} from 'utils/constants';
 
 import type {GlobalState} from 'types/store';
@@ -76,6 +77,9 @@ export function mapStateToProps(state: GlobalState, props: OwnProps) {
 
     const canAddUsers = haveICurrentTeamPermission(state, Permissions.ADD_USER_TO_TEAM);
 
+    // Antimatter: those allowed to invite make the community's invite links, from here.
+    const canMakeInviteLinks = !isGroupConstrained && haveICurrentTeamPermission(state, Permissions.INVITE_USER);
+
     const guestMagicLinkEnabled = config.EnableGuestMagicLink === 'true';
     const canInviteGuestsWithMagicLink = canInviteGuests && guestMagicLinkEnabled;
 
@@ -84,6 +88,7 @@ export function mapStateToProps(state: GlobalState, props: OwnProps) {
         currentTeam,
         canInviteGuests,
         canAddUsers,
+        canMakeInviteLinks,
         emailInvitationsEnabled,
         lockProfileFieldsForEmailUsers,
         isAdmin: isAdmin(getCurrentUser(state).roles),
@@ -102,6 +107,7 @@ function mapDispatchToProps(dispatch: Dispatch) {
             regenerateTeamInviteId,
             searchProfiles,
             searchChannels,
+            openInviteLinks,
         }, dispatch),
     };
 }

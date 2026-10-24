@@ -24,6 +24,7 @@ export const openDialog = (modalId: string, dialogType: React.ElementType<any>, 
 const DeleteCategoryModal = makeAsyncComponent('FusionDeleteCategoryModal', lazy(() => import('components/delete_category_modal')));
 const EditCategoryModal = makeAsyncComponent('FusionEditCategoryModal', lazy(() => import('components/edit_category_modal')));
 const InvitationModal = makeAsyncComponent('FusionInvitationModal', lazy(() => import('components/invitation_modal')));
+const InviteLinksDialog = makeAsyncComponent('FusionInviteLinksDialog', lazy(() => import('fusion/teams/invite_links_dialog')));
 const TeamsDialog = makeAsyncComponent('FusionTeamsDialog', lazy(() => import('fusion/teams/teams_dialog')));
 const KeyboardShortcutsModal = makeAsyncComponent('FusionKeyboardShortcutsModal', lazy(() => import('components/keyboard_shortcuts/keyboard_shortcuts_modal/keyboard_shortcuts_modal')));
 const LeaveTeamModal = makeAsyncComponent('FusionLeaveTeamModal', lazy(() => import('components/leave_team_modal')));
@@ -38,6 +39,9 @@ export const openCreateCategory = () => openDialog(ModalIdentifiers.EDIT_CATEGOR
 export const openRenameCategory = (category: ChannelCategory) => openDialog(ModalIdentifiers.EDIT_CATEGORY, EditCategoryModal, {categoryId: category.id, initialCategoryName: category.display_name});
 export const openDeleteCategory = (category: ChannelCategory) => openDialog(ModalIdentifiers.DELETE_CATEGORY, DeleteCategoryModal, {category});
 export const openInvitePeople = () => openDialog(ModalIdentifiers.INVITATION, InvitationModal, {});
+
+// openInviteLinks opens the community's invite links (from Invite people, for those allowed to invite).
+export const openInviteLinks = () => openDialog(ModalIdentifiers.INVITE_LINKS, InviteLinksDialog);
 
 // openTeamSettings opens the community settings, on one of its tabs (Antimatter: roles, onboarding, attributes,
 // layout... which used to be dialogs of their own) or the first one.

@@ -357,6 +357,7 @@ export const ModalIdentifiers = {
     APPS_MODAL: 'apps_modal',
     ADD_TEAMS_TO_SCHEME: 'add_teams_to_scheme',
     INVITATION: 'invitation',
+    INVITE_LINKS: 'invite_links',
     ADD_GROUPS_TO_TEAM: 'add_groups_to_team',
     ADD_GROUPS_TO_CHANNEL: 'add_groups_to_channel',
     MANAGE_TEAM_GROUPS: 'manage_team_groups',

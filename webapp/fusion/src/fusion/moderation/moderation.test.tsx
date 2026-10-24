@@ -11,10 +11,11 @@ import {LAYER_ID} from 'fusion/components/layer';
 import {renderWithContext, screen, userEvent, waitFor, within} from 'tests/react_testing_utils';
 import {RHSStates} from 'utils/constants';
 
+import BanDialog from './ban_dialog';
 import ModViewPanel from './mod_view';
 import TimeoutDialog from './timeout_dialog';
 
-const mockDialogs = {timeOut: jest.fn(), removeFromTeam: jest.fn(), confirm: jest.fn()};
+const mockDialogs = {timeOut: jest.fn(), removeFromTeam: jest.fn(), ban: jest.fn(), confirm: jest.fn()};
 jest.mock('fusion/shell/dialogs_context', () => ({useDialogs: () => mockDialogs}));
 jest.mock('fusion/teams/teams', () => ({...jest.requireActual('fusion/teams/teams'), loadTeams: jest.fn(() => ({type: 'MOCK_LOAD_TEAMS'}))}));
 
@@ -104,15 +105,15 @@ describe('ModViewPanel', () => {
 
 describe('ModViewPanel: its actions, per role, each once', () => {
     test.each<[string, string, string, string[]]>([
-        ['a community admin', 'team_user team_admin', 'system_user', ['message', 'search-messages', 'time-out', 'remove-from-community']],
-        ['a system admin', 'team_user', 'system_user system_admin', ['message', 'search-messages', 'time-out', 'remove-from-community', 'deactivate']],
+        ['a community admin', 'team_user team_admin', 'system_user', ['message', 'search-messages', 'time-out', 'remove-from-community', 'ban']],
+        ['a system admin', 'team_user', 'system_user system_admin', ['message', 'search-messages', 'time-out', 'remove-from-community', 'ban', 'deactivate']],
         ['a moderator of messages', 'team_user message_mod', 'system_user', ['message', 'search-messages']],
     ])('%s gets the actions they may take, in order, the destructive ones last', async (who, teamRoles, systemRoles, expected) => {
         renderWithContext(<ModViewPanel/>, stateWith(teamRoles, undefined, systemRoles));
         await screen.findByText('3 in the last day · 12 in the last week');
         expect(actionIds()).toEqual(expected);
         expect(new Set(actionIds()).size).toBe(actionIds().length);
-        for (const id of ['remove-from-community', 'deactivate']) {
+        for (const id of ['remove-from-community', 'ban', 'deactivate']) {
             const button = screen.getByRole('toolbar').querySelector(`[data-action="${id}"]`);
             if (button) {
                 expect(button).toHaveClass('am-danger');
@@ -123,16 +124,17 @@ describe('ModViewPanel: its actions, per role, each once', () => {
     test('a timed-out member\'s timeout is lifted from the actions, once: there is no "Time out…" beside it', async () => {
         renderWithContext(<ModViewPanel/>, stateWith('team_user team_admin', {until: Date.now() + 3600000, reason: 'flooding'}));
         await screen.findByText('flooding');
-        expect(actionIds()).toEqual(['message', 'search-messages', 'lift-timeout', 'remove-from-community']);
+        expect(actionIds()).toEqual(['message', 'search-messages', 'lift-timeout', 'remove-from-community', 'ban']);
         expect(screen.getAllByRole('button', {name: 'Remove timeout'})).toHaveLength(1);
     });
 
     // RBAC: what a role doesn't allow isn't offered.
-    test('a moderator of messages neither times out, removes nor deactivates, and doesn\'t change roles', async () => {
+    test('a moderator of messages neither times out, removes, bans nor deactivates, and doesn\'t change roles', async () => {
         renderWithContext(<ModViewPanel/>, stateWith('team_user message_mod'));
         await screen.findByText('3 in the last day · 12 in the last week');
         expect(screen.queryByRole('button', {name: 'Time out…'})).not.toBeInTheDocument();
         expect(screen.queryByRole('button', {name: 'Remove from community…'})).not.toBeInTheDocument();
+        expect(screen.queryByRole('button', {name: 'Ban…'})).not.toBeInTheDocument();
         expect(screen.queryByRole('button', {name: 'Deactivate account…'})).not.toBeInTheDocument();
         expect(screen.queryByRole('button', {name: 'Add a role'})).not.toBeInTheDocument();
         expect(screen.queryByRole('button', {name: 'Remove the role Helpers'})).not.toBeInTheDocument();
@@ -153,7 +155,7 @@ describe('ModViewPanel: community profiles', () => {
         const reset = jest.spyOn(Client4, 'resetCommunityProfile').mockResolvedValue({team_id: 'team', user_id: 'bob', update_at: 2});
         renderWithContext(<ModViewPanel/>, stateWith('team_user team_admin', undefined, 'system_user', {nickname: 'Admin', avatar_update_at: 5}));
         await screen.findByText('3 in the last day · 12 in the last week');
-        expect(actionIds()).toEqual(['message', 'search-messages', 'time-out', 'reset-nickname', 'reset-picture', 'remove-from-community']);
+        expect(actionIds()).toEqual(['message', 'search-messages', 'time-out', 'reset-nickname', 'reset-picture', 'remove-from-community', 'ban']);
         await userEvent.click(screen.getByRole('button', {name: 'Reset nickname'}));
         expect(reset).toHaveBeenCalledWith('team', 'bob', {nickname: true});
         await userEvent.click(screen.getByRole('button', {name: 'Reset picture'}));
@@ -176,6 +178,12 @@ describe('ModViewPanel: the destructive actions ask first', () => {
         renderWithContext(<ModViewPanel/>, stateWith('team_user team_admin'));
         await userEvent.click(await screen.findByRole('button', {name: 'Remove from community…'}));
         expect(mockDialogs.removeFromTeam).toHaveBeenCalledWith('bob');
+    });
+
+    test('banning opens the ban dialog, to choose for how long and which messages go', async () => {
+        renderWithContext(<ModViewPanel/>, stateWith('team_user team_admin'));
+        await userEvent.click(await screen.findByRole('button', {name: 'Ban…'}));
+        expect(mockDialogs.ban).toHaveBeenCalledWith('bob');
     });
 
     test('deactivating asks, and only deactivates once confirmed', async () => {
@@ -203,11 +211,11 @@ describe('ModViewPanel: the keyboard, and roles', () => {
         await userEvent.keyboard('{ArrowDown}');
         expect(screen.getByRole('button', {name: 'Search their messages'})).toHaveFocus();
         await userEvent.keyboard('{End}');
-        expect(screen.getByRole('button', {name: 'Remove from community…'})).toHaveFocus();
+        expect(screen.getByRole('button', {name: 'Ban…'})).toHaveFocus();
         await userEvent.keyboard('{ArrowDown}');
         expect(message).toHaveFocus();
         await userEvent.keyboard('{ArrowUp}');
-        expect(screen.getByRole('button', {name: 'Remove from community…'})).toHaveFocus();
+        expect(screen.getByRole('button', {name: 'Ban…'})).toHaveFocus();
     });
 
     test('"Add a role" is a menu of the roles they don\'t have', async () => {
@@ -253,5 +261,59 @@ describe('TimeoutDialog', () => {
         expect([teamId, userId, reason]).toEqual(['team', 'bob', 'flooding']);
         expect(until).toBeGreaterThanOrEqual(before + 3600000);
         expect(until).toBeLessThan(before + 3600000 + 10000);
+    });
+});
+
+describe('BanDialog', () => {
+    test('bans someone until it\'s lifted, deleting nothing, by default', async () => {
+        const ban = jest.spyOn(Client4, 'banTeamMember').mockResolvedValue({ban: {team_id: 'team', user_id: 'bob', reason: '', created_by: 'me', create_at: 1, expire_at: 0}, deleted_posts: 0});
+        const onClose = jest.fn();
+        renderWithContext(
+            <BanDialog
+                userId='bob'
+                onClose={onClose}
+            />,
+            stateWith('team_user team_admin'),
+        );
+        await userEvent.click(screen.getByRole('button', {name: 'Ban'}));
+        await waitFor(() => expect(onClose).toHaveBeenCalled());
+        expect(ban).toHaveBeenCalledWith('team', 'bob', {reason: '', expire_at: 0, delete_messages_seconds: 0});
+    });
+
+    test('bans for the chosen time, deleting the messages of the chosen window, with a reason', async () => {
+        const ban = jest.spyOn(Client4, 'banTeamMember').mockResolvedValue({ban: {team_id: 'team', user_id: 'bob', reason: 'raid', created_by: 'me', create_at: 1, expire_at: 2}, deleted_posts: 0, purge_job_id: 'job'});
+        const onClose = jest.fn();
+        renderWithContext(
+            <BanDialog
+                userId='bob'
+                onClose={onClose}
+            />,
+            stateWith('team_user team_admin'),
+        );
+        await userEvent.selectOptions(screen.getByRole('combobox', {name: 'Duration'}), '7 days');
+        await userEvent.selectOptions(screen.getByRole('combobox', {name: 'Delete their messages'}), 'The last 24 hours');
+        await userEvent.type(screen.getByRole('textbox'), ' raid ');
+        const before = Date.now();
+        await userEvent.click(screen.getByRole('button', {name: 'Ban'}));
+        await waitFor(() => expect(onClose).toHaveBeenCalled());
+        const [teamId, userId, request] = ban.mock.calls[0];
+        expect([teamId, userId, request.reason, request.delete_messages_seconds]).toEqual(['team', 'bob', 'raid', 24 * 3600]);
+        expect(request.expire_at).toBeGreaterThanOrEqual(before + (7 * 24 * 3600 * 1000));
+        expect(request.expire_at).toBeLessThan(before + (7 * 24 * 3600 * 1000) + 10000);
+    });
+
+    test('shows why the server refused, and stays open', async () => {
+        jest.spyOn(Client4, 'banTeamMember').mockRejectedValue({message: 'You can only moderate people whose roles are below yours.'});
+        const onClose = jest.fn();
+        renderWithContext(
+            <BanDialog
+                userId='bob'
+                onClose={onClose}
+            />,
+            stateWith('team_user team_admin'),
+        );
+        await userEvent.click(screen.getByRole('button', {name: 'Ban'}));
+        expect(await screen.findByRole('alert')).toHaveTextContent('You can only moderate people whose roles are below yours.');
+        expect(onClose).not.toHaveBeenCalled();
     });
 });

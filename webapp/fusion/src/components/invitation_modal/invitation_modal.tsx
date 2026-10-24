@@ -51,6 +51,9 @@ export type Props = {
         searchChannels: (teamId: string, term: string) => Promise<ActionResult<Channel[]>>;
         regenerateTeamInviteId: (teamId: string) => void;
 
+        // Antimatter: the community's invite links, which replace this dialog.
+        openInviteLinks?: () => void;
+
         searchProfiles: (term: string, options?: Record<string, string>) => Promise<ActionResult<UserProfile[]>>;
         sendGuestsInvites: (
             currentTeamId: string,
@@ -85,6 +88,7 @@ export type Props = {
     canAddUsers: boolean;
     canInviteGuests: boolean;
     canInviteGuestsWithMagicLink: boolean;
+    canMakeInviteLinks?: boolean;
     onExited: () => void;
     channelToInvite?: Channel;
     initialValue?: string;
@@ -156,6 +160,12 @@ export default class InvitationModal extends React.PureComponent<Props, State> {
 
     handleHide = () => {
         this.setState({show: false});
+    };
+
+    // Antimatter: leaves for the community's invite links.
+    openInviteLinks = () => {
+        this.handleHide();
+        this.props.actions.openInviteLinks?.();
     };
 
     handleExit = () => {
@@ -520,6 +530,7 @@ export default class InvitationModal extends React.PureComponent<Props, State> {
                 onUsersInputChange={this.onUsersInputChange}
                 canAddUsers={this.props.canAddUsers}
                 canInviteGuests={this.props.canInviteGuests}
+                onInviteLinks={this.props.canMakeInviteLinks && this.props.actions.openInviteLinks ? this.openInviteLinks : undefined}
                 headerClass='InvitationModal__header'
                 footerClass='InvitationModal__footer'
                 onClose={this.handleHide}

@@ -489,4 +489,43 @@ describe('InviteView', () => {
         expect(screen.queryByText('Only users who meet the membership requirements can be added to this team.')).not.toBeInTheDocument();
         expect(screen.queryByText('People who use this link must meet the membership requirements to join.')).not.toBeInTheDocument();
     });
+
+    // Antimatter: the community's invite links are reached from here, for those allowed to invite (the container
+    // gives onInviteLinks only to them), when inviting members.
+    it('offers the invite links only when given the way to them, for members', async () => {
+        const onInviteLinks = jest.fn();
+        const team = {id: 'team1', display_name: 'Team One', invite_id: 'abc'} as Team;
+        const {unmount} = renderWithContext(
+            <InviteView
+                {...defaultProps}
+                currentTeam={team}
+            />,
+            state,
+        );
+        expect(screen.queryByTestId('InviteView__inviteLinks')).not.toBeInTheDocument();
+        unmount();
+
+        const {unmount: unmountGuest} = renderWithContext(
+            <InviteView
+                {...defaultProps}
+                currentTeam={team}
+                inviteType={InviteType.GUEST}
+                onInviteLinks={onInviteLinks}
+            />,
+            state,
+        );
+        expect(screen.queryByTestId('InviteView__inviteLinks')).not.toBeInTheDocument();
+        unmountGuest();
+
+        renderWithContext(
+            <InviteView
+                {...defaultProps}
+                currentTeam={team}
+                onInviteLinks={onInviteLinks}
+            />,
+            state,
+        );
+        await userEvent.click(screen.getByRole('button', {name: 'Invite links…'}));
+        expect(onInviteLinks).toHaveBeenCalledTimes(1);
+    });
 });

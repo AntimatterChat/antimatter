@@ -32,7 +32,7 @@ jest.mock('mattermost-redux/actions/channels', () => ({
 const mockBlocking = {enabled: true, level: '' as '' | 'ignore' | 'block', toggleIgnore: jest.fn(), toggleBlock: jest.fn(), block: jest.fn()};
 jest.mock('fusion/privacy/message_requests', () => ({useBlockActions: () => mockBlocking}));
 
-const mockDialogs = {timeOut: jest.fn(), removeFromTeam: jest.fn(), confirm: jest.fn()};
+const mockDialogs = {timeOut: jest.fn(), removeFromTeam: jest.fn(), ban: jest.fn(), confirm: jest.fn()};
 jest.mock('fusion/shell/dialogs_context', () => ({useDialogs: () => mockDialogs}));
 
 const mockToast = jest.fn();
@@ -165,15 +165,18 @@ describe('fusion/popovers/UserMenu', () => {
         expect(screen.getByRole('menuitem', {name: 'Stop ignoring'})).toBeEnabled();
     });
 
-    test('gives a moderator the mod view, timeouts and removals', async () => {
+    test('gives a moderator the mod view, timeouts, removals and bans', async () => {
         mockPerms = new Set(['t1:remove_user_from_team', 'c1:manage_public_channel_members']);
         render('sofia');
-        expect(items()).toEqual(expect.arrayContaining(['Mod view', 'Time out…', 'Remove from channel', 'Remove from community…']));
+        expect(items()).toEqual(expect.arrayContaining(['Mod view', 'Time out…', 'Remove from channel', 'Remove from community…', 'Ban…']));
+        expect(items().filter((item) => item === 'Ban…')).toHaveLength(1);
 
         await userEvent.click(screen.getByRole('menuitem', {name: 'Time out…'}));
         expect(mockDialogs.timeOut).toHaveBeenCalledWith('sofia');
         await userEvent.click(screen.getByRole('menuitem', {name: 'Remove from community…'}));
         expect(mockDialogs.removeFromTeam).toHaveBeenCalledWith('sofia');
+        await userEvent.click(screen.getByRole('menuitem', {name: 'Ban…'}));
+        expect(mockDialogs.ban).toHaveBeenCalledWith('sofia');
     });
 
     test('someone allowed only to delete others\' posts gets the mod view, not removals', () => {
@@ -182,6 +185,7 @@ describe('fusion/popovers/UserMenu', () => {
         expect(screen.getByRole('menuitem', {name: 'Mod view'})).toBeInTheDocument();
         expect(screen.queryByRole('menuitem', {name: 'Time out…'})).not.toBeInTheDocument();
         expect(screen.queryByRole('menuitem', {name: 'Remove from community…'})).not.toBeInTheDocument();
+        expect(screen.queryByRole('menuitem', {name: 'Ban…'})).not.toBeInTheDocument();
         expect(screen.queryByRole('menuitem', {name: 'Remove from channel'})).not.toBeInTheDocument();
     });
 

@@ -117,7 +117,7 @@ import type {
     MarketplacePlugin,
 } from '@mattermost/types/marketplace';
 import type {MfaSecret} from '@mattermost/types/mfa';
-import type {MemberModeration, MemberTimeout} from '@mattermost/types/moderation';
+import type {MemberBan, MemberBanResult, MemberModeration, MemberTimeout, TeamInviteLink} from '@mattermost/types/moderation';
 import type {
     ClientPluginManifest,
     PluginManifest,
@@ -4925,6 +4925,52 @@ export default class Client4 {
         return this.doFetch<MemberTimeout | StatusOK>(
             `${this.getTeamMemberRoute(teamId, userId)}/timeout`,
             {method: 'put', body: JSON.stringify({until, reason})},
+        );
+    };
+
+    // Antimatter: a community's bans, for those who may ban; banning someone (removing them, and deleting their
+    // messages there of the last delete_messages_seconds), and lifting a ban.
+    getTeamBans = (teamId: string) => {
+        return this.doFetch<MemberBan[]>(
+            `${this.getTeamRoute(teamId)}/bans`,
+            {method: 'get'},
+        );
+    };
+
+    banTeamMember = (teamId: string, userId: string, ban: {reason?: string; expire_at?: number; delete_messages_seconds?: number}) => {
+        return this.doFetch<MemberBanResult>(
+            `${this.getTeamRoute(teamId)}/bans/${userId}`,
+            {method: 'put', body: JSON.stringify(ban)},
+        );
+    };
+
+    unbanTeamMember = (teamId: string, userId: string) => {
+        return this.doFetch<StatusOK>(
+            `${this.getTeamRoute(teamId)}/bans/${userId}`,
+            {method: 'delete'},
+        );
+    };
+
+    // Antimatter: a community's invite links (all of them for its admins, one's own otherwise), making one, and
+    // revoking one.
+    getTeamInviteLinks = (teamId: string) => {
+        return this.doFetch<TeamInviteLink[]>(
+            `${this.getTeamRoute(teamId)}/invite_links`,
+            {method: 'get'},
+        );
+    };
+
+    createTeamInviteLink = (teamId: string, link: {expire_at: number; max_uses: number}) => {
+        return this.doFetch<TeamInviteLink>(
+            `${this.getTeamRoute(teamId)}/invite_links`,
+            {method: 'post', body: JSON.stringify(link)},
+        );
+    };
+
+    revokeTeamInviteLink = (teamId: string, linkId: string) => {
+        return this.doFetch<StatusOK>(
+            `${this.getTeamRoute(teamId)}/invite_links/${linkId}`,
+            {method: 'delete'},
         );
     };
 

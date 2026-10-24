@@ -21,6 +21,7 @@ import CreateChannelDialog from 'fusion/modals/create_channel_dialog';
 import DeleteMessageDialog from 'fusion/modals/delete_message_dialog';
 import type {HelpPage} from 'fusion/modals/help_dialog';
 import HelpDialog from 'fusion/modals/help_dialog';
+import BanDialog from 'fusion/moderation/ban_dialog';
 import RemoveMemberDialog from 'fusion/moderation/remove_member_dialog';
 import TimeoutDialog from 'fusion/moderation/timeout_dialog';
 import BlockPromptDialog from 'fusion/privacy/block_prompt';
@@ -71,9 +72,10 @@ type Dialogs = {
     // Find the team's channels and join them.
     browseChannels: () => void;
 
-    // Moderation: time someone out of the team, remove them from it (with confirmation).
+    // Moderation: time someone out of the team, remove them from it (with confirmation), ban them from it.
     timeOut: (userId: string) => void;
     removeFromTeam: (userId: string) => void;
+    ban: (userId: string) => void;
 
     // Ask before doing something that can't be undone.
     confirm: (options: ConfirmOptions) => void;
@@ -92,9 +94,9 @@ type Dialogs = {
     communityPrivacy: (teamId: string) => void;
 };
 
-const DialogsContext = createContext<Dialogs>({createChannel: () => {}, addPeople: () => {}, invite: () => {}, deleteMessage: () => {}, createCategory: () => {}, renameServerCategory: () => {}, channelPermissions: () => {}, exportChannel: () => {}, categoryPermissions: () => {}, selfRoles: () => {}, communityProfile: () => {}, confirm: () => {}, help: () => {}, createTeam: () => {}, timeOut: () => {}, removeFromTeam: () => {}, browseChannels: () => {}, blockPrompt: () => {}, focus: () => {}, communityNotifications: () => {}, communityPrivacy: () => {}});
+const DialogsContext = createContext<Dialogs>({createChannel: () => {}, addPeople: () => {}, invite: () => {}, deleteMessage: () => {}, createCategory: () => {}, renameServerCategory: () => {}, channelPermissions: () => {}, exportChannel: () => {}, categoryPermissions: () => {}, selfRoles: () => {}, communityProfile: () => {}, confirm: () => {}, help: () => {}, createTeam: () => {}, timeOut: () => {}, removeFromTeam: () => {}, ban: () => {}, browseChannels: () => {}, blockPrompt: () => {}, focus: () => {}, communityNotifications: () => {}, communityPrivacy: () => {}});
 
-type Open = {kind: 'create'; categoryId?: string} | {kind: 'add'; channel: Channel} | {kind: 'delete'; post: Post} | {kind: 'category'; renaming?: string} | {kind: 'permissions'; channel: Channel} | {kind: 'export'; channel: Channel} | {kind: 'selfRoles'} | {kind: 'communityProfile'} | {kind: 'confirm'; options: ConfirmOptions} | {kind: 'help'; page?: HelpPage} | {kind: 'categoryPermissions'; teamId: string; name: string} | {kind: 'createTeam'} | {kind: 'timeOut'; userId: string} | {kind: 'removeFromTeam'; userId: string} | {kind: 'browse'} | {kind: 'blockPrompt'; userId: string} | {kind: 'focus'} | {kind: 'communityNotifications'; teamId: string} | {kind: 'communityPrivacy'; teamId: string} | null;
+type Open = {kind: 'create'; categoryId?: string} | {kind: 'add'; channel: Channel} | {kind: 'delete'; post: Post} | {kind: 'category'; renaming?: string} | {kind: 'permissions'; channel: Channel} | {kind: 'export'; channel: Channel} | {kind: 'selfRoles'} | {kind: 'communityProfile'} | {kind: 'confirm'; options: ConfirmOptions} | {kind: 'help'; page?: HelpPage} | {kind: 'categoryPermissions'; teamId: string; name: string} | {kind: 'createTeam'} | {kind: 'timeOut'; userId: string} | {kind: 'removeFromTeam'; userId: string} | {kind: 'ban'; userId: string} | {kind: 'browse'} | {kind: 'blockPrompt'; userId: string} | {kind: 'focus'} | {kind: 'communityNotifications'; teamId: string} | {kind: 'communityPrivacy'; teamId: string} | null;
 
 // DialogsProvider owns the Fusion UI's own dialogs that menus and buttons open, outliving the menu that opened them.
 export function DialogsProvider({children}: {children: React.ReactNode}) {
@@ -119,6 +121,7 @@ export function DialogsProvider({children}: {children: React.ReactNode}) {
         browseChannels: () => setOpen({kind: 'browse'}),
         timeOut: (userId) => setOpen({kind: 'timeOut', userId}),
         removeFromTeam: (userId) => setOpen({kind: 'removeFromTeam', userId}),
+        ban: (userId) => setOpen({kind: 'ban', userId}),
         blockPrompt: (userId) => setOpen({kind: 'blockPrompt', userId}),
         focus: () => setOpen({kind: 'focus'}),
         communityNotifications: (teamId) => setOpen({kind: 'communityNotifications', teamId}),
@@ -186,6 +189,12 @@ export function DialogsProvider({children}: {children: React.ReactNode}) {
             )}
             {open?.kind === 'removeFromTeam' && (
                 <RemoveMemberDialog
+                    userId={open.userId}
+                    onClose={close}
+                />
+            )}
+            {open?.kind === 'ban' && (
+                <BanDialog
                     userId={open.userId}
                     onClose={close}
                 />

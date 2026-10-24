@@ -23,6 +23,12 @@ export function canModerateTeam(state: GlobalState, teamId: string): boolean {
         some((p) => haveITeamPermission(state, teamId, p));
 }
 
+// canBanInTeam tells whether someone may ban in a team and see its bans, as the server tells it: its admins, and those
+// who may remove its members (the server also checks that the person banned ranks below them).
+export function canBanInTeam(state: GlobalState, teamId: string): boolean {
+    return [Permissions.MANAGE_TEAM, Permissions.REMOVE_USER_FROM_TEAM].some((p) => haveITeamPermission(state, teamId, p));
+}
+
 // openModView shows someone's mod view in the right-hand side.
 export function openModView(userId: string): ActionFunc {
     return (dispatch) => {
@@ -55,3 +61,25 @@ export function timeOutMember(teamId: string, userId: string, until: number, rea
         return {data: true};
     };
 }
+
+const HOUR = 60 * MINUTE;
+const DAY = 24 * HOUR;
+
+// How long a ban lasts: until it's lifted (0), or a while.
+export const BAN_DURATIONS: Array<{ms: number; label: MessageDescriptor}> = [
+    {ms: 0, label: defineMessage({id: 'fusion.ban.untilLifted', defaultMessage: 'Until it\'s lifted'})},
+    {ms: DAY, label: defineMessage({id: 'fusion.ban.1d', defaultMessage: '1 day'})},
+    {ms: 7 * DAY, label: defineMessage({id: 'fusion.ban.7d', defaultMessage: '7 days'})},
+    {ms: 30 * DAY, label: defineMessage({id: 'fusion.ban.30d', defaultMessage: '30 days'})},
+];
+
+// How far back a ban deletes the person's messages in the community, as Discord's (the server allows up to 7 days).
+export const BAN_PURGE_WINDOWS: Array<{seconds: number; label: MessageDescriptor}> = [
+    {seconds: 0, label: defineMessage({id: 'fusion.ban.purge.none', defaultMessage: 'Don\'t delete any'})},
+    {seconds: 3600, label: defineMessage({id: 'fusion.ban.purge.1h', defaultMessage: 'The last hour'})},
+    {seconds: 6 * 3600, label: defineMessage({id: 'fusion.ban.purge.6h', defaultMessage: 'The last 6 hours'})},
+    {seconds: 12 * 3600, label: defineMessage({id: 'fusion.ban.purge.12h', defaultMessage: 'The last 12 hours'})},
+    {seconds: 24 * 3600, label: defineMessage({id: 'fusion.ban.purge.24h', defaultMessage: 'The last 24 hours'})},
+    {seconds: 3 * 24 * 3600, label: defineMessage({id: 'fusion.ban.purge.3d', defaultMessage: 'The last 3 days'})},
+    {seconds: 7 * 24 * 3600, label: defineMessage({id: 'fusion.ban.purge.7d', defaultMessage: 'The last 7 days'})},
+];

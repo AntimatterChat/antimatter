@@ -23179,6 +23179,130 @@
     "defaultMessage": "{names} {count, plural, one {is} other {are}} out of office.",
     "description": ""
   },
+  "fusion.ban.1d": {
+    "defaultMessage": "1 day",
+    "description": "Option in the ban dialog's Duration menu."
+  },
+  "fusion.ban.30d": {
+    "defaultMessage": "30 days",
+    "description": "Option in the ban dialog's Duration menu."
+  },
+  "fusion.ban.7d": {
+    "defaultMessage": "7 days",
+    "description": "Option in the ban dialog's Duration menu."
+  },
+  "fusion.ban.cancel": {
+    "defaultMessage": "Cancel",
+    "description": "Button closing the ban dialog without banning."
+  },
+  "fusion.ban.done": {
+    "defaultMessage": "{name} was banned from {team}",
+    "description": "Toast after banning someone; {name} is the person, {team} the community."
+  },
+  "fusion.ban.doneDeleting": {
+    "defaultMessage": "{name} was banned from {team}. Their messages are being deleted.",
+    "description": "Toast after banning someone when many of their messages are deleted in the background; {name} is the person, {team} the community."
+  },
+  "fusion.ban.duration": {
+    "defaultMessage": "Duration",
+    "description": "Label of the ban dialog's menu choosing how long the ban lasts."
+  },
+  "fusion.ban.failed": {
+    "defaultMessage": "The ban couldn't be saved.",
+    "description": "Error in the ban dialog when the server refused the ban without a message."
+  },
+  "fusion.ban.lead": {
+    "defaultMessage": "{name} leaves every channel of the community and can't come back, by an invite, a link or joining, until the ban ends or is lifted in Community settings › Members.",
+    "description": "Explanation at the top of the ban dialog; {name} is the person banned. 'Community settings › Members' names the settings page where the ban list is."
+  },
+  "fusion.ban.purge": {
+    "defaultMessage": "Delete their messages",
+    "description": "Label of the ban dialog's menu choosing how far back the banned person's messages are deleted."
+  },
+  "fusion.ban.purge.12h": {
+    "defaultMessage": "The last 12 hours",
+    "description": "Option in the ban dialog's 'Delete their messages' menu."
+  },
+  "fusion.ban.purge.1h": {
+    "defaultMessage": "The last hour",
+    "description": "Option in the ban dialog's 'Delete their messages' menu: delete the messages they sent in the community in the last hour."
+  },
+  "fusion.ban.purge.24h": {
+    "defaultMessage": "The last 24 hours",
+    "description": "Option in the ban dialog's 'Delete their messages' menu."
+  },
+  "fusion.ban.purge.3d": {
+    "defaultMessage": "The last 3 days",
+    "description": "Option in the ban dialog's 'Delete their messages' menu."
+  },
+  "fusion.ban.purge.6h": {
+    "defaultMessage": "The last 6 hours",
+    "description": "Option in the ban dialog's 'Delete their messages' menu."
+  },
+  "fusion.ban.purge.7d": {
+    "defaultMessage": "The last 7 days",
+    "description": "Option in the ban dialog's 'Delete their messages' menu (the longest allowed)."
+  },
+  "fusion.ban.purge.none": {
+    "defaultMessage": "Don't delete any",
+    "description": "Option in the ban dialog's 'Delete their messages' menu: keep the banned person's messages."
+  },
+  "fusion.ban.purgeDesc": {
+    "defaultMessage": "In this community only, with the replies to them.",
+    "description": "Hint under 'Delete their messages' in the ban dialog: only the community's messages go, and deleting a message deletes its thread's replies."
+  },
+  "fusion.ban.reason": {
+    "defaultMessage": "Reason (optional, seen by moderators)",
+    "description": "Label of the reason field in the ban dialog; the reason shows in the ban list, not to the banned person."
+  },
+  "fusion.ban.submit": {
+    "defaultMessage": "Ban",
+    "description": "Button in the ban dialog that bans the person."
+  },
+  "fusion.ban.title": {
+    "defaultMessage": "Ban {name} from {team}?",
+    "description": "Title of the ban dialog; {name} is the person, {team} the community."
+  },
+  "fusion.ban.untilLifted": {
+    "defaultMessage": "Until it's lifted",
+    "description": "Option in the ban dialog's Duration menu: the ban lasts until a moderator lifts it."
+  },
+  "fusion.bans.by": {
+    "defaultMessage": "Banned by {name} on {date}",
+    "description": "Detail of a ban in the ban list; {name} is who banned them, {date} when."
+  },
+  "fusion.bans.lift": {
+    "defaultMessage": "Lift ban",
+    "description": "Button of a row in the ban list that lifts the ban, letting the person join again."
+  },
+  "fusion.bans.lifted": {
+    "defaultMessage": "{name}'s ban was lifted",
+    "description": "Toast after lifting a ban in the ban list; {name} is the person."
+  },
+  "fusion.bans.liftFailed": {
+    "defaultMessage": "The ban couldn't be lifted.",
+    "description": "Toast when the server refused to lift a ban without a message."
+  },
+  "fusion.bans.loadFailed": {
+    "defaultMessage": "The bans couldn't be loaded.",
+    "description": "Error in the ban list when the server didn't answer."
+  },
+  "fusion.bans.none": {
+    "defaultMessage": "Nobody is banned. To ban someone, open their menu or their mod view.",
+    "description": "Shown in the ban list when nobody is banned, with where bans are made."
+  },
+  "fusion.bans.title": {
+    "defaultMessage": "Banned",
+    "description": "Title of the ban list, under the members in Community settings › Members."
+  },
+  "fusion.bans.until": {
+    "defaultMessage": "until {date}",
+    "description": "Detail of a ban in the ban list, after 'Banned by … on …': when the ban ends."
+  },
+  "fusion.bans.untilLifted": {
+    "defaultMessage": "until it's lifted",
+    "description": "Detail of a ban in the ban list, after 'Banned by … on …', for a ban without an end."
+  },
   "fusion.block.blocked": {
     "defaultMessage": "{name} is blocked",
     "description": "Toast after blocking someone. {name} is their display name."
@@ -26850,6 +26974,138 @@
   "fusion.intro.welcome": {
     "defaultMessage": "Welcome to #{name}",
     "description": ""
+  },
+  "fusion.inviteLinks.by": {
+    "defaultMessage": "By {name}",
+    "description": "Who made an invite link, in the invite links list; {name} is the person."
+  },
+  "fusion.inviteLinks.copied": {
+    "defaultMessage": "Link copied",
+    "description": "Toast after copying an invite link."
+  },
+  "fusion.inviteLinks.copy": {
+    "defaultMessage": "Copy",
+    "description": "Button of an invite link that copies its address."
+  },
+  "fusion.inviteLinks.copyLabel": {
+    "defaultMessage": "Copy the link {url}",
+    "description": "Accessible name of an invite link's Copy button; {url} is the link."
+  },
+  "fusion.inviteLinks.create": {
+    "defaultMessage": "Create link",
+    "description": "Button of the invite links dialog that makes a new link."
+  },
+  "fusion.inviteLinks.created": {
+    "defaultMessage": "Link created and copied",
+    "description": "Toast after making an invite link, which is copied at once."
+  },
+  "fusion.inviteLinks.createFailed": {
+    "defaultMessage": "The link couldn't be created.",
+    "description": "Error in the invite links dialog when the server refused a new link without a message."
+  },
+  "fusion.inviteLinks.expire.12h": {
+    "defaultMessage": "12 hours",
+    "description": "Option of the invite links dialog's 'Expire after' menu."
+  },
+  "fusion.inviteLinks.expire.1d": {
+    "defaultMessage": "1 day",
+    "description": "Option of the invite links dialog's 'Expire after' menu."
+  },
+  "fusion.inviteLinks.expire.1h": {
+    "defaultMessage": "1 hour",
+    "description": "Option of the invite links dialog's 'Expire after' menu."
+  },
+  "fusion.inviteLinks.expire.30m": {
+    "defaultMessage": "30 minutes",
+    "description": "Option of the invite links dialog's 'Expire after' menu."
+  },
+  "fusion.inviteLinks.expire.6h": {
+    "defaultMessage": "6 hours",
+    "description": "Option of the invite links dialog's 'Expire after' menu."
+  },
+  "fusion.inviteLinks.expire.7d": {
+    "defaultMessage": "7 days",
+    "description": "Option of the invite links dialog's 'Expire after' menu."
+  },
+  "fusion.inviteLinks.expire.never": {
+    "defaultMessage": "Never",
+    "description": "Option of the invite links dialog's 'Expire after' menu: the link doesn't expire."
+  },
+  "fusion.inviteLinks.expireAfter": {
+    "defaultMessage": "Expire after",
+    "description": "Label of the invite links dialog's menu choosing when a new link ends."
+  },
+  "fusion.inviteLinks.expired": {
+    "defaultMessage": "Expired",
+    "description": "State of an invite link whose time has ended, in the invite links list."
+  },
+  "fusion.inviteLinks.expires": {
+    "defaultMessage": "Expires {date} at {time}",
+    "description": "State of an invite link that ends, in the invite links list; {date} and {time} are when."
+  },
+  "fusion.inviteLinks.lead": {
+    "defaultMessage": "Links anyone can use to join {team}, besides its permanent invite link. Each can expire and allow a number of uses; revoke one to stop it. Someone banned from the community can't join by any of them.",
+    "description": "Explanation at the top of the invite links dialog; {team} is the community. The permanent invite link is the one Invite people's 'Copy invite link' copies."
+  },
+  "fusion.inviteLinks.listTitle": {
+    "defaultMessage": "Links",
+    "description": "Section title over the list of invite links in the invite links dialog."
+  },
+  "fusion.inviteLinks.loadFailed": {
+    "defaultMessage": "The links couldn't be loaded.",
+    "description": "Error in the invite links dialog when the server didn't answer."
+  },
+  "fusion.inviteLinks.maxUses": {
+    "defaultMessage": "Maximum number of uses",
+    "description": "Label of the invite links dialog's menu choosing how many people a new link lets in."
+  },
+  "fusion.inviteLinks.neverExpires": {
+    "defaultMessage": "Never expires",
+    "description": "State of an invite link without an end, in the invite links list."
+  },
+  "fusion.inviteLinks.noLimit": {
+    "defaultMessage": "No limit",
+    "description": "Option of the 'Maximum number of uses' menu: the link lets in anyone until it ends."
+  },
+  "fusion.inviteLinks.none": {
+    "defaultMessage": "No links yet.",
+    "description": "Shown in the invite links dialog when there are no links."
+  },
+  "fusion.inviteLinks.open": {
+    "defaultMessage": "Invite links…",
+    "description": "Button in the Invite people dialog's footer, next to 'Copy invite link': opens the community's invite links (several, which can expire and have a number of uses)."
+  },
+  "fusion.inviteLinks.revoke": {
+    "defaultMessage": "Revoke",
+    "description": "Button of an invite link that revokes it: nobody can join by it any more."
+  },
+  "fusion.inviteLinks.revoked": {
+    "defaultMessage": "Link revoked",
+    "description": "Toast after revoking an invite link."
+  },
+  "fusion.inviteLinks.revokeFailed": {
+    "defaultMessage": "The link couldn't be revoked.",
+    "description": "Toast when the server refused to revoke an invite link without a message."
+  },
+  "fusion.inviteLinks.revokeLabel": {
+    "defaultMessage": "Revoke the link {url}",
+    "description": "Accessible name of an invite link's Revoke button; {url} is the link."
+  },
+  "fusion.inviteLinks.title": {
+    "defaultMessage": "Invite links",
+    "description": "Title of the invite links dialog, reached from Invite people."
+  },
+  "fusion.inviteLinks.usedUp": {
+    "defaultMessage": "Used up",
+    "description": "State of an invite link used as many times as it allows, in the invite links list."
+  },
+  "fusion.inviteLinks.uses": {
+    "defaultMessage": "{uses, plural, one {# use} other {# uses}}",
+    "description": "How many times an invite link without a limit was used, in the invite links list."
+  },
+  "fusion.inviteLinks.usesOf": {
+    "defaultMessage": "{uses} of {max, plural, one {# use} other {# uses}}",
+    "description": "How many times an invite link with a limit was used, in the invite links list: {uses} so far, {max} allowed."
   },
   "fusion.keys.all": {
     "defaultMessage": "All keyboard shortcuts…",
@@ -31402,6 +31658,10 @@
   "fusion.unreads.title": {
     "defaultMessage": "Unreads",
     "description": "Title of the Unreads view (F125): every unread conversation of the community, newest first."
+  },
+  "fusion.userMenu.ban": {
+    "defaultMessage": "Ban…",
+    "description": "Moderation entry of a person's menu and mod view: opens the ban dialog."
   },
   "fusion.userMenu.block": {
     "defaultMessage": "Block…",

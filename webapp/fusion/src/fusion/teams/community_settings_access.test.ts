@@ -14,7 +14,7 @@ describe('fusion/teams/community_settings_access', () => {
         // The default member: invites, adds people, creates channels.
         const member = access([Permissions.INVITE_USER, Permissions.ADD_USER_TO_TEAM, Permissions.CREATE_PUBLIC_CHANNEL]);
         expect(canOpenCommunitySettings(member)).toBe(false);
-        expect(member).toMatchObject({manage: false, access: false, manageMembers: false, roles: false, aiConnections: false, integrations: false});
+        expect(member).toMatchObject({manage: false, access: false, manageMembers: false, bans: false, roles: false, aiConnections: false, integrations: false});
     });
 
     test('a channel admin manages nothing of the community: no settings', () => {
@@ -38,6 +38,17 @@ describe('fusion/teams/community_settings_access', () => {
         const noGroups = access([Permissions.MANAGE_TEAM_ROLES], {customGroups: false});
         expect(canOpenCommunitySettings(noGroups)).toBe(true);
         expect(noGroups).toMatchObject({manageMembers: true, roles: false, teams: false});
+    });
+
+    // RBAC: the bans are for those who may ban; a moderator of messages (the mod view, no removals) doesn't get them.
+    test('removing members alone opens the settings, for the bans on the Members page', () => {
+        const moderator = access([Permissions.REMOVE_USER_FROM_TEAM]);
+        expect(canOpenCommunitySettings(moderator)).toBe(true);
+        expect(moderator).toMatchObject({manage: false, access: false, manageMembers: false, roles: false, bans: true});
+        expect(access([Permissions.MANAGE_TEAM]).bans).toBe(true);
+        expect(access([Permissions.DELETE_OTHERS_POSTS]).bans).toBe(false);
+        expect(canOpenCommunitySettings(access([Permissions.DELETE_OTHERS_POSTS]))).toBe(false);
+        expect(access([Permissions.INVITE_USER, Permissions.ADD_USER_TO_TEAM]).bans).toBe(false);
     });
 
     test('model connections alone open the settings for them', () => {

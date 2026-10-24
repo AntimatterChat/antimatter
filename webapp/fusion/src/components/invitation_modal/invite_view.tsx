@@ -86,6 +86,9 @@ export type Props = InviteState & {
     toggleGuestMagicLink: () => void;
     lockProfileFieldsForEmailUsers: LockProfileFieldsSetting;
     onProfileChange: (profile: MemberInviteProfile) => void;
+
+    // Antimatter: opens the community's invite links, for those allowed to invite (not given otherwise).
+    onInviteLinks?: () => void;
 };
 
 export default function InviteView(props: Props) {
@@ -400,6 +403,18 @@ export default function InviteView(props: Props) {
                             />
                         )}
                     </span>
+                )}
+                {props.inviteType === InviteType.MEMBER && props.onInviteLinks && (
+                    <Button
+                        onClick={props.onInviteLinks}
+                        data-testid='InviteView__inviteLinks'
+                        emphasis='tertiary'
+                    >
+                        <FormattedMessage
+                            id='fusion.inviteLinks.open'
+                            defaultMessage='Invite links…'
+                        />
+                    </Button>
                 )}
                 {props.inviteType === InviteType.MEMBER && copyButton}
                 <Button

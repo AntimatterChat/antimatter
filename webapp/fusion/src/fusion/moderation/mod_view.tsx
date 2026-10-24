@@ -191,7 +191,8 @@ export default function ModViewPanel() {
     const date = (at: number) => formatDate(at, {year: 'numeric', month: 'short', day: 'numeric'});
 
     // The actions, in the order a moderator reaches for them: talk to them, look at what they wrote, time them out
-    // (or lift it); then, set apart, removing them from the community and deactivating their account.
+    // (or lift it); then, set apart, removing them from the community, banning them from it and deactivating their
+    // account.
     const actions: ModAction[] = [];
     const destructive: ModAction[] = [];
     if (!isMe) {
@@ -207,6 +208,7 @@ export default function ModViewPanel() {
             actions.push({id: 'reset-picture', icon: 'image', label: formatMessage({id: 'fusion.modView.resetPicture', defaultMessage: 'Reset picture'}), run: () => resetProfile({avatar: true}, formatMessage({id: 'fusion.modView.pictureReset', defaultMessage: 'Picture reset'}), formatMessage({id: 'fusion.modView.resetFailed', defaultMessage: 'The profile couldn\'t be reset.'}))});
         }
         destructive.push({id: 'remove-from-community', icon: 'leave', danger: true, label: formatMessage({id: 'fusion.userMenu.removeTeam', defaultMessage: 'Remove from community…'}), run: () => dialogs.removeFromTeam(userId)});
+        destructive.push({id: 'ban', icon: 'ban', danger: true, label: formatMessage({id: 'fusion.userMenu.ban', defaultMessage: 'Ban…'}), run: () => dialogs.ban(userId)});
     }
     if (systemAdmin && !isMe && !isSystemAdmin(user.roles || '') && user.delete_at === 0) {
         destructive.push({id: 'deactivate', icon: 'ban', danger: true, label: formatMessage({id: 'fusion.modView.deactivateAsk', defaultMessage: 'Deactivate account…'}), run: deactivate});

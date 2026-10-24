@@ -318,6 +318,14 @@ export function UserMenu({target, onProfile, onClose}: {target: Target; onProfil
                     onClick={run(() => dialogs.removeFromTeam(userId))}
                 />
             )}
+            {moderation && canRemoveFromTeam && (
+                <MenuItem
+                    icon='ban'
+                    danger={true}
+                    label={formatMessage({id: 'fusion.userMenu.ban', defaultMessage: 'Ban…'})}
+                    onClick={run(() => dialogs.ban(userId))}
+                />
+            )}
             <CopyIdItem
                 id={userId}
                 onDone={onClose}
