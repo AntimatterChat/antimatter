@@ -145,6 +145,11 @@ const (
 	WebsocketEventSessionAcknowledged WebsocketEventType = "session_acknowledged"
 	// Antimatter: the tools a person may use with agents changed (a sign-in to an MCP server, or an MCP server).
 	WebsocketEventAIToolsChanged WebsocketEventType = "ai_tools_changed"
+	// Antimatter: a card of the assistant was added to the person's feed or changed, and an action's offer moved to
+	// someone else (or was run). Each is sent to the card's owner only.
+	WebsocketEventAssistantCardAdded    WebsocketEventType = "assistant_card_added"
+	WebsocketEventAssistantCardUpdated  WebsocketEventType = "assistant_card_updated"
+	WebsocketEventAssistantOfferUpdated WebsocketEventType = "assistant_offer_updated"
 
 	WebSocketMsgTypeResponse = "response"
 	WebSocketMsgTypeEvent    = "event"

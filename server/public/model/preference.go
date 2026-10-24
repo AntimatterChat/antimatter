@@ -165,6 +165,11 @@ func (o *Preference) IsValid() *AppError {
 		return NewAppError("Preference.IsValid", "model.preference.is_valid.dm_privacy.app_error", nil, "name="+o.Name+", value="+o.Value, http.StatusBadRequest)
 	}
 
+	// Antimatter: the assistant's switch per channel and the tools someone doesn't want it to suggest.
+	if o.Category == PreferenceCategoryAssistant && !isValidAssistantPreference(o) {
+		return NewAppError("Preference.IsValid", "model.preference.is_valid.assistant.app_error", nil, "name="+o.Name, http.StatusBadRequest)
+	}
+
 	// Antimatter: the tools someone turned off for the agents they talk to.
 	if o.Category == PreferenceCategoryAITools {
 		var choices AIToolChoices
