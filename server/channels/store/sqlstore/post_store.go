@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"reflect"
 	"regexp"
+	"slices"
 	"strings"
 	"sync"
 	"time"
@@ -2266,7 +2267,9 @@ func (s *SqlPostStore) search(logger mlog.LoggerIFace, teamId string, userId str
 	if params.Terms == "" && params.ExcludedTerms == "" &&
 		len(params.InChannels) == 0 && len(params.ExcludedChannels) == 0 &&
 		len(params.FromUsers) == 0 && len(params.ExcludedUsers) == 0 &&
-		params.OnDate == "" && params.AfterDate == "" && params.BeforeDate == "" {
+		params.OnDate == "" && params.AfterDate == "" && params.BeforeDate == "" &&
+		len(params.HasFlags) == 0 && len(params.ExcludedHasFlags) == 0 &&
+		params.Pinned == nil && len(params.Mentions) == 0 && len(params.ExcludedMentions) == 0 {
 		return list, nil
 	}
 
@@ -2288,6 +2291,16 @@ func (s *SqlPostStore) search(logger mlog.LoggerIFace, teamId string, userId str
 		return nil, errors.Wrap(err, "failed to build search post filter clause")
 	}
 	baseQuery = s.buildCreateDateFilterClause(params, baseQuery)
+
+	if params.Pinned != nil {
+		baseQuery = baseQuery.Where(sq.Eq{"q2.IsPinned": *params.Pinned})
+	}
+	if slices.Contains(params.HasFlags, "file") {
+		baseQuery = baseQuery.Where(sq.Or{sq.NotEq{"q2.FileIds": "[]"}, sq.NotEq{"q2.Filenames": "[]"}})
+	}
+	if slices.Contains(params.ExcludedHasFlags, "file") {
+		baseQuery = baseQuery.Where(sq.Eq{"q2.FileIds": "[]"}).Where(sq.Eq{"q2.Filenames": "[]"})
+	}
 
 	termMap := map[string]bool{}
 	terms := params.Terms
@@ -2414,6 +2427,9 @@ func (s *SqlPostStore) search(logger mlog.LoggerIFace, teamId string, userId str
 				if !exactMatch {
 					continue
 				}
+			}
+			if !model.PostMatchesSearchFilters(p, params) {
+				continue
 			}
 			list.AddPost(p)
 			list.AddOrder(p.Id)

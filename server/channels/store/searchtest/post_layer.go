@@ -300,6 +300,11 @@ var searchPostStoreTests = []searchTest{
 		Fn:   testSearchURLsPostgres,
 		Tags: []string{EnginePostgres},
 	},
+	{
+		Name: "Should be able to filter with has:, pinned: and mentions:",
+		Fn:   testSearchHasPinnedMentionsFilters,
+		Tags: []string{EngineAll},
+	},
 }
 
 func TestSearchPostStore(t *testing.T, s store.Store, testEngine *SearchTestEngine) {
@@ -2589,4 +2594,125 @@ func testSearchURLsPostgres(t *testing.T, th *SearchTestHelper) {
 			}
 		})
 	}
+}
+
+// testSearchHasPinnedMentionsFilters covers the F137 search filters:
+// has:link, has:code, has:thread, has:file, has:embed, pinned:true/false and
+// mentions:@user, against both the database search and Antimatter's own
+// Elasticsearch/OpenSearch engine.
+func testSearchHasPinnedMentionsFilters(t *testing.T, th *SearchTestHelper) {
+	search := func(t *testing.T, params *model.SearchParams) map[string]*model.Post {
+		results, err := th.Store.Post().SearchPostsForUser(th.Context, []*model.SearchParams{params}, th.User.Id, th.Team.Id, 0, 20)
+		require.NoError(t, err)
+		return results.Posts
+	}
+
+	t.Run("has:link", func(t *testing.T) {
+		withLink, err := th.createPost(th.User.Id, th.ChannelBasic.Id, "haslinkfilter see https://example.com for more", "", model.PostTypeDefault, 0, false)
+		require.NoError(t, err)
+		_, err = th.createPost(th.User.Id, th.ChannelBasic.Id, "haslinkfilter has no link at all", "", model.PostTypeDefault, 0, false)
+		require.NoError(t, err)
+		defer th.deleteUserPosts(th.User.Id)
+
+		posts := search(t, &model.SearchParams{Terms: "haslinkfilter", HasFlags: []string{"link"}})
+		require.Len(t, posts, 1)
+		th.checkPostInSearchResults(t, withLink.Id, posts)
+	})
+
+	t.Run("has:code", func(t *testing.T) {
+		withCode, err := th.createPost(th.User.Id, th.ChannelBasic.Id, "hascodefilter run `go test` now", "", model.PostTypeDefault, 0, false)
+		require.NoError(t, err)
+		_, err = th.createPost(th.User.Id, th.ChannelBasic.Id, "hascodefilter has no code here", "", model.PostTypeDefault, 0, false)
+		require.NoError(t, err)
+		defer th.deleteUserPosts(th.User.Id)
+
+		posts := search(t, &model.SearchParams{Terms: "hascodefilter", HasFlags: []string{"code"}})
+		require.Len(t, posts, 1)
+		th.checkPostInSearchResults(t, withCode.Id, posts)
+	})
+
+	t.Run("has:embed excludes links inside code", func(t *testing.T) {
+		embeds, err := th.createPost(th.User.Id, th.ChannelBasic.Id, "hasembedfilter see https://example.com please", "", model.PostTypeDefault, 0, false)
+		require.NoError(t, err)
+		_, err = th.createPost(th.User.Id, th.ChannelBasic.Id, "hasembedfilter `https://example.com` in code", "", model.PostTypeDefault, 0, false)
+		require.NoError(t, err)
+		defer th.deleteUserPosts(th.User.Id)
+
+		posts := search(t, &model.SearchParams{Terms: "hasembedfilter", HasFlags: []string{"embed"}})
+		require.Len(t, posts, 1)
+		th.checkPostInSearchResults(t, embeds.Id, posts)
+	})
+
+	t.Run("has:file", func(t *testing.T) {
+		withFile := th.createPostModel(th.User.Id, th.ChannelBasic.Id, "hasfilefilter with an attachment", "", model.PostTypeDefault, 1000000, false)
+		withFile.FileIds = model.StringArray{model.NewId()}
+		withFile, err := th.Store.Post().Save(th.Context, withFile)
+		require.NoError(t, err)
+		_, err = th.createPost(th.User.Id, th.ChannelBasic.Id, "hasfilefilter with no attachment", "", model.PostTypeDefault, 0, false)
+		require.NoError(t, err)
+		defer th.deleteUserPosts(th.User.Id)
+
+		posts := search(t, &model.SearchParams{Terms: "hasfilefilter", HasFlags: []string{"file"}})
+		require.Len(t, posts, 1)
+		th.checkPostInSearchResults(t, withFile.Id, posts)
+
+		t.Run("excluded", func(t *testing.T) {
+			notFile, err := th.createPost(th.User.Id, th.ChannelBasic.Id, "hasfilefilter with no attachment", "", model.PostTypeDefault, 0, false)
+			require.NoError(t, err)
+			defer th.deleteUserPosts(th.User.Id)
+
+			posts := search(t, &model.SearchParams{Terms: "hasfilefilter", ExcludedHasFlags: []string{"file"}})
+			th.checkPostInSearchResults(t, notFile.Id, posts)
+			require.NotContains(t, posts, withFile.Id)
+		})
+	})
+
+	t.Run("has:thread", func(t *testing.T) {
+		root, err := th.createPost(th.User.Id, th.ChannelBasic.Id, "hasthreadfilter root with reply", "", model.PostTypeDefault, 0, false)
+		require.NoError(t, err)
+		_, err = th.createReply(th.User.Id, "hasthreadfilter a reply", "", root, 0, false)
+		require.NoError(t, err)
+		_, err = th.createPost(th.User.Id, th.ChannelBasic.Id, "hasthreadfilter root with no reply", "", model.PostTypeDefault, 0, false)
+		require.NoError(t, err)
+		defer th.deleteUserPosts(th.User.Id)
+
+		posts := search(t, &model.SearchParams{Terms: "hasthreadfilter root", HasFlags: []string{"thread"}})
+		require.Len(t, posts, 1)
+		th.checkPostInSearchResults(t, root.Id, posts)
+	})
+
+	t.Run("pinned:true and pinned:false", func(t *testing.T) {
+		pinned, err := th.createPost(th.User.Id, th.ChannelBasic.Id, "pinnedfilter this one is pinned", "", model.PostTypeDefault, 0, true)
+		require.NoError(t, err)
+		unpinned, err := th.createPost(th.User.Id, th.ChannelBasic.Id, "pinnedfilter this one is not", "", model.PostTypeDefault, 0, false)
+		require.NoError(t, err)
+		defer th.deleteUserPosts(th.User.Id)
+
+		truthy := true
+		posts := search(t, &model.SearchParams{Terms: "pinnedfilter", Pinned: &truthy})
+		require.Len(t, posts, 1)
+		th.checkPostInSearchResults(t, pinned.Id, posts)
+
+		falsy := false
+		posts = search(t, &model.SearchParams{Terms: "pinnedfilter", Pinned: &falsy})
+		require.Len(t, posts, 1)
+		th.checkPostInSearchResults(t, unpinned.Id, posts)
+	})
+
+	t.Run("mentions:@user", func(t *testing.T) {
+		mentionsUser2, err := th.createPost(th.User.Id, th.ChannelBasic.Id, "mentionsfilter hello @"+th.User2.Username, "", model.PostTypeDefault, 0, false)
+		require.NoError(t, err)
+		_, err = th.createPost(th.User.Id, th.ChannelBasic.Id, "mentionsfilter hello without any mention", "", model.PostTypeDefault, 0, false)
+		require.NoError(t, err)
+		defer th.deleteUserPosts(th.User.Id)
+
+		posts := search(t, &model.SearchParams{Terms: "mentionsfilter", Mentions: []string{th.User2.Username}})
+		require.Len(t, posts, 1)
+		th.checkPostInSearchResults(t, mentionsUser2.Id, posts)
+
+		t.Run("excluded", func(t *testing.T) {
+			posts := search(t, &model.SearchParams{Terms: "mentionsfilter", ExcludedMentions: []string{th.User2.Username}})
+			require.NotContains(t, posts, mentionsUser2.Id)
+		})
+	})
 }
