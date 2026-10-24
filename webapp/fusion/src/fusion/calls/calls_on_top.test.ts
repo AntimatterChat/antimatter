@@ -71,9 +71,12 @@ describe('getParticipants', () => {
     test('in a stage\'s call, those who aren\'t its speakers are its audience', () => {
         const voice = [{sessionId: 's1', userId: 'u1'}, {sessionId: 's2', userId: 'u2'}] as VoiceParticipant[];
         const stage = {speakers: ['u1']};
+
+        // Calls' selectors are memoised: the same arrays while unchanged.
+        const none: never[] = [];
         window.antimatterCalls = {
             version: 1,
-            selectors: {getParticipants: () => [], getModMutes: () => [], getModDeafens: () => [], getStage: () => stage},
+            selectors: {getParticipants: () => none, getModMutes: () => none, getModDeafens: () => none, getStage: () => stage},
         } as unknown as AntimatterCallsAPI;
         window.antimatterVoiceChannels = {version: 1, selectors: {isVoiceChannel: () => true, getParticipants: () => voice}} as unknown as AntimatterVoiceChannelsAPI;
 
