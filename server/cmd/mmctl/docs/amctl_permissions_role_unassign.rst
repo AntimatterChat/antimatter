@@ -3,7 +3,7 @@
 amctl permissions role unassign
 -------------------------------
 
-Unassign users from role (EE Only)
+Unassign users from role
 
 Synopsis
 ~~~~~~~~

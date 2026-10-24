@@ -3,7 +3,7 @@
 amctl permissions add
 ---------------------
 
-Add permissions to a role (EE Only)
+Add permissions to a role
 
 Synopsis
 ~~~~~~~~

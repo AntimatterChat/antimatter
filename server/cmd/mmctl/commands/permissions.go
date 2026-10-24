@@ -22,7 +22,7 @@ var PermissionsCmd = &cobra.Command{
 
 var AddPermissionsCmd = &cobra.Command{
 	Use:   "add <role> <permission...>",
-	Short: "Add permissions to a role (EE Only)",
+	Short: "Add permissions to a role",
 	Long:  `Add one or more permissions to an existing role.`,
 	Example: `  permissions add system_user list_open_teams
   permissions add system_manager sysconsole_read_user_management_channels`,
@@ -32,7 +32,7 @@ var AddPermissionsCmd = &cobra.Command{
 
 var RemovePermissionsCmd = &cobra.Command{
 	Use:   "remove <role> <permission...>",
-	Short: "Remove permissions from a role (EE Only)",
+	Short: "Remove permissions from a role",
 	Long:  `Remove one or more permissions from an existing role.`,
 	Example: `  permissions remove system_user list_open_teams
   permissions remove system_manager sysconsole_read_user_management_channels`,
@@ -42,7 +42,7 @@ var RemovePermissionsCmd = &cobra.Command{
 
 var ResetCmd = &cobra.Command{
 	Use:   "reset <role_name>",
-	Short: "Reset default permissions for role (EE Only)",
+	Short: "Reset default permissions for role",
 	Long:  "Reset the given role's permissions to the set that was originally released with",
 	Example: `  # Reset the permissions of the 'system_read_only_admin' role.
   $ amctl permissions reset system_read_only_admin`,

@@ -3,7 +3,7 @@
 amctl permissions reset
 -----------------------
 
-Reset default permissions for role (EE Only)
+Reset default permissions for role
 
 Synopsis
 ~~~~~~~~

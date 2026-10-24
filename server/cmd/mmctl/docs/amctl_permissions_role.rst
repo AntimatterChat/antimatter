@@ -37,7 +37,7 @@ SEE ALSO
 ~~~~~~~~
 
 * `amctl permissions <amctl_permissions.rst>`_ 	 - Management of permissions
-* `amctl permissions role assign <amctl_permissions_role_assign.rst>`_ 	 - Assign users to role (EE Only)
+* `amctl permissions role assign <amctl_permissions_role_assign.rst>`_ 	 - Assign users to role
 * `amctl permissions role show <amctl_permissions_role_show.rst>`_ 	 - Show the role information
-* `amctl permissions role unassign <amctl_permissions_role_unassign.rst>`_ 	 - Unassign users from role (EE Only)
+* `amctl permissions role unassign <amctl_permissions_role_unassign.rst>`_ 	 - Unassign users from role
 

@@ -3,7 +3,7 @@
 amctl permissions role assign
 -----------------------------
 
-Assign users to role (EE Only)
+Assign users to role
 
 Synopsis
 ~~~~~~~~

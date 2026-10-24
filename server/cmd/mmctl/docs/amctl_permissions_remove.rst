@@ -3,7 +3,7 @@
 amctl permissions remove
 ------------------------
 
-Remove permissions from a role (EE Only)
+Remove permissions from a role
 
 Synopsis
 ~~~~~~~~

@@ -37,8 +37,8 @@ SEE ALSO
 ~~~~~~~~
 
 * `amctl <amctl.rst>`_ 	 - Remote client for the Open Source, self-hosted Slack-alternative
-* `amctl permissions add <amctl_permissions_add.rst>`_ 	 - Add permissions to a role (EE Only)
-* `amctl permissions remove <amctl_permissions_remove.rst>`_ 	 - Remove permissions from a role (EE Only)
-* `amctl permissions reset <amctl_permissions_reset.rst>`_ 	 - Reset default permissions for role (EE Only)
+* `amctl permissions add <amctl_permissions_add.rst>`_ 	 - Add permissions to a role
+* `amctl permissions remove <amctl_permissions_remove.rst>`_ 	 - Remove permissions from a role
+* `amctl permissions reset <amctl_permissions_reset.rst>`_ 	 - Reset default permissions for role
 * `amctl permissions role <amctl_permissions_role.rst>`_ 	 - Management of roles
 
