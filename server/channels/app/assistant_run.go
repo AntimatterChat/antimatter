@@ -233,6 +233,7 @@ func (a *App) runAssistantWindow(rctx request.CTX, channelID string, postIDs []s
 			continue
 		}
 		tools := a.assistantToolsFor(rctx, user, channel, cfg)
+		rctx.Logger().Debug("The assistant looks at a window for someone", mlog.String("channel_id", channel.Id), mlog.String("user_id", user.Id), mlog.Int("tools", len(tools)))
 		if len(tools) == 0 {
 			continue
 		}
@@ -267,6 +268,7 @@ func (a *App) runAssistantWindow(rctx request.CTX, channelID string, postIDs []s
 			}
 		}
 	}
+	rctx.Logger().Debug("The assistant ran a window", mlog.String("channel_id", channel.Id), mlog.Int("posts", len(posts)), mlog.Int("people", len(runs)), mlog.Int("offers", len(offers)))
 	for _, id := range offers {
 		a.assignAssistantOffer(rctx, id)
 	}

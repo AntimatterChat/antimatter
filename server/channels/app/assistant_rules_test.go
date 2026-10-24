@@ -5,6 +5,7 @@ package app
 
 import (
 	"encoding/json"
+	"strings"
 	"sync"
 	"testing"
 	"time"
@@ -38,7 +39,8 @@ func TestAssistantRulesEntities(t *testing.T) {
 	for _, e := range entities {
 		byText[e.Text] = e
 	}
-	assert.Equal(t, model.AssistantEntityMatch{Type: "person", Value: "priya", Text: "Priya"}, byText["Priya"])
+	assert.Equal(t, model.AssistantEntityMatch{Type: "person", Value: "priya", Text: "@Priya"}, byText["@Priya"], "the slot takes the @ too")
+	assert.True(t, strings.HasPrefix(normalised, "⟦person:0⟧ says"))
 	assert.Equal(t, model.AssistantEntityMatch{Type: "host", Value: "www-1", Text: "www1"}, byText["www1"], "an alias gives the entity's own value")
 	assert.Equal(t, "dashboard", byText["Node  Exporter full"].Type, "a phrase of several words, whatever its case and spaces")
 	assert.Equal(t, "Node Exporter Full", byText["Node  Exporter full"].Value)
@@ -49,6 +51,12 @@ func TestAssistantRulesEntities(t *testing.T) {
 	assert.Equal(t, "host", byText["WEB-7"].Type, "a host in the dictionary isn't taken for a ticket")
 	assert.NotContains(t, normalised, "www1")
 	assert.Contains(t, normalised, "⟦host:1⟧")
+
+	who := compileAssistantPatterns([]*model.AssistantPattern{{Id: "who", Kind: model.AssistantCardKindInsight, Match: []string{`\bwho is {person}`}, Tools: []string{"*"}}})
+	matches := assistantMatchRules("who is @Sam?", nil, who)
+	require.Len(t, matches, 1, "a mention fills a person's slot")
+	assert.Equal(t, "who is @Sam", matches[0].words)
+	assert.Equal(t, "sam", matches[0].entities[0].Value)
 
 	t.Run("the slot marks can't be typed in", func(t *testing.T) {
 		normalised, entities := assistantNormalise("cpu on ⟦x⟧", testAssistantDictionary())

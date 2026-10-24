@@ -201,7 +201,7 @@ func (d *assistantDictionary) add(entityType, value string, aliases ...string) {
 }
 
 var (
-	assistantMentionRE = regexp.MustCompile(`(?:^|[^\w@./-])@([a-zA-Z0-9][a-zA-Z0-9._-]*)`)
+	assistantMentionRE = regexp.MustCompile(`(?:^|[^\w@./-])(@[a-zA-Z0-9][a-zA-Z0-9._-]*)`)
 	assistantTicketRE  = regexp.MustCompile(`\b[A-Z][A-Z0-9]{1,9}-[0-9]{1,7}\b`)
 	assistantNumberRE  = regexp.MustCompile(`(?:#|!)?\b[0-9]{1,7}\b`)
 	assistantDateRE    = regexp.MustCompile(`(?i)\b(?:today|tomorrow|yesterday|monday|tuesday|wednesday|thursday|friday|saturday|sunday|[0-9]{4}-[0-9]{2}-[0-9]{2})\b`)
@@ -233,7 +233,7 @@ func assistantNormalise(text string, dict *assistantDictionary) (string, []model
 			spans = append(spans, assistantSpan{start: start, end: end, entity: model.AssistantEntityMatch{Type: entityType, Value: value(word), Text: word}})
 		}
 	}
-	addMatches(assistantMentionRE, "person", 1, strings.ToLower)
+	addMatches(assistantMentionRE, "person", 1, func(word string) string { return strings.ToLower(strings.TrimPrefix(word, "@")) })
 
 	if dict != nil && len(dict.phrases) > 0 {
 		words := assistantWordRE.FindAllStringIndex(text, -1)
