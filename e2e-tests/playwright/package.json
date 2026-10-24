@@ -59,6 +59,12 @@
     "typescript": "6.0.3",
     "zod": "4.4.3"
   },
+  "overrides": {
+    "@percy/core": {
+      "fast-xml-parser": "^5.7.0"
+    },
+    "basic-ftp@<6.2.1": "6.2.1"
+  },
   "allowScripts": {
     "cpu-features@0.0.10": true,
     "ssh2@1.17.0": true,
