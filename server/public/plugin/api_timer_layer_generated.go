@@ -1143,7 +1143,7 @@ func (api *apiTimerLayer) SendMail(to, subject, htmlBody string) *model.AppError
 	return _returnsA
 }
 
-func (api *apiTimerLayer) SendMailWithAttachment(to string, subject string, htmlBody string, attachmentName string, attachmentContentType string, attachmentData []byte) *model.AppError {
+func (api *apiTimerLayer) SendMailWithAttachment(to, subject, htmlBody, attachmentName, attachmentContentType string, attachmentData []byte) *model.AppError {
 	startTime := timePkg.Now()
 	_returnsA := api.apiImpl.SendMailWithAttachment(to, subject, htmlBody, attachmentName, attachmentContentType, attachmentData)
 	api.recordTime(startTime, "SendMailWithAttachment", _returnsA == nil)

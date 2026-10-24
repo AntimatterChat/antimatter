@@ -314,24 +314,6 @@ func (_m *ServiceInterface) SendMagicLinkEmailSelfService(rctx request.CTX, invi
 	return r0
 }
 
-// SendMailWithEmbeddedFiles provides a mock function with given fields: to, subject, htmlBody, embeddedFiles, messageID, inReplyTo, references, category
-func (_m *ServiceInterface) SendMailWithEmbeddedFiles(to string, subject string, htmlBody string, embeddedFiles map[string]io.Reader, messageID string, inReplyTo string, references string, category string) error {
-	ret := _m.Called(to, subject, htmlBody, embeddedFiles, messageID, inReplyTo, references, category)
-
-	if len(ret) == 0 {
-		panic("no return value specified for SendMailWithEmbeddedFiles")
-	}
-
-	var r0 error
-	if rf, ok := ret.Get(0).(func(string, string, string, map[string]io.Reader, string, string, string, string) error); ok {
-		r0 = rf(to, subject, htmlBody, embeddedFiles, messageID, inReplyTo, references, category)
-	} else {
-		r0 = ret.Error(0)
-	}
-
-	return r0
-}
-
 // SendMailWithAttachment provides a mock function with given fields: to, subject, htmlBody, attachmentName, attachmentContentType, attachmentData, messageID, inReplyTo, references, category
 func (_m *ServiceInterface) SendMailWithAttachment(to string, subject string, htmlBody string, attachmentName string, attachmentContentType string, attachmentData []byte, messageID string, inReplyTo string, references string, category string) error {
 	ret := _m.Called(to, subject, htmlBody, attachmentName, attachmentContentType, attachmentData, messageID, inReplyTo, references, category)
@@ -343,6 +325,24 @@ func (_m *ServiceInterface) SendMailWithAttachment(to string, subject string, ht
 	var r0 error
 	if rf, ok := ret.Get(0).(func(string, string, string, string, string, []byte, string, string, string, string) error); ok {
 		r0 = rf(to, subject, htmlBody, attachmentName, attachmentContentType, attachmentData, messageID, inReplyTo, references, category)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// SendMailWithEmbeddedFiles provides a mock function with given fields: to, subject, htmlBody, embeddedFiles, messageID, inReplyTo, references, category
+func (_m *ServiceInterface) SendMailWithEmbeddedFiles(to string, subject string, htmlBody string, embeddedFiles map[string]io.Reader, messageID string, inReplyTo string, references string, category string) error {
+	ret := _m.Called(to, subject, htmlBody, embeddedFiles, messageID, inReplyTo, references, category)
+
+	if len(ret) == 0 {
+		panic("no return value specified for SendMailWithEmbeddedFiles")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(string, string, string, map[string]io.Reader, string, string, string, string) error); ok {
+		r0 = rf(to, subject, htmlBody, embeddedFiles, messageID, inReplyTo, references, category)
 	} else {
 		r0 = ret.Error(0)
 	}
