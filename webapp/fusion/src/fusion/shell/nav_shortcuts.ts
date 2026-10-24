@@ -96,7 +96,10 @@ export function useNavShortcuts() {
             } else if (mod && e.shiftKey && !e.altKey && e.code === 'KeyM') {
                 dispatch(showMentions());
             } else if (mod && e.shiftKey && !e.altKey && e.code === 'KeyL') {
-                document.querySelector<HTMLTextAreaElement>('.am-main .am-composer textarea')?.focus();
+                // The rich text editor renders a ProseMirror contenteditable div instead of the plain textarea
+                // (composer.tsx), so look for whichever one is actually there.
+                const rich = document.querySelector<HTMLElement>('.am-main .am-composer .am-rich-input .ProseMirror');
+                (rich ?? document.querySelector<HTMLTextAreaElement>('.am-main .am-composer textarea'))?.focus();
             } else if (mod && !e.altKey && e.code === 'Period') {
                 if (e.shiftKey) {
                     if (getIsRhsOpen(state)) {
