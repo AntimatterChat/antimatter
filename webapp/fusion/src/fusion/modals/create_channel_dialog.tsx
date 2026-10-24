@@ -6,7 +6,7 @@ import {useIntl} from 'react-intl';
 import {shallowEqual, useDispatch, useSelector} from 'react-redux';
 
 import type {ServerCategory} from '@mattermost/types/channel_categories';
-import type {Channel, ChannelType} from '@mattermost/types/channels';
+import type {Channel, ChannelKindType, ChannelPresetId, ChannelType} from '@mattermost/types/channels';
 import type {NewChannelFormState} from '@mattermost/types/plugins';
 
 import {addChannelToCategory} from 'mattermost-redux/actions/channel_categories';
@@ -18,7 +18,8 @@ import {getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
 import {switchToChannel} from 'actions/views/channel';
 import {getCategoriesForCurrentTeam} from 'selectors/views/channel_sidebar';
 
-import Icon from 'fusion/components/icon';
+import {defaultPresetForType} from 'fusion/channel/channel_type_presets';
+import PresetPicker from 'fusion/channel/preset_picker';
 import {Dialog} from 'fusion/components/layer';
 import {useToast} from 'fusion/shell/toast_context';
 import {categoryName} from 'fusion/sidebar/category_name';
@@ -40,7 +41,10 @@ type Props = {
     onClose: () => void;
 };
 
-const TEXT = 'text';
+// The voice-channels app's registered channel-type option is replaced by the Voice segment of PresetPicker (design
+// §4.1); other apps' options still show as cards under Text.
+const VOICE_CHANNELS_PLUGIN_ID = 'com.antimatterchat.voice-channels';
+
 const NO_SERVER_CATEGORIES: ServerCategory[] = [];
 
 // CreateChannelDialog creates a channel: the mockup's "Create channel" dialog (type, name, category, private).
@@ -61,13 +65,18 @@ export default function CreateChannelDialog({categoryId, onMoreOptions, onClose}
     const canPublic = useSelector((state: GlobalState) => Boolean(team) && haveITeamPermission(state, team!.id, Permissions.CREATE_PUBLIC_CHANNEL));
     const canPrivate = useSelector((state: GlobalState) => Boolean(team) && haveITeamPermission(state, team!.id, Permissions.CREATE_PRIVATE_CHANNEL));
     const options = useSelector((state: GlobalState) => (state.plugins.components.ChannelTypeOption || []).filter((o) => {
+        if (o.pluginId === VOICE_CHANNELS_PLUGIN_ID) {
+            return false;
+        }
         try {
             return o.isAvailable(state);
         } catch {
             return false;
         }
     }), shallowEqual);
-    const [kind, setKind] = useState(TEXT);
+    const [channelKind, setChannelKind] = useState<ChannelKindType>('text');
+    const [preset, setPreset] = useState<ChannelPresetId>(defaultPresetForType('text'));
+    const [pluginOptionId, setPluginOptionId] = useState('');
     const [name, setName] = useState('');
     const [category, setCategory] = useState(categoryId || categories.find((c) => c.type === 'channels')?.id || '');
     const [isPrivate, setPrivate] = useState(!canPublic && canPrivate);
@@ -80,10 +89,20 @@ export default function CreateChannelDialog({categoryId, onMoreOptions, onClose}
         nameRef.current?.focus();
     }, []);
 
-    const plugin = options.find((o) => o.id === kind);
+    const plugin = channelKind === 'text' && pluginOptionId ? options.find((o) => o.id === pluginOptionId) : undefined;
     const type: ChannelType = isPrivate ? Constants.PRIVATE_CHANNEL as ChannelType : Constants.OPEN_CHANNEL as ChannelType;
     const url = cleanUpUrlable(name) || generateId().slice(0, 26);
     const formState: NewChannelFormState = {teamId: team?.id || '', displayName: name.trim(), url, purpose: '', type: plugin ? plugin.id : type, privacy: type} as NewChannelFormState;
+
+    const pickType = (next: ChannelKindType) => {
+        setChannelKind(next);
+        setPreset(defaultPresetForType(next));
+        setPluginOptionId('');
+    };
+    const pickPreset = (next: ChannelPresetId) => {
+        setPreset(next);
+        setPluginOptionId('');
+    };
 
     const serverName = category.startsWith(SERVER_CATEGORY_PREFIX) ? category.slice(SERVER_CATEGORY_PREFIX.length) : '';
     const done = (channel: Channel) => {
@@ -127,7 +146,11 @@ export default function CreateChannelDialog({categoryId, onMoreOptions, onClose}
             setSaving(false);
             return;
         }
-        const channel = {team_id: team.id, name: url, display_name: name.trim(), purpose: '', header: '', type, ...(serverName ? {managed_category_name: serverName} : {})} as Channel;
+        const channel = {
+            team_id: team.id, name: url, display_name: name.trim(), purpose: '', header: '', type,
+            props: {am_preset: preset},
+            ...(serverName ? {managed_category_name: serverName} : {}),
+        } as Channel;
         const result = await dispatch(createChannel(channel, ''));
         setSaving(false);
         if (result && 'error' in result && result.error) {
@@ -150,36 +173,29 @@ export default function CreateChannelDialog({categoryId, onMoreOptions, onClose}
             <div className={am('pane')}>
                 <h2>{title}</h2>
                 <p className={am('lead')}>{formatMessage({id: 'fusion.createChannel.lead', defaultMessage: 'In {team}.'}, {team: team?.display_name})}</p>
-                {options.length > 0 && (
+                <PresetPicker
+                    type={channelKind}
+                    value={pluginOptionId ? '' : preset}
+                    onTypeChange={pickType}
+                    onChange={pickPreset}
+                />
+                {channelKind === 'text' && options.length > 0 && (
                     <div className={am('field')}>
-                        <span>{formatMessage({id: 'fusion.createChannel.type', defaultMessage: 'Channel type'})}</span>
+                        <span>{formatMessage({id: 'fusion.createChannel.appTypes', defaultMessage: 'Or, from an app', description: 'Create-channel dialog: header above the channel-type cards other apps add (besides the native text, voice and forum types), shown only while Text is selected.'})}</span>
                         <div
                             className={am('type-grid')}
                             role='radiogroup'
-                            aria-label={formatMessage({id: 'fusion.createChannel.type', defaultMessage: 'Channel type'})}
+                            aria-label={formatMessage({id: 'fusion.createChannel.appTypes', defaultMessage: 'Or, from an app', description: 'Create-channel dialog: header above the channel-type cards other apps add (besides the native text, voice and forum types), shown only while Text is selected.'})}
                         >
-                            <button
-                                type='button'
-                                role='radio'
-                                aria-checked={kind === TEXT}
-                                className={am('type-card', {on: kind === TEXT})}
-                                onClick={() => setKind(TEXT)}
-                            >
-                                <Icon name='hash'/>
-                                <span>
-                                    <b>{formatMessage({id: 'fusion.createChannel.text', defaultMessage: 'Text'})}</b>
-                                    <span>{formatMessage({id: 'fusion.createChannel.textDesc', defaultMessage: 'Messages, files and threads'})}</span>
-                                </span>
-                            </button>
                             {options.map((o) => (
                                 <button
                                     key={o.id}
                                     type='button'
                                     role='radio'
-                                    aria-checked={kind === o.id}
-                                    className={am('type-card', {on: kind === o.id})}
+                                    aria-checked={pluginOptionId === o.id}
+                                    className={am('type-card', {on: pluginOptionId === o.id})}
                                     onClick={() => {
-                                        setKind(o.id);
+                                        setPluginOptionId(o.id);
                                         setPluginCanCreate(true);
                                     }}
                                 >
