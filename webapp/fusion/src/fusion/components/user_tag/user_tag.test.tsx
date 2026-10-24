@@ -9,6 +9,9 @@ import {IntegrationTag} from 'fusion/agents/agent_status';
 
 import UserTag from './index';
 
+// The real useIntl, which reads the IntlProvider below (the shared setup pins it to English).
+jest.mock('react-intl', () => jest.requireActual('react-intl'));
+
 describe('fusion/components/user_tag', () => {
     const translated = (node: React.ReactNode) => render(
         <IntlProvider
