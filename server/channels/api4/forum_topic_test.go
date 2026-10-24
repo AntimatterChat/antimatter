@@ -191,10 +191,10 @@ func TestPatchForumTopicAPI(t *testing.T) {
 		require.NoError(t, err)
 
 		for _, client := range []*model.Client4{th.Client, client2} {
-			_, resp, err := client.PatchForumTopic(ctx, idea.Id, set(model.TopicStatusPlanned))
-			require.Error(t, err, "not the idea's author, nor anyone else")
+			_, resp, patchErr := client.PatchForumTopic(ctx, idea.Id, set(model.TopicStatusPlanned))
+			require.Error(t, patchErr, "not the idea's author, nor anyone else")
 			CheckForbiddenStatus(t, resp)
-			CheckErrorID(t, err, "app.topic.status.not_allowed.app_error")
+			CheckErrorID(t, patchErr, "app.topic.status.not_allowed.app_error")
 		}
 
 		// Through the app, which drops the cached memberships: client2 was refused above, so its old roles are cached.
