@@ -10311,6 +10311,11 @@
     "description": "Error when a moderator tries to lift a ban made by someone whose role ranks above theirs, or by a community admin."
   },
   {
+    "id": "app.moderation.ban.replace.app_error",
+    "translation": "This person is already banned, by someone whose ban you can't lift, so you can't change their ban.",
+    "description": "Error when a moderator bans someone again whose current ban they aren't allowed to lift (it was made by a community admin or by someone ranking above them)."
+  },
+  {
     "id": "app.moderation.bans.get.app_error",
     "translation": "Unable to get the community's bans.",
     "description": "Error when the server can't read a community's bans from the database."

@@ -128,6 +128,19 @@ func (a *App) BanMember(rctx request.CTX, session model.Session, teamID, userID 
 	if appErr := ban.IsValid(now); appErr != nil {
 		return nil, appErr
 	}
+	// Replacing a ban that holds lifts it: only those who may lift it replace it, or a moderator would shorten an
+	// admin's ban (or take it over, and then lift it as their own).
+	existing, getErr := a.Srv().Store().Moderation().GetBan(rctx, teamID, userID, now)
+	if getErr == nil {
+		if appErr := a.CheckCanLiftBan(rctx, session, existing); appErr != nil {
+			return nil, model.NewAppError("BanMember", "app.moderation.ban.replace.app_error", nil, "", http.StatusForbidden).Wrap(appErr)
+		}
+	} else {
+		var nfErr *store.ErrNotFound
+		if !errors.As(getErr, &nfErr) {
+			return nil, model.NewAppError("BanMember", "app.moderation.bans.get.app_error", nil, "", http.StatusInternalServerError).Wrap(getErr)
+		}
+	}
 	ban, err := a.Srv().Store().Moderation().SaveBan(rctx, ban)
 	if err != nil {
 		return nil, model.NewAppError("BanMember", "app.moderation.bans.save.app_error", nil, "", http.StatusInternalServerError).Wrap(err)

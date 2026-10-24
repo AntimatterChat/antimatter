@@ -431,6 +431,59 @@ func TestMemberBans(t *testing.T) {
 		assert.True(t, k.inTeam(t, byLow.Id))
 	})
 
+	t.Run("a ban is replaced only by those who may lift it", func(t *testing.T) {
+		_, lowClient := k.moderator(t, 2)
+		high, highClient := k.moderator(t, 1)
+		admin, adminClient := k.teamAdmin(t)
+		banOf := func(userID string) *model.MemberBan {
+			t.Helper()
+			ban, err := th.App.Srv().Store().Moderation().GetBan(th.Context, k.team.Id, userID, model.GetMillis())
+			require.NoError(t, err)
+			return ban
+		}
+
+		// A moderator neither shortens an admin's ban nor takes it over (to lift it as their own).
+		byAdmin, _ := k.member(t)
+		_, _, err := k.ban(t, adminClient, byAdmin.Id, model.MemberBanRequest{Reason: "for good"})
+		require.NoError(t, err)
+		_, resp, err := k.ban(t, highClient, byAdmin.Id, model.MemberBanRequest{ExpireAt: inADay()})
+		require.Error(t, err)
+		assert.Equal(t, http.StatusForbidden, resp.StatusCode)
+		CheckErrorID(t, err, "app.moderation.ban.replace.app_error")
+		kept := banOf(byAdmin.Id)
+		assert.Equal(t, admin.Id, kept.CreatedBy, "the admin's ban stays theirs")
+		assert.Zero(t, kept.ExpireAt, "and doesn't end")
+		resp, err = k.unban(t, highClient, byAdmin.Id)
+		require.Error(t, err)
+		assert.Equal(t, http.StatusForbidden, resp.StatusCode)
+
+		// Nor one of a moderator above them.
+		byHigh, _ := k.member(t)
+		_, _, err = k.ban(t, highClient, byHigh.Id, model.MemberBanRequest{})
+		require.NoError(t, err)
+		_, resp, err = k.ban(t, lowClient, byHigh.Id, model.MemberBanRequest{ExpireAt: inADay()})
+		require.Error(t, err)
+		assert.Equal(t, http.StatusForbidden, resp.StatusCode)
+		assert.Equal(t, high.Id, banOf(byHigh.Id).CreatedBy)
+
+		// Those who may lift it replace it: its maker, and the community's admins.
+		_, _, err = k.ban(t, highClient, byHigh.Id, model.MemberBanRequest{Reason: "changed"})
+		require.NoError(t, err)
+		assert.Equal(t, "changed", banOf(byHigh.Id).Reason)
+		until := inADay()
+		_, _, err = k.ban(t, adminClient, byHigh.Id, model.MemberBanRequest{ExpireAt: until})
+		require.NoError(t, err)
+		assert.Equal(t, until, banOf(byHigh.Id).ExpireAt)
+
+		// An ended ban is no longer anyone's: a new one is made.
+		ended, _ := k.member(t)
+		th.UnlinkUserFromTeam(t, ended, k.team)
+		_, err = th.App.Srv().Store().Moderation().SaveBan(th.Context, &model.MemberBan{TeamId: k.team.Id, UserId: ended.Id, CreatedBy: admin.Id, ExpireAt: model.GetMillis() - 1})
+		require.NoError(t, err)
+		_, _, err = k.ban(t, lowClient, ended.Id, model.MemberBanRequest{})
+		require.NoError(t, err)
+	})
+
 	t.Run("a ban deletes the person's messages of the time asked, in that community only", func(t *testing.T) {
 		user, client := k.member(t)
 		otherTeam := th.CreateTeamWithClient(t, th.SystemAdminClient)
