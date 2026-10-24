@@ -285,7 +285,7 @@ describe('UserPropertyDotMenu', () => {
         const editableItem = screen.getByRole('menuitemcheckbox', {name: /Editable by users/});
         expect(editableItem).toHaveAttribute('aria-checked', 'false');
         expect(within(editableItem).getByRole('button')).toBeEnabled();
-        expect(screen.queryByText('Synced attributes are managed by AD/LDAP or SAML')).not.toBeInTheDocument();
+        expect(screen.queryByText('Synced attributes are managed by AD/LDAP, SAML or OpenID Connect')).not.toBeInTheDocument();
     });
 
     it('disables the "Editable by users" toggle and reports it off when the field is synced via LDAP', async () => {
@@ -306,7 +306,7 @@ describe('UserPropertyDotMenu', () => {
         const editableItem = screen.getByRole('menuitemcheckbox', {name: /Editable by users/});
         expect(editableItem).toHaveAttribute('aria-checked', 'false');
         expect(within(editableItem).getByRole('button')).toBeDisabled();
-        expect(screen.getByText('Synced attributes are managed by AD/LDAP or SAML')).toBeInTheDocument();
+        expect(screen.getByText('Synced attributes are managed by AD/LDAP, SAML or OpenID Connect')).toBeInTheDocument();
     });
 
     it('does not update a synced field when clicking the "Editable by users" toggle', async () => {
@@ -348,7 +348,48 @@ describe('UserPropertyDotMenu', () => {
         const editableItem = screen.getByRole('menuitemcheckbox', {name: /Editable by users/});
         expect(editableItem).toHaveAttribute('aria-checked', 'false');
         expect(within(editableItem).getByRole('button')).toBeDisabled();
-        expect(screen.getByText('Synced attributes are managed by AD/LDAP or SAML')).toBeInTheDocument();
+        expect(screen.getByText('Synced attributes are managed by AD/LDAP, SAML or OpenID Connect')).toBeInTheDocument();
+    });
+
+    it('disables the "Editable by users" toggle when the field is synced via OpenID Connect', async () => {
+        const openidSyncedField: UserPropertyField = {
+            ...baseField,
+            id: 'openid-synced-field',
+            attrs: {
+                ...baseField.attrs,
+                openid: 'department',
+            },
+        };
+
+        renderComponent(openidSyncedField);
+
+        const menuButton = screen.getByTestId(`user-property-field_dotmenu-${openidSyncedField.id}`);
+        await userEvent.click(menuButton);
+
+        const editableItem = screen.getByRole('menuitemcheckbox', {name: /Editable by users/});
+        expect(editableItem).toHaveAttribute('aria-checked', 'false');
+        expect(within(editableItem).getByRole('button')).toBeDisabled();
+        expect(screen.getByText('Synced attributes are managed by AD/LDAP, SAML or OpenID Connect')).toBeInTheDocument();
+    });
+
+    it('does not offer a link/unlink action for OpenID Connect, unlike AD/LDAP and SAML', async () => {
+        const openidSyncedField: UserPropertyField = {
+            ...baseField,
+            id: 'openid-no-link-action',
+            attrs: {
+                ...baseField.attrs,
+                openid: 'department',
+            },
+        };
+
+        renderComponent(openidSyncedField);
+
+        const menuButton = screen.getByTestId(`user-property-field_dotmenu-${openidSyncedField.id}`);
+        await userEvent.click(menuButton);
+
+        expect(screen.queryByText(/OpenID/)).not.toBeInTheDocument();
+        expect(screen.getByText('Link attribute to AD/LDAP')).toBeInTheDocument();
+        expect(screen.getByText('Link attribute to SAML')).toBeInTheDocument();
     });
 
     it('disables the "Editable by users" toggle when the field is both admin-managed and synced', async () => {
@@ -370,7 +411,7 @@ describe('UserPropertyDotMenu', () => {
         const editableItem = screen.getByRole('menuitemcheckbox', {name: /Editable by users/});
         expect(editableItem).toHaveAttribute('aria-checked', 'false');
         expect(within(editableItem).getByRole('button')).toBeDisabled();
-        expect(screen.getByText('Synced attributes are managed by AD/LDAP or SAML')).toBeInTheDocument();
+        expect(screen.getByText('Synced attributes are managed by AD/LDAP, SAML or OpenID Connect')).toBeInTheDocument();
     });
 
     it('disables the "Editable by users" toggle and still offers link options for owner-managed fields', async () => {

@@ -14608,12 +14608,12 @@
     "description": "Tooltip explaining why the 'Editable by users' toggle is unavailable: the attribute is owned and managed by an integration/plugin."
   },
   "admin.system_properties.user_properties.dotmenu.editable_by_users.owner_managed_synced_help": {
-    "defaultMessage": "Managed by an integration and synced via AD/LDAP or SAML",
-    "description": "Tooltip explaining why the 'Editable by users' toggle is unavailable: the attribute is managed by an integration and also synced from AD/LDAP or SAML."
+    "defaultMessage": "Managed by an integration and synced via AD/LDAP, SAML or OpenID Connect",
+    "description": "Tooltip explaining why the 'Editable by users' toggle is unavailable: the attribute is managed by an integration and also synced from AD/LDAP, SAML or OpenID Connect."
   },
   "admin.system_properties.user_properties.dotmenu.editable_by_users.synced_help": {
-    "defaultMessage": "Synced attributes are managed by AD/LDAP or SAML",
-    "description": "Tooltip explaining why the 'Editable by users' toggle is unavailable: the attribute value is synced from AD/LDAP or SAML."
+    "defaultMessage": "Synced attributes are managed by AD/LDAP, SAML or OpenID Connect",
+    "description": "Tooltip explaining why the 'Editable by users' toggle is unavailable: the attribute value is synced from AD/LDAP, SAML or OpenID Connect."
   },
   "admin.system_properties.user_properties.dotmenu.label": {
     "defaultMessage": "Select an action",
@@ -14837,11 +14837,15 @@
   },
   "admin.system_properties.user_properties.table.values.synced_with": {
     "defaultMessage": "Synced with: {syncedProperties}",
-    "description": "Text next to a sync icon in the user attributes admin table; {syncedProperties} is a formatted list of external sources (e.g. AD/LDAP, SAML attributes) the field syncs with."
+    "description": "Text next to a sync icon in the user attributes admin table; {syncedProperties} is a formatted list of external sources (e.g. AD/LDAP, SAML or OpenID Connect attributes) the field syncs with."
   },
   "admin.system_properties.user_properties.table.values.synced_with.ldap": {
     "defaultMessage": "AD/LDAP: {propertyName}",
     "description": "One item in the synced-with sources list of the user attributes admin table; {propertyName} is the AD/LDAP attribute name; keep 'AD/LDAP' as-is."
+  },
+  "admin.system_properties.user_properties.table.values.synced_with.openid": {
+    "defaultMessage": "OpenID Connect: {propertyName}",
+    "description": "One item in the synced-with sources list of the user attributes admin table; {propertyName} is the OpenID Connect claim name; keep 'OpenID Connect' as-is."
   },
   "admin.system_properties.user_properties.table.values.synced_with.saml": {
     "defaultMessage": "SAML: {propertyName}",

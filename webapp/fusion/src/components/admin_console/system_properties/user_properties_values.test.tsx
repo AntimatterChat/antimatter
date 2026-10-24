@@ -256,6 +256,45 @@ describe('UserPropertyValues', () => {
         expect(samlLinkElement).toBeInTheDocument();
     });
 
+    it('shows OpenID Connect sync information when field has an openid attribute', () => {
+        const openidField = {
+            ...baseField,
+            attrs: {
+                ...baseField.attrs,
+                openid: 'department',
+            },
+        };
+
+        renderComponent(openidField);
+
+        // Check that the sync info is displayed
+        expect(screen.getByText(/Synced with:/)).toBeInTheDocument();
+        const openidChip = screen.getByText('OpenID Connect: department');
+        expect(openidChip).toBeInTheDocument();
+
+        const chipElement = screen.getByTestId(`user-property-field-values__openid-${openidField.name}`);
+        expect(chipElement).toBeInTheDocument();
+
+        // Unlike AD/LDAP and SAML, there's no edit action for an OpenID Connect
+        // link on this page, so the chip isn't a clickable role=button.
+        expect(chipElement).not.toHaveAttribute('role', 'button');
+    });
+
+    it('hides options editor for OpenID Connect-synced select fields', () => {
+        const openidField = {
+            ...baseField,
+            attrs: {
+                ...baseField.attrs,
+                openid: 'department',
+            },
+        };
+
+        renderComponent(openidField);
+
+        expect(screen.getByText(/Synced with:/)).toBeInTheDocument();
+        expect(screen.queryByRole('combobox')).not.toBeInTheDocument();
+    });
+
     it('shows owner provenance and editable options for owner-managed select fields', () => {
         const ownedField = {
             ...baseField,

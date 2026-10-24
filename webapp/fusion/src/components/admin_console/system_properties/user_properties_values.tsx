@@ -14,6 +14,8 @@ import {SyncIcon, PowerPlugOutlineIcon} from '@mattermost/compass-icons/componen
 import {supportsOptions, valueRefersToOptions, type PropertyFieldOption} from '@mattermost/types/properties';
 import {type UserPropertyField} from '@mattermost/types/properties_user';
 
+import {isPropertyFieldSynced} from 'mattermost-redux/utils/property_utils';
+
 import {getPluginDisplayName} from 'selectors/plugins';
 
 import {useIsFieldOrphaned} from 'components/common/hooks/use_field_orphaned';
@@ -93,14 +95,15 @@ const UserPropertyValues = ({
         event.preventDefault();
     };
 
-    // LDAP/SAML sync locks values and forces text — badge only, no options editor.
-    // Owner-managed (e.g. SCIM) locks *values* to the owner but admins may still
-    // edit the field definition (options) when the type supports them.
+    // Sync (AD/LDAP, SAML or OpenID Connect) locks values and forces text —
+    // badge only, no options editor. Owner-managed (e.g. SCIM) locks *values* to
+    // the owner but admins may still edit the field definition (options) when
+    // the type supports them.
     const owners = field.attrs?.owners ?? [];
-    const hasLdapSaml = Boolean(field.attrs.ldap || field.attrs.saml);
+    const isSynced = isPropertyFieldSynced(field);
     const hasOwners = owners.length > 0;
     const isProtected = Boolean(field.attrs?.protected);
-    const optionsEditable = supportsOptions(field) && !hasLdapSaml && !isProtected;
+    const optionsEditable = supportsOptions(field) && !isSynced && !isProtected;
 
     // In the options cell the sync source sits above the value chips, so it reads
     // as plain text to avoid looking like another value. When it's the standalone
@@ -108,7 +111,7 @@ const UserPropertyValues = ({
     const ownersInOptionsCell = hasOwners && optionsEditable;
 
     let syncedBadge: React.ReactNode = null;
-    if (hasLdapSaml || hasOwners) {
+    if (isSynced || hasOwners) {
         const ownerPills = owners.map((owner, idx) => {
             const provenance = owner.type === 'plugin' ? (pluginsById[owner.id]?.name || owner.id) : owner.id;
             const key = `${field.name}-owner-${owner.type}-${owner.id}-${idx}`;
@@ -182,6 +185,22 @@ const UserPropertyValues = ({
                     />
                 </a>
             ),
+            // No admin-facing edit action exists for an OpenID Connect claim
+            // mapping on this page (it's set through the SSO configuration), so
+            // this chip is plain text rather than the clickable AD/LDAP/SAML ones.
+            field.attrs.openid && (
+                <span
+                    className='user-property-field-values__chip-link'
+                    key={`${field.name}-openid`}
+                    data-testid={`user-property-field-values__openid-${field.name}`}
+                >
+                    <FormattedMessage
+                        id='admin.system_properties.user_properties.table.values.synced_with.openid'
+                        defaultMessage='OpenID Connect: {propertyName}'
+                        values={{propertyName: field.attrs.openid}}
+                    />
+                </span>
+            ),
             ...ownerPills,
         ].filter(Boolean);
 
@@ -197,9 +216,9 @@ const UserPropertyValues = ({
         );
     }
 
-    // LDAP/SAML always badge-only. Owner-managed text (and other non-option
-    // types) also stay badge-only — there are no options to edit.
-    if (hasLdapSaml || (hasOwners && !optionsEditable)) {
+    // Synced fields are always badge-only. Owner-managed text (and other
+    // non-option types) also stay badge-only — there are no options to edit.
+    if (isSynced || (hasOwners && !optionsEditable)) {
         return (
             <span className='user-property-field-values'>
                 {syncedBadge}

@@ -12,6 +12,8 @@ import type {UserPropertyField} from '@mattermost/types/properties_user';
 
 import {openModal} from 'actions/views/modals';
 
+import {isPropertyFieldSynced} from 'mattermost-redux/utils/property_utils';
+
 import * as Menu from 'components/menu';
 import Toggle from 'components/toggle';
 
@@ -146,7 +148,11 @@ const DotMenu = ({
         }));
     };
 
-    const isSynced = Boolean(field.attrs.ldap || field.attrs.saml);
+    // Also true when the field is synced via OpenID Connect (attrs.openid), even
+    // though this page offers no link/unlink action for that source (it's set
+    // through the SSO configuration): the field is still externally written and
+    // must read as locked.
+    const isSynced = isPropertyFieldSynced(field);
 
     // Linked fields take their type and options from the template they link to.
     // That rules out editing the ranking (options) and linking to AD/LDAP or SAML
@@ -373,7 +379,7 @@ const DotMenu = ({
                                     return (
                                         <FormattedMessage
                                             id='admin.system_properties.user_properties.dotmenu.editable_by_users.owner_managed_synced_help'
-                                            defaultMessage='Managed by an integration and synced via AD/LDAP or SAML'
+                                            defaultMessage='Managed by an integration and synced via AD/LDAP, SAML or OpenID Connect'
                                         />
                                     );
                                 }
@@ -388,7 +394,7 @@ const DotMenu = ({
                                 return (
                                     <FormattedMessage
                                         id='admin.system_properties.user_properties.dotmenu.editable_by_users.synced_help'
-                                        defaultMessage='Synced attributes are managed by AD/LDAP or SAML'
+                                        defaultMessage='Synced attributes are managed by AD/LDAP, SAML or OpenID Connect'
                                     />
                                 );
                             })()}

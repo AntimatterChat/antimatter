@@ -14,6 +14,8 @@ import type {FieldType, FieldValueType} from '@mattermost/types/properties';
 import type {UserPropertyField} from '@mattermost/types/properties_user';
 import type {IDMappedObjects} from '@mattermost/types/utilities';
 
+import {isPropertyFieldSynced} from 'mattermost-redux/utils/property_utils';
+
 import useGetFeatureFlagValue from 'components/common/hooks/useGetFeatureFlagValue';
 import * as Menu from 'components/menu';
 
@@ -115,8 +117,8 @@ const SelectType = (props: Props) => {
                     return null;
                 }
 
-                const isSyncing = props.field.attrs.ldap || props.field.attrs.saml;
-                const disabled = Boolean(isSyncing && !canSync);
+                const isSyncing = isPropertyFieldSynced(props.field);
+                const disabled = isSyncing && !canSync;
 
                 return (
                     <Menu.Item
@@ -167,7 +169,7 @@ type TypeDescriptor = {
     label: MessageDescriptor;
 
     hidden?: boolean;
-    canSync?: boolean; // ldap/saml
+    canSync?: boolean; // ldap/saml/openid
 };
 
 const TYPE_DESCRIPTOR: IDMappedObjects<TypeDescriptor> = {

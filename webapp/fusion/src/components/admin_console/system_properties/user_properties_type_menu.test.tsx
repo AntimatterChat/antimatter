@@ -155,6 +155,19 @@ describe('UserPropertyTypeMenu', () => {
         expect(screen.getByRole('menuitemradio', {name: 'Select'})).toHaveAttribute('aria-disabled', 'true');
     });
 
+    it('disables non-supported options when openid-linked', async () => {
+        renderComponent({...baseField, attrs: {...baseField.attrs, openid: 'department'}});
+
+        // Open the menu
+        await userEvent.click(screen.getByText('Text'));
+
+        // Non-text should be disabled, same as ldap/saml
+        expect(screen.getByRole('menuitemradio', {name: 'Phone'})).toHaveAttribute('aria-disabled', 'true');
+        expect(screen.getByRole('menuitemradio', {name: 'URL'})).toHaveAttribute('aria-disabled', 'true');
+        expect(screen.getByRole('menuitemradio', {name: 'Select'})).toHaveAttribute('aria-disabled', 'true');
+        expect(screen.getByRole('menuitemradio', {name: 'Multi-select'})).toHaveAttribute('aria-disabled', 'true');
+    });
+
     it('shows check icon for current type', async () => {
         const selectField = {
             ...baseField,
