@@ -1525,6 +1525,17 @@ export default class PluginRegistry {
     });
 
     /**
+     * Register a short status chip shown beside the conversation's name in Fusion's chat header, as Fusion's own
+     * "Has guests" and "Restricted" chips (for example the channel's next scheduled call). Receives {channel}; return
+     * null when there's nothing to show. Give it Fusion's look with the am-head-chip class (am-live while something is
+     * on). Fusion only: the classic web app has no such place (feature-detect it). Cleaned up automatically when the
+     * plugin is removed. Returns a unique identifier.
+     */
+    registerChannelHeaderChip = reArg(['component'], ({component}: DPluginComponentProp) => {
+        return this.dispatchPluginComponentAction('ChannelHeaderChip', component);
+    });
+
+    /**
      * Register a component rendered above the message input in both the center-channel composer
      * and the thread/RHS composer. Receives {channel}; return null when nothing should show.
      * Multiple registrations stack. Cleaned up automatically when the plugin is removed.

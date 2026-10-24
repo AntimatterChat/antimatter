@@ -40,6 +40,7 @@ export type PluginsState = {
         MainMenu: MainMenuAction[];
         ChannelHeader: ChannelHeaderAction[];
         ChannelHeaderIcon: ChannelHeaderIconComponent[];
+        ChannelHeaderChip: ChannelHeaderChipComponent[];
         ChannelHeaderButton: ChannelHeaderButtonAction[];
         MobileChannelHeaderButton: MobileChannelHeaderButtonAction[];
         AppBar: AppBarAction[];
@@ -489,6 +490,10 @@ export type SidebarBrowseOrAddChannelMenuAction = PluginComponent & {
 export type ChannelIconOverrideRegistration = PluginComponent & {
     matcher: (state: GlobalState, channel: Channel) => boolean;
     iconName: IconGlyphTypes;
+};
+
+export type ChannelHeaderChipComponent = PluginComponent & {
+    component: React.ComponentType<{channel: Channel}>;
 };
 
 export type ChannelComposerBannerComponent = PluginComponent & {

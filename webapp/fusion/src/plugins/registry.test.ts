@@ -299,6 +299,43 @@ describe('PluginRegistry — registerChannelComposerBannerComponent', () => {
     });
 });
 
+describe('PluginRegistry — registerChannelHeaderChip', () => {
+    const PLUGIN_ID = 'test_plugin';
+
+    beforeEach(() => {
+        mockCurrentStore = createStore(pluginsReducer);
+    });
+
+    function getChips() {
+        return mockCurrentStore.getState().components.ChannelHeaderChip;
+    }
+
+    it('starts empty, and adds an entry with the plugin id and component', () => {
+        expect(getChips()).toEqual([]);
+        const registry = new PluginRegistry(PLUGIN_ID);
+        const component = () => null;
+        const id = registry.registerChannelHeaderChip({component});
+
+        const entries = getChips();
+        expect(entries).toHaveLength(1);
+        expect(entries[0]).toEqual(expect.objectContaining({id, pluginId: PLUGIN_ID, component}));
+    });
+
+    it('REMOVED_WEBAPP_PLUGIN sweeps entries for that plugin and leaves others intact', () => {
+        new PluginRegistry(PLUGIN_ID).registerChannelHeaderChip({component: () => null});
+        new PluginRegistry('other_plugin').registerChannelHeaderChip({component: () => null});
+
+        mockCurrentStore.dispatch({
+            type: ActionTypes.REMOVED_WEBAPP_PLUGIN,
+            data: {id: PLUGIN_ID},
+        });
+
+        const entries = getChips();
+        expect(entries).toHaveLength(1);
+        expect(entries[0].pluginId).toBe('other_plugin');
+    });
+});
+
 describe('PluginRegistry — registerChannelIntro', () => {
     const PLUGIN_ID = 'test_plugin';
 

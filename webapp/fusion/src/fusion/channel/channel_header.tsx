@@ -42,6 +42,7 @@ import type {PluginComponent, SearchButtonsComponent, SearchSuggestionsComponent
 
 import CallButton, {OtherCallProviders} from './call_button';
 import ChannelNameMenu from './channel_name_menu';
+import HeaderAppChips from './header_app_chips';
 import HeaderTopic from './header_topic';
 
 const NO_CHANNELS: Channel[] = [];
@@ -244,6 +245,7 @@ export default function ChannelHeader({channel}: {channel: Channel}) {
                         {formatMessage({id: 'fusion.header.policy', defaultMessage: 'Restricted'})}
                     </span>
                 )}
+                <HeaderAppChips channel={channel}/>
                 {!direct && (
                     <span className={am('ch-labels')}>
                         <ChannelAttributeLabels

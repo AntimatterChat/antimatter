@@ -15,6 +15,16 @@
 :is(.am-app, .am-layer) .am-search-scopes { display: flex; flex-wrap: wrap; gap: 6px; padding: 6px 8px; border-bottom: 1px solid var(--am-line); }
 :is(.am-app, .am-layer) .am-search-scopes > button { padding: 3px 8px; border-radius: 8px; border: 1px solid var(--am-line); }
 :is(.am-app, .am-layer) .am-search-scope-chip { display: inline-flex; align-items: center; gap: 4px; padding: 0 6px; height: 22px; border-radius: 6px; background: var(--am-matter-soft); color: var(--am-text); font-size: 12px; }
+// Apps' chips beside the conversation's name (registerChannelHeaderChip, header_app_chips.tsx), in the look of Fusion's
+// own "Has guests" chip: neutral, green while something is on (am-live). They give way first when the header is short.
+:is(.am-app, .am-layer) .am-head-chips { display: inline-flex; align-items: center; gap: 6px; min-width: 0; flex: 0 1 auto; overflow: hidden; }
+:is(.am-app, .am-layer) .am-head-chips:empty { display: none; }
+:is(.am-app, .am-layer) .am-head-chip { display: inline-flex; align-items: center; gap: 6px; min-width: 0; max-width: 300px; height: 22px; margin: 0; padding: 0 8px; border: 0; border-radius: 10px; background: var(--am-raise-2); color: var(--am-text-2); font: 600 11.5px var(--am-font-ui); white-space: nowrap; cursor: pointer; }
+:is(.am-app, .am-layer) .am-head-chip > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+:is(.am-app, .am-layer) .am-head-chip:hover { background: var(--am-hover); color: var(--am-text); }
+:is(.am-app, .am-layer) .am-head-chip:focus-visible { outline: 2px solid var(--am-matter); outline-offset: 1px; }
+:is(.am-app, .am-layer) .am-head-chip.am-live { background: color-mix(in srgb, var(--am-ok) 18%, transparent); color: var(--am-ok); }
+:is(.am-app, .am-layer) .am-head-chip.am-live:hover { background: color-mix(in srgb, var(--am-ok) 26%, transparent); }
 :is(.am-app, .am-layer) .am-head-plugins { display: inline-flex; align-items: center; gap: 2px; }
 :is(.am-app, .am-layer) .am-head-plugins:empty { display: none; }
 :is(.am-app, .am-layer) .am-head-plugins :is(button, a) { width: 34px; height: 34px; margin: 0; padding: 0; border: 0; border-radius: 8px; display: grid; place-items: center; background: none; color: var(--am-muted); position: static; }
