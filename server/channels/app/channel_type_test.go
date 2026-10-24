@@ -45,6 +45,29 @@ func withoutChannelTypeProps(props map[string]any) map[string]any {
 	return rest
 }
 
+// activateVoiceChannelsApp loads and activates a minimal stand-in for the voice-channels app, so that
+// App.CreateChannel allows creating a voice channel (§3.4: the app sets up and enforces the channel's calls).
+func activateVoiceChannelsApp(t *testing.T, th *TestHelper) {
+	t.Helper()
+	pluginCode := `
+	package main
+
+	import (
+		"github.com/mattermost/mattermost/server/public/plugin"
+	)
+
+	type MyPlugin struct {
+		plugin.MattermostPlugin
+	}
+
+	func main() {
+		plugin.ClientMain(&MyPlugin{})
+	}
+	`
+	pluginManifest := `{"id": "` + voiceChannelsPluginID + `", "server": {"executable": "backend.exe"}}`
+	setupPluginAPITest(t, pluginCode, pluginManifest, voiceChannelsPluginID, th.App, th.Context)
+}
+
 // storedChannelTypeValues reads a channel's rows, by field name.
 func storedChannelTypeValues(t *testing.T, th *TestHelper, channelID string) map[string]string {
 	t.Helper()
@@ -92,6 +115,7 @@ func TestChannelTypesSetup(t *testing.T) {
 func TestCreateChannelWithType(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)
+	activateVoiceChannelsApp(t, th) // voice presets below need the app active (B6); see TestCreateVoiceChannelNeedsApp.
 
 	t.Run("a preset is stored as its non-default settings and filled in", func(t *testing.T) {
 		channel := createTypedChannel(t, th, model.ChannelPresetForumQA)
@@ -255,6 +279,7 @@ func TestChannelTypeCacheAndCluster(t *testing.T) {
 func TestUpdateChannelType(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)
+	activateVoiceChannelsApp(t, th) // "the type is fixed" below makes a voice channel; needs the app active (B6).
 
 	t.Run("another preset of the type", func(t *testing.T) {
 		channel := createTypedChannel(t, th, model.ChannelPresetForumAgora)
@@ -399,5 +424,51 @@ func TestChannelTypeExportImport(t *testing.T) {
 		require.NotNil(t, appErr)
 		assert.Equal(t, "app.import.validate_channel_import_data.am_type_invalid.error", appErr.Id)
 		require.NotNil(t, th.App.importChannel(th.Context, data, true), "a dry run says so too")
+	})
+}
+
+// TestCreateVoiceChannelNeedsApp covers B6 (§3.4 of the design): a voice channel needs the voice-channels app active,
+// from every creation path (they all reach App.CreateChannel).
+func TestCreateVoiceChannelNeedsApp(t *testing.T) {
+	mainHelper.Parallel(t)
+	th := Setup(t).InitBasic(t)
+
+	newVoiceChannel := func(t *testing.T, preset string) (*model.Channel, *model.AppError) {
+		t.Helper()
+		return th.App.CreateChannel(th.Context, &model.Channel{
+			DisplayName: "Voice", Name: "voice-" + model.NewId(), Type: model.ChannelTypeOpen, TeamId: th.BasicTeam.Id, CreatorId: th.BasicUser.Id,
+			Props: map[string]any{model.ChannelPropPreset: preset},
+		}, false)
+	}
+
+	t.Run("refused without the app, via the preset", func(t *testing.T) {
+		_, appErr := newVoiceChannel(t, model.ChannelPresetVoiceTalk)
+		require.NotNil(t, appErr)
+		assert.Equal(t, "api.channel.type.voice_unavailable.app_error", appErr.Id)
+		assert.Equal(t, http.StatusBadRequest, appErr.StatusCode)
+	})
+
+	t.Run("refused without the app, via explicit fields", func(t *testing.T) {
+		_, appErr := th.App.CreateChannel(th.Context, &model.Channel{
+			DisplayName: "Voice", Name: "voice-" + model.NewId(), Type: model.ChannelTypeOpen, TeamId: th.BasicTeam.Id, CreatorId: th.BasicUser.Id,
+			Props: map[string]any{model.ChannelPropType: model.AMChannelTypeVoice},
+		}, false)
+		require.NotNil(t, appErr)
+		assert.Equal(t, "api.channel.type.voice_unavailable.app_error", appErr.Id)
+	})
+
+	t.Run("a non-voice channel never needs the app", func(t *testing.T) {
+		_, appErr := newVoiceChannel(t, model.ChannelPresetForumQA)
+		require.Nil(t, appErr)
+		_, appErr = newVoiceChannel(t, model.ChannelPresetTextChat)
+		require.Nil(t, appErr)
+	})
+
+	t.Run("works once the app is active", func(t *testing.T) {
+		activateVoiceChannelsApp(t, th)
+		channel, appErr := newVoiceChannel(t, model.ChannelPresetVoiceStage)
+		require.Nil(t, appErr)
+		assert.Equal(t, model.AMChannelTypeVoice, channel.Props[model.ChannelPropType])
+		assert.Equal(t, model.ChannelPresetVoiceStage, channel.Props[model.ChannelPropPreset])
 	})
 }
