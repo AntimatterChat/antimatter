@@ -24787,6 +24787,22 @@
     "defaultMessage": "Loading…",
     "description": ""
   },
+  "fusion.collections.markAllRead": {
+    "defaultMessage": "Mark all as read",
+    "description": "Title, label and confirm button of the threads tab's mark-all-read action (the whole community: there's no per-channel bulk mark-read)."
+  },
+  "fusion.collections.markAllReadFailed": {
+    "defaultMessage": "Threads couldn't be marked as read",
+    "description": ""
+  },
+  "fusion.collections.markAllReadMessage": {
+    "defaultMessage": "Every thread you follow in this community will show as read.",
+    "description": "Confirmation message before marking every followed thread of the community as read."
+  },
+  "fusion.collections.markAllReadTitle": {
+    "defaultMessage": "Mark all threads as read?",
+    "description": "Confirmation dialog title before marking every followed thread of the community as read."
+  },
   "fusion.collections.replies": {
     "defaultMessage": "{count, plural, one {# reply} other {# replies}}",
     "description": ""
@@ -24806,6 +24822,18 @@
   "fusion.collections.threadIn": {
     "defaultMessage": "Thread · {where}",
     "description": ""
+  },
+  "fusion.collections.threadsAll": {
+    "defaultMessage": "All",
+    "description": "The threads tab's first sub-tab, showing every followed thread."
+  },
+  "fusion.collections.threadsFilter": {
+    "defaultMessage": "Show threads",
+    "description": "Label of the threads tab's All/Unreads sub-tabs."
+  },
+  "fusion.collections.threadsUnread": {
+    "defaultMessage": "Unreads",
+    "description": "The threads tab's second sub-tab, showing only followed threads with unread replies."
   },
   "fusion.communityAccess.allowedDomains": {
     "defaultMessage": "Allow only people with a specific email domain to join this community",
@@ -26651,6 +26679,10 @@
     "defaultMessage": "Direct messages",
     "description": ""
   },
+  "fusion.home.unreads": {
+    "defaultMessage": "Unreads",
+    "description": "Home sidebar link to the Unreads view (F125), next to Followed threads, Drafts, Scheduled and Recaps."
+  },
   "fusion.home.you": {
     "defaultMessage": "You: {text}",
     "description": ""
@@ -27167,6 +27199,10 @@
     "defaultMessage": "Moderators — {count}",
     "description": ""
   },
+  "fusion.members.noMatch": {
+    "defaultMessage": "No member matches.",
+    "description": "Shown under the member search box when nobody matches the typed text."
+  },
   "fusion.members.offline": {
     "defaultMessage": "Offline — {count}",
     "description": ""
@@ -27182,6 +27218,10 @@
   "fusion.members.role": {
     "defaultMessage": "{role} — {count}",
     "description": ""
+  },
+  "fusion.members.search": {
+    "defaultMessage": "Search members",
+    "description": "Placeholder and label of the member list's search box."
   },
   "fusion.members.team": {
     "defaultMessage": "{team} — {count}",
@@ -27370,6 +27410,10 @@
   "fusion.messageMenu.reactWith": {
     "defaultMessage": "React with :{name}:",
     "description": ""
+  },
+  "fusion.messageMenu.read": {
+    "defaultMessage": "Mark as read",
+    "description": "Thread menu item, in place of \"Mark as unread\" once the thread has no unread replies left."
   },
   "fusion.messageMenu.readAloud": {
     "defaultMessage": "Read aloud",
@@ -30931,6 +30975,10 @@
     "defaultMessage": "More thread actions",
     "description": ""
   },
+  "fusion.threadMenu.openInChannel": {
+    "defaultMessage": "Open in channel",
+    "description": "Thread menu item: leaves the thread panel for where the first message lives in the channel."
+  },
   "fusion.threadToChannel.create": {
     "defaultMessage": "Create the channel",
     "description": "Button of the 'Make it a channel' dialog."
@@ -31055,6 +31103,10 @@
     "defaultMessage": "{count, plural, one {Added {names} to {where}} other {Added {names} to {where}}}",
     "description": ""
   },
+  "fusion.toast.allThreadsRead": {
+    "defaultMessage": "All threads marked as read",
+    "description": "Toast after the threads tab's mark-all-read action succeeds."
+  },
   "fusion.toast.badThemeCode": {
     "defaultMessage": "That is not a theme code. It starts with am1: followed by nine colours.",
     "description": ""
@@ -31118,6 +31170,14 @@
   "fusion.toast.linkCopied": {
     "defaultMessage": "Link copied",
     "description": ""
+  },
+  "fusion.toast.madeChannelAdmin": {
+    "defaultMessage": "{name} is now a channel admin",
+    "description": "Toast after making a channel member a channel admin from their menu; {name} is the person."
+  },
+  "fusion.toast.madeChannelMember": {
+    "defaultMessage": "{name} is now a member",
+    "description": "Toast after making a channel admin a plain member again from their menu; {name} is the person."
   },
   "fusion.toast.madeDefault": {
     "defaultMessage": "{name} is the default channel",
@@ -31227,6 +31287,10 @@
     "defaultMessage": "Theme imported",
     "description": ""
   },
+  "fusion.toast.threadRead": {
+    "defaultMessage": "Thread marked as read",
+    "description": ""
+  },
   "fusion.toast.threadUnread": {
     "defaultMessage": "Thread marked as unread",
     "description": ""
@@ -31319,6 +31383,26 @@
     "defaultMessage": "{names} {count, plural, one {is} other {are}} typing…",
     "description": ""
   },
+  "fusion.unreads.empty": {
+    "defaultMessage": "You're all caught up.",
+    "description": "Empty state of the Unreads view (F125) when nothing is unread."
+  },
+  "fusion.unreads.loading": {
+    "defaultMessage": "Loading…",
+    "description": ""
+  },
+  "fusion.unreads.mark": {
+    "defaultMessage": "Mark read",
+    "description": "Button on an unread conversation in the Unreads view (F125)."
+  },
+  "fusion.unreads.markReadLabel": {
+    "defaultMessage": "Mark {name} as read",
+    "description": "Accessible label of the Unreads view's per-conversation \"Mark read\" button; {name} is the conversation."
+  },
+  "fusion.unreads.title": {
+    "defaultMessage": "Unreads",
+    "description": "Title of the Unreads view (F125): every unread conversation of the community, newest first."
+  },
   "fusion.userMenu.block": {
     "defaultMessage": "Block…",
     "description": "Menu of a person: block them (opens a confirmation)."
@@ -31358,6 +31442,14 @@
   "fusion.userMenu.liftTimeout": {
     "defaultMessage": "Remove timeout",
     "description": ""
+  },
+  "fusion.userMenu.makeChannelAdmin": {
+    "defaultMessage": "Make channel admin",
+    "description": "Menu item on a channel member, for those allowed to manage channel roles."
+  },
+  "fusion.userMenu.makeMember": {
+    "defaultMessage": "Make member",
+    "description": "Menu item on a channel admin, to make them a plain member again."
   },
   "fusion.userMenu.mention": {
     "defaultMessage": "Mention",

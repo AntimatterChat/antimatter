@@ -7,7 +7,7 @@ import {shallowEqual, useDispatch, useSelector} from 'react-redux';
 import {Link, useLocation} from 'react-router-dom';
 
 import {Client4} from 'mattermost-redux/client';
-import {getDirectAndGroupChannels} from 'mattermost-redux/selectors/entities/channels';
+import {getDirectAndGroupChannels, getUnreadChannels} from 'mattermost-redux/selectors/entities/channels';
 import {getFeatureFlagValue} from 'mattermost-redux/selectors/entities/general';
 import {getUnreadFinishedRecapsBadge} from 'mattermost-redux/selectors/entities/recaps';
 import {getScheduledPostsByTeamCount, isScheduledPostsEnabled} from 'mattermost-redux/selectors/entities/scheduled_posts';
@@ -108,6 +108,7 @@ export default function HomeSidebar() {
     const draftCount = useSelector(getDraftsCount);
     const scheduledEnabled = useSelector(isScheduledPostsEnabled);
     const scheduledCount = useSelector((state: GlobalState) => (team ? getScheduledPostsByTeamCount(state, team.id, true) : 0));
+    const unreadCount = useSelector(getUnreadChannels).length;
 
     // Antimatter: recaps once they're on and an admin picked a model connection for them, or while the person has
     // recaps to read.
@@ -115,7 +116,7 @@ export default function HomeSidebar() {
     const pathname = useLocation().pathname;
 
     // The pages of the home: drafts, scheduled messages and AI recaps, in the main column.
-    const page = (path: string, icon: 'pen' | 'clock' | 'sparkle', label: string, count = 0) => (
+    const page = (path: string, icon: 'pen' | 'clock' | 'sparkle' | 'inbox', label: string, count = 0) => (
         <Link
             to={`/${team!.name}/${path}`}
             className={am('ch', {active: pathname.startsWith(`/${team!.name}/${path}`)})}
@@ -231,6 +232,7 @@ export default function HomeSidebar() {
                     {link('mentions', 'at', formatMessage({id: 'fusion.home.mentions', defaultMessage: 'Mentions'}), mentions)}
                     {link('threads', 'thread', formatMessage({id: 'fusion.home.threads', defaultMessage: 'Followed threads'}), threadsBadge)}
                     {link('saved', 'pin', formatMessage({id: 'fusion.home.saved', defaultMessage: 'Saved messages'}))}
+                    {team && page('unreads', 'inbox', formatMessage({id: 'fusion.home.unreads', defaultMessage: 'Unreads'}), unreadCount)}
                     {team && page('drafts', 'pen', formatMessage({id: 'fusion.home.drafts', defaultMessage: 'Drafts'}), draftCount)}
                     {team && scheduledEnabled && page(SCHEDULED_POST_URL_SUFFIX, 'clock', formatMessage({id: 'fusion.home.scheduled', defaultMessage: 'Scheduled'}), scheduledCount)}
                     {team && recapsEnabled && page('recaps', 'sparkle', formatMessage({id: 'fusion.home.recaps', defaultMessage: 'Recaps'}), recapsBadge)}

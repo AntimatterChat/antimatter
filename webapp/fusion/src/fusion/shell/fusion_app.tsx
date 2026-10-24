@@ -114,8 +114,9 @@ function Frame({children}: Props) {
     // Focus mode hides your unread marks, in the tab's title and icon and the desktop app's badge too.
     const hideUnreads = useHideUnreads();
 
-    // The home's pages (drafts, scheduled messages, recaps, threads) belong to no channel: no member list beside them.
-    const onPage = Boolean(useRouteMatch({path: `/:team/(drafts|${SCHEDULED_POST_URL_SUFFIX}|recaps|threads)`}));
+    // The home's pages (drafts, scheduled messages, recaps, threads, unreads) belong to no channel: no member list
+    // beside them.
+    const onPage = Boolean(useRouteMatch({path: `/:team/(drafts|${SCHEDULED_POST_URL_SUFFIX}|recaps|threads|unreads)`}));
     const channelId = useSelector(getCurrentChannelId);
     const appRef = useRef<HTMLDivElement>(null);
 

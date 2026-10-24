@@ -35,6 +35,13 @@ const Recaps = makeAsyncComponent('Recaps', lazy(() => import('components/recaps
         </div>
     ),
 );
+const Unreads = makeAsyncComponent('Unreads', lazy(() => import('fusion/unreads/unreads_view')),
+    (
+        <div className='app__content'>
+            <LoadingScreen/>
+        </div>
+    ),
+);
 const PlaybookRunner = makeAsyncComponent('PlaybookRunner', lazy(() => import('components/channel_layout/playbook_runner')));
 
 type Props = PropsFromRedux & OwnProps;
@@ -113,6 +120,10 @@ export default class CenterChannel extends React.PureComponent<Props, State> {
                     <Route
                         path={`/:team(${TEAM_NAME_PATH_PATTERN})/${SCHEDULED_POST_URL_SUFFIX}`}
                         component={Drafts}
+                    />
+                    <Route
+                        path={`/:team(${TEAM_NAME_PATH_PATTERN})/unreads`}
+                        component={Unreads}
                     />
 
                     <Redirect to={lastChannelPath}/>
