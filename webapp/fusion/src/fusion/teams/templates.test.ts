@@ -57,6 +57,22 @@ describe('parseTemplate', () => {
         });
     });
 
+    test('keeps a channel\'s known preset, and drops one that isn\'t (Antimatter channel types)', () => {
+        const parsed = parseTemplate(JSON.stringify({
+            version: 1,
+            server_categories: [],
+            channels: [
+                {name: 'questions', display_name: 'Questions', type: 'O', preset: 'forum_qa'},
+                {name: 'random', display_name: 'Random', type: 'O', preset: 'not-a-preset'},
+            ],
+            roles: [],
+        }));
+        expect(parsed?.channels).toEqual([
+            {name: 'questions', display_name: 'Questions', type: 'O', purpose: undefined, header: undefined, preset: 'forum_qa'},
+            {name: 'random', display_name: 'Random', type: 'O', purpose: undefined, header: undefined, preset: undefined},
+        ]);
+    });
+
     test('reads town-square, the default channel\'s former name, in older templates as general', () => {
         const parsed = parseTemplate(JSON.stringify({
             version: 1,
@@ -161,6 +177,23 @@ describe('applyTemplate', () => {
         expect(result).toEqual({data: {failed: 1}});
         expect(createGroupWithUserIds).toHaveBeenCalled();
         expect(saveServerCategories).toHaveBeenCalledWith('team', {categories: [{name: 'Info', locked: true}], removed: ['Old']});
+    });
+
+    test('a channel\'s preset is sent as props.am_preset; one without a preset gets no props (Antimatter channel types)', async () => {
+        (createChannel as jest.Mock).mockImplementation((channel) => ({type: 'CREATED', data: {...channel, id: channel.name}}));
+        await run({
+            version: 1,
+            server_categories: [],
+            channels: [
+                {name: 'questions', display_name: 'Questions', type: 'O', preset: 'forum_qa'},
+                {name: 'general-talk', display_name: 'General talk', type: 'O'},
+            ],
+            roles: [],
+        });
+        expect(createChannel).toHaveBeenCalledWith(expect.objectContaining({name: 'questions', props: {am_preset: 'forum_qa'}}), '');
+        expect(createChannel).toHaveBeenCalledWith(expect.objectContaining({name: 'general-talk'}), '');
+        const plainCall = (createChannel as jest.Mock).mock.calls.find((args) => args[0].name === 'general-talk');
+        expect(plainCall[0].props).toBeUndefined();
     });
 
     test('sets the kind of community the template makes', async () => {

@@ -2,7 +2,7 @@
 // See LICENSE.txt for license information.
 
 import type {ServerCategory} from '@mattermost/types/channel_categories';
-import type {Channel} from '@mattermost/types/channels';
+import type {Channel, ChannelPresetId} from '@mattermost/types/channels';
 import type {TeamKind} from '@mattermost/types/teams';
 
 import {saveServerCategories} from 'mattermost-redux/actions/channel_categories';
@@ -13,8 +13,10 @@ import {Client4} from 'mattermost-redux/client';
 import {General, Permissions} from 'mattermost-redux/constants';
 import {getManagedCategoryMappings} from 'mattermost-redux/selectors/entities/channel_categories';
 import {getMyChannels} from 'mattermost-redux/selectors/entities/channels';
+import {getChannelTypeInfo} from 'mattermost-redux/selectors/entities/channel_types';
 import {getTeam} from 'mattermost-redux/selectors/entities/teams';
 
+import {isChannelPresetId} from 'fusion/channel/channel_type_presets';
 import {fileChannel, findServerCategory, getServerCategories} from 'fusion/sidebar/server_categories';
 
 import type {ActionFuncAsync, GlobalState} from 'types/store';
@@ -28,7 +30,10 @@ import {loadTeams} from './teams';
 export type TeamTemplate = {
     version: 1;
     server_categories: Array<{name: string; locked: boolean; channels: string[]}>;
-    channels: Array<{name: string; display_name: string; type: 'O' | 'P'; purpose?: string; header?: string}>;
+
+    // preset (Antimatter channel types): the channel's kind of channel, e.g. 'forum_qa'. Left out, or unknown on
+    // import, makes a plain text Chat channel, as before channel types. The channel's other contents are unchanged.
+    channels: Array<{name: string; display_name: string; type: 'O' | 'P'; purpose?: string; header?: string; preset?: ChannelPresetId}>;
     roles: Array<{display_name: string; color?: string; hoist?: boolean; self_assignable?: boolean; permissions?: string[]}>;
     onboarding?: string;
 
@@ -116,7 +121,12 @@ export function exportTemplate(teamId: string): ActionFuncAsync<TeamTemplate> {
                     locked: c.locked,
                     channels: Object.entries(mappings).filter(([, name]) => name.toLowerCase() === c.name.toLowerCase()).map(([id]) => byId.get(id)?.name).filter((n): n is string => Boolean(n)),
                 })),
-                channels: channels.map((c) => ({name: c.name, display_name: c.display_name, type: c.type as 'O' | 'P', purpose: c.purpose || undefined, header: c.header || undefined})),
+                channels: channels.map((c) => {
+                    // Plain text Chat, the default every channel had before channel types, is left out: it exports
+                    // the same as before them.
+                    const preset = getChannelTypeInfo(state, c.id).preset;
+                    return {name: c.name, display_name: c.display_name, type: c.type as 'O' | 'P', purpose: c.purpose || undefined, header: c.header || undefined, preset: preset && preset !== 'text_chat' ? preset : undefined};
+                }),
                 roles: roles.map((r, i) => ({display_name: r.display_name, color: r.color || undefined, hoist: r.hoist, self_assignable: r.self_assignable, permissions: permissions[i]})),
                 onboarding: getTeam(state, teamId)?.onboarding || undefined,
                 kind: getTeam(state, teamId)?.kind || undefined,
@@ -148,7 +158,14 @@ export function parseTemplate(json: string): TeamTemplate | undefined {
             map((c) => ({name: text(c.name), locked: c.locked === true, channels: strings(c.channels).map(channelName)})).
             filter((c) => c.name),
         channels: objects(raw.channels).
-            map((c) => ({name: channelName(text(c.name)), display_name: text(c.display_name), type: c.type === 'P' ? 'P' as const : 'O' as const, purpose: text(c.purpose) || undefined, header: text(c.header) || undefined})).
+            map((c) => ({
+                name: channelName(text(c.name)),
+                display_name: text(c.display_name),
+                type: c.type === 'P' ? 'P' as const : 'O' as const,
+                purpose: text(c.purpose) || undefined,
+                header: text(c.header) || undefined,
+                preset: typeof c.preset === 'string' && isChannelPresetId(c.preset) ? c.preset : undefined,
+            })).
             filter((c) => (/^[a-z0-9]+([a-z0-9_-]*[a-z0-9]+)*$/).test(c.name) && c.display_name),
         roles: objects(raw.roles).
             map((r) => ({
@@ -177,7 +194,10 @@ export function applyTemplate(teamId: string, template: TeamTemplate): ActionFun
             return result;
         };
         const byName = new Map<string, Channel>(getMyChannels(getState()).filter((c) => c.team_id === teamId).map((c) => [c.name, c]));
-        const created = await Promise.all(template.channels.filter((c) => !byName.has(c.name)).map((c) => dispatch(createChannel({team_id: teamId, name: c.name, display_name: c.display_name, type: c.type, purpose: c.purpose || '', header: c.header || ''} as Channel, ''))));
+        const created = await Promise.all(template.channels.filter((c) => !byName.has(c.name)).map((c) => dispatch(createChannel({
+            team_id: teamId, name: c.name, display_name: c.display_name, type: c.type, purpose: c.purpose || '', header: c.header || '',
+            ...(c.preset ? {props: {am_preset: c.preset}} : {}),
+        } as Channel, ''))));
         for (const result of created) {
             failedIf(result);
             if ('data' in result && result.data) {
