@@ -25,7 +25,11 @@ const speakFrench = () => jest.spyOn(intlModule, 'useIntl').mockReturnValue(crea
 
 // The category's channels, the same list every time, as the memoised selector gives it.
 const mockChannelIds = ['ops'];
-jest.mock('selectors/views/channel_sidebar', () => ({makeGetFilteredChannelIdsForCategory: () => () => mockChannelIds}));
+const mockNoUnreadIds: string[] = [];
+jest.mock('selectors/views/channel_sidebar', () => ({
+    makeGetFilteredChannelIdsForCategory: () => () => mockChannelIds,
+    makeGetUnreadIdsForCategory: () => () => mockNoUnreadIds,
+}));
 jest.mock('mattermost-redux/actions/channel_categories', () => ({
     ...jest.requireActual('mattermost-redux/actions/channel_categories'),
     setCategoryCollapsed: jest.fn(() => ({type: 'MOCK_SET_CATEGORY_COLLAPSED'})),
