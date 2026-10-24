@@ -6,6 +6,7 @@ package mail
 import (
 	"bytes"
 	"context"
+	"encoding/base64"
 	"errors"
 	"fmt"
 	"io"
@@ -806,7 +807,7 @@ func TestSendMailMIMEStructure(t *testing.T) {
 		assert.Contains(t, lower, "method=request", "the attachment's content type parameters must be kept")
 		assert.Contains(t, lower, "content-disposition: attachment", "a calendar invite must be a real attachment, not inline")
 		assert.Contains(t, data, `filename="invite.ics"`, "the attachment must keep its file name")
-		assert.Contains(t, data, "BEGIN:VCALENDAR", "the attachment's data must be sent")
+		assert.Contains(t, data, base64.StdEncoding.EncodeToString(m.attachmentData), "the attachment's data must be sent (base64-encoded)")
 	})
 }
 
