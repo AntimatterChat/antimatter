@@ -90,4 +90,15 @@ describe('fusion/calls/CallEvents', () => {
         rerender(<CallEvents/>);
         expect(showToast).toHaveBeenLastCalledWith('A moderator undeafened you in Lobby');
     });
+
+    test('in a stage\'s audience, what they can\'t do says why, and an invitation to speak is told', () => {
+        const fire = mockCalls();
+        renderWithContext(<CallEvents/>, stateIn('room'));
+
+        fire('error', {kind: 'stage-audience'} as CallsErrorEvent);
+        expect(showToast).toHaveBeenLastCalledWith('Only speakers can talk here: request to speak, and a moderator may invite you');
+
+        fire('stage-invite', {channelId: 'room', byUserId: 'mod'});
+        expect(showToast).toHaveBeenLastCalledWith('A moderator invited you to speak in Lobby: unmute when you\'re ready');
+    });
 });

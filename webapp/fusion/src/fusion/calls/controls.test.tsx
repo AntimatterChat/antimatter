@@ -245,4 +245,43 @@ describe('fusion/calls/controls CallControls', () => {
         await userEvent.click(deafen);
         expect(mockActions.toggleDeafen).toHaveBeenCalledWith(my);
     });
+
+    // A stage's audience (design CHANNEL_TYPES_DESIGN.md §4.4): Request to speak and Leave, with Mute shown locked.
+    test('in a stage\'s audience: the microphone locked, Request to speak and Leave only', async () => {
+        mockCalls();
+        const my = myCall({voice: true, muted: true, audience: true, videoAllowed: false, screenAllowed: false});
+        renderWithContext(<CallControls my={my}/>);
+
+        const mute = screen.getByRole('button', {name: 'Only speakers can talk here'});
+        expect(mute).toHaveAttribute('aria-disabled', 'true');
+        expect(mute.querySelector('use')).toHaveAttribute('href', '#am-i-mic-lock');
+        await userEvent.click(mute);
+        expect(mockActions.toggleMute).toHaveBeenCalledWith(my);
+
+        await userEvent.click(screen.getByRole('button', {name: 'Request to speak'}));
+        expect(mockActions.toggleHand).toHaveBeenCalledWith(my);
+        await userEvent.click(screen.getByRole('button', {name: 'Disconnect'}));
+        expect(mockActions.leaveCall).toHaveBeenCalled();
+
+        // Nothing else: no deafen, camera, screen share or reactions.
+        expect(screen.getAllByRole('button')).toHaveLength(3);
+        expect(screen.queryByRole('button', {name: 'Camera'})).not.toBeInTheDocument();
+        expect(screen.queryByRole('button', {name: /screen/i})).not.toBeInTheDocument();
+    });
+
+    test('in a stage\'s audience, a raised hand is a request to speak, which can be taken back', () => {
+        mockCalls();
+        renderWithContext(<CallControls my={myCall({muted: true, audience: true, handRaised: true})}/>);
+
+        expect(screen.getByRole('button', {name: 'Cancel your request to speak'})).toHaveAttribute('aria-pressed', 'true');
+    });
+
+    test('a stage\'s speakers have the usual controls', () => {
+        mockCalls();
+        renderWithContext(<CallControls my={myCall({voice: true, audience: false})}/>);
+
+        expect(screen.getByRole('button', {name: 'Mute'})).toBeInTheDocument();
+        expect(screen.getByRole('button', {name: 'Camera'})).toBeInTheDocument();
+        expect(screen.getByRole('button', {name: 'Raise hand'})).toBeInTheDocument();
+    });
 });

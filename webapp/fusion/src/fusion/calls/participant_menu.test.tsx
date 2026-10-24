@@ -22,8 +22,10 @@ const mockActions = {
     openDirect: jest.fn(),
     callUser: jest.fn(),
     makeHost: jest.fn(),
+    moveToAudience: jest.fn(),
 };
 let mockModerate = true;
+let mockStage: {speakers: string[]} | null = null;
 let mockMakeHost = false;
 let mockVoice = true;
 let mockTargets: Array<{id: string; display_name: string}> = [];
@@ -37,6 +39,7 @@ jest.mock('./hooks', () => ({
     useCanMakeHost: () => mockMakeHost,
     useIsVoiceChannel: () => mockVoice,
     useMoveTargets: (channelId: string) => (channelId ? mockTargets : []),
+    useStage: () => mockStage,
 }));
 jest.mock('./extras', () => ({canSetVolume: () => false, getUserVolume: () => 1, setUserVolume: jest.fn()}));
 
@@ -79,6 +82,7 @@ describe('fusion/calls/participant_menu', () => {
         mockMakeHost = false;
         mockVoice = true;
         mockTargets = [];
+        mockStage = null;
         Object.values(mockActions).forEach((fn) => fn.mockClear());
         window.antimatterCalls = {version: 1, moderation: {}} as unknown as AntimatterCallsAPI;
     });
@@ -339,6 +343,82 @@ describe('fusion/calls/participant_menu', () => {
             await openAnswered(participant());
             expect(permissions).not.toHaveBeenCalled();
             expect(item('Kick from voice channel')).not.toBeInTheDocument();
+        });
+    });
+
+    // A stage (design CHANNEL_TYPES_DESIGN.md §4.4): a participant's menu has Move to audience, when Calls says so.
+    describe('in a stage', () => {
+        let permissions: jest.Mock;
+        const perms = (over: Partial<CallsParticipantPermissions> = {}): CallsParticipantPermissions => ({
+            sessionId: 's1',
+            canMute: true,
+            canDeafen: true,
+            canMove: true,
+            canKick: true,
+            ...over,
+        });
+        beforeEach(() => {
+            mockStage = {speakers: ['u1']};
+            permissions = jest.fn();
+            window.antimatterCalls = {version: 1, moderation: {participantPermissions: permissions, moveToAudience: jest.fn()}} as unknown as AntimatterCallsAPI;
+        });
+        const openAnswered = async (p: VoiceParticipant) => {
+            open(p);
+            await act(async () => {
+                await new Promise((resolve) => setTimeout(resolve, 0));
+            });
+        };
+        const toAudience = () => screen.queryByRole('menuitem', {name: /^Move to audience/});
+
+        test('a moderator moves an invited speaker to the audience', async () => {
+            permissions.mockResolvedValue(perms({canMoveToAudience: true}));
+            await openAnswered(participant());
+            await userEvent.click(toAudience()!);
+            expect(mockActions.moveToAudience).toHaveBeenCalledWith(expect.objectContaining({userId: 'u1'}), 'room');
+        });
+
+        test('not when Calls says they may not', async () => {
+            permissions.mockResolvedValue(perms({canMoveToAudience: false}));
+            await openAnswered(participant());
+            expect(toAudience()).not.toBeInTheDocument();
+        });
+
+        test('not when Calls doesn\'t say (an older Calls)', async () => {
+            permissions.mockResolvedValue(perms());
+            await openAnswered(participant());
+            expect(toAudience()).not.toBeInTheDocument();
+            expect(screen.getByRole('menuitem', {name: 'Kick from voice channel'})).toBeInTheDocument();
+        });
+
+        test('not when Calls has no stage requests, nor outside stages', async () => {
+            permissions.mockResolvedValue(perms({canMoveToAudience: true}));
+            window.antimatterCalls = {version: 1, moderation: {participantPermissions: permissions}} as unknown as AntimatterCallsAPI;
+            await openAnswered(participant());
+            expect(toAudience()).not.toBeInTheDocument();
+        });
+
+        test('outside stages, there is no Move to audience', async () => {
+            mockStage = null;
+            permissions.mockResolvedValue(perms({canMoveToAudience: true}));
+            await openAnswered(participant());
+            expect(toAudience()).not.toBeInTheDocument();
+        });
+
+        test('an invited speaker steps down from their own menu', async () => {
+            mockModerate = false;
+            permissions.mockResolvedValue(perms({canMute: false, canDeafen: false, canMove: false, canKick: false, canMoveToAudience: true}));
+            await openAnswered(participant({isMe: true}));
+            expect(screen.queryByText('In Lobby')).not.toBeInTheDocument();
+            await userEvent.click(toAudience()!);
+            expect(mockActions.moveToAudience).toHaveBeenCalledWith(expect.objectContaining({isMe: true}), 'room');
+        });
+
+        test('the audience is neither moved to the audience nor made the host', async () => {
+            mockMakeHost = true;
+            permissions.mockResolvedValue(perms({canMoveToAudience: true}));
+            await openAnswered(participant({audience: true}));
+            expect(toAudience()).not.toBeInTheDocument();
+            expect(screen.queryByRole('menuitem', {name: /Make host/})).not.toBeInTheDocument();
         });
     });
 });
