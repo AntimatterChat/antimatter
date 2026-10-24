@@ -31,12 +31,13 @@ import (
 //     the author of the message, and claimed server-side (assistant_offer.go).
 //   - Nothing is posted and nothing notifies: cards reach their owner's clients over the websocket only.
 //
-// Everything is kept in the key-value store, in the namespace com.antimatter.assistant (apart from the apps'): the
-// feeds (per person and channel, for a week), who has the panel open, the offers and their claims (compare-and-set,
-// so two nodes can't both hand one out), the hourly budgets and the communities' settings.
+// Everything is kept in the key-value store, in the namespace antimatter:assistant: the feeds (per person and
+// channel, for a week), who has the panel open, the offers and their claims (compare-and-set, so two nodes can't both
+// hand one out), the hourly budgets and the communities' settings. An app's ID can't have a colon, so no installed
+// app can read or write this namespace (people's cards carry what their tools gave them).
 
 const (
-	assistantKVNamespace = "com.antimatter.assistant"
+	assistantKVNamespace = "antimatter:assistant"
 
 	assistantFeedPrefix      = "feed_"
 	assistantPresencePrefix  = "presence_"

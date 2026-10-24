@@ -194,6 +194,11 @@ func TestAssistantInsightsRunAsEachViewer(t *testing.T) {
 	})
 }
 
+// The assistant's namespace of the key-value store can't be an app's: no installed app reads people's cards.
+func TestAssistantNamespaceIsNoApps(t *testing.T) {
+	assert.False(t, model.IsValidPluginId(assistantKVNamespace))
+}
+
 // Nobody reads another person's feed, and a card is someone's own to dismiss, pin, mute or post.
 func TestAssistantFeedsArePersonal(t *testing.T) {
 	at := setupAssistantTest(t)
