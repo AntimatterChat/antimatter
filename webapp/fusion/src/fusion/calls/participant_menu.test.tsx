@@ -4,11 +4,11 @@
 import React from 'react';
 
 import {LAYER_ID} from 'fusion/components/layer/layer';
-import {fireEvent, renderWithContext, screen, userEvent} from 'tests/react_testing_utils';
+import {act, fireEvent, renderWithContext, screen, userEvent} from 'tests/react_testing_utils';
 
 import type {VoiceParticipant} from './calls_api';
 import {useParticipantMenu} from './participant_menu';
-import type {AntimatterCallsAPI} from './plugin_api/calls_public_api';
+import type {AntimatterCallsAPI, CallsParticipantPermissions} from './plugin_api/calls_public_api';
 
 const mockActions = {
     hostMute: jest.fn(),
@@ -220,5 +220,125 @@ describe('fusion/calls/participant_menu', () => {
         open(participant());
         expect(screen.getByRole('menuitem', {name: 'Mute'})).toBeInTheDocument();
         expect(screen.queryByRole('menuitem', {name: /Make host/})).not.toBeInTheDocument();
+    });
+
+    describe('with the permissions Calls tells', () => {
+        let permissions: jest.Mock;
+        const allowed = (over: Partial<CallsParticipantPermissions> = {}): CallsParticipantPermissions => ({
+            sessionId: 's1',
+            canMute: true,
+            canDeafen: true,
+            canMove: true,
+            canKick: true,
+            ...over,
+        });
+        beforeEach(() => {
+            mockTargets = [{id: 'v2', display_name: 'Gaming'}];
+            permissions = jest.fn();
+            window.antimatterCalls = {version: 1, moderation: {setModDeafened: jest.fn(), move: jest.fn(), participantPermissions: permissions}} as unknown as AntimatterCallsAPI;
+        });
+
+        // openAnswered opens the menu and lets Calls answer.
+        const openAnswered = async (p: VoiceParticipant) => {
+            open(p);
+            await act(async () => {
+                await new Promise((resolve) => setTimeout(resolve, 0));
+            });
+        };
+        const item = (name: string | RegExp) => screen.queryByRole('menuitem', {name});
+        const gated = {
+            canMute: ['Mute', /Mute in this channel/],
+            canDeafen: [/^Deafen/],
+            canMove: ['Move to'],
+            canKick: ['Kick from voice channel'],
+        } as const;
+
+        test('asks about the participant of the menu\'s call', async () => {
+            permissions.mockResolvedValue(allowed());
+            await openAnswered(participant());
+            expect(permissions).toHaveBeenCalledWith('room', 's1');
+        });
+
+        test('shows mute, deafen, move and kick when allowed', async () => {
+            permissions.mockResolvedValue(allowed());
+            await openAnswered(participant());
+            for (const names of Object.values(gated)) {
+                for (const name of names) {
+                    expect(item(name)).toBeInTheDocument();
+                }
+            }
+        });
+
+        test.each(Object.keys(gated) as Array<keyof typeof gated>)('hides what %s allows when false, and only that', async (flag) => {
+            permissions.mockResolvedValue(allowed({[flag]: false}));
+            await openAnswered(participant());
+            for (const [other, otherNames] of Object.entries(gated)) {
+                for (const name of otherNames) {
+                    if (other === flag) {
+                        expect(item(name)).not.toBeInTheDocument();
+                    } else {
+                        expect(item(name)).toBeInTheDocument();
+                    }
+                }
+            }
+        });
+
+        test('the moderator mute is not lifted by those who may not mute them', async () => {
+            permissions.mockResolvedValue(allowed({canMute: false}));
+            await openAnswered(participant({muted: true, modMuted: true}));
+            expect(item('Allow to unmute')).not.toBeInTheDocument();
+        });
+
+        test('on someone at or above their rank, the host controls section is gone', async () => {
+            permissions.mockResolvedValue(allowed({canMute: false, canDeafen: false, canMove: false, canKick: false}));
+            await openAnswered(participant());
+            expect(screen.queryByText('In Lobby')).not.toBeInTheDocument();
+            expect(item('Profile')).toBeInTheDocument();
+        });
+
+        test('asking to unmute stays: it isn\'t a moderation of them', async () => {
+            permissions.mockResolvedValue(allowed({canMute: false, canDeafen: false, canMove: false, canKick: false}));
+            await openAnswered(participant({muted: true}));
+            expect(screen.getByText('In Lobby')).toBeInTheDocument();
+            expect(item('Ask to unmute')).toBeInTheDocument();
+            expect(item('Kick from voice channel')).not.toBeInTheDocument();
+        });
+
+        test('offers none of them until Calls answers', async () => {
+            permissions.mockReturnValue(new Promise(() => {}));
+            await openAnswered(participant());
+            for (const names of Object.values(gated)) {
+                for (const name of names) {
+                    expect(item(name)).not.toBeInTheDocument();
+                }
+            }
+        });
+
+        test('offers them all as before when Calls can\'t tell', async () => {
+            permissions.mockRejectedValue(Object.assign(new Error('not found'), {status: 404}));
+            await openAnswered(participant());
+            for (const names of Object.values(gated)) {
+                for (const name of names) {
+                    expect(item(name)).toBeInTheDocument();
+                }
+            }
+        });
+
+        test('offers them all as before with a Calls that has no permissions', async () => {
+            window.antimatterCalls = {version: 1, moderation: {setModDeafened: jest.fn(), move: jest.fn()}} as unknown as AntimatterCallsAPI;
+            await openAnswered(participant());
+            for (const names of Object.values(gated)) {
+                for (const name of names) {
+                    expect(item(name)).toBeInTheDocument();
+                }
+            }
+        });
+
+        test('without moderation rights, Calls isn\'t asked', async () => {
+            mockModerate = false;
+            await openAnswered(participant());
+            expect(permissions).not.toHaveBeenCalled();
+            expect(item('Kick from voice channel')).not.toBeInTheDocument();
+        });
     });
 });
