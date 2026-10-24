@@ -7,6 +7,7 @@ import {useIntl} from 'react-intl';
 import type {AgentActivity} from '@mattermost/types/ai_agents';
 import type {UserProfile} from '@mattermost/types/users';
 
+import UserTag from 'fusion/components/user_tag';
 import {REDUCED_MOTION_QUERY, useMediaQuery} from 'fusion/hooks/media';
 import {am} from 'fusion/utils/class_names';
 
@@ -27,7 +28,7 @@ export function IntegrationTag({agent}: {agent: boolean}) {
     if (agent) {
         return <span className={am('bot-tag', 'agent-tag')}>{formatMessage({id: 'fusion.agents.tag', defaultMessage: 'AGENT'})}</span>;
     }
-    return <span className={am('bot-tag')}>{'BOT'}</span>;
+    return <UserTag kind='bot'/>;
 }
 
 function useDotClass(activity: AgentActivity | undefined): string | null {

@@ -26959,6 +26959,10 @@
     "defaultMessage": "Copy ID",
     "description": ""
   },
+  "fusion.message.bot": {
+    "defaultMessage": "BOT",
+    "description": "Small capitalised tag after the name of a bot or a webhook, in messages, the member list and profile cards"
+  },
   "fusion.message.cancelFailed": {
     "defaultMessage": "Discard",
     "description": ""

@@ -31,6 +31,7 @@ import Avatar from 'fusion/components/avatar';
 import Icon from 'fusion/components/icon';
 import type {IconName} from 'fusion/components/icon';
 import StatusEmoji from 'fusion/components/status_emoji';
+import UserTag from 'fusion/components/user_tag';
 import {nameColor, useDisplayPrefs} from 'fusion/hooks/display';
 import {useDisplayName} from 'fusion/hooks/users';
 import EmojiPicker from 'fusion/popovers/emoji_picker';
@@ -678,7 +679,7 @@ export default function Message({postId, previousPostId, inThread = false, highl
                                 communityId={communityId}
                             />
                         )}
-                        {!bot && !webhook && user && isGuest(user.roles) && <span className={am('bot-tag', 'guest-tag')}>{formatMessage({id: 'fusion.message.guest', defaultMessage: 'GUEST'})}</span>}
+                        {!bot && !webhook && user && isGuest(user.roles) && <UserTag kind='guest'/>}
                         {webhook && <span className={am('via')}>{formatMessage({id: 'fusion.message.viaWebhook', defaultMessage: 'via webhook'})}</span>}
                         <MessageTime timestamp={post.create_at}/>
                         {streaming && <span className={am('agent-writing-note')}>{formatMessage({id: 'fusion.agents.writing', defaultMessage: 'Writing…'})}</span>}

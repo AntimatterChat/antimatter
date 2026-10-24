@@ -27,6 +27,7 @@ import Avatar from 'fusion/components/avatar';
 import Icon from 'fusion/components/icon';
 import {SheetBack} from 'fusion/components/layer';
 import StatusEmoji from 'fusion/components/status_emoji';
+import UserTag from 'fusion/components/user_tag';
 import {CATEGORY_FUSION_DISPLAY, MEMBER_GROUPING} from 'fusion/hooks/display';
 import {useIsPhone} from 'fusion/hooks/media';
 import {useDisplayName} from 'fusion/hooks/users';
@@ -111,7 +112,7 @@ export function Member({user, off, role, attribute, onOpen, onMenu}: MemberProps
                         user={user}
                         label={true}
                     />
-                    {isGuest(user.roles) && <span className={am('bot-tag', 'guest-tag')}>{formatMessage({id: 'fusion.message.guest', defaultMessage: 'GUEST'})}</span>}
+                    {isGuest(user.roles) && <UserTag kind='guest'/>}
                 </b>
                 <span>
                     {/* A busy agent's status line starts with its activity; otherwise its plain status, as a person's. */}
