@@ -197,7 +197,9 @@ func TestPatchForumTopicAPI(t *testing.T) {
 			CheckErrorID(t, err, "app.topic.status.not_allowed.app_error")
 		}
 
-		th.MakeUserChannelAdmin(t, th.BasicUser2, forum)
+		// Through the app, which drops the cached memberships: client2 was refused above, so its old roles are cached.
+		_, appErr := th.App.UpdateChannelMemberSchemeRoles(th.Context, forum.Id, th.BasicUser2.Id, false, true, true)
+		require.Nil(t, appErr)
 		updated, _, err := client2.PatchForumTopic(ctx, idea.Id, set(model.TopicStatusPlanned))
 		require.NoError(t, err, "the forum's admin")
 		assert.Equal(t, model.TopicStatusPlanned, updated.GetProp(model.PostPropsTopicStatus))
