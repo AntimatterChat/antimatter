@@ -318,3 +318,82 @@ func TestForumTopicPatchAndEditBothSurvive(t *testing.T) {
 	assert.Equal(t, model.TopicStatusDone, stored.GetProp(model.PostPropsTopicStatus), "and the status the edits")
 	assert.Equal(t, "First topic", stored.GetProp(model.PostPropsThreadTitle))
 }
+
+// Moving a topic to a forum of the same mode keeps its answer (following its reply's copy) and its status, from
+// what the server had stored; any other move drops them.
+func TestMoveTopicCarriesItsAnswerAndStatus(t *testing.T) {
+	mainHelper.Parallel(t)
+
+	t.Run("Q&A to Q&A: the answer follows its reply", func(t *testing.T) {
+		f := setupForum(t, model.ChannelPresetForumQA)
+		th := f.th
+		answer := f.post(t, th.BasicUser2.Id, f.topic.Id, "")
+		_, appErr := th.App.PatchForumTopic(th.Context, forumSession(f.member), f.topic.Id, &model.ForumTopicPatch{AcceptedAnswerId: &answer.Id})
+		require.Nil(t, appErr)
+		target := createTypedChannel(t, th, model.ChannelPresetForumQA)
+		th.AddUserToChannel(t, f.member, target)
+		th.AddUserToChannel(t, th.BasicUser2, target)
+
+		moved, appErr := th.App.MoveThreadToChannel(th.Context, f.topic.Id, target.Id, false, f.member)
+		require.Nil(t, appErr)
+		accepted, _ := storedProp(t, th, moved.Id, model.PostPropsAcceptedAnswer).(string)
+		require.NotEmpty(t, accepted)
+		assert.NotEqual(t, answer.Id, accepted, "the copy's id, not the deleted original's")
+		copied, err := th.App.Srv().Store().Post().GetSingle(th.Context, accepted, false)
+		require.NoError(t, err)
+		assert.Equal(t, moved.Id, copied.RootId)
+		assert.Equal(t, answer.Message, copied.Message)
+	})
+
+	t.Run("Ideas to Ideas: the status stays, also with the other move", func(t *testing.T) {
+		f := setupForum(t, model.ChannelPresetForumIdeas)
+		th := f.th
+		moderator := f.moderator(t)
+		planned := model.TopicStatusPlanned
+		_, appErr := th.App.PatchForumTopic(th.Context, forumSession(moderator), f.topic.Id, &model.ForumTopicPatch{Status: &planned})
+		require.Nil(t, appErr)
+		target := createTypedChannel(t, th, model.ChannelPresetForumIdeas)
+		th.AddUserToChannel(t, f.member, target)
+
+		moved, appErr := th.App.MoveThreadToChannel(th.Context, f.topic.Id, target.Id, false, f.member)
+		require.Nil(t, appErr)
+		assert.Equal(t, model.TopicStatusPlanned, storedProp(t, th, moved.Id, model.PostPropsTopicStatus))
+		assert.Equal(t, moderator.Id, storedProp(t, th, moved.Id, model.PostPropsTopicStatusBy), "who set it, not who moved it")
+
+		back := createTypedChannel(t, th, model.ChannelPresetForumIdeas)
+		th.AddUserToChannel(t, f.member, back)
+		require.Nil(t, th.App.MoveThread(th.Context, moved.Id, target.Id, back.Id, f.member))
+		list, err := th.App.Srv().Store().Post().GetForumTopics(th.Context, model.ForumTopicsOptions{ChannelId: back.Id})
+		require.NoError(t, err)
+		require.Len(t, list.Topics, 1)
+		assert.Equal(t, model.TopicStatusPlanned, list.Topics[0].Post.GetProp(model.PostPropsTopicStatus))
+
+		unset := f.post(t, f.member.Id, "", "No status yet")
+		moved, appErr = th.App.MoveThreadToChannel(th.Context, unset.Id, target.Id, false, f.member)
+		require.Nil(t, appErr)
+		assert.Nil(t, storedProp(t, th, moved.Id, model.PostPropsTopicStatus), "nothing is made up")
+	})
+
+	t.Run("another mode, or out of forums: both are dropped", func(t *testing.T) {
+		f := setupForum(t, model.ChannelPresetForumQA)
+		th := f.th
+		answer := f.post(t, th.BasicUser2.Id, f.topic.Id, "")
+		_, appErr := th.App.PatchForumTopic(th.Context, forumSession(f.member), f.topic.Id, &model.ForumTopicPatch{AcceptedAnswerId: &answer.Id})
+		require.Nil(t, appErr)
+		ideas := createTypedChannel(t, th, model.ChannelPresetForumIdeas)
+		th.AddUserToChannel(t, f.member, ideas)
+		moved, appErr := th.App.MoveThreadToChannel(th.Context, f.topic.Id, ideas.Id, false, f.member)
+		require.Nil(t, appErr)
+		for _, key := range model.PostPropsServerOwned {
+			assert.Nil(t, storedProp(t, th, moved.Id, key), key)
+		}
+
+		other := f.post(t, f.member.Id, "", "Second question")
+		reply := f.post(t, th.BasicUser2.Id, other.Id, "")
+		_, appErr = th.App.PatchForumTopic(th.Context, forumSession(f.member), other.Id, &model.ForumTopicPatch{AcceptedAnswerId: &reply.Id})
+		require.Nil(t, appErr)
+		moved, appErr = th.App.MoveThreadToChannel(th.Context, other.Id, th.BasicChannel.Id, false, f.member)
+		require.Nil(t, appErr)
+		assert.Nil(t, storedProp(t, th, moved.Id, model.PostPropsAcceptedAnswer), "a text channel")
+	})
+}

@@ -171,9 +171,14 @@ func (a *App) MoveThreadToChannelWithTitle(rctx request.CTX, postID, targetChann
 	if forumTitle != "" {
 		wpl.Posts[0].AddProp(model.PostPropsThreadTitle, forumTitle)
 	}
-	newRoot, _, appErr := a.copyPostList(rctx, wpl, target, copyPostListOptions{keepTimes: true, silent: true, flatten: flatten})
+	copiedIDs := map[string]string{}
+	newRoot, _, appErr := a.copyPostList(rctx, wpl, target, copyPostListOptions{keepTimes: true, silent: true, flatten: flatten, ids: copiedIDs})
 	if appErr != nil {
 		return nil, appErr
+	}
+	// Antimatter: a topic moved to a forum of the same mode keeps its answer and status (the copies come without).
+	if carried := a.carryTopicProps(rctx, root.Id, source, target, newRoot.Id, copiedIDs); carried != nil {
+		newRoot = carried
 	}
 
 	T, err := i18n.GetTranslationsBySystemLocale()

@@ -298,3 +298,39 @@ func (a *App) followTopicOnVote(rctx request.CTX, reaction *model.Reaction, post
 		rctx.Logger().Warn("Failed to make a voter follow an idea", mlog.String("post_id", post.Id), mlog.String("user_id", reaction.UserId), mlog.Err(appErr))
 	}
 }
+
+// carryTopicProps gives a topic moved (copied) to another forum of the same mode the answer and status its source
+// had: the copies come without them, as every new post does, and only the source's stored, server-set values carry
+// over, never anything the mover sends. The accepted answer follows its reply's copy (ids maps old ids to new
+// ones), or is dropped when that reply wasn't copied. Moving to a forum of another mode, or out of forums, drops
+// both. It gives the moved topic's first post when it changed it.
+func (a *App) carryTopicProps(rctx request.CTX, sourceRootID string, source, target *model.Channel, newRootID string, ids map[string]string) *model.Post {
+	if !a.isForumChannel(source) || !a.isForumChannel(target) || a.GetChannelTypeInfo(source.Id).Mode != a.GetChannelTypeInfo(target.Id).Mode {
+		return nil
+	}
+	stored, err := a.Srv().Store().Post().GetSingle(RequestContextWithMaster(rctx), sourceRootID, false)
+	if err != nil {
+		rctx.Logger().Warn("Failed to read a moved topic's answer and status", mlog.String("post_id", sourceRootID), mlog.Err(err))
+		return nil
+	}
+	set := model.StringInterface{}
+	if old, _ := stored.GetProp(model.PostPropsAcceptedAnswer).(string); old != "" {
+		if newID, ok := ids[old]; ok {
+			set[model.PostPropsAcceptedAnswer] = newID
+		}
+	}
+	for _, key := range []string{model.PostPropsTopicStatus, model.PostPropsTopicStatusBy, model.PostPropsTopicStatusAt} {
+		if v := stored.GetProp(key); v != nil {
+			set[key] = v
+		}
+	}
+	if len(set) == 0 {
+		return nil
+	}
+	updated, appErr := a.updateTopicProps(rctx, newRootID, set, nil)
+	if appErr != nil {
+		rctx.Logger().Warn("Failed to carry a moved topic's answer and status", mlog.String("post_id", newRootID), mlog.Err(appErr))
+		return nil
+	}
+	return updated
+}

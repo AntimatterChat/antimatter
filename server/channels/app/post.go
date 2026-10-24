@@ -3331,6 +3331,8 @@ type copyPostListOptions struct {
 	keepTimes bool
 	silent    bool
 	flatten   bool
+	// ids, when set, gets each copied post's new id under its old one.
+	ids map[string]string
 }
 
 func (a *App) copyPostList(rctx request.CTX, wpl *model.WranglerPostList, targetChannel *model.Channel, opts copyPostListOptions) (*model.Post, bool, *model.AppError) {
@@ -3442,6 +3444,10 @@ func (a *App) copyPostList(rctx request.CTX, wpl *model.WranglerPostList, target
 			}
 		}
 
+		if opts.ids != nil {
+			opts.ids[post.Id] = newPost.Id
+		}
+
 		for _, reaction := range reactions {
 			reaction.PostId = newPost.Id
 			_, appErr = a.SaveReactionForPost(rctx, reaction)
@@ -3513,10 +3519,13 @@ func (a *App) MoveThread(rctx request.CTX, postID string, sourceChannelID, chann
 
 	// To simulate the move, we first copy the original messages(s) to the
 	// new channel and later delete the original messages(s).
-	newRootPost, _, appErr := a.CopyWranglerPostlist(rctx, wpl, targetChannel)
+	// Antimatter: copied with the ids' mapping, so a forum topic's answer and status can follow it.
+	copiedIDs := map[string]string{}
+	newRootPost, _, appErr := a.copyPostList(rctx, wpl, targetChannel, copyPostListOptions{ids: copiedIDs})
 	if appErr != nil {
 		return appErr
 	}
+	a.carryTopicProps(rctx, wpl.RootPost().Id, originalChannel, targetChannel, newRootPost.Id, copiedIDs)
 
 	T, err := i18n.GetTranslationsBySystemLocale()
 	if err != nil {
