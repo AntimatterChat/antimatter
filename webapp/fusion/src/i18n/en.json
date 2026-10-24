@@ -24435,6 +24435,10 @@
     "defaultMessage": "You can't send messages in this channel.",
     "description": ""
   },
+  "fusion.channel.rootPostsRestricted": {
+    "defaultMessage": "Only moderators post here. Reply in a thread.",
+    "description": "Replaces the composer in a text or voice channel (Antimatter channel types) where only moderators start conversations; everyone can still reply."
+  },
   "fusion.channel.shared": {
     "defaultMessage": "Shared with other servers",
     "description": ""
@@ -24442,6 +24446,10 @@
   "fusion.channel.timedOut": {
     "defaultMessage": "You're timed out until {time}: you can read, but not send messages or react.",
     "description": ""
+  },
+  "fusion.channel.topicsRestricted": {
+    "defaultMessage": "Only moderators open topics here. Reply in a thread.",
+    "description": "Replaces the composer in a forum (Antimatter channel types) where only moderators open topics; everyone can still reply."
   },
   "fusion.channelExport.allTime": {
     "defaultMessage": "All time",
@@ -24698,6 +24706,70 @@
   "fusion.channelSettings.plugins": {
     "defaultMessage": "Apps",
     "description": ""
+  },
+  "fusion.channelSettings.type": {
+    "defaultMessage": "Type",
+    "description": "Name of the channel settings tab for the channel's type and preset (Antimatter channel types)."
+  },
+  "fusion.channelType.defaultView": {
+    "defaultMessage": "Default view",
+    "description": "Channel settings Type tab: the forum's default view setting, topics list or image board."
+  },
+  "fusion.channelType.forum": {
+    "defaultMessage": "Forum",
+    "description": "The Forum segment of the channel type switch, in the create-channel dialog and channel settings."
+  },
+  "fusion.channelType.kindOfCall": {
+    "defaultMessage": "Kind of call",
+    "description": "Header above the preset cards once Voice is picked as the channel type."
+  },
+  "fusion.channelType.kindOfChannel": {
+    "defaultMessage": "Kind of channel",
+    "description": "Header above the preset cards once Text is picked as the channel type."
+  },
+  "fusion.channelType.kindOfForum": {
+    "defaultMessage": "Kind of forum",
+    "description": "Header above the preset cards once Forum is picked as the channel type."
+  },
+  "fusion.channelType.members": {
+    "defaultMessage": "Members",
+    "description": "Option of the who-starts-conversations setting: every member may."
+  },
+  "fusion.channelType.moderators": {
+    "defaultMessage": "Moderators",
+    "description": "Option of the who-starts-conversations setting: only the channel's moderators may."
+  },
+  "fusion.channelType.overridesNote": {
+    "defaultMessage": "Roles and people can be allowed or refused in Permissions.",
+    "description": "Channel settings Type tab: points to where overrides on who starts conversations or opens topics are set."
+  },
+  "fusion.channelType.switchingNote": {
+    "defaultMessage": "Your permission changes stay.",
+    "description": "Channel settings Type tab: picking another preset keeps the channel's existing permission overrides."
+  },
+  "fusion.channelType.text": {
+    "defaultMessage": "Text",
+    "description": "The Text segment of the channel type switch, in the create-channel dialog and channel settings."
+  },
+  "fusion.channelType.viewImageboard": {
+    "defaultMessage": "Image board",
+    "description": "Option of a forum's default view setting: the image board."
+  },
+  "fusion.channelType.viewTopics": {
+    "defaultMessage": "Topics",
+    "description": "Option of a forum's default view setting: the topic list."
+  },
+  "fusion.channelType.voice": {
+    "defaultMessage": "Voice",
+    "description": "The Voice segment of the channel type switch, in the create-channel dialog and channel settings."
+  },
+  "fusion.channelType.whoOpensTopics": {
+    "defaultMessage": "Who can open topics",
+    "description": "Channel settings Type tab: the setting choosing who may open a new topic in a forum."
+  },
+  "fusion.channelType.whoStarts": {
+    "defaultMessage": "Who can start conversations",
+    "description": "Channel settings Type tab: the setting choosing who may start a new conversation in a text or voice channel."
   },
   "fusion.collections.label": {
     "defaultMessage": "Mentions, saved, pinned and threads",
@@ -25463,6 +25535,10 @@
     "defaultMessage": "Cancel",
     "description": ""
   },
+  "fusion.createChannel.appTypes": {
+    "defaultMessage": "Or, from an app",
+    "description": "Create-channel dialog: header above the channel-type cards other apps add (besides the native text, voice and forum types), shown only while Text is selected."
+  },
   "fusion.createChannel.cancel": {
     "defaultMessage": "Cancel",
     "description": ""
@@ -25507,20 +25583,8 @@
     "defaultMessage": "Only invited members can see and join it.",
     "description": ""
   },
-  "fusion.createChannel.text": {
-    "defaultMessage": "Text",
-    "description": ""
-  },
-  "fusion.createChannel.textDesc": {
-    "defaultMessage": "Messages, files and threads",
-    "description": ""
-  },
   "fusion.createChannel.title": {
     "defaultMessage": "Create channel",
-    "description": ""
-  },
-  "fusion.createChannel.type": {
-    "defaultMessage": "Channel type",
     "description": ""
   },
   "fusion.createChannel.yours": {
@@ -27743,6 +27807,10 @@
     "defaultMessage": "The community has no roles yet.",
     "description": ""
   },
+  "fusion.overrides.openTopics": {
+    "defaultMessage": "Open topics",
+    "description": "Permissions editor row (Antimatter channel types): who may open a new topic in a forum."
+  },
   "fusion.overrides.post": {
     "defaultMessage": "Send messages",
     "description": ""
@@ -27770,6 +27838,10 @@
   "fusion.overrides.settings": {
     "defaultMessage": "Manage the channel",
     "description": ""
+  },
+  "fusion.overrides.startConversations": {
+    "defaultMessage": "Start conversations",
+    "description": "Permissions editor row (Antimatter channel types): who may start a new conversation in a text or voice channel."
   },
   "fusion.overrides.title": {
     "defaultMessage": "Permissions of #{channel}",
@@ -27858,6 +27930,90 @@
   "fusion.pickerView.more": {
     "defaultMessage": "Show more",
     "description": "Shared by the emoji picker's views (adding or managing custom emoji, GIFs, stickers, meme templates): button at the end of a long list, drawing or loading the next part."
+  },
+  "fusion.preset.forumAgora": {
+    "defaultMessage": "Discussion",
+    "description": "Name of the default forum preset, on its card in the channel type picker."
+  },
+  "fusion.preset.forumAgora.description": {
+    "defaultMessage": "Members open topics and reply",
+    "description": "Subtitle of the Discussion preset card: what the forum offers."
+  },
+  "fusion.preset.forumAnnouncement": {
+    "defaultMessage": "Announcements",
+    "description": "Name of the forum preset where only moderators open topics, on its card in the channel type picker."
+  },
+  "fusion.preset.forumAnnouncement.description": {
+    "defaultMessage": "Moderators open topics; members reply",
+    "description": "Subtitle of the Announcements forum preset card: what the forum offers."
+  },
+  "fusion.preset.forumIdeas": {
+    "defaultMessage": "Ideas",
+    "description": "Name of the ideas-board forum preset, on its card in the channel type picker."
+  },
+  "fusion.preset.forumIdeas.description": {
+    "defaultMessage": "Members suggest and upvote; moderators set a status",
+    "description": "Subtitle of the Ideas preset card: what the forum offers."
+  },
+  "fusion.preset.forumImageboard": {
+    "defaultMessage": "Image board",
+    "description": "Name of the image-board forum preset, on its card in the channel type picker."
+  },
+  "fusion.preset.forumImageboard.description": {
+    "defaultMessage": "Each topic opens on its image and latest replies",
+    "description": "Subtitle of the Image board preset card: what the forum offers."
+  },
+  "fusion.preset.forumQa": {
+    "defaultMessage": "Q&A",
+    "description": "Name of the question-and-answer forum preset, on its card in the channel type picker."
+  },
+  "fusion.preset.forumQa.description": {
+    "defaultMessage": "Questions, voted answers, one accepted answer",
+    "description": "Subtitle of the Q&A preset card: what the forum offers."
+  },
+  "fusion.preset.textAnnouncement": {
+    "defaultMessage": "Announcement",
+    "description": "Name of the text channel preset where only moderators post, on its card in the channel type picker."
+  },
+  "fusion.preset.textAnnouncement.description": {
+    "defaultMessage": "Moderators post; everyone replies in threads",
+    "description": "Subtitle of the Announcement preset card: what the channel offers."
+  },
+  "fusion.preset.textChat": {
+    "defaultMessage": "Chat",
+    "description": "Name of the default text channel preset, on its card in the channel type picker."
+  },
+  "fusion.preset.textChat.description": {
+    "defaultMessage": "Messages, files and threads",
+    "description": "Subtitle of the Chat preset card: what the channel offers."
+  },
+  "fusion.preset.voiceStage": {
+    "defaultMessage": "Stage",
+    "description": "Name of the voice channel preset with speakers and an audience, on its card in the channel type picker."
+  },
+  "fusion.preset.voiceStage.description": {
+    "defaultMessage": "Speakers talk, the audience listens and asks to speak",
+    "description": "Subtitle of the Stage preset card: what the channel offers."
+  },
+  "fusion.preset.voiceTalk": {
+    "defaultMessage": "Talk",
+    "description": "Name of the default voice channel preset, on its card in the channel type picker."
+  },
+  "fusion.preset.voiceTalk.description": {
+    "defaultMessage": "An always-open call; drop in and talk",
+    "description": "Subtitle of the Talk preset card: what the channel offers."
+  },
+  "fusion.presetPicker.locked": {
+    "defaultMessage": "{type}. The type is set when the channel is created.",
+    "description": "Channel settings Type tab: names the channel's fixed type (Text, Voice or Forum) and says it can't change."
+  },
+  "fusion.presetPicker.type": {
+    "defaultMessage": "Type",
+    "description": "Label of the channel type switch (Text, Voice, Forum) in the create-channel dialog."
+  },
+  "fusion.presetPicker.voiceUnavailable": {
+    "defaultMessage": "Needs the Voice channels app",
+    "description": "Tooltip on the disabled Voice segment of the channel type switch, while the voice-channels app isn't active."
   },
   "fusion.privacy.ask": {
     "defaultMessage": "Ask me first",
@@ -31194,6 +31350,10 @@
   "generic_icons.channel_search": {
     "defaultMessage": "Channel Search Icon",
     "description": "Accessible label (aria-label) of a decorative illustration shown in channel search empty states."
+  },
+  "generic_icons.channel_type": {
+    "defaultMessage": "Type Icon",
+    "description": "Accessible name of the channel settings Type tab's icon."
   },
   "generic_icons.channel.private": {
     "defaultMessage": "Private Channel Icon",
