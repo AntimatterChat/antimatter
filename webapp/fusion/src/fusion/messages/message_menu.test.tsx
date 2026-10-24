@@ -146,19 +146,33 @@ describe('fusion/messages/MessageMenu: forums', () => {
     const reply = (override: Partial<Post> = {}) => ({id: 'r1', channel_id: 'c1', user_id: 'maya', root_id: 'r0', type: '', message: 'Try the reset switch.', create_at: 100, props: {}, metadata: {}, ...override} as unknown as Post);
     const root = (override: Partial<Post> = {}) => ({id: 'r0', channel_id: 'c1', user_id: 'ada', root_id: '', type: '', message: 'How do I reset the beam?', create_at: 0, props: {am_thread_title: 'How do I reset the beam?'}, metadata: {}, ...override} as unknown as Post);
 
-    const stateFor = (mode: 'qa' | 'ideas', systemRoles: string, rootPost: Post) => ({
+    const stateFor = (mode: 'qa' | 'ideas', systemRoles: string, rootPost: Post, timedOut = false) => ({
         entities: {
             general: {serverVersion: ''},
             users: {currentUserId: 'me', profiles: {me: {id: 'me', roles: systemRoles}}},
-            teams: {currentTeamId: 't1', teams: {t1: {id: 't1', name: 'one', display_name: 'One', delete_at: 0}}},
+            teams: {
+                currentTeamId: 't1',
+                teams: {t1: {id: 't1', name: 'one', display_name: 'One', delete_at: 0}},
+                myMembers: {t1: {team_id: 't1', user_id: 'me', roles: 'team_user'}},
+                timeouts: timedOut ? {t1: [{team_id: 't1', user_id: 'me', until: Date.now() + 3600000, reason: '', created_by: 'mod', create_at: 0}]} : {},
+            },
             channels: {
                 channels: {c1: {id: 'c1', team_id: 't1', type: 'O', name: 'town', display_name: 'Town', delete_at: 0}},
                 channelTypes: {c1: {type: 'forum', mode, root_posts: 'members', view: 'topics', preset: ''}},
+                myMembers: {c1: {channel_id: 'c1', user_id: 'me', roles: 'channel_user'}},
+                roles: {c1: new Set(['channel_user'])},
             },
             posts: {posts: {r0: rootPost, r1: reply()}},
             files: {files: {}, fileIdsByPostId: {}},
             preferences: {myPreferences: {}},
-            roles: {roles: {system_user: {name: 'system_user', permissions: []}, system_admin: {name: 'system_admin', permissions: ['manage_system']}}},
+            roles: {
+                roles: {
+                    system_user: {name: 'system_user', permissions: []},
+                    system_admin: {name: 'system_admin', permissions: ['manage_system']},
+                    team_user: {name: 'team_user', permissions: []},
+                    channel_user: {name: 'channel_user', permissions: ['create_post']},
+                },
+            },
         },
     } as never);
 
@@ -181,6 +195,13 @@ describe('fusion/messages/MessageMenu: forums', () => {
     test('Q&A: the asker gets Accept answer on a reply', () => {
         renderMenuFor(reply(), stateFor('qa', 'system_user', root({user_id: 'me'})));
         expect(screen.getByRole('menuitem', {name: 'Accept answer'})).toBeInTheDocument();
+    });
+
+    // Mirrors the server's sessionMayAcceptAnswer: the asker only accepts while they may still post (a timeout
+    // takes that away, as it takes create_post away everywhere in the team); a moderator still can.
+    test('Q&A: a timed-out asker doesn\'t get Accept answer', () => {
+        renderMenuFor(reply(), stateFor('qa', 'system_user', root({user_id: 'me'}), true));
+        expect(screen.queryByRole('menuitem', {name: /accept answer/i})).not.toBeInTheDocument();
     });
 
     test('Q&A: a moderator gets Accept answer even when they didn\'t ask', () => {

@@ -10,14 +10,14 @@ import type {ForumTopicStatus, Post} from '@mattermost/types/posts';
 import {putPostOnTop, removePostFromTop} from 'mattermost-redux/actions/channels';
 import {addPostReminder, patchForumTopic} from 'mattermost-redux/actions/posts';
 import {setThreadFollow} from 'mattermost-redux/actions/threads';
-import {Posts} from 'mattermost-redux/constants';
+import {Permissions, Posts} from 'mattermost-redux/constants';
 import {getChannelTypeInfo} from 'mattermost-redux/selectors/entities/channel_types';
 import {getChannel} from 'mattermost-redux/selectors/entities/channels';
 import {getConfig} from 'mattermost-redux/selectors/entities/general';
 import {getOnTopEntry} from 'mattermost-redux/selectors/entities/on_top_posts';
 import {getPost, isPostFlagged} from 'mattermost-redux/selectors/entities/posts';
 import {isCollapsedThreadsEnabled} from 'mattermost-redux/selectors/entities/preferences';
-import {isChannelModerator} from 'mattermost-redux/selectors/entities/roles';
+import {haveIChannelPermission, isChannelModerator} from 'mattermost-redux/selectors/entities/roles';
 import {contentFlaggingEnabledInTeam, getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
 import {getCurrentUserId} from 'mattermost-redux/selectors/entities/users';
 
@@ -126,9 +126,13 @@ export default function MessageMenu({post, anchor, inThread, onClose, onMoreReac
     const channelTypeInfo = useSelector((state: GlobalState) => (channel ? getChannelTypeInfo(state, channel.id) : undefined));
     const topicRoot = useSelector((state: GlobalState) => getPost(state, post.root_id || post.id));
     const moderator = useSelector((state: GlobalState) => Boolean(channel?.team_id) && isChannelModerator(state, channel!.team_id, channel!.id));
+
+    // Mirrors the server's sessionMayAcceptAnswer: the asker, while they may still post here (overrides and
+    // timeouts applied), or a moderator regardless.
+    const canStillPost = useSelector((state: GlobalState) => Boolean(channel?.team_id) && haveIChannelPermission(state, channel!.team_id, channel!.id, Permissions.CREATE_POST));
     const system = isSystemMessage(post);
     const isQaReply = channelTypeInfo?.type === 'forum' && channelTypeInfo.mode === 'qa' && Boolean(post.root_id) && !system;
-    const canAccept = isQaReply && (topicRoot?.user_id === me || moderator);
+    const canAccept = isQaReply && ((topicRoot?.user_id === me && canStillPost) || moderator);
     const isAccepted = topicRoot?.props?.[ACCEPTED_ANSWER_PROP] === post.id;
     const canSetStatus = channelTypeInfo?.type === 'forum' && channelTypeInfo.mode === 'ideas' && !post.root_id && !system && moderator;
     const currentStatus = (post.props?.[TOPIC_STATUS_PROP] as ForumTopicStatus) || 'open';
