@@ -20143,6 +20143,11 @@
     "description": "Error returned to plugins calling the send-email-with-attachment API with an attachment over the size limit; developer-facing."
   },
   {
+    "id": "plugin_api.send_mail.invalid_attachment",
+    "translation": "Invalid attachment name or content type.",
+    "description": "Error returned to plugins calling the send-email-with-attachment API with an attachment name or content type that has line breaks or isn't a valid media type; developer-facing."
+  },
+  {
     "id": "plugin_api.send_mail.missing_attachment",
     "translation": "Missing attachment.",
     "description": "Error returned to plugins calling the send-email-with-attachment API without an attachment name and data; developer-facing."

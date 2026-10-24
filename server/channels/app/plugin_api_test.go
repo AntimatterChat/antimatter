@@ -5170,3 +5170,72 @@ func TestPluginAPIPropertyGroupDeprecatedName(t *testing.T) {
 		require.Error(t, err)
 	})
 }
+
+func TestPluginAPISendMailWithAttachment(t *testing.T) {
+	mainHelper.Parallel(t)
+	th := Setup(t)
+	api := th.SetupPluginAPI()
+
+	ics := []byte("BEGIN:VCALENDAR\r\nEND:VCALENDAR\r\n")
+	const calendar = "text/calendar; method=REQUEST; charset=UTF-8"
+
+	// Point the mail service at a port nothing listens on: a call that gets past the checks
+	// then fails to send, which tells it apart from one that was refused or skipped.
+	th.App.UpdateConfig(func(cfg *model.Config) {
+		*cfg.EmailSettings.SendEmailNotifications = true
+		*cfg.EmailSettings.SMTPServer = "127.0.0.1"
+		*cfg.EmailSettings.SMTPPort = "1"
+	})
+
+	t.Run("refuses missing inputs", func(t *testing.T) {
+		for name, args := range map[string][5]string{
+			"to":         {"", "Subject", "<p>Body</p>", "invite.ics", calendar},
+			"subject":    {"user@example.com", "", "<p>Body</p>", "invite.ics", calendar},
+			"body":       {"user@example.com", "Subject", "", "invite.ics", calendar},
+			"attachment": {"user@example.com", "Subject", "<p>Body</p>", "", calendar},
+		} {
+			appErr := api.SendMailWithAttachment(args[0], args[1], args[2], args[3], args[4], ics)
+			require.NotNil(t, appErr, name)
+			assert.Equal(t, http.StatusBadRequest, appErr.StatusCode, name)
+		}
+		appErr := api.SendMailWithAttachment("user@example.com", "Subject", "<p>Body</p>", "invite.ics", calendar, nil)
+		require.NotNil(t, appErr)
+		assert.Equal(t, "plugin_api.send_mail.missing_attachment", appErr.Id)
+	})
+
+	t.Run("refuses an attachment over the size limit", func(t *testing.T) {
+		big := make([]byte, maxPluginMailAttachmentSize+1)
+		appErr := api.SendMailWithAttachment("user@example.com", "Subject", "<p>Body</p>", "big.bin", "application/octet-stream", big)
+		require.NotNil(t, appErr)
+		assert.Equal(t, "plugin_api.send_mail.attachment_too_large", appErr.Id)
+		assert.Equal(t, http.StatusBadRequest, appErr.StatusCode)
+	})
+
+	t.Run("refuses header injection in the attachment's name or content type", func(t *testing.T) {
+		for name, args := range map[string][2]string{
+			"name with a line break":         {"invite.ics\r\nBcc: victim@example.com", calendar},
+			"content type with a line break": {"invite.ics", "text/calendar\r\nBcc: victim@example.com"},
+			"malformed content type":         {"invite.ics", "not a media type;;"},
+			"overlong name":                  {strings.Repeat("a", maxPluginMailAttachmentNameLength+1), calendar},
+		} {
+			appErr := api.SendMailWithAttachment("user@example.com", "Subject", "<p>Body</p>", args[0], args[1], ics)
+			require.NotNil(t, appErr, name)
+			assert.Equal(t, "plugin_api.send_mail.invalid_attachment", appErr.Id, name)
+			assert.Equal(t, http.StatusBadRequest, appErr.StatusCode, name)
+		}
+	})
+
+	t.Run("valid input gets as far as sending", func(t *testing.T) {
+		appErr := api.SendMailWithAttachment("user@example.com", "Subject", "<p>Body</p>", "invite.ics", calendar, ics)
+		require.NotNil(t, appErr, "nothing listens on the SMTP port, so the send must fail")
+		assert.Equal(t, http.StatusInternalServerError, appErr.StatusCode)
+	})
+
+	t.Run("sends nothing while email notifications are off", func(t *testing.T) {
+		th.App.UpdateConfig(func(cfg *model.Config) { *cfg.EmailSettings.SendEmailNotifications = false })
+		defer th.App.UpdateConfig(func(cfg *model.Config) { *cfg.EmailSettings.SendEmailNotifications = true })
+
+		appErr := api.SendMailWithAttachment("user@example.com", "Subject", "<p>Body</p>", "invite.ics", calendar, ics)
+		assert.Nil(t, appErr, "as SendMail, the call is a no-op rather than a send attempt")
+	})
+}

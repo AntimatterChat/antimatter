@@ -10,6 +10,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"mime"
 	"net/http"
 	"net/url"
 	"path/filepath"
@@ -1186,6 +1187,9 @@ func (api *PluginAPI) SendMail(to, subject, htmlBody string) *model.AppError {
 // SendMailWithAttachment, so a plugin can't tie up the mail queue with huge messages.
 const maxPluginMailAttachmentSize = 10 * 1024 * 1024
 
+// maxPluginMailAttachmentNameLength bounds the attachment's file name.
+const maxPluginMailAttachmentNameLength = 255
+
 // SendMailWithAttachment sends an email with a single file attached, such as a calendar invite.
 // attachmentContentType is sent as is, so a plugin can set parameters on it (for example
 // "text/calendar; method=REQUEST").
@@ -1208,6 +1212,28 @@ func (api *PluginAPI) SendMailWithAttachment(to, subject, htmlBody, attachmentNa
 
 	if len(attachmentData) > maxPluginMailAttachmentSize {
 		return model.NewAppError("SendMailWithAttachment", "plugin_api.send_mail.attachment_too_large", nil, "", http.StatusBadRequest)
+	}
+
+	// The name and content type end up in the attachment part's MIME headers: refuse line breaks
+	// (header injection) and anything that isn't a well-formed media type, and send the content
+	// type re-serialised rather than as given.
+	if len(attachmentName) > maxPluginMailAttachmentNameLength || strings.ContainsAny(attachmentName, "\r\n\x00") {
+		return model.NewAppError("SendMailWithAttachment", "plugin_api.send_mail.invalid_attachment", nil, "invalid attachment name", http.StatusBadRequest)
+	}
+	if attachmentContentType != "" {
+		mediaType, params, err := mime.ParseMediaType(attachmentContentType)
+		if err != nil || strings.ContainsAny(attachmentContentType, "\r\n\x00") {
+			return model.NewAppError("SendMailWithAttachment", "plugin_api.send_mail.invalid_attachment", nil, "invalid attachment content type", http.StatusBadRequest)
+		}
+		attachmentContentType = mime.FormatMediaType(mediaType, params)
+		if attachmentContentType == "" {
+			return model.NewAppError("SendMailWithAttachment", "plugin_api.send_mail.invalid_attachment", nil, "invalid attachment content type", http.StatusBadRequest)
+		}
+	}
+
+	// As SendMail: nothing is sent while the admin has email notifications turned off.
+	if !*api.app.Config().EmailSettings.SendEmailNotifications {
+		return nil
 	}
 
 	if err := api.app.Srv().EmailService.SendMailWithAttachment(to, subject, htmlBody, attachmentName, attachmentContentType, attachmentData, "", "", "", ""); err != nil {
