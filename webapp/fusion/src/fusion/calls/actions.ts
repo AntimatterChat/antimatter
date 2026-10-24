@@ -279,7 +279,7 @@ function makeActions(getState: () => GlobalState, intl: IntlShape, openDirect: (
 
     // A moderator mute keeps someone muted for the call, also when they leave and come back, until lifted; in a voice
     // channel, also in its later calls.
-    const modMute = async (p: VoiceParticipant, channelId: string, muted: boolean) => {
+    const modMute = async (p: Pick<VoiceParticipant, 'userId'>, channelId: string, muted: boolean) => {
         const moderation = getCallsAPI()?.moderation;
         if (!moderation) {
             return;
@@ -304,7 +304,7 @@ function makeActions(getState: () => GlobalState, intl: IntlShape, openDirect: (
 
     // A moderator deafen (in voice channels) keeps someone from hearing and speaking there until lifted, also in later
     // calls; the Calls server sends them no audio.
-    const modDeafen = async (p: VoiceParticipant, channelId: string, deafened: boolean) => {
+    const modDeafen = async (p: Pick<VoiceParticipant, 'userId'>, channelId: string, deafened: boolean) => {
         const setModDeafened = getCallsAPI()?.moderation?.setModDeafened;
         if (!setModDeafened) {
             return;

@@ -24003,6 +24003,34 @@
     "defaultMessage": "A moderator deafened you",
     "description": "Tooltip of the microphone and headphones buttons when a moderator deafened the user"
   },
+  "fusion.calls.modList.deafenedBy": {
+    "defaultMessage": "Deafened by {name} on {date}",
+    "description": "Line under someone's name in that list; {name} is the moderator who deafened them, {date} when"
+  },
+  "fusion.calls.modList.failed": {
+    "defaultMessage": "The list couldn't be loaded.",
+    "description": "Shown in that list when it couldn't be loaded"
+  },
+  "fusion.calls.modList.lead": {
+    "defaultMessage": "People a moderator muted or deafened in this voice channel. It lasts until lifted, also when they leave and come back.",
+    "description": "Explanation under the 'Muted and deafened' heading of a voice channel's settings"
+  },
+  "fusion.calls.modList.mutedBy": {
+    "defaultMessage": "Muted by {name} on {date}",
+    "description": "Line under someone's name in that list; {name} is the moderator who muted them, {date} when"
+  },
+  "fusion.calls.modList.none": {
+    "defaultMessage": "Nobody is muted or deafened here.",
+    "description": "Shown in that list when nobody is muted or deafened"
+  },
+  "fusion.calls.modList.outranked": {
+    "defaultMessage": "Given by someone above you: they, or someone above them, can lift it",
+    "description": "Tooltip of a disabled lift button in that list: the mute or deafen was given by someone ranking higher"
+  },
+  "fusion.calls.modList.title": {
+    "defaultMessage": "Muted and deafened",
+    "description": "Heading, in a voice channel's settings, of the list of people a moderator muted or deafened there"
+  },
   "fusion.calls.modMuted": {
     "defaultMessage": "Muted by a moderator",
     "description": ""

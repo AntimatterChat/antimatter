@@ -89,3 +89,9 @@
 // Muted by a moderator: the locked microphone of a tile's label and of a sidebar participant.
 :is(.am-app, .am-layer) .am-mod-muted { display: inline-grid; place-items: center; color: var(--am-danger); }
 :is(.am-app, .am-layer) .am-tile .am-label .am-mod-muted .am-ic { color: #ff8a8d; }
+
+// The lasting moderator mutes and deafens in a voice channel's settings: at phone width the lift buttons go under
+// the name.
+:is(.am-app, .am-layer) .am-voice-mod-row { flex-wrap: wrap; }
+:is(.am-app, .am-layer) .am-voice-mod-row .am-txt { flex: 1 1 200px; }
+:is(.am-app, .am-layer) .am-voice-mod-row .am-txt span { display: block; color: var(--am-text-2); font-size: 13px; }

@@ -51,6 +51,19 @@ export type CallsUnmuteRequest = {
     byUserId: string;
 };
 
+// A moderator's mute or deafen of someone in a channel, as its moderators list them (in voice channels they last
+// until lifted, also while the person is away). The by-user IDs are empty, and the times 0, when not muted or not
+// deafened. canLift tells whether the user may lift it: not when given by someone ranking higher.
+export type CallsLastingMute = {
+    userId: string;
+    mutedBy: string;
+    mutedAt: number;
+    deafenedBy: string;
+    deafenedAt: number;
+    canLiftMute: boolean;
+    canLiftDeafen: boolean;
+};
+
 // A moderator moves the user from the call of a voice channel to another voice channel.
 export type CallsMoveRequest = {
     channelId: string;
@@ -315,6 +328,10 @@ export type AntimatterCallsAPI = {
         // calls; they're disconnected otherwise). Optional: older versions lack them.
         setModDeafened?(channelId: string, userId: string, deafened: boolean): Promise<void>;
         move?(channelId: string, sessionId: string, toChannelId: string): Promise<void>;
+
+        // The moderator mutes and deafens of a channel, the latest first, for those who may moderate its calls (403
+        // otherwise); lift them with setModMuted and setModDeafened. Optional: older versions lack it.
+        listModMutes?(channelId: string): Promise<CallsLastingMute[]>;
     };
 
     // Starts or stops the transcription of the call of this window (host only). While it runs, each participant's

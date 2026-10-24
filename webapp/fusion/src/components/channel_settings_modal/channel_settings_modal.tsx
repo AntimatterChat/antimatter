@@ -28,6 +28,7 @@ import {getChannelSettingsTabs} from 'selectors/plugins';
 import type {Tab as SidebarTab} from 'components/settings_sidebar/settings_sidebar';
 import {normalizePluginIcon} from 'components/settings_sidebar/settings_sidebar';
 
+import VoiceModerationSection, {VOICE_CHANNELS_PLUGIN_ID, canListVoiceMutes, useCanListVoiceMutes} from 'fusion/calls/voice_mod_list';
 import {canArchiveChannel, isAllChannelsCommunity, isFirstDefaultChannel} from 'fusion/channel/community_channels';
 import Icon from 'fusion/components/icon';
 import {Dialog} from 'fusion/components/layer';
@@ -107,8 +108,17 @@ function ChannelSettingsModal({channelId, isOpen, onExited, focusOriginElement}:
             return [];
         }
 
-        return getChannelSettingsTabs(state).filter((registration) => registration.shouldRender?.(state, currentChannel) ?? true);
+        // The voice channels app's tab is the voice channel's own section: its moderators also see it, for the list
+        // of who is muted or deafened there (see VoiceModerationSection), without the app's own settings.
+        return getChannelSettingsTabs(state).filter((registration) => (registration.shouldRender?.(state, currentChannel) ?? true) ||
+            (registration.pluginId === VOICE_CHANNELS_PLUGIN_ID && canListVoiceMutes(state, currentChannel.id)));
     }, shallowEqual);
+    const listVoiceMutes = useCanListVoiceMutes(channelId);
+    const voiceSettingsAllowed = useSelector((state: GlobalState) => {
+        const currentChannel = getChannel(state, channelId);
+        const registration = getChannelSettingsTabs(state).find((r) => r.pluginId === VOICE_CHANNELS_PLUGIN_ID);
+        return Boolean(currentChannel && registration && (registration.shouldRender?.(state, currentChannel) ?? true));
+    });
     const isDMorGM = channel.type === Constants.DM_CHANNEL || channel.type === Constants.GM_CHANNEL;
 
     const canManagePublicChannelBanner = useSelector((state: GlobalState) =>
@@ -458,15 +468,21 @@ function ChannelSettingsModal({channelId, isOpen, onExited, focusOriginElement}:
     // Renders content based on active tab
     const renderTabContent = () => {
         if (visibleActivePluginRegistration) {
+            const voiceTab = visibleActivePluginRegistration.pluginId === VOICE_CHANNELS_PLUGIN_ID;
             return (
-                <ChannelSettingsPluginTab
-                    key={visibleActivePluginRegistration.id}
-                    channel={channel}
-                    registration={visibleActivePluginRegistration}
-                    areThereUnsavedChanges={areThereUnsavedChanges}
-                    showTabSwitchError={showTabSwitchError}
-                    setUnsaved={setUnsaved}
-                />
+                <>
+                    {(!voiceTab || voiceSettingsAllowed) && (
+                        <ChannelSettingsPluginTab
+                            key={visibleActivePluginRegistration.id}
+                            channel={channel}
+                            registration={visibleActivePluginRegistration}
+                            areThereUnsavedChanges={areThereUnsavedChanges}
+                            showTabSwitchError={showTabSwitchError}
+                            setUnsaved={setUnsaved}
+                        />
+                    )}
+                    {voiceTab && listVoiceMutes && <VoiceModerationSection channelId={channel.id}/>}
+                </>
             );
         }
 
