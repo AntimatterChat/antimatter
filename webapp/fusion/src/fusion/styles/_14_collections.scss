@@ -19,6 +19,8 @@
 :is(.am-app, .am-layer) .am-coll-scope .am-icon-btn:hover { color: var(--am-text-2); }
 :is(.am-app, .am-layer) .am-coll-scope .am-icon-btn.am-on { background: var(--am-raise-2); color: var(--am-text); }
 :is(.am-app, .am-layer) .am-coll-head p { margin: 2px 0 0; font-size: 12.5px; color: var(--am-muted); }
+// The threads tab's own All/Unreads sub-tabs, under the title.
+:is(.am-app, .am-layer) .am-coll-threads-filter { margin: 8px 0 0; }
 :is(.am-app, .am-layer) .am-coll-list { flex: 1; min-height: 0; overflow-y: auto; padding: 6px; }
 :is(.am-app, .am-layer) .am-coll-item { display: grid; grid-template-columns: 32px minmax(0, 1fr); gap: 10px; width: 100%; padding: 8px 10px; border-radius: 9px; text-align: left; }
 :is(.am-app, .am-layer) .am-coll-item:hover { background: var(--am-hover); }

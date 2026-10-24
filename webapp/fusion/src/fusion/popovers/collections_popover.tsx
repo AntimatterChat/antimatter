@@ -9,6 +9,7 @@ import type {Channel} from '@mattermost/types/channels';
 import type {FileInfo} from '@mattermost/types/files';
 import type {Post} from '@mattermost/types/posts';
 
+import {markAllThreadsInTeamRead} from 'mattermost-redux/actions/threads';
 import {Client4} from 'mattermost-redux/client';
 import {getAllChannels} from 'mattermost-redux/selectors/entities/channels';
 import {getConfig} from 'mattermost-redux/selectors/entities/general';
@@ -26,6 +27,8 @@ import type {IconName} from 'fusion/components/icon';
 import {Popover} from 'fusion/components/layer';
 import {useDisplayName, useUser} from 'fusion/hooks/users';
 import {useWhen} from 'fusion/messages/time';
+import {useDialogs} from 'fusion/shell/dialogs_context';
+import {useToast} from 'fusion/shell/toast_context';
 import {am} from 'fusion/utils/class_names';
 import {openDialog} from 'fusion/utils/modals';
 import {permalinkPath} from 'fusion/utils/paths';
@@ -68,7 +71,13 @@ const EMPTY: Record<Tab, {id: string; defaultMessage: string}> = {
 
 type Item = {post: Post; replies?: number; lastReplyAt?: number; file?: FileInfo};
 
-const NO_ITEMS: Record<Tab, Item[] | undefined> = {mentions: undefined, saved: undefined, pinned: undefined, files: undefined, threads: undefined};
+// What the threads tab shows: every thread you follow, or only those with unread replies.
+export type ThreadsFilter = 'all' | 'unread';
+
+// The threads tab's cache has one list per filter; every other tab has one of its own.
+function cacheKey(tab: Tab, threadsFilter: ThreadsFilter): string {
+    return tab === 'threads' ? `threads:${threadsFilter}` : tab;
+}
 
 // FileRow is a file shared in the conversation: it opens in the file preview.
 function FileRow({file, onOpen}: {file: FileInfo; onOpen: () => void}) {
@@ -136,13 +145,18 @@ type Props = {
 export default function CollectionsPopover({anchor, channel: conversation, initialTab = 'mentions', placement = 'below', onClose}: Props) {
     const {formatMessage} = useIntl();
     const dispatch = useDispatch();
+    const toast = useToast();
+    const dialogs = useDialogs();
     const team = useSelector(getCurrentTeam);
     const userId = useSelector(getCurrentUserId);
     const mentionKeys = useSelector(getCurrentUserMentionKeys);
     const channels = useSelector(getAllChannels);
     const filesSearchAvailable = useSelector((state: GlobalState) => canSearchFiles(getConfig(state)));
     const [tab, setTab] = useState<Tab>(initialTab === 'files' && !filesSearchAvailable ? 'mentions' : initialTab);
-    const [items, setItems] = useState<Record<Tab, Item[] | undefined>>(NO_ITEMS);
+    const [items, setItems] = useState<Record<string, Item[] | undefined>>({});
+
+    // The threads tab's own All/Unreads tabs (the mockup's "Followed threads" list only had one view).
+    const [threadsFilter, setThreadsFilter] = useState<ThreadsFilter>('all');
 
     // Opened from a conversation, the panel lists that conversation's items, or the whole community's on demand.
     // Pinned messages and files only exist within a conversation.
@@ -154,23 +168,24 @@ export default function CollectionsPopover({anchor, channel: conversation, initi
             return;
         }
         setScope(next);
-        setItems(NO_ITEMS);
+        setItems({});
         if (next === 'all' && (tab === 'pinned' || tab === 'files')) {
             setTab('mentions');
         }
     };
 
+    const key = cacheKey(tab, threadsFilter);
     useEffect(() => {
-        if (!team || items[tab]) {
+        if (!team || items[key]) {
             return undefined;
         }
         let cancelled = false;
-        const set = (list: Item[]) => !cancelled && setItems((prev) => ({...prev, [tab]: list}));
+        const set = (list: Item[]) => !cancelled && setItems((prev) => ({...prev, [key]: list}));
         const fromPostList = (list: {order: string[]; posts: Record<string, Post>}) => list.order.map((id) => ({post: list.posts[id]})).filter((i) => i.post);
         (async () => {
             try {
                 if (tab === 'mentions') {
-                    const terms = mentionKeys.filter(({key}) => !['@channel', '@all', '@here'].includes(key)).map(({key}) => key).join(' ');
+                    const terms = mentionKeys.filter(({key: mentionKey}) => !['@channel', '@all', '@here'].includes(mentionKey)).map(({key: mentionKey}) => mentionKey).join(' ');
 
                     // In a conversation, searched there; the filter on the results also covers direct messages, whose
                     // names "in:" may not find.
@@ -190,8 +205,9 @@ export default function CollectionsPopover({anchor, channel: conversation, initi
                     const infos = found.file_infos as unknown as Record<string, FileInfo>;
                     set(found.order.map((id: string) => infos[id]).filter(Boolean).map((file: FileInfo) => ({post: {id: file.post_id} as Post, file})));
                 } else {
-                    // The team's followed threads, then, in a conversation, those started there.
-                    const threads = await Client4.getUserThreads(userId, team.id, {perPage: channel ? 200 : 30, extended: false});
+                    // The team's followed threads (all, or only those with unread replies), then, in a conversation,
+                    // those started there.
+                    const threads = await Client4.getUserThreads(userId, team.id, {perPage: channel ? 200 : 30, extended: false, unread: threadsFilter === 'unread'});
                     set(threads.threads.
                         filter((t) => !channel || (t.post as Post).channel_id === channel.id).
                         map((t) => ({post: t.post as Post, replies: t.reply_count, lastReplyAt: t.last_reply_at})));
@@ -203,7 +219,29 @@ export default function CollectionsPopover({anchor, channel: conversation, initi
         return () => {
             cancelled = true;
         };
-    }, [tab, team, userId, channel, mentionKeys, items]);
+    }, [tab, team, userId, channel, mentionKeys, items, key, threadsFilter]);
+
+    // Mark all as read: the server's one API for the whole community (there's no per-channel bulk mark-read).
+    const teamId = team?.id;
+    const markAllRead = () => {
+        if (!teamId) {
+            return;
+        }
+        dialogs.confirm({
+            title: formatMessage({id: 'fusion.collections.markAllReadTitle', defaultMessage: 'Mark all threads as read?'}),
+            message: formatMessage({id: 'fusion.collections.markAllReadMessage', defaultMessage: 'Every thread you follow in this community will show as read.'}),
+            confirmLabel: formatMessage({id: 'fusion.collections.markAllRead', defaultMessage: 'Mark all as read'}),
+            onConfirm: async () => {
+                const result = await dispatch(markAllThreadsInTeamRead(userId, teamId));
+                if (result && 'error' in result && result.error) {
+                    toast((result.error as {message?: string}).message || formatMessage({id: 'fusion.collections.markAllReadFailed', defaultMessage: 'Threads couldn\'t be marked as read'}));
+                    return;
+                }
+                setItems((prev) => ({...prev, 'threads:all': undefined, 'threads:unread': []}));
+                toast(formatMessage({id: 'fusion.toast.allThreadsRead', defaultMessage: 'All threads marked as read'}));
+            },
+        });
+    };
 
     const open = (item: Item) => {
         onClose();
@@ -217,7 +255,7 @@ export default function CollectionsPopover({anchor, channel: conversation, initi
     };
 
     const [, , label, desc] = TABS.find(([k]) => k === tab)!;
-    const list = items[tab];
+    const list = items[key];
     return (
         <Popover
             anchor={anchor}
@@ -231,49 +269,89 @@ export default function CollectionsPopover({anchor, channel: conversation, initi
                 role='tablist'
                 aria-orientation='vertical'
             >
-                {tabs.map(([k, icon, l]) => (
-                    <button
-                        key={k}
-                        role='tab'
-                        aria-selected={tab === k}
-                        className={am({on: tab === k})}
-                        onClick={() => setTab(k)}
-                    >
-                        <Icon
-                            name={icon}
-                            size='sm'
-                        />
-                        {formatMessage(l)}
-                        {items[k] && <span className={am('count', {hot: k === 'mentions' && items[k]!.length > 0})}>{items[k]!.length}</span>}
-                    </button>
-                ))}
+                {tabs.map(([k, icon, l]) => {
+                    const navItems = items[cacheKey(k, 'all')];
+                    return (
+                        <button
+                            key={k}
+                            role='tab'
+                            aria-selected={tab === k}
+                            className={am({on: tab === k})}
+                            onClick={() => setTab(k)}
+                        >
+                            <Icon
+                                name={icon}
+                                size='sm'
+                            />
+                            {formatMessage(l)}
+                            {navItems && <span className={am('count', {hot: k === 'mentions' && navItems.length > 0})}>{navItems.length}</span>}
+                        </button>
+                    );
+                })}
             </nav>
             <div className={am('coll-main')}>
                 <div className={am('coll-head')}>
                     <h3>{formatMessage(label)}</h3>
-                    {conversation && (
+                    {tab === 'threads' && (
                         <span
-                            className={am('coll-scope')}
+                            className={am('seg', 'coll-threads-filter')}
                             role='radiogroup'
-                            aria-label={formatMessage({id: 'fusion.collections.scope', defaultMessage: 'Show items from'})}
+                            aria-label={formatMessage({id: 'fusion.collections.threadsFilter', defaultMessage: 'Show threads'})}
                         >
-                            {([['here', 'hash', formatMessage({id: 'fusion.collections.scopeHere', defaultMessage: 'This conversation'})], ['all', 'globe', formatMessage({id: 'fusion.collections.scopeAll', defaultMessage: 'The whole community'})]] as const).map(([k, icon, l]) => (
+                            {([['all', formatMessage({id: 'fusion.collections.threadsAll', defaultMessage: 'All'})], ['unread', formatMessage({id: 'fusion.collections.threadsUnread', defaultMessage: 'Unreads'})]] as const).map(([k, l]) => (
                                 <button
                                     key={k}
                                     type='button'
                                     role='radio'
-                                    aria-checked={scope === k}
-                                    aria-label={l}
-                                    title={l}
-                                    className={am('icon-btn', {on: scope === k})}
-                                    onClick={() => changeScope(k)}
+                                    aria-checked={threadsFilter === k}
+                                    className={am({on: threadsFilter === k})}
+                                    onClick={() => setThreadsFilter(k)}
+                                >
+                                    {l}
+                                </button>
+                            ))}
+                        </span>
+                    )}
+                    {(conversation || tab === 'threads') && (
+                        <span className={am('coll-scope')}>
+                            {tab === 'threads' && (
+                                <button
+                                    type='button'
+                                    className={am('icon-btn')}
+                                    title={formatMessage({id: 'fusion.collections.markAllRead', defaultMessage: 'Mark all as read'})}
+                                    aria-label={formatMessage({id: 'fusion.collections.markAllRead', defaultMessage: 'Mark all as read'})}
+                                    onClick={markAllRead}
                                 >
                                     <Icon
-                                        name={icon}
+                                        name='check'
                                         size='sm'
                                     />
                                 </button>
-                            ))}
+                            )}
+                            {conversation && (
+                                <span
+                                    role='radiogroup'
+                                    aria-label={formatMessage({id: 'fusion.collections.scope', defaultMessage: 'Show items from'})}
+                                >
+                                    {([['here', 'hash', formatMessage({id: 'fusion.collections.scopeHere', defaultMessage: 'This conversation'})], ['all', 'globe', formatMessage({id: 'fusion.collections.scopeAll', defaultMessage: 'The whole community'})]] as const).map(([k, icon, l]) => (
+                                        <button
+                                            key={k}
+                                            type='button'
+                                            role='radio'
+                                            aria-checked={scope === k}
+                                            aria-label={l}
+                                            title={l}
+                                            className={am('icon-btn', {on: scope === k})}
+                                            onClick={() => changeScope(k)}
+                                        >
+                                            <Icon
+                                                name={icon}
+                                                size='sm'
+                                            />
+                                        </button>
+                                    ))}
+                                </span>
+                            )}
                         </span>
                     )}
                     <p>{formatMessage((channel && HERE[tab]) || desc)}</p>
