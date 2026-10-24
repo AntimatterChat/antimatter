@@ -241,6 +241,7 @@ describe('fusion/components/layer', () => {
             const onEscape = jest.fn(() => true);
             render(wrap(
                 <Popover
+                    className='picker'
                     label='Picker'
                     onClose={onClose}
                     onEscape={onEscape}
