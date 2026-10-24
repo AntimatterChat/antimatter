@@ -109,7 +109,7 @@ function UnreadGroup({channel, onRead}: GroupProps) {
                 <button
                     type='button'
                     className={am('unread-open')}
-                    onClick={() => team && getHistory().push(channelPath(team.name, channel.id))}
+                    onClick={() => team && getHistory().push(channelPath(team.name, channel))}
                 >
                     {channel.type === 'D' && channel.teammate_id ? (
                         <Avatar
