@@ -105,6 +105,60 @@ exports[`components/SearchHint should match snapshot, with searchType 1`] = `
         <span
           class="search-hint__suggestion-list__label"
         >
+          Has:
+        </span>
+      </div>
+      <div
+        class="search-hint__suggestion-list__value"
+      >
+        Messages with a link, code, thread, file or embed
+      </div>
+    </li>
+    <li
+      class="search-hint__suggestions-list__option"
+    >
+      <div
+        class="search-hint__suggestion-list__flex-wrap"
+      >
+        <span
+          class="search-hint__suggestion-list__label"
+        >
+          Pinned:true
+        </span>
+      </div>
+      <div
+        class="search-hint__suggestion-list__value"
+      >
+        Pinned messages
+      </div>
+    </li>
+    <li
+      class="search-hint__suggestions-list__option"
+    >
+      <div
+        class="search-hint__suggestion-list__flex-wrap"
+      >
+        <span
+          class="search-hint__suggestion-list__label"
+        >
+          Mentions:
+        </span>
+      </div>
+      <div
+        class="search-hint__suggestion-list__value"
+      >
+        Messages mentioning a user
+      </div>
+    </li>
+    <li
+      class="search-hint__suggestions-list__option"
+    >
+      <div
+        class="search-hint__suggestion-list__flex-wrap"
+      >
+        <span
+          class="search-hint__suggestion-list__label"
+        >
           —
         </span>
       </div>
@@ -235,6 +289,60 @@ exports[`components/SearchHint should match snapshot, with title 1`] = `
         class="search-hint__suggestion-list__value"
       >
         Messages after a date
+      </div>
+    </li>
+    <li
+      class="search-hint__suggestions-list__option"
+    >
+      <div
+        class="search-hint__suggestion-list__flex-wrap"
+      >
+        <span
+          class="search-hint__suggestion-list__label"
+        >
+          Has:
+        </span>
+      </div>
+      <div
+        class="search-hint__suggestion-list__value"
+      >
+        Messages with a link, code, thread, file or embed
+      </div>
+    </li>
+    <li
+      class="search-hint__suggestions-list__option"
+    >
+      <div
+        class="search-hint__suggestion-list__flex-wrap"
+      >
+        <span
+          class="search-hint__suggestion-list__label"
+        >
+          Pinned:true
+        </span>
+      </div>
+      <div
+        class="search-hint__suggestion-list__value"
+      >
+        Pinned messages
+      </div>
+    </li>
+    <li
+      class="search-hint__suggestions-list__option"
+    >
+      <div
+        class="search-hint__suggestion-list__flex-wrap"
+      >
+        <span
+          class="search-hint__suggestion-list__label"
+        >
+          Mentions:
+        </span>
+      </div>
+      <div
+        class="search-hint__suggestion-list__value"
+      >
+        Messages mentioning a user
       </div>
     </li>
     <li
@@ -419,6 +527,60 @@ exports[`components/SearchHint should match snapshot, without title 1`] = `
         class="search-hint__suggestion-list__value"
       >
         Messages after a date
+      </div>
+    </li>
+    <li
+      class="search-hint__suggestions-list__option"
+    >
+      <div
+        class="search-hint__suggestion-list__flex-wrap"
+      >
+        <span
+          class="search-hint__suggestion-list__label"
+        >
+          Has:
+        </span>
+      </div>
+      <div
+        class="search-hint__suggestion-list__value"
+      >
+        Messages with a link, code, thread, file or embed
+      </div>
+    </li>
+    <li
+      class="search-hint__suggestions-list__option"
+    >
+      <div
+        class="search-hint__suggestion-list__flex-wrap"
+      >
+        <span
+          class="search-hint__suggestion-list__label"
+        >
+          Pinned:true
+        </span>
+      </div>
+      <div
+        class="search-hint__suggestion-list__value"
+      >
+        Pinned messages
+      </div>
+    </li>
+    <li
+      class="search-hint__suggestions-list__option"
+    >
+      <div
+        class="search-hint__suggestion-list__flex-wrap"
+      >
+        <span
+          class="search-hint__suggestion-list__label"
+        >
+          Mentions:
+        </span>
+      </div>
+      <div
+        class="search-hint__suggestion-list__value"
+      >
+        Messages mentioning a user
       </div>
     </li>
     <li

@@ -367,7 +367,7 @@ export default function ResultsPanel({rhsState}: {rhsState: string}) {
                 ))}
                 {showFiles && !searching && !files.length && <div className={am('empty')}>{formatMessage({id: 'fusion.results.noFiles', defaultMessage: 'No files match.'})}</div>}
                 {!showFiles && searching && !posts.length && <div className={am('empty')}>{formatMessage({id: 'fusion.results.searching', defaultMessage: 'Searching…'})}</div>}
-                {!showFiles && !searching && !posts.length && <div className={am('empty')}>{formatMessage({id: 'fusion.results.none', defaultMessage: 'No messages match. Try another word or a filter like from: or in:.'})}</div>}
+                {!showFiles && !searching && !posts.length && <div className={am('empty')}>{formatMessage({id: 'fusion.results.none', defaultMessage: 'No messages match. Try another word or a filter like from:, in: or has:link.'})}</div>}
                 {!showFiles && posts.map((post) => (
                     <Result
                         key={post.id}

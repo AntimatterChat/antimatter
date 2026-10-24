@@ -28644,7 +28644,7 @@
     "description": ""
   },
   "fusion.results.none": {
-    "defaultMessage": "No messages match. Try another word or a filter like from: or in:.",
+    "defaultMessage": "No messages match. Try another word or a filter like from:, in: or has:link.",
     "description": ""
   },
   "fusion.results.openThread": {
@@ -37367,9 +37367,17 @@
     "defaultMessage": "Messages from a user",
     "description": "Description of the 'From:' search modifier in the message search box autocomplete; filters messages by author."
   },
+  "search_list_option.has": {
+    "defaultMessage": "Messages with a link, code, thread, file or embed",
+    "description": "Description of the 'Has:' search modifier in the message search box autocomplete; filters messages by what they contain, e.g. has:link."
+  },
   "search_list_option.in": {
     "defaultMessage": "Messages in a channel",
     "description": "Description of the 'In:' search modifier in the message search box autocomplete; filters messages by channel."
+  },
+  "search_list_option.mentions": {
+    "defaultMessage": "Messages mentioning a user",
+    "description": "Description of the 'Mentions:' search modifier in the message search box autocomplete; filters messages that mention the given user."
   },
   "search_list_option.on": {
     "defaultMessage": "Messages on a date",
@@ -37378,6 +37386,10 @@
   "search_list_option.phrases": {
     "defaultMessage": "Messages with phrases",
     "description": "Description of the quoted-phrase option in the message search box autocomplete; searches for exact phrases."
+  },
+  "search_list_option.pinned": {
+    "defaultMessage": "Pinned messages",
+    "description": "Description of the 'Pinned:' search modifier in the message search box autocomplete; filters to pinned (or, with pinned:false, unpinned) messages."
   },
   "search_results.channel-files-header": {
     "defaultMessage": "Recent files",

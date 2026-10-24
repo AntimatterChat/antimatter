@@ -66,6 +66,35 @@ describe('components/new_search/SearchHint', () => {
         expect(screen.queryByText('In:')).not.toBeInTheDocument();
     });
 
+    test('should have the Has:, Pinned:true and Mentions: hints on a message search', () => {
+        renderWithContext(<SearchHint {...baseProps}/>);
+        expect(screen.getByText('Has:')).toBeInTheDocument();
+        expect(screen.getByText('Pinned:true')).toBeInTheDocument();
+        expect(screen.getByText('Mentions:')).toBeInTheDocument();
+    });
+
+    test('should not have the Has:, Pinned:true and Mentions: hints on a file search', () => {
+        const props = {...baseProps, searchType: 'files'};
+        renderWithContext(<SearchHint {...props}/>);
+        expect(screen.queryByText('Has:')).not.toBeInTheDocument();
+        expect(screen.queryByText('Pinned:true')).not.toBeInTheDocument();
+        expect(screen.queryByText('Mentions:')).not.toBeInTheDocument();
+    });
+
+    test('Has:, Pinned:true and Mentions: stay available for all teams', () => {
+        const props = {...baseProps, searchTeam: '', searchTerms: 'test '};
+        renderWithContext(<SearchHint {...props}/>);
+        expect(screen.getByText('Has:')).toBeInTheDocument();
+        expect(screen.getByText('Pinned:true')).toBeInTheDocument();
+        expect(screen.getByText('Mentions:')).toBeInTheDocument();
+    });
+
+    test('clicking the Has: hint should call onSelectFilter with Has:', () => {
+        renderWithContext(<SearchHint {...baseProps}/>);
+        screen.getByText('Has:').click();
+        expect(baseProps.onSelectFilter).toHaveBeenCalledWith('Has:');
+    });
+
     test('should be empty on search if is date', () => {
         const props = {...baseProps, isDate: true};
         const {asFragment} = renderWithContext(<SearchHint {...props}/>);

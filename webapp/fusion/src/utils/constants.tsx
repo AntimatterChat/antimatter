@@ -1954,6 +1954,9 @@ export const searchHintOptions = [{searchTerm: 'From:', message: defineMessage({
     {searchTerm: 'On:', message: defineMessage({id: 'search_list_option.on', defaultMessage: 'Messages on a date'})},
     {searchTerm: 'Before:', message: defineMessage({id: 'search_list_option.before', defaultMessage: 'Messages before a date'})},
     {searchTerm: 'After:', message: defineMessage({id: 'search_list_option.after', defaultMessage: 'Messages after a date'})},
+    {searchTerm: 'Has:', message: defineMessage({id: 'search_list_option.has', defaultMessage: 'Messages with a link, code, thread, file or embed'})},
+    {searchTerm: 'Pinned:true', message: defineMessage({id: 'search_list_option.pinned', defaultMessage: 'Pinned messages'})},
+    {searchTerm: 'Mentions:', message: defineMessage({id: 'search_list_option.mentions', defaultMessage: 'Messages mentioning a user'})},
     {searchTerm: '-', message: defineMessage({id: 'search_list_option.exclude', defaultMessage: 'Exclude search terms'}), additionalDisplay: '—'},
     {searchTerm: '""', message: defineMessage({id: 'search_list_option.phrases', defaultMessage: 'Messages with phrases'})},
 ];
