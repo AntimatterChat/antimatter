@@ -99,7 +99,7 @@ func newPostDocument(post *model.Post, teamID, channelType string) *postDocument
 		HasLink:     model.HasLink(post.Message),
 		HasCode:     model.HasCode(post.Message),
 		HasEmbed:    model.HasEmbed(post.Message),
-		HasFile:     len(post.FileIds) > 0,
+		HasFile:     model.PostHasFile(post),
 		IsPinned:    post.IsPinned,
 		Mentions:    nonNil(model.PossibleAtMentions(post.Message)),
 	}

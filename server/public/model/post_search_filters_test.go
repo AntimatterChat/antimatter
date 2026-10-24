@@ -84,3 +84,44 @@ func TestPossibleAtMentions(t *testing.T) {
 		})
 	}
 }
+
+func TestPostMatchesSearchFilters(t *testing.T) {
+	post := &Post{
+		Message:    "see https://example.com and `code` @alice @bob",
+		FileIds:    StringArray{NewId()},
+		IsPinned:   true,
+		ReplyCount: 2,
+	}
+	plain := &Post{Message: "nothing special"}
+
+	for _, tc := range []struct {
+		Name   string
+		Params *SearchParams
+		Post   bool
+		Plain  bool
+	}{
+		{"no filter", &SearchParams{}, true, true},
+		{"has:link", &SearchParams{HasFlags: []string{"link"}}, true, false},
+		{"has:code", &SearchParams{HasFlags: []string{"code"}}, true, false},
+		{"has:embed", &SearchParams{HasFlags: []string{"embed"}}, true, false},
+		{"has:file", &SearchParams{HasFlags: []string{"file"}}, true, false},
+		{"has:thread", &SearchParams{HasFlags: []string{"thread"}}, true, false},
+		{"-has:link", &SearchParams{ExcludedHasFlags: []string{"link"}}, false, true},
+		{"pinned:true", &SearchParams{Pinned: NewPointer(true)}, true, false},
+		{"pinned:false", &SearchParams{Pinned: NewPointer(false)}, false, true},
+		{"mentions:alice", &SearchParams{Mentions: []string{"alice"}}, true, false},
+		{"mentions: needs every user", &SearchParams{Mentions: []string{"alice", "carol"}}, false, false},
+		{"-mentions:bob", &SearchParams{ExcludedMentions: []string{"bob"}}, false, true},
+	} {
+		t.Run(tc.Name, func(t *testing.T) {
+			assert.Equal(t, tc.Post, PostMatchesSearchFilters(post, tc.Params))
+			assert.Equal(t, tc.Plain, PostMatchesSearchFilters(plain, tc.Params))
+		})
+	}
+
+	t.Run("has:file counts legacy Filenames", func(t *testing.T) {
+		legacy := &Post{Message: "old attachment", Filenames: StringArray{"/old/file.png"}}
+		assert.True(t, PostMatchesSearchFilters(legacy, &SearchParams{HasFlags: []string{"file"}}))
+		assert.False(t, PostMatchesSearchFilters(legacy, &SearchParams{ExcludedHasFlags: []string{"file"}}))
+	})
+}

@@ -76,6 +76,12 @@ func PossibleAtMentions(message string) []string {
 	return names
 }
 
+// PostHasFile reports whether post has attachments, including the legacy
+// Filenames ones, like the database search's has:file clause.
+func PostHasFile(post *Post) bool {
+	return len(post.FileIds) > 0 || len(post.Filenames) > 0
+}
+
 // postHasFlag reports whether post has the given "has:" subtype. ReplyCount
 // must already be populated (by the same resolved-thread-root subquery the
 // database search and GetPostsByIds use) for "thread" to be meaningful.
@@ -88,7 +94,7 @@ func postHasFlag(post *Post, flag string) bool {
 	case "embed":
 		return HasEmbed(post.Message)
 	case "file":
-		return len(post.FileIds) > 0
+		return PostHasFile(post)
 	case "thread":
 		return post.ReplyCount > 0
 	default:

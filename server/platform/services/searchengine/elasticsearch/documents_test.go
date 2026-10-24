@@ -40,6 +40,11 @@ func TestNewPostDocumentHasPinnedMentions(t *testing.T) {
 		assert.True(t, doc.HasFile)
 	})
 
+	t.Run("has_file counts legacy Filenames", func(t *testing.T) {
+		doc := newPostDocument(&model.Post{Message: "an old file", Filenames: model.StringArray{"/old/file.png"}}, "team1", "O")
+		assert.True(t, doc.HasFile)
+	})
+
 	t.Run("is_pinned follows the post", func(t *testing.T) {
 		doc := newPostDocument(&model.Post{Message: "x", IsPinned: true}, "team1", "O")
 		assert.True(t, doc.IsPinned)
