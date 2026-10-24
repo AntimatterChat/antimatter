@@ -305,6 +305,9 @@ func (a *App) CreateChannel(rctx request.CTX, channel *model.Channel, addMember 
 	if typeErr != nil {
 		return nil, typeErr
 	}
+	if typeErr := a.checkVoiceChannelsAppForCreate(typeInfo); typeErr != nil {
+		return nil, typeErr
+	}
 
 	channel.DisplayName = strings.TrimSpace(channel.DisplayName)
 	channel.DefaultCategoryName = strings.TrimSpace(channel.DefaultCategoryName)

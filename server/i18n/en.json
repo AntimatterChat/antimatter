@@ -925,6 +925,11 @@
     "description": "API error when a channel type, preset, mode, 'who starts conversations' setting or forum view is unknown or doesn't belong to the channel's type (Antimatter channel types)."
   },
   {
+    "id": "api.channel.type.voice_unavailable.app_error",
+    "translation": "Voice channels need the voice channels app. Ask a system admin to turn it on.",
+    "description": "API error when creating a voice channel (Antimatter channel types, Talk preset) while the voice channels app isn't active; the app sets up and enforces its calls."
+  },
+  {
     "id": "api.channel.update_channel.banner_info.channel_type.not_allowed",
     "translation": "Channel banner can only be configured on Public and Private channels.",
     "description": "API error when configuring a channel banner on an unsupported channel type; 'Public' and 'Private' are channel types."

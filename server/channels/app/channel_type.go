@@ -225,6 +225,23 @@ func channelTypeForCreate(channel *model.Channel) (model.ChannelTypeInfo, *model
 	return req.Apply(model.DefaultChannelTypeInfo())
 }
 
+// isVoiceChannelsAppActive tells whether the voice-channels app is active. A voice channel needs it: it sets up and
+// enforces the channel's calls (§3.4 of the design), so creating one without the app would leave a voice channel
+// with no call. Plugins unavailable (disabled by config, or not yet initialised) counts as inactive: fail closed.
+func (a *App) isVoiceChannelsAppActive() bool {
+	env := a.GetPluginsEnvironment()
+	return env != nil && env.IsActive(voiceChannelsPluginID)
+}
+
+// checkVoiceChannelsAppForCreate refuses creating a voice channel while the voice-channels app isn't active, from
+// every creation path (they all reach App.CreateChannel).
+func (a *App) checkVoiceChannelsAppForCreate(info model.ChannelTypeInfo) *model.AppError {
+	if info.Type != model.AMChannelTypeVoice || a.isVoiceChannelsAppActive() {
+		return nil
+	}
+	return model.NewAppError("CreateChannel", "api.channel.type.voice_unavailable.app_error", nil, "", http.StatusBadRequest)
+}
+
 // writeChannelType stores a channel's settings: with onlyNonDefault (a new channel, which has no rows), only those
 // that aren't their defaults; otherwise every one the type has, so that rows written before follow. It then updates
 // this node's memory and tells the others.
