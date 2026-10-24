@@ -99,6 +99,7 @@ Pinned cards come first, then the newest. Dismissed cards aren't listed.
   `action` (a tool that changes something; never run on its own, no `result`).
 - `why`: the rules engine names the `pattern`, the `words` that matched and the `entities`; the model engine gives
   `probabilities` (`card`, `tool`, and one per argument by its name).
+  A card from a trusted app's post (below) also has `app`, the app's ID: show it as "From a post of <app>".
 - `post_ids`: the triggering message first, then the rest of the window (model engine).
 - `status`: `new`, `posted` (posted to the channel), `dismissed` (only in events).
 - `offer` (actions): `status` `open`, `done` or `expired` (after a day); `holder_id` the person it's offered to now
@@ -243,8 +244,30 @@ A section of its own in the config (not under AISettings, which the Built-in fea
 | `Patterns` | built in | JSON list of `{id, kind, match[], tools[], arguments{}}`; replaces the built-in ones. |
 | `SeedEntities` | none | JSON list of `{type, value, aliases[]}`. |
 | `DictionarySources` | mcp-grafana's | JSON list of `{tool, type, field, arguments}`: read-only listings that fill the dictionary. |
+| `TriggeringApps` | `["com.antimatterchat.alertmanager"]` | The apps (IDs) whose own posts start the assistant (below); at most 50, none twice, `[]` for none. |
+| `AppWindowsPerChannelHour` | 30 | The most windows apps' posts start in a channel per hour (0: none). |
 
 A pattern's `match` expressions are regular expressions over the message with its entities as slots: `{host}`,
 `{host|service}`; named groups (`(?P<metric>cpu|memory)`) are words templates can use as `{$metric}`. Built-in
 entity types: `host`, `service`, `dashboard`, `repo` (from the dictionary), `person` (@mentions), `ticket`
 (`ABC-123`), `number` (`#12`, `12`), `date` (today, weekdays, `2026-10-24`).
+
+## Which messages start it
+
+A person's new message: not a system message, a webhook's, a command's response, a bot's, an app's or another
+server's, nor one posted from a card. Edits never start it.
+
+A trusted app's new post, too (`TriggeringApps`), such as the Alertmanager app's alerts:
+
+- Its author is a bot whose owner, on the bot's record (read by the server, never a prop), is one of those apps, and
+  the app runs. It came through the apps' API (`from_plugin` and `from_bot`, which only the server sets), as a plain or
+  attachment post, without `override_username`, `override_icon_url`, `override_icon_emoji` or
+  `webhook_display_name`. Incoming webhooks, commands' responses, OAuth apps, other bots (a person's own, or an app's
+  not in the list) and system messages never count; a person's message with `from_plugin` or an override set is never
+  an app's: it's taken as before (with `from_plugin`, it doesn't start it).
+- The engines read its text, then each attachment's pretext, title, text and fields (`title: value`), a line each, at
+  most 2000 characters. An app updating its post (an alert that resolves) doesn't start it.
+- Its insights are each viewer's own, run as them, as for any message. An action from it has no author: it's offered
+  to those who spoke after it in the window, then by who opened the assistant first. The card's `why.app` is the app.
+- The budgets and the debounce are the usual ones; a window with apps' posts also counts on its channel's
+  `AppWindowsPerChannelHour`: past it, the apps' posts are left out of the window (people's still count).

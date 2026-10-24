@@ -102,6 +102,8 @@ type assistantConfig struct {
 	decisionsPerUser    int
 	decisionsPerChannel int
 	cardsPerUser        int
+	appWindows          int
+	triggeringApps      []string
 	debounce            time.Duration
 	offerTimeout        time.Duration
 	tools               *model.AIAgentToolPolicy
@@ -121,6 +123,8 @@ func (a *App) assistantConfigFor(teamID string) *assistantConfig {
 		decisionsPerUser:    model.SafeDereference(s.DecisionsPerUserHour),
 		decisionsPerChannel: model.SafeDereference(s.DecisionsPerChannelHour),
 		cardsPerUser:        model.SafeDereference(s.CardsPerUserHour),
+		appWindows:          model.SafeDereference(s.AppWindowsPerChannelHour),
+		triggeringApps:      slices.Clone(s.TriggeringApps),
 		debounce:            time.Duration(model.SafeDereference(s.DebounceSeconds)) * time.Second,
 		offerTimeout:        time.Duration(model.SafeDereference(s.OfferTimeoutSeconds)) * time.Second,
 		tools:               &model.AIAgentToolPolicy{Enabled: true, Allowed: slices.Clone(s.AllowedTools)},

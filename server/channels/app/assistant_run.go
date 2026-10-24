@@ -14,7 +14,7 @@ import (
 	"github.com/mattermost/mattermost/server/public/shared/request"
 )
 
-// Running the assistant: a person's new message in a channel where someone has the assistant open joins the
+// Running the assistant: a person's new message (or a trusted app's post, assistant_apps.go) in a channel where someone has the assistant open joins the
 // channel's window; after a few seconds of quiet (at most three times that after its first message) the window runs,
 // on the node that saved its messages, for each person viewing:
 //
@@ -84,10 +84,15 @@ func assistantPostCounts(post *model.Post) bool {
 	return postMayStartAgentTurn(post) && post.GetProp(model.PostPropAssistantCard) == nil
 }
 
-// maybeQueueAssistantPost puts a new message in its channel's window, when someone has the assistant open there.
+// maybeQueueAssistantPost puts a new message in its channel's window, when someone has the assistant open there: a
+// person's, or what looks like an app's own post when some apps may start it (its bot's owner is checked when the
+// window runs, assistant_apps.go). Only new messages come here: edits never start it.
 func (a *App) maybeQueueAssistantPost(post *model.Post, channel *model.Channel) {
 	s := &a.Config().AssistantSettings
-	if !model.SafeDereference(s.Enable) || channel == nil || channel.DeleteAt != 0 || !assistantPostCounts(post) {
+	if !model.SafeDereference(s.Enable) || channel == nil || channel.DeleteAt != 0 {
+		return
+	}
+	if !assistantPostCounts(post) && (len(s.TriggeringApps) == 0 || !assistantAppPostShape(post)) {
 		return
 	}
 	if len(a.assistantViewers(channel.Id, true)) == 0 {
@@ -101,26 +106,71 @@ func (a *App) maybeQueueAssistantPost(post *model.Post, channel *model.Channel) 
 	})
 }
 
-// assistantWindowPosts gives a window's messages that still count, oldest first, and their authors' usernames.
-func (a *App) assistantWindowPosts(rctx request.CTX, channel *model.Channel, postIDs []string) ([]*model.Post, map[string]string) {
+// assistantWindowPosts gives a window's messages that still count, oldest first, their authors' usernames, and the
+// app of each that's an app's post (by post ID; its message is then what the engines read of it, its text and its
+// attachments').
+func (a *App) assistantWindowPosts(rctx request.CTX, channel *model.Channel, postIDs []string, cfg *assistantConfig) ([]*model.Post, map[string]string, map[string]string) {
 	var posts []*model.Post
 	names := map[string]string{}
+	apps := map[string]string{}
+	authors := map[string]*model.User{}
 	for _, id := range postIDs {
 		post, appErr := a.GetSinglePost(rctx, id, false)
-		if appErr != nil || post.ChannelId != channel.Id || post.DeleteAt != 0 || !assistantPostCounts(post) {
+		if appErr != nil || post.ChannelId != channel.Id || post.DeleteAt != 0 {
 			continue
 		}
-		if _, known := names[post.UserId]; !known {
-			author, appErr := a.GetUser(rctx, post.UserId)
-			if appErr != nil || author.IsBot || author.DeleteAt != 0 {
+		author, known := authors[post.UserId]
+		if !known {
+			if author, appErr = a.GetUser(rctx, post.UserId); appErr != nil || author.DeleteAt != 0 {
+				author = nil
+			}
+			authors[post.UserId] = author
+		}
+		if author == nil {
+			continue
+		}
+		switch {
+		case !author.IsBot && assistantPostCounts(post):
+		case author.IsBot:
+			app := a.assistantPostApp(rctx, post, author, cfg.triggeringApps)
+			if app == "" {
 				continue
 			}
-			names[post.UserId] = author.Username
+			post = post.Clone()
+			post.Message = assistantAppPostText(post)
+			apps[post.Id] = app
+		default:
+			continue
 		}
+		names[post.UserId] = author.Username
 		posts = append(posts, post)
 	}
 	sort.SliceStable(posts, func(i, j int) bool { return posts[i].CreateAt < posts[j].CreateAt })
-	return posts, names
+	return posts, names, apps
+}
+
+// assistantCapAppPosts counts a window with apps' posts on its channel's hourly cap: past it, the apps' posts are
+// left out of the window.
+func (a *App) assistantCapAppPosts(rctx request.CTX, channel *model.Channel, posts []*model.Post, apps map[string]string, cfg *assistantConfig) []*model.Post {
+	if len(apps) == 0 || a.assistantTakeBudget(rctx, "app_windows_channel", channel.Id, cfg.appWindows) {
+		return posts
+	}
+	rctx.Logger().Debug("The assistant leaves apps' posts out of a window: the channel's hourly cap is reached", mlog.String("channel_id", channel.Id), mlog.Int("posts", len(apps)))
+	return slices.DeleteFunc(posts, func(p *model.Post) bool { return apps[p.Id] != "" })
+}
+
+// fromAssistantApp marks the candidates of an app's post: they have no author (nobody to offer an action to first)
+// and their why names the app.
+func fromAssistantApp(candidates []*assistantCandidate, apps map[string]string) {
+	for _, c := range candidates {
+		if len(c.PostIds) == 0 {
+			continue
+		}
+		if app := apps[c.PostIds[0]]; app != "" {
+			c.AuthorId = ""
+			c.Why.App = app
+		}
+	}
 }
 
 // assistantViewerFor gives a person viewing a channel when the assistant may work for them there.
@@ -221,7 +271,8 @@ func (a *App) runAssistantWindow(rctx request.CTX, channelID string, postIDs []s
 	if !cfg.enabled {
 		return
 	}
-	posts, names := a.assistantWindowPosts(rctx, channel, postIDs)
+	posts, names, apps := a.assistantWindowPosts(rctx, channel, postIDs, cfg)
+	posts = a.assistantCapAppPosts(rctx, channel, posts, apps, cfg)
 	if len(posts) == 0 {
 		return
 	}
@@ -256,6 +307,7 @@ func (a *App) runAssistantWindow(rctx request.CTX, channelID string, postIDs []s
 				}
 			}
 		}
+		fromAssistantApp(candidates, apps)
 		if len(candidates) > 0 {
 			runs = append(runs, assistantViewerRun{user: user, candidates: candidates})
 		}
