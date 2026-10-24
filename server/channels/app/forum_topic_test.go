@@ -5,6 +5,7 @@ package app
 
 import (
 	"net/http"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -429,4 +430,31 @@ func TestTopicSystemRepliesDontFollow(t *testing.T) {
 		assert.False(t, isFollowing(th, moderator.Id, f.topic.Id))
 		assert.True(t, isFollowing(th, th.BasicUser2.Id, f.topic.Id), "the people already in it still follow")
 	})
+}
+
+// A webhook's text too long for one post becomes a topic and replies to it in a forum, not several topics.
+func TestLongWebhookTextInForum(t *testing.T) {
+	mainHelper.Parallel(t)
+	f := setupForum(t, model.ChannelPresetForumAgora)
+	th := f.th
+	text := strings.Repeat("a", th.App.MaxPostSize()) + "the rest"
+
+	topic, appErr := th.App.CreateWebhookPost(th.Context, f.member.Id, f.forum, text, "", "", "", model.StringInterface{model.PostPropsThreadTitle: "Build log"}, "", "", nil, false)
+	require.Nil(t, appErr)
+	assert.Equal(t, "Build log", topic.GetProp(model.PostPropsThreadTitle))
+	assert.Empty(t, topic.RootId)
+
+	rest := f.lastReply(t, topic.Id)
+	assert.Equal(t, "the rest", rest.Message)
+	assert.Nil(t, rest.GetProp(model.PostPropsThreadTitle))
+
+	list, err := th.App.Srv().Store().Post().GetForumTopics(th.Context, model.ForumTopicsOptions{ChannelId: f.forum.Id})
+	require.NoError(t, err)
+	assert.Len(t, list.Topics, 2, "the fixture's topic and this one, nothing more")
+
+	_, appErr = th.App.CreateWebhookPost(th.Context, f.member.Id, f.forum, text, "", "", "", model.StringInterface{}, "", "", nil, false)
+	requireBadRequest(t, appErr, titleRequired, "untitled, it's refused as a whole, with the reason")
+	list, err = th.App.Srv().Store().Post().GetForumTopics(th.Context, model.ForumTopicsOptions{ChannelId: f.forum.Id})
+	require.NoError(t, err)
+	assert.Len(t, list.Topics, 2)
 }

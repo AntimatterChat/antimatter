@@ -517,8 +517,15 @@ func (a *App) CreateWebhookPost(rctx request.CTX, userID string, channel *model.
 		return nil, err
 	}
 
+	// Antimatter: a forum takes only topics, so a text too long for one post opens the topic with its first part
+	// (which has the title) and goes on in replies to it.
+	forumTopic := post.RootId == "" && a.isForumChannel(channel)
+
 	var returnPost *model.Post
 	for i, split := range splits {
+		if forumTopic && i > 0 {
+			split.RootId = returnPost.Id
+		}
 		flags := model.CreatePostFlags{
 			SilentNotification:   silent,
 			FromIncomingWebhook:  true,
@@ -530,9 +537,9 @@ func (a *App) CreateWebhookPost(rctx request.CTX, userID string, channel *model.
 		}
 		created, _, err := a.CreatePost(rctx, split, channel, flags)
 		if err != nil {
-			// Antimatter: a refusal (the channel's rules on who posts, judged on the hook's maker) stays a 403 with its
-			// reason, rather than looking like a server error.
-			if err.StatusCode == http.StatusForbidden {
+			// Antimatter: a refusal by the channel's rules (judged on the hook's maker: who starts conversations, 403; a
+			// forum's title, 400) reaches the hook's caller with its status and reason, not as a server error.
+			if err.StatusCode >= http.StatusBadRequest && err.StatusCode < http.StatusInternalServerError {
 				return nil, err
 			}
 			return nil, model.NewAppError("CreateWebhookPost", "api.post.create_webhook_post.creating.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
