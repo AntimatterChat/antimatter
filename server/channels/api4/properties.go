@@ -66,7 +66,9 @@ func getV2Group(c *Context, callerName string) *model.PropertyGroup {
 	}
 	// Antimatter: community attributes have their own routes, which check who may see and set each value
 	// (InitCommunityAttributes); the generic ones don't know their rules.
-	if !group.IsPSAv2() || group.Name == model.CommunityAttributesPropertyGroupName {
+	// Channel types are set through the channel (PUT /channels/{id}/type, which checks who may set them and keeps
+	// the type fixed); their values aren't read or written here.
+	if !group.IsPSAv2() || group.Name == model.CommunityAttributesPropertyGroupName || group.Name == model.ChannelTypePropertyGroupName {
 		c.Err = model.NewAppError(callerName, "api.property.v2_group_not_found.app_error", nil, "", http.StatusNotFound)
 		return nil
 	}

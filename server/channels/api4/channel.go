@@ -109,6 +109,7 @@ func (api *API) InitChannel() {
 	api.BaseRoutes.Channel.Handle("", api.APISessionRequired(updateChannel)).Methods(http.MethodPut)
 	api.BaseRoutes.Channel.Handle("/patch", api.APISessionRequired(patchChannel)).Methods(http.MethodPut)
 	api.BaseRoutes.Channel.Handle("/privacy", api.APISessionRequired(updateChannelPrivacy)).Methods(http.MethodPut)
+	api.BaseRoutes.Channel.Handle("/type", api.APISessionRequired(updateChannelType)).Methods(http.MethodPut)
 	api.BaseRoutes.Channel.Handle("/restore", api.APISessionRequired(restoreChannel)).Methods(http.MethodPost)
 	api.BaseRoutes.Channel.Handle("", api.APISessionRequired(deleteChannel)).Methods(http.MethodDelete)
 	api.BaseRoutes.Channel.Handle("/stats", api.APISessionRequired(getChannelStats)).Methods(http.MethodGet)
@@ -605,6 +606,68 @@ func updateChannelPrivacy(c *Context, w http.ResponseWriter, r *http.Request) {
 	c.LogAudit("name=" + updatedChannel.Name)
 
 	if err := json.NewEncoder(w).Encode(updatedChannel); err != nil {
+		c.Logger.Warn("Error while writing response", mlog.Err(err))
+	}
+}
+
+// updateChannelType changes a team channel's preset or type settings (Antimatter channel types): its mode, who starts
+// conversations and a forum's default view. The type itself is fixed when the channel is made. It needs the right to
+// manage the channel's properties there, overrides applied.
+func updateChannelType(c *Context, w http.ResponseWriter, r *http.Request) {
+	c.RequireChannelId()
+	if c.Err != nil {
+		return
+	}
+
+	var req model.ChannelTypeRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		c.SetInvalidParamWithErr("channel_type", err)
+		return
+	}
+
+	auditRec := c.MakeAuditRecord(model.AuditEventUpdateChannelType, model.AuditStatusFail)
+	defer c.LogAuditRec(auditRec)
+	model.AddEventParameterToAuditRec(auditRec, "channel_id", c.Params.ChannelId)
+	model.AddEventParameterToAuditRec(auditRec, "preset", req.Preset)
+	model.AddEventParameterToAuditRec(auditRec, "mode", req.Mode)
+	model.AddEventParameterToAuditRec(auditRec, "root_posts", req.RootPosts)
+	model.AddEventParameterToAuditRec(auditRec, "view", req.View)
+
+	channel, appErr := c.App.GetChannel(c.AppContext, c.Params.ChannelId)
+	if appErr != nil {
+		c.Err = appErr
+		return
+	}
+	if channel.IsGroupOrDirect() {
+		c.Err = model.NewAppError("updateChannelType", "api.channel.type.direct.app_error", nil, "", http.StatusBadRequest)
+		return
+	}
+
+	permission := model.PermissionManagePublicChannelProperties
+	if channel.Type == model.ChannelTypePrivate {
+		permission = model.PermissionManagePrivateChannelProperties
+	}
+	if ok, _ := c.App.SessionHasPermissionToChannel(c.AppContext, *c.AppContext.Session(), channel.Id, permission); !ok {
+		c.SetPermissionError(permission)
+		return
+	}
+
+	if channel.DeleteAt != 0 {
+		c.Err = model.NewAppError("updateChannelType", "api.channel.update_channel.deleted.app_error", nil, "", http.StatusBadRequest)
+		return
+	}
+
+	updated, appErr := c.App.UpdateChannelType(c.AppContext, channel, req, c.AppContext.Session().UserId)
+	if appErr != nil {
+		c.Err = appErr
+		return
+	}
+
+	auditRec.AddEventResultState(updated)
+	auditRec.AddEventObjectType("channel")
+	auditRec.Success()
+
+	if err := json.NewEncoder(w).Encode(updated); err != nil {
 		c.Logger.Warn("Error while writing response", mlog.Err(err))
 	}
 }
@@ -1778,7 +1841,9 @@ func autocompleteChannelsForTeam(c *Context, w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	// Don't fill in channels props, since unused by client and potentially expensive.
+	// Don't fill in channels props, since unused by client and potentially expensive. Antimatter: but their types,
+	// which come from memory.
+	c.App.FillInChannelTypes(channels...)
 
 	if err := json.NewEncoder(w).Encode(channels); err != nil {
 		c.Logger.Warn("Error while writing response", mlog.Err(err))
@@ -1798,6 +1863,7 @@ func autocompleteChannelsForTeamForSearch(c *Context, w http.ResponseWriter, r *
 		c.Err = err
 		return
 	}
+	c.App.FillInChannelTypes(channels...)
 
 	if err := json.NewEncoder(w).Encode(channels); err != nil {
 		c.Logger.Warn("Error while writing response", mlog.Err(err))
@@ -1836,7 +1902,9 @@ func searchChannelsForTeam(c *Context, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Don't fill in channels props, since unused by client and potentially expensive.
+	// Don't fill in channels props, since unused by client and potentially expensive. Antimatter: but their types,
+	// which come from memory.
+	c.App.FillInChannelTypes(channels...)
 
 	if err := json.NewEncoder(w).Encode(channels); err != nil {
 		c.Logger.Warn("Error while writing response", mlog.Err(err))
@@ -1878,6 +1946,7 @@ func searchAllChannels(c *Context, w http.ResponseWriter, r *http.Request) {
 				c.Err = appErr
 				return
 			}
+			c.App.FillInChannelTypes(channels...)
 			if err := json.NewEncoder(w).Encode(channels); err != nil {
 				c.Logger.Warn("Error while writing response", mlog.Err(err))
 			}
@@ -1890,6 +1959,7 @@ func searchAllChannels(c *Context, w http.ResponseWriter, r *http.Request) {
 			c.Err = err
 			return
 		}
+		c.App.FillInChannelTypesWithTeamData(channels)
 		if err := json.NewEncoder(w).Encode(channels); err != nil {
 			c.Logger.Warn("Error while writing response", mlog.Err(err))
 		}
@@ -1945,7 +2015,9 @@ func searchAllChannels(c *Context, w http.ResponseWriter, r *http.Request) {
 
 	channels = sanitizeAllChannelsResponse(c, channels)
 
-	// Don't fill in channels props, since unused by client and potentially expensive.
+	// Don't fill in channels props, since unused by client and potentially expensive. Antimatter: but their types,
+	// which come from memory.
+	c.App.FillInChannelTypesWithTeamData(channels)
 	if props.Page != nil && props.PerPage != nil {
 		data := model.ChannelsWithCount{Channels: channels, TotalCount: totalCount}
 
