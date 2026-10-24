@@ -5,6 +5,7 @@ package app
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"strings"
@@ -16,6 +17,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/mattermost/mattermost/server/public/model"
+	"github.com/mattermost/mattermost/server/public/shared/request"
 	"github.com/mattermost/mattermost/server/v8/channels/app/aimcp"
 )
 
@@ -807,5 +809,127 @@ func TestAssistantModelEngine(t *testing.T) {
 		at.run(channel, at.post(at.maya, channel, "can someone look at www-1"))
 		assert.Equal(t, before, decisions())
 		assert.Empty(t, at.feed(at.maya, channel))
+	})
+}
+
+// fakeAssistantAppTool is an app's tool, named as RegisterAIAppTools names it, whose text result the test gives. The
+// app's hook is faked as a built-in runner: what's under test is what the assistant does with the text.
+func fakeAssistantAppTool(appID, name, schema string, run func(arguments json.RawMessage) (string, error)) *aiResolvedTool {
+	tool := &model.AITool{
+		Name: model.AIToolFullName(appID, name), Namespace: appID, LocalName: name, Source: model.AIToolSourceApp, SourceId: appID,
+		Title: name, Kind: model.AIToolKindRead, InputSchema: json.RawMessage(schema),
+	}
+	return &aiResolvedTool{tool: tool, builtin: &aiBuiltinTool{tool: tool, run: func(_ *App, _ request.CTX, call *aiToolCall) (string, error) {
+		return run(call.arguments)
+	}}}
+}
+
+// ageAssistantDictionaries makes the cached listings older, as if by.
+func ageAssistantDictionaries(th *TestHelper, by time.Duration) {
+	st := th.App.assistant()
+	st.mu.Lock()
+	defer st.mu.Unlock()
+	for _, cached := range st.dicts {
+		cached.expires = cached.expires.Add(-by)
+	}
+}
+
+// The dictionary of the settings' sources, filled from an app's listing (its JSON as the tool's text): the hosts it
+// lists are entities, so "and the disk on www-1?" picks the app's host_metrics with the host and the metric. A
+// listing that failed is tried again after a minute; one that worked is kept ten minutes.
+func TestAssistantDictionaryFromAnAppListing(t *testing.T) {
+	th := setupAITest(t)
+	th.App.UpdateConfig(func(cfg *model.Config) {
+		s := &cfg.AssistantSettings
+		s.Enable = model.NewPointer(true)
+		s.Engine = model.NewPointer(model.AssistantEngineRules)
+		s.Patterns = nil
+		s.SeedEntities = nil
+		s.DictionarySources = json.RawMessage(`[{"tool":"*search_dashboards","type":"dashboard","field":"title"},{"tool":"*list_datasources","type":"service","field":"name"},{"tool":"*list_hosts","type":"host","field":"host"}]`)
+	})
+	const grafana = "com.antimatterchat.grafana"
+	var (
+		mu       sync.Mutex
+		listErr  error
+		listings int
+	)
+	listHosts := fakeAssistantAppTool(grafana, "list_hosts", `{"type":"object","properties":{}}`, func(json.RawMessage) (string, error) {
+		mu.Lock()
+		defer mu.Unlock()
+		listings++
+		if listErr != nil {
+			return "", listErr
+		}
+		return `[{"host":"localhost:9090"},{"host":"www-1"}]`, nil
+	})
+	hostMetrics := fakeAssistantAppTool(grafana, "host_metrics", `{"type":"object","properties":{"host":{"type":"string"},"metric":{"type":"string"},"from":{"type":"string"},"to":{"type":"string"}},"required":["host","metric"]}`, func(arguments json.RawMessage) (string, error) {
+		return "metrics " + string(arguments), nil
+	})
+	searchDashboards := fakeAssistantAppTool(grafana, "search_dashboards", `{"type":"object","properties":{"query":{"type":"string"}}}`, func(json.RawMessage) (string, error) {
+		return `[{"uid":"n1","title":"Node Exporter Full"}]`, nil
+	})
+	listDatasources := fakeAssistantAppTool(grafana, "list_datasources", `{"type":"object","properties":{}}`, func(json.RawMessage) (string, error) {
+		return `[{"uid":"p1","name":"Prometheus","type":"prometheus"}]`, nil
+	})
+	tools := []*aiResolvedTool{hostMetrics, listDatasources, listHosts, searchDashboards}
+	channel := th.BasicChannel
+	cfg := th.App.assistantConfigFor(channel.TeamId)
+	post := &model.Post{Id: model.NewId(), ChannelId: channel.Id, UserId: th.BasicUser2.Id, Message: "and the disk on www-1?"}
+	candidates := func(u *model.User) []*assistantCandidate {
+		dict := th.App.assistantDictionaryFor(th.Context, u, channel, tools, cfg)
+		got, _ := assistantRuleCandidates(post, dict, cfg.patterns, tools)
+		return got
+	}
+	listed := func() int {
+		mu.Lock()
+		defer mu.Unlock()
+		return listings
+	}
+
+	t.Run("the hosts the app lists are entities", func(t *testing.T) {
+		got := candidates(th.BasicUser)
+		require.Len(t, got, 1)
+		assert.Equal(t, grafana+".host_metrics", got[0].Tool)
+		assert.JSONEq(t, `{"host":"www-1","metric":"disk"}`, string(got[0].Arguments))
+		assert.Equal(t, []string{"disk on www-1"}, got[0].Why.Words)
+		assert.Equal(t, 1, listed())
+	})
+
+	t.Run("a listing that failed is tried again after a minute", func(t *testing.T) {
+		mu.Lock()
+		listErr = errors.New("The Grafana app isn't configured on this server yet.")
+		mu.Unlock()
+		assert.Empty(t, candidates(th.BasicUser2), "no listing, no host")
+		assert.Equal(t, 2, listed())
+		dict := th.App.assistantDictionaryFor(th.Context, th.BasicUser2, channel, tools, cfg)
+		_, why := assistantRuleCandidates(post, dict, cfg.patterns, tools)
+		assert.Equal(t, "no pattern matched (entities: number)", why, "without the host, www-1's 1 is a number")
+		assert.Equal(t, 2, listed(), "the failure is kept a moment")
+
+		mu.Lock()
+		listErr = nil
+		mu.Unlock()
+		st := th.App.assistant()
+		st.mu.Lock()
+		for _, cached := range st.dicts {
+			if cached.err != nil {
+				assert.WithinDuration(t, time.Now().Add(assistantDictionaryRetry), cached.expires, 5*time.Second, "a failed listing is kept a minute")
+			}
+		}
+		st.mu.Unlock()
+		ageAssistantDictionaries(th, assistantDictionaryRetry+time.Second)
+		got := candidates(th.BasicUser2)
+		assert.Equal(t, 3, listed(), "listed again a minute later")
+		require.Len(t, got, 1)
+		assert.JSONEq(t, `{"host":"www-1","metric":"disk"}`, string(got[0].Arguments))
+	})
+
+	t.Run("a listing that worked is kept ten minutes", func(t *testing.T) {
+		before := listed()
+		require.Len(t, candidates(th.BasicUser), 1)
+		assert.Equal(t, before, listed())
+		ageAssistantDictionaries(th, 10*time.Minute)
+		require.Len(t, candidates(th.BasicUser), 1)
+		assert.Equal(t, before+1, listed(), "listed again ten minutes later")
 	})
 }

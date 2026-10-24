@@ -150,7 +150,7 @@ func TestAssistantRuleCandidates(t *testing.T) {
 	deploy := testAssistantTool("mcp.ci.deploy", model.AIToolKindExternalWrite, `{"type":"object","properties":{"service":{"type":"string"}},"required":["service"]}`)
 	post := &model.Post{Id: model.NewId(), ChannelId: model.NewId(), UserId: model.NewId(), Message: "have you seen the cpu on www-1? and deploy web-app"}
 
-	candidates := assistantRuleCandidates(post, dict, patterns, []*aiResolvedTool{writeMetrics, metrics, deploy})
+	candidates, _ := assistantRuleCandidates(post, dict, patterns, []*aiResolvedTool{writeMetrics, metrics, deploy})
 	require.Len(t, candidates, 2)
 	insight, action := candidates[0], candidates[1]
 	assert.Equal(t, "mcp.grafana.query_prometheus", insight.Tool, "an insight never picks a tool that writes")
@@ -163,16 +163,32 @@ func TestAssistantRuleCandidates(t *testing.T) {
 	assert.Equal(t, "mcp.ci.deploy", action.Tool)
 	assert.Equal(t, model.AssistantCardKindAction, action.Kind, "a tool that changes something makes an action")
 
-	candidates = assistantRuleCandidates(post, dict, patterns, []*aiResolvedTool{metrics, hostMetrics})
+	candidates, _ = assistantRuleCandidates(post, dict, patterns, []*aiResolvedTool{metrics, hostMetrics})
 	require.Len(t, candidates, 1)
 	assert.Equal(t, "mcp.ops.host_metrics", candidates[0].Tool, "the pattern's first tool the person has wins")
 	assert.JSONEq(t, `{"instance":"www-1"}`, string(candidates[0].Arguments))
 
-	assert.Empty(t, assistantRuleCandidates(post, dict, patterns, nil), "no tools, no candidates")
+	none, why := assistantRuleCandidates(post, dict, patterns, nil)
+	assert.Empty(t, none, "no tools, no candidates")
+	assert.Equal(t, "ops.resource_usage: no tool allowed; ops.deploy: no tool allowed", why)
 
-	again := assistantRuleCandidates(&model.Post{Id: model.NewId(), ChannelId: post.ChannelId, Message: "CPU   on WWW-1 ?"}, dict, patterns, []*aiResolvedTool{hostMetrics})
+	again, _ := assistantRuleCandidates(&model.Post{Id: model.NewId(), ChannelId: post.ChannelId, Message: "CPU   on WWW-1 ?"}, dict, patterns, []*aiResolvedTool{hostMetrics})
 	require.Len(t, again, 1)
 	assert.Equal(t, candidates[0].DedupeKey, again[0].DedupeKey, "the same call in the same channel")
+
+	t.Run("no candidate says why", func(t *testing.T) {
+		for message, want := range map[string]string{
+			"lunch anyone?":                "no entity",
+			"www-1 and web-app are fine":   "no pattern matched (entities: host, service)",
+			"cpu on www-1 please":          "ops.resource_usage: mcp.ops.region_metrics: the argument \"region\" is required",
+			"is the disk on www-1 at 90%?": "ops.resource_usage: mcp.ops.region_metrics: the argument \"region\" is required",
+		} {
+			regionMetrics := testAssistantTool("mcp.ops.region_metrics", model.AIToolKindRead, `{"type":"object","properties":{"host":{"type":"string"},"region":{"type":"string"}},"required":["host","region"]}`)
+			got, why := assistantRuleCandidates(&model.Post{Id: model.NewId(), Message: message}, dict, patterns, []*aiResolvedTool{regionMetrics})
+			assert.Empty(t, got, message)
+			assert.Equal(t, want, why, message)
+		}
+	})
 }
 
 // The dedupe key: the channel, the tool and the arguments, normalised.

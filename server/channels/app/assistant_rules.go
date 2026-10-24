@@ -24,8 +24,9 @@ import (
 // The assistant's rules engine (no model): a dictionary of entities and intent patterns, both data.
 //
 //   - The dictionary has the seed entities of the settings and what the read-only tools list (the dictionary's
-//     sources: dashboards, data sources...), run as the person and kept for ten minutes; recognisers add the
-//     entities that have a shape of their own: @mentions (people), ticket keys (ABC-123), numbers (#12) and dates.
+//     sources: dashboards, data sources...), run as the person and kept for ten minutes (a failed listing for a
+//     minute); recognisers add the entities that have a shape of their own: @mentions (people), ticket keys (ABC-123),
+//     numbers (#12) and dates.
 //   - A message's entities become slots ("have you seen the cpu on ⟦host:0⟧?"), and the patterns' expressions are
 //     matched against that. A match picks the first tool of the pattern the person may use (a tool that reads, for an
 //     insight), fills its arguments from the templates and the entities, and checks them against the tool's schema.
@@ -34,6 +35,7 @@ import (
 
 const (
 	assistantDictionaryTTL      = 10 * time.Minute
+	assistantDictionaryRetry    = time.Minute
 	assistantDictionaryMaxWords = 6
 	assistantSourceMaxValues    = 2000
 	assistantMaxRuleCandidates  = 5
@@ -312,6 +314,11 @@ type assistantRuleMatch struct {
 // assistantMatchRules matches the patterns against a message: at most one match per pattern, in the patterns' order.
 func assistantMatchRules(text string, dict *assistantDictionary, patterns []*assistantCompiledPattern) []*assistantRuleMatch {
 	normalised, entities := assistantNormalise(text, dict)
+	return assistantMatchNormalised(normalised, entities, patterns)
+}
+
+// assistantMatchNormalised matches the patterns against a normalised message and its entities.
+func assistantMatchNormalised(normalised string, entities []model.AssistantEntityMatch, patterns []*assistantCompiledPattern) []*assistantRuleMatch {
 	var matches []*assistantRuleMatch
 	for _, p := range patterns {
 		for _, re := range p.exprs {
@@ -571,17 +578,37 @@ func assistantCardKind(tool *model.AITool) string {
 	return model.AssistantCardKindAction
 }
 
-// assistantRuleCandidates gives the rules engine's candidates for one message.
-func assistantRuleCandidates(post *model.Post, dict *assistantDictionary, patterns []*assistantCompiledPattern, tools []*aiResolvedTool) []*assistantCandidate {
+// assistantRuleCandidates gives the rules engine's candidates for one message and, when there are none, why (for the
+// debug log): no entity in it, no pattern matched its entities, or for each pattern that matched, no tool of the
+// pattern the person may use or an argument the tool's schema refuses. It gives entity types and pattern and tool
+// names only, never the message's words.
+func assistantRuleCandidates(post *model.Post, dict *assistantDictionary, patterns []*assistantCompiledPattern, tools []*aiResolvedTool) ([]*assistantCandidate, string) {
+	normalised, entities := assistantNormalise(post.Message, dict)
+	if len(entities) == 0 {
+		return nil, "no entity"
+	}
+	matches := assistantMatchNormalised(normalised, entities, patterns)
+	if len(matches) == 0 {
+		types := make([]string, 0, len(entities))
+		for _, e := range entities {
+			if !slices.Contains(types, e.Type) {
+				types = append(types, e.Type)
+			}
+		}
+		return nil, "no pattern matched (entities: " + strings.Join(types, ", ") + ")"
+	}
 	var out []*assistantCandidate
+	var why []string
 	seen := map[string]bool{}
-	for _, m := range assistantMatchRules(post.Message, dict, patterns) {
+	for _, m := range matches {
 		rt := assistantPickTool(m.pattern, tools)
 		if rt == nil {
+			why = append(why, m.pattern.pattern.Id+": no tool allowed")
 			continue
 		}
 		args, err := assistantFillArguments(rt.tool.InputSchema, m.pattern.pattern.Arguments, m)
 		if err != nil {
+			why = append(why, m.pattern.pattern.Id+": "+rt.tool.Name+": "+err.Error())
 			continue
 		}
 		c := &assistantCandidate{
@@ -602,12 +629,16 @@ func assistantRuleCandidates(post *model.Post, dict *assistantDictionary, patter
 			break
 		}
 	}
-	return out
+	if len(out) > 0 {
+		return out, ""
+	}
+	return nil, strings.Join(why, "; ")
 }
 
-// assistantDictionaryCache is a source's values, for a while.
+// assistantDictionaryCache is a source's values, for a while; or why its listing failed, for a shorter while.
 type assistantDictionaryCache struct {
 	values  []string
+	err     error
 	expires time.Time
 }
 
@@ -658,7 +689,8 @@ func assistantSourceValues(result, field string) []string {
 }
 
 // assistantDictionaryFor builds a person's dictionary in a channel: the seeds, then the listings of the dictionary's
-// sources they may run (as them, kept ten minutes per tool and owner of the listing).
+// sources they may run (as them, kept ten minutes per tool and owner of the listing; a listing that failed is tried
+// again after a minute).
 func (a *App) assistantDictionaryFor(rctx request.CTX, user *model.User, channel *model.Channel, tools []*aiResolvedTool, cfg *assistantConfig) *assistantDictionary {
 	dict := newAssistantDictionary()
 	for _, e := range cfg.seeds {
@@ -683,9 +715,12 @@ func (a *App) assistantDictionaryFor(rctx request.CTX, user *model.User, channel
 				text, err := a.runAssistantTool(rctx, user, channel, rt, args)
 				cached = &assistantDictionaryCache{expires: time.Now().Add(assistantDictionaryTTL)}
 				if err != nil {
-					rctx.Logger().Debug("The assistant couldn't list a tool's entities", mlog.String("tool", rt.tool.Name), mlog.Err(err))
+					cached.err = err
+					cached.expires = time.Now().Add(assistantDictionaryRetry)
+					rctx.Logger().Debug("The assistant couldn't list a tool's entities", mlog.String("tool", rt.tool.Name), mlog.String("user_id", user.Id), mlog.Err(err))
 				} else {
 					cached.values = assistantSourceValues(text, source.Field)
+					rctx.Logger().Debug("The assistant listed a tool's entities", mlog.String("tool", rt.tool.Name), mlog.String("type", source.Type), mlog.String("field", source.Field), mlog.Int("values", len(cached.values)))
 				}
 				st.mu.Lock()
 				if st.dicts == nil {
@@ -693,6 +728,8 @@ func (a *App) assistantDictionaryFor(rctx request.CTX, user *model.User, channel
 				}
 				st.dicts[key] = cached
 				st.mu.Unlock()
+			} else if cached.err != nil {
+				rctx.Logger().Debug("The assistant's listing of a tool failed a moment ago", mlog.String("tool", rt.tool.Name), mlog.String("user_id", user.Id), mlog.Time("retry_after", cached.expires), mlog.Err(cached.err))
 			}
 			for _, value := range cached.values {
 				dict.add(source.Type, value)

@@ -244,7 +244,11 @@ func (a *App) runAssistantWindow(rctx request.CTX, channelID string, postIDs []s
 		} else {
 			seen := map[string]bool{}
 			for _, post := range posts {
-				for _, c := range assistantRuleCandidates(post, dict, cfg.patterns, tools) {
+				found, why := assistantRuleCandidates(post, dict, cfg.patterns, tools)
+				if len(found) == 0 {
+					rctx.Logger().Debug("The assistant has no card for someone in a message", mlog.String("channel_id", channel.Id), mlog.String("user_id", user.Id), mlog.String("post_id", post.Id), mlog.Int("dictionary", len(dict.phrases)), mlog.String("why", why))
+				}
+				for _, c := range found {
 					if !seen[c.DedupeKey] {
 						seen[c.DedupeKey] = true
 						candidates = append(candidates, c)
