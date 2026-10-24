@@ -100,7 +100,11 @@ func (in *Intune) IsConfigured() bool {
 	return ok
 }
 
-func appError(id string, status int, err error) *model.AppError {
+// Named newAppError, not appError: the i18n extractor recognises calls to a local
+// helper named exactly newAppError(id, ...) as it does model.NewAppError itself
+// (see UploadFileTask.newAppError in channels/app/file.go), so the literal ids
+// below survive `make i18n-extract` instead of being dropped as unused.
+func newAppError(id string, status int, err error) *model.AppError {
 	appErr := model.NewAppError("Intune.Login", id, nil, "", status)
 	if err != nil {
 		appErr = appErr.Wrap(err)
@@ -130,27 +134,27 @@ func (in *Intune) validate(rctx request.CTX, s settings, accessToken string) (oi
 	switch {
 	case err == nil:
 	case errors.Is(err, oidc.ErrTokenExpired):
-		return nil, appError("ent.intune.validate_token.token_expired.app_error", http.StatusUnauthorized, err)
+		return nil, newAppError("ent.intune.validate_token.token_expired.app_error", http.StatusUnauthorized, err)
 	case errors.Is(err, oidc.ErrKeySetUnavailable):
-		return nil, appError("ent.intune.validate_token.jwks_init.app_error", http.StatusInternalServerError, err)
+		return nil, newAppError("ent.intune.validate_token.jwks_init.app_error", http.StatusInternalServerError, err)
 	case errors.Is(err, oidc.ErrInvalidIssuer):
-		return nil, appError("ent.intune.validate_token.invalid_tenant_id.app_error", http.StatusUnauthorized, err)
+		return nil, newAppError("ent.intune.validate_token.invalid_tenant_id.app_error", http.StatusUnauthorized, err)
 	default:
-		return nil, appError("ent.intune.validate_token.invalid_token.app_error", http.StatusUnauthorized, err)
+		return nil, newAppError("ent.intune.validate_token.invalid_token.app_error", http.StatusUnauthorized, err)
 	}
 
 	if tid := oidc.String(claims, "tid"); !strings.EqualFold(tid, s.tenant) {
-		return nil, appError("ent.intune.validate_token.invalid_tenant_id.app_error", http.StatusUnauthorized, errors.New("unexpected tenant "+tid))
+		return nil, newAppError("ent.intune.validate_token.invalid_tenant_id.app_error", http.StatusUnauthorized, errors.New("unexpected tenant "+tid))
 	}
 
 	// Only delegated tokens issued for the Mattermost login scope are
 	// accepted (this rejects app-only tokens, which have no "scp").
 	if !slices.Contains(oidc.StringList(claims, "scp"), Scope) {
-		return nil, appError("ent.intune.validate_token.invalid_token.app_error", http.StatusUnauthorized, errors.New("the access token was not issued for the "+Scope+" scope"))
+		return nil, newAppError("ent.intune.validate_token.invalid_token.app_error", http.StatusUnauthorized, errors.New("the access token was not issued for the "+Scope+" scope"))
 	}
 
 	if oidc.String(claims, "oid") == "" {
-		return nil, appError("ent.intune.validate_token.missing_claims.app_error", http.StatusBadRequest, errors.New("the access token has no oid claim"))
+		return nil, newAppError("ent.intune.validate_token.missing_claims.app_error", http.StatusBadRequest, errors.New("the access token has no oid claim"))
 	}
 	return claims, nil
 }
@@ -159,7 +163,7 @@ func (in *Intune) validate(rctx request.CTX, s settings, accessToken string) (oi
 func (in *Intune) Login(rctx request.CTX, accessToken string) (*model.User, *model.AppError) {
 	s, ok := in.settings()
 	if !ok {
-		return nil, appError("ent.intune.login.not_configured.app_error", http.StatusBadRequest, nil)
+		return nil, newAppError("ent.intune.login.not_configured.app_error", http.StatusBadRequest, nil)
 	}
 
 	claims, appErr := in.validate(rctx, s, accessToken)
@@ -182,7 +186,7 @@ func (in *Intune) Login(rctx request.CTX, accessToken string) (*model.User, *mod
 	if s.authService != model.ServiceOffice365 {
 		// SAML accounts are provisioned by SAML sign-in, whose Id attribute
 		// must be the Entra ID object id.
-		return nil, appError("ent.intune.login.account_not_found.app_error", http.StatusNotFound, errors.New("no "+s.authService+" user with this object id"))
+		return nil, newAppError("ent.intune.login.account_not_found.app_error", http.StatusNotFound, errors.New("no "+s.authService+" user with this object id"))
 	}
 	return in.createOffice365User(rctx, identity)
 }
@@ -190,12 +194,12 @@ func (in *Intune) Login(rctx request.CTX, accessToken string) (*model.User, *mod
 func (in *Intune) createOffice365User(rctx request.CTX, identity oidc.Identity) (*model.User, *model.AppError) {
 	cfg := in.app.Config()
 	if !model.SafeDereference(cfg.TeamSettings.EnableUserCreation) {
-		return nil, appError("ent.intune.login.account_not_found.app_error", http.StatusNotFound, errors.New("user creation is disabled"))
+		return nil, newAppError("ent.intune.login.account_not_found.app_error", http.StatusNotFound, errors.New("user creation is disabled"))
 	}
 
 	email := identity.BestEmail()
 	if email == "" {
-		return nil, appError("ent.intune.validate_token.missing_claims.app_error", http.StatusBadRequest, errors.New("the access token has no email, upn or preferred_username claim"))
+		return nil, newAppError("ent.intune.validate_token.missing_claims.app_error", http.StatusBadRequest, errors.New("the access token has no email, upn or preferred_username claim"))
 	}
 
 	if existing, appErr := in.app.GetUserByEmail(email); appErr == nil {

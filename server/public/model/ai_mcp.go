@@ -195,47 +195,51 @@ func (s *AIMCPServer) normalize() {
 
 // IsValid checks an MCP server before it's saved.
 func (s *AIMCPServer) IsValid() *AppError {
-	invalid := func(id, detail string) *AppError {
+	// Named newAppError, not invalid: the i18n extractor recognises calls to a local
+	// helper named exactly newAppError(id, ...) as it does model.NewAppError itself
+	// (see UploadFileTask.newAppError in channels/app/file.go), so the literal ids
+	// below survive `make i18n-extract` instead of being dropped as unused.
+	newAppError := func(id, detail string) *AppError {
 		return NewAppError("AIMCPServer.IsValid", id, nil, detail, http.StatusBadRequest)
 	}
 	if !IsValidId(s.Id) {
-		return invalid("model.ai_mcp_server.id.app_error", "")
+		return newAppError("model.ai_mcp_server.id.app_error", "")
 	}
 	if n := utf8.RuneCountInString(s.Name); n == 0 || n > AIMCPServerNameMaxRunes {
-		return invalid("model.ai_mcp_server.name.app_error", "")
+		return newAppError("model.ai_mcp_server.name.app_error", "")
 	}
 	if !IsValidAIMCPSlug(s.Slug) {
-		return invalid("model.ai_mcp_server.slug.app_error", "slug="+s.Slug)
+		return newAppError("model.ai_mcp_server.slug.app_error", "slug="+s.Slug)
 	}
 	if s.Scope != AIConnectionScopeServer && !IsValidId(s.Scope) {
-		return invalid("model.ai_mcp_server.scope.app_error", "")
+		return newAppError("model.ai_mcp_server.scope.app_error", "")
 	}
 	if !ValidAIMCPServerURL(s.URL) {
-		return invalid("model.ai_mcp_server.url.app_error", "")
+		return newAppError("model.ai_mcp_server.url.app_error", "")
 	}
 	switch s.Auth {
 	case AIMCPAuthNone, AIMCPAuthOAuth, AIMCPAuthServiceAccount:
 	default:
-		return invalid("model.ai_mcp_server.auth.app_error", "auth="+s.Auth)
+		return newAppError("model.ai_mcp_server.auth.app_error", "auth="+s.Auth)
 	}
 	if len(s.OAuthClientId) > AIMCPOAuthClientIDMaxLen || strings.ContainsAny(s.OAuthClientId, "\r\n ") || len(s.OAuthScopes) > AIMCPOAuthScopesMaxLen {
-		return invalid("model.ai_mcp_server.oauth.app_error", "")
+		return newAppError("model.ai_mcp_server.oauth.app_error", "")
 	}
 	if s.Auth == AIMCPAuthServiceAccount && len(s.HeaderNames) == 0 {
 		// A service account is its headers.
-		return invalid("model.ai_mcp_server.headers.app_error", "service account without headers")
+		return newAppError("model.ai_mcp_server.headers.app_error", "service account without headers")
 	}
 	if len(s.HeaderNames) > AIConnectionMaxHeaders {
-		return invalid("model.ai_mcp_server.headers.app_error", "too many")
+		return newAppError("model.ai_mcp_server.headers.app_error", "too many")
 	}
 	if !validIDs(s.Sharing.TeamIDs) {
-		return invalid("model.ai_mcp_server.sharing.app_error", "")
+		return newAppError("model.ai_mcp_server.sharing.app_error", "")
 	}
 	if utf8.RuneCountInString(s.NeedsAttention) > AINeedsAttentionMaxRunes {
-		return invalid("model.ai_mcp_server.needs_attention.app_error", "")
+		return newAppError("model.ai_mcp_server.needs_attention.app_error", "")
 	}
 	if s.CreateAt == 0 || s.UpdateAt == 0 {
-		return invalid("model.ai_mcp_server.times.app_error", "")
+		return newAppError("model.ai_mcp_server.times.app_error", "")
 	}
 	return nil
 }

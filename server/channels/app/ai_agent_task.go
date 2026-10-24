@@ -56,8 +56,11 @@ type taskSubject struct {
 // readable by them; the agent must be one they may use there.
 func (a *App) aiAgentTaskSubject(rctx request.CTX, agent *model.AIAgent, user *model.User, task *model.AIAgentTaskRequest) (*taskSubject, *model.AppError) {
 	const where = "aiAgentTaskSubject"
-	// The error IDs are written out, for the string extractor.
-	notFound := func(id string) *model.AppError {
+	// Named newAppError, not notFound: the i18n extractor recognises calls to a local
+	// helper named exactly newAppError(id, ...) as it does model.NewAppError itself
+	// (see UploadFileTask.newAppError in channels/app/file.go), so the literal ids
+	// below survive `make i18n-extract` instead of being dropped as unused.
+	newAppError := func(id string) *model.AppError {
 		return model.NewAppError(where, id, nil, "", http.StatusNotFound)
 	}
 	subject := &taskSubject{}
@@ -65,22 +68,22 @@ func (a *App) aiAgentTaskSubject(rctx request.CTX, agent *model.AIAgent, user *m
 	if task.PostId != "" {
 		post, appErr := a.GetSinglePost(rctx, task.PostId, false)
 		if appErr != nil {
-			return nil, notFound("app.ai.agent.task.post.app_error")
+			return nil, newAppError("app.ai.agent.task.post.app_error")
 		}
 		subject.post = post
 		channelID = post.ChannelId
 	}
 	channel, appErr := a.GetChannel(rctx, channelID)
 	if appErr != nil || channel.DeleteAt != 0 {
-		return nil, notFound("app.ai.agent.task.channel.app_error")
+		return nil, newAppError("app.ai.agent.task.channel.app_error")
 	}
 	subject.channel = channel
 	if ok, _ := a.HasPermissionToChannel(rctx, user.Id, channel.Id, model.PermissionReadChannelContent); !ok {
 		// The same answer as for a post or channel that isn't there: nothing is told about what they can't read.
 		if task.PostId != "" {
-			return nil, notFound("app.ai.agent.task.post.app_error")
+			return nil, newAppError("app.ai.agent.task.post.app_error")
 		}
-		return nil, notFound("app.ai.agent.task.channel.app_error")
+		return nil, newAppError("app.ai.agent.task.channel.app_error")
 	}
 	if task.Task == model.AIAgentTaskSummarizeTranscription {
 		if subject.post.Type != model.PostTypeCallsTranscription {

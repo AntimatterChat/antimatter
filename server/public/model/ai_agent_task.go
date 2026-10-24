@@ -66,8 +66,11 @@ func (r *AIAgentTaskRequest) IsChannelTask() bool {
 
 // IsValid checks a task's request: a known task, with the subject it needs and nothing else.
 func (r *AIAgentTaskRequest) IsValid() *AppError {
-	// The error IDs are written out, for the string extractor.
-	invalid := func(id string) *AppError {
+	// Named newAppError, not invalid: the i18n extractor recognises calls to a local
+	// helper named exactly newAppError(id, ...) as it does model.NewAppError itself
+	// (see UploadFileTask.newAppError in channels/app/file.go), so the literal ids
+	// below survive `make i18n-extract` instead of being dropped as unused.
+	newAppError := func(id string) *AppError {
 		return NewAppError("AIAgentTaskRequest.IsValid", id, nil, "", http.StatusBadRequest)
 	}
 	onPost := r.Task == AIAgentTaskSummarizeThread || r.Task == AIAgentTaskSummarizeTranscription
@@ -79,21 +82,21 @@ func (r *AIAgentTaskRequest) IsValid() *AppError {
 	switch {
 	case onPost:
 		if !IsValidId(r.PostId) || r.ChannelId != "" || r.Since != 0 || r.Question != "" {
-			return invalid("model.ai_agent_task.post_id.app_error")
+			return newAppError("model.ai_agent_task.post_id.app_error")
 		}
 	case onChannel:
 		if !IsValidId(r.ChannelId) || r.PostId != "" || r.Since < 0 {
-			return invalid("model.ai_agent_task.channel_id.app_error")
+			return newAppError("model.ai_agent_task.channel_id.app_error")
 		}
 		question := strings.TrimSpace(r.Question)
 		if r.Task == AIAgentTaskAskChannel && (question == "" || utf8.RuneCountInString(question) > AIAgentTaskQuestionMaxRunes) {
-			return invalid("model.ai_agent_task.question.app_error")
+			return newAppError("model.ai_agent_task.question.app_error")
 		}
 		if r.Task != AIAgentTaskAskChannel && r.Question != "" {
-			return invalid("model.ai_agent_task.question.app_error")
+			return newAppError("model.ai_agent_task.question.app_error")
 		}
 	default:
-		return invalid("model.ai_agent_task.task.app_error")
+		return newAppError("model.ai_agent_task.task.app_error")
 	}
 	return nil
 }
