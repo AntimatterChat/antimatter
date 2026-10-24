@@ -268,6 +268,8 @@ type MoveThreadParams struct {
 type MoveThreadToChannelParams struct {
 	ChannelId string `json:"channel_id"`
 	Flatten   bool   `json:"flatten,omitempty"`
+	// Title names the topic when the target is a forum (otherwise the thread keeps its own); ignored elsewhere.
+	Title string `json:"title,omitempty"`
 }
 
 type SearchParameter struct {
@@ -626,7 +628,9 @@ func (o *Post) IsValid(maxPostSize int) *AppError {
 		PostTypeAutotranslationChange,
 		PostTypeBurnOnRead,
 		PostTypeCard,
-		PostTypeSharedChannelState:
+		PostTypeSharedChannelState,
+		PostTypeTopicAnswer,
+		PostTypeTopicStatus:
 	default:
 		if !strings.HasPrefix(o.Type, PostCustomTypePrefix) {
 			return NewAppError("Post.IsValid", "model.post.is_valid.type.app_error", nil, "id="+o.Type, http.StatusBadRequest)

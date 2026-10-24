@@ -4051,6 +4051,28 @@ func (c *Client4) MoveThreadToChannel(ctx context.Context, postId string, params
 	return DecodeJSONFromResponse[*Post](r)
 }
 
+// GetForumTopics gives a page of a forum's topics (Antimatter), as GET /channels/{channel_id}/topics takes its query:
+// sort, answered, status, mine, following, q, before, per_page and replies.
+func (c *Client4) GetForumTopics(ctx context.Context, channelId string, query url.Values) (*ForumTopicList, *Response, error) {
+	r, err := c.doAPIGetWithQuery(ctx, c.channelRoute(channelId).Join("topics"), query, "")
+	if err != nil {
+		return nil, BuildResponse(r), err
+	}
+	defer closeBody(r)
+	return DecodeJSONFromResponse[*ForumTopicList](r)
+}
+
+// PatchForumTopic accepts a Q&A topic's answer or sets an Ideas topic's status (Antimatter), and gives the topic's
+// first post.
+func (c *Client4) PatchForumTopic(ctx context.Context, postId string, patch *ForumTopicPatch) (*Post, *Response, error) {
+	r, err := c.doAPIPatchJSON(ctx, c.postRoute(postId).Join("topic"), patch)
+	if err != nil {
+		return nil, BuildResponse(r), err
+	}
+	defer closeBody(r)
+	return DecodeJSONFromResponse[*Post](r)
+}
+
 // GetPostsAroundLastUnread gets a list of posts around last unread post by a user in a channel.
 func (c *Client4) GetPostsAroundLastUnread(ctx context.Context, userId, channelId string, limitBefore, limitAfter int, collapsedThreads bool) (*PostList, *Response, error) {
 	values := url.Values{}

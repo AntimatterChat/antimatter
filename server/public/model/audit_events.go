@@ -380,6 +380,7 @@ const (
 	AuditEventMoveThread                         = "moveThread"                         // move thread and replies to different channel
 	AuditEventNotificationAck                    = "notificationAck"                    // notification ack
 	AuditEventPatchPost                          = "patchPost"                          // update post meta properties
+	AuditEventPatchForumTopic                    = "patchForumTopic"                    // Antimatter: accept a forum topic's answer or set its status
 	AuditEventRestorePostVersion                 = "restorePostVersion"                 // restore post to previous version
 	AuditEventSaveIsPinnedPost                   = "saveIsPinnedPost"                   // pin or unpin post
 	AuditEventSearchPosts                        = "searchPosts"                        // search for posts
