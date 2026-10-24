@@ -275,13 +275,11 @@ func testModerationInviteLinks(t *testing.T, rctx request.CTX, ss store.Store) {
 		var wg sync.WaitGroup
 		var taken atomic.Int32
 		for range 8 {
-			wg.Add(1)
-			go func() {
-				defer wg.Done()
+			wg.Go(func() {
 				if ok, useErr := ss.Moderation().UseInviteLink(rctx, last.Id, now); useErr == nil && ok {
 					taken.Add(1)
 				}
-			}()
+			})
 		}
 		wg.Wait()
 		assert.Equal(t, int32(1), taken.Load())

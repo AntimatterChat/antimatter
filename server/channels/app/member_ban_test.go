@@ -127,16 +127,14 @@ func TestTeamInviteLinkConcurrentJoins(t *testing.T) {
 	var joined atomic.Int32
 	start := make(chan struct{})
 	for _, user := range users {
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
+		wg.Go(func() {
 			<-start
 			if _, _, appErr := th.App.AddUserToTeamByInviteId(th.Context, link.Id, user.Id); appErr == nil {
 				joined.Add(1)
 			} else {
 				assert.Equal(t, "app.team_invite_link.used_up.app_error", appErr.Id)
 			}
-		}()
+		})
 	}
 	close(start)
 	wg.Wait()
