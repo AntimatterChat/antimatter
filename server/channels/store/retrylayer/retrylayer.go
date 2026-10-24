@@ -8693,6 +8693,27 @@ func (s *RetryLayerGroupStore) GroupCountBySource(source model.GroupSource) (int
 
 }
 
+func (s *RetryLayerGroupStore) GroupCountVisibleTo(userID string) (int64, error) {
+
+	tries := 0
+	for {
+		result, err := s.GroupStore.GroupCountVisibleTo(userID)
+		if err == nil {
+			return result, nil
+		}
+		if !isRepeatableError(err) {
+			return result, err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
 func (s *RetryLayerGroupStore) GroupCountWithAllowReference() (int64, error) {
 
 	tries := 0

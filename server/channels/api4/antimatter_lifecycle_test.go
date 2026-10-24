@@ -184,6 +184,42 @@ func TestAntimatterLifecycles(t *testing.T) {
 		require.NoError(t, err)
 	})
 
+	t.Run("listing groups leaves out the roles and teams of communities the caller isn't in", func(t *testing.T) {
+		name := "listed" + model.NewId()[:8]
+		role := newRole(t, team.Id, name, th.BasicUser.Id)
+		outsider := th.CreateUser(t)
+		list := func(t *testing.T, client *model.Client4) *model.GroupsWithCount {
+			t.Helper()
+			resp, err := client.DoAPIGet(context.Background(), "/groups?q="+name+"&include_member_ids=true&include_member_count=true&include_total_count=true&per_page=100", "")
+			require.NoError(t, err)
+			defer resp.Body.Close()
+			var got model.GroupsWithCount
+			require.NoError(t, json.NewDecoder(resp.Body).Decode(&got))
+			return &got
+		}
+		ids := func(groups []*model.Group) []string {
+			var out []string
+			for _, g := range groups {
+				out = append(out, g.Id)
+			}
+			return out
+		}
+
+		assert.NotContains(t, ids(list(t, loggedIn(t, outsider)).Groups), role.Id, "nor its members, by include_member_ids")
+		member := list(t, th.Client)
+		require.Contains(t, ids(member.Groups), role.Id, "the community's members list it")
+		for _, g := range member.Groups {
+			if g.Id == role.Id {
+				assert.Contains(t, g.MemberIDs, th.BasicUser.Id)
+			}
+		}
+		assert.Contains(t, ids(list(t, th.SystemAdminClient).Groups), role.Id, "a system admin sees every community's")
+
+		// The total counts what the caller may see (TestGroupStore's GroupCountVisibleTo pins the numbers; other tests
+		// create groups in parallel here).
+		assert.GreaterOrEqual(t, member.TotalCount, int64(len(member.Groups)))
+	})
+
 	t.Run("a role of one team can't be used in another team's channel", func(t *testing.T) {
 		otherTeam := th.CreateTeam(t)
 		foreign := newRole(t, otherTeam.Id, "foreign")

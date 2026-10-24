@@ -117,6 +117,18 @@ func checkCommunityGroupVisible(c *Context, group *model.Group) *model.AppError 
 	return model.MakePermissionError(c.AppContext.Session(), []*model.Permission{model.PermissionViewTeam})
 }
 
+// communityGroupsViewer is the user whose communities' roles and teams a list of groups is kept to (see
+// checkCommunityGroupVisible), or "" when the session sees every community's: it has view_team server-wide (a system
+// admin) or reads the groups in the System Console.
+func communityGroupsViewer(c *Context) string {
+	session := *c.AppContext.Session()
+	if c.App.SessionHasPermissionTo(session, model.PermissionViewTeam) ||
+		c.App.SessionHasPermissionTo(session, model.PermissionSysconsoleReadUserManagementGroups) {
+		return ""
+	}
+	return session.UserId
+}
+
 func getGroup(c *Context, w http.ResponseWriter, r *http.Request) {
 	c.RequireGroupId()
 	if c.Err != nil {
@@ -1150,6 +1162,7 @@ func getGroups(c *Context, w http.ResponseWriter, r *http.Request) {
 		FilterTeamId:              filterTeamID,
 		FilterIsTeam:              filterIsTeam,
 		IncludeTeamRoles:          !c.Params.FilterAllowReference,
+		FilterVisibleToUserId:     communityGroupsViewer(c),
 	}
 
 	if teamID != "" {
@@ -1242,7 +1255,13 @@ func getGroups(c *Context, w http.ResponseWriter, r *http.Request) {
 		err error
 	)
 	if c.Params.IncludeTotalCount {
-		totalCount, cerr := c.App.Srv().Store().Group().GroupCount()
+		var totalCount int64
+		var cerr error
+		if opts.FilterVisibleToUserId != "" {
+			totalCount, cerr = c.App.Srv().Store().Group().GroupCountVisibleTo(opts.FilterVisibleToUserId)
+		} else {
+			totalCount, cerr = c.App.Srv().Store().Group().GroupCount()
+		}
 		if cerr != nil {
 			c.Err = model.NewAppError("Api4.getGroups", "api.custom_groups.count_err", nil, "", http.StatusInternalServerError).Wrap(cerr)
 			return

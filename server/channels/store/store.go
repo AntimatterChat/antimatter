@@ -1074,6 +1074,10 @@ type GroupStore interface {
 	// GroupCountWithAllowReference returns the count of records in the Groups table with AllowReference set to true.
 	GroupCountWithAllowReference() (int64, error)
 
+	// GroupCountVisibleTo returns GroupCount's count without the roles and teams of the communities (Mattermost
+	// teams) userID isn't a member of: what FilterVisibleToUserId leaves.
+	GroupCountVisibleTo(userID string) (int64, error)
+
 	UpsertMembers(groupID string, userIDs []string) ([]*model.GroupMember, error)
 	DeleteMembers(groupID string, userIDs []string) ([]*model.GroupMember, error)
 

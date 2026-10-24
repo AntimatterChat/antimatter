@@ -233,6 +233,11 @@ type GroupSearchOpts struct {
 	// mention (asking filter_allow_reference) leave it out.
 	IncludeTeamRoles bool
 
+	// Antimatter: FilterVisibleToUserId, when set, keeps a community's roles and teams (the groups of a Mattermost
+	// team) to the communities that user is a member of: who holds which role is the community's business. Server-wide
+	// groups are kept whatever it is.
+	FilterVisibleToUserId string
+
 	IncludeChannelMemberCount string
 	IncludeTimezones          bool
 	IncludeMemberIDs          bool

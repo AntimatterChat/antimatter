@@ -1578,6 +1578,9 @@ func (s *SqlGroupStore) GetGroups(page, perPage int, opts model.GroupSearchOpts,
 	if opts.FilterIsTeam != nil {
 		groupsQuery = groupsQuery.Where(sq.Eq{"UserGroups.IsTeam": *opts.FilterIsTeam})
 	}
+	if opts.FilterVisibleToUserId != "" {
+		groupsQuery = groupsQuery.Where(visibleToUserClause(opts.FilterVisibleToUserId))
+	}
 
 	if opts.Since > 0 {
 		groupsQuery = groupsQuery.Where(sq.Gt{
@@ -1972,6 +1975,25 @@ func (s *SqlGroupStore) DistinctGroupMemberCountForSource(source model.GroupSour
 
 func (s *SqlGroupStore) GroupCountWithAllowReference() (int64, error) {
 	return s.countTableWithSelectAndWhere("COUNT(*)", "UserGroups", sq.Eq{"AllowReference": true, "DeleteAt": 0})
+}
+
+// visibleToUserClause keeps the server-wide groups, and a community's roles and teams for its members only.
+func visibleToUserClause(userID string) sq.Sqlizer {
+	return sq.Expr("(UserGroups.TeamId = '' OR UserGroups.TeamId IN (SELECT TeamMembers.TeamId FROM TeamMembers WHERE TeamMembers.UserId = ? AND TeamMembers.DeleteAt = 0))", userID)
+}
+
+func (s *SqlGroupStore) GroupCountVisibleTo(userID string) (int64, error) {
+	query := s.getQueryBuilder().
+		Select("COUNT(*)").
+		From("UserGroups").
+		Where(sq.Eq{"UserGroups.DeleteAt": 0}).
+		Where(visibleToUserClause(userID))
+
+	var count int64
+	if err := s.GetReplica().GetBuilder(&count, query); err != nil {
+		return 0, errors.Wrapf(err, "failed to count the groups visible to user %s", userID)
+	}
+	return count, nil
 }
 
 func (s *SqlGroupStore) countTable(tableName string) (int64, error) {

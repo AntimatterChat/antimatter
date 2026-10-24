@@ -7052,6 +7052,22 @@ func (s *TimerLayerGroupStore) GroupCountBySource(source model.GroupSource) (int
 	return result, err
 }
 
+func (s *TimerLayerGroupStore) GroupCountVisibleTo(userID string) (int64, error) {
+	start := time.Now()
+
+	result, err := s.GroupStore.GroupCountVisibleTo(userID)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("GroupStore.GroupCountVisibleTo", success, elapsed)
+	}
+	return result, err
+}
+
 func (s *TimerLayerGroupStore) GroupCountWithAllowReference() (int64, error) {
 	start := time.Now()
 

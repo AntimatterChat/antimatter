@@ -93,6 +93,7 @@ func TestGroupStore(t *testing.T, rctx request.CTX, ss store.Store) {
 	t.Run("GroupMemberCount", func(t *testing.T) { groupTestGroupMemberCount(t, rctx, ss) })
 	t.Run("DistinctGroupMemberCount", func(t *testing.T) { groupTestDistinctGroupMemberCount(t, rctx, ss) })
 	t.Run("GroupCountWithAllowReference", func(t *testing.T) { groupTestGroupCountWithAllowReference(t, rctx, ss) })
+	t.Run("GetGroupsVisibleTo", func(t *testing.T) { groupTestGetGroupsVisibleTo(t, rctx, ss) })
 
 	t.Run("GetMember", func(t *testing.T) { groupTestGetMember(t, rctx, ss) })
 	t.Run("GetNonMemberUsersPage", func(t *testing.T) { groupTestGetNonMemberUsersPage(t, rctx, ss) })
@@ -5690,6 +5691,67 @@ func groupTestGroupCountWithAllowReference(t *testing.T, rctx request.CTX, ss st
 	countAfter, err := ss.Group().GroupCountWithAllowReference()
 	require.NoError(t, err)
 	require.Greater(t, countAfter, count)
+}
+
+// Antimatter: a community's roles and teams are listed and counted for its members only; server-wide groups for all.
+func groupTestGetGroupsVisibleTo(t *testing.T, rctx request.CTX, ss store.Store) {
+	team, err := ss.Team().Save(&model.Team{
+		DisplayName: "Visible",
+		Name:        "z-z-" + model.NewId() + "a",
+		Email:       "success+" + model.NewId() + "@simulator.amazonses.com",
+		Type:        model.TeamOpen,
+	})
+	require.NoError(t, err)
+	member, outsider, left := model.NewId(), model.NewId(), model.NewId()
+	_, err = ss.Team().SaveMember(rctx, &model.TeamMember{TeamId: team.Id, UserId: member}, -1)
+	require.NoError(t, err)
+	_, err = ss.Team().SaveMember(rctx, &model.TeamMember{TeamId: team.Id, UserId: left, DeleteAt: model.GetMillis()}, -1)
+	require.NoError(t, err)
+
+	prefix := "vis" + model.NewId()[:10]
+	role, err := ss.Group().Create(&model.Group{Name: new(prefix + "role"), DisplayName: prefix + "role", Source: model.GroupSourceCustom, AllowReference: true, TeamId: team.Id})
+	require.NoError(t, err)
+	defer ss.Group().Delete(role.Id)
+	_, err = ss.Group().UpsertMembers(role.Id, []string{member})
+	require.NoError(t, err)
+	wide, err := ss.Group().Create(&model.Group{Name: new(prefix + "wide"), DisplayName: prefix + "wide", Source: model.GroupSourceCustom, AllowReference: true})
+	require.NoError(t, err)
+	defer ss.Group().Delete(wide.Id)
+
+	listed := func(userID string) []string {
+		t.Helper()
+		groups, err := ss.Group().GetGroups(0, 100, model.GroupSearchOpts{Q: prefix, IncludeMemberIDs: true, IncludeMemberCount: true, FilterVisibleToUserId: userID}, nil)
+		require.NoError(t, err)
+		var ids []string
+		for _, g := range groups {
+			ids = append(ids, g.Id)
+		}
+		return ids
+	}
+	assert.ElementsMatch(t, []string{role.Id, wide.Id}, listed(member))
+	assert.ElementsMatch(t, []string{wide.Id}, listed(outsider))
+	assert.ElementsMatch(t, []string{wide.Id}, listed(left), "nor for someone who left the community")
+	assert.ElementsMatch(t, []string{role.Id, wide.Id}, listed(""), "no filter: every group")
+
+	// Paging stays right: the filtered group takes no page's place.
+	groups, err := ss.Group().GetGroups(0, 1, model.GroupSearchOpts{Q: prefix, FilterVisibleToUserId: outsider}, nil)
+	require.NoError(t, err)
+	require.Len(t, groups, 1)
+	assert.Equal(t, wide.Id, groups[0].Id)
+
+	// The count leaves out the community's role for the outsider and for whoever left; its member counts it. (Other
+	// tests may create groups meanwhile: the two counts are compared until they're taken between two of those.)
+	require.Eventually(t, func() bool {
+		forMember, err := ss.Group().GroupCountVisibleTo(member)
+		require.NoError(t, err)
+		forOutsider, err := ss.Group().GroupCountVisibleTo(outsider)
+		require.NoError(t, err)
+		forLeft, err := ss.Group().GroupCountVisibleTo(left)
+		require.NoError(t, err)
+		all, err := ss.Group().GroupCount()
+		require.NoError(t, err)
+		return forMember == forOutsider+1 && forLeft == forOutsider && all >= forMember
+	}, 5*time.Second, 50*time.Millisecond)
 }
 
 func groupTestGetMember(t *testing.T, rctx request.CTX, ss store.Store) {

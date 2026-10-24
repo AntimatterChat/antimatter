@@ -1280,6 +1280,34 @@ func (_m *GroupStore) GroupCountBySource(source model.GroupSource) (int64, error
 	return r0, r1
 }
 
+// GroupCountVisibleTo provides a mock function with given fields: userID
+func (_m *GroupStore) GroupCountVisibleTo(userID string) (int64, error) {
+	ret := _m.Called(userID)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GroupCountVisibleTo")
+	}
+
+	var r0 int64
+	var r1 error
+	if rf, ok := ret.Get(0).(func(string) (int64, error)); ok {
+		return rf(userID)
+	}
+	if rf, ok := ret.Get(0).(func(string) int64); ok {
+		r0 = rf(userID)
+	} else {
+		r0 = ret.Get(0).(int64)
+	}
+
+	if rf, ok := ret.Get(1).(func(string) error); ok {
+		r1 = rf(userID)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // GroupCountWithAllowReference provides a mock function with no fields
 func (_m *GroupStore) GroupCountWithAllowReference() (int64, error) {
 	ret := _m.Called()
