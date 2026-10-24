@@ -100,6 +100,58 @@ describe('fusion/composer/Composer', () => {
         await waitFor(() => expect(onSubmit).toHaveBeenCalledWith('c1', '', expect.objectContaining({message: 'See you tomorrow'}), {}, {scheduled_at: mockTomorrow}));
     });
 
+    // Antimatter forums: the New topic form's title rides along on whatever is sent, now or scheduled.
+    describe('extraProps (Antimatter forums: the New topic form\'s title)', () => {
+        const extraProps = {am_thread_title: 'Beam alignment'};
+
+        const renderWithExtraProps = (props: Record<string, unknown> = {}) => renderWithContext(
+            <Composer
+                channelId='c1'
+                placeholder='Write to General'
+                extraProps={extraProps}
+                {...props}
+            />,
+            {
+                entities: {
+                    general: {config: {ScheduledPosts: 'true'}},
+                    users: {currentUserId: 'me'},
+                    channels: {currentChannelId: 'c1', channels: {c1: channel}},
+                },
+                plugins: {components: {}},
+            } as never,
+        );
+
+        test('merges extraProps onto a message sent now', async () => {
+            renderWithExtraProps();
+
+            await userEvent.type(screen.getByRole('textbox', {name: 'Write to General'}), 'Body text');
+            await userEvent.click(screen.getByRole('button', {name: 'Send'}));
+
+            await waitFor(() => expect(onSubmit).toHaveBeenCalledWith('c1', '', expect.objectContaining({props: expect.objectContaining(extraProps)}), {}));
+        });
+
+        test('merges extraProps onto a message scheduled for later', async () => {
+            renderWithExtraProps();
+
+            await userEvent.type(screen.getByRole('textbox', {name: 'Write to General'}), 'Body text');
+            await userEvent.click(screen.getByRole('button', {name: 'Send later'}));
+            await userEvent.click(screen.getByRole('button', {name: 'Tomorrow at 9:00'}));
+
+            await waitFor(() => expect(onSubmit).toHaveBeenCalledWith('c1', '', expect.objectContaining({props: expect.objectContaining(extraProps)}), {}, {scheduled_at: mockTomorrow}));
+        });
+
+        test('onReady gets a function that sends the current draft', async () => {
+            let send: (() => void) | undefined;
+            renderWithExtraProps({onReady: (fn: () => void) => { send = fn; }});
+
+            await userEvent.type(screen.getByRole('textbox', {name: 'Write to General'}), 'Body text');
+            expect(send).toBeInstanceOf(Function);
+            await act(async () => send!());
+
+            await waitFor(() => expect(onSubmit).toHaveBeenCalledWith('c1', '', expect.objectContaining({message: 'Body text', props: expect.objectContaining(extraProps)}), {}));
+        });
+    });
+
     describe('message options', () => {
         const options = {PostPriority: 'true', EnableBurnOnRead: 'true', BurnOnReadDurationSeconds: '600', BurnOnReadMaximumDurationSeconds: '14400', BurnOnReadMaximumTimeToLiveSeconds: '604800'};
         const open = () => userEvent.click(screen.getByRole('button', {name: 'Message options'}));

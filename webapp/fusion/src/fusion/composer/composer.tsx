@@ -85,6 +85,14 @@ type Props = {
 
     // Called once a message is posted (not a command), e.g. by an app's panel to open the conversation it starts.
     afterSubmit?: (response: SubmitPostReturnType) => void;
+
+    // Antimatter forums: merged onto the sent message's props (the New topic form's title, props.am_thread_title),
+    // for every way the draft can be sent (now or scheduled).
+    extraProps?: Record<string, string>;
+
+    // Antimatter forums: gives a caller a way to send the current draft itself (the New topic form sends from its
+    // title field with Ctrl/Cmd+Enter, without its own send button). Called once the composer is ready.
+    onReady?: (submit: () => void) => void;
 };
 
 type Pending = {clientId: string; name: string; progress: number};
@@ -112,7 +120,7 @@ export default function Composer(props: Props) {
     );
 }
 
-function MessageBox({channelId, rootId = '', placeholder, afterSubmit}: Props) {
+function MessageBox({channelId, rootId = '', placeholder, afterSubmit, extraProps, onReady}: Props) {
     const intl = useIntl();
     const {formatMessage} = intl;
     const dialogs = useDialogs();
@@ -331,7 +339,7 @@ function MessageBox({channelId, rootId = '', placeholder, afterSubmit}: Props) {
             requestAnimationFrame(() => textareaRef.current?.focus());
             return {sent: false};
         }
-        const toSend: PostDraft = {...draft, channelId, rootId};
+        const toSend: PostDraft = {...draft, channelId, rootId, props: extraProps ? {...draft.props, ...extraProps} : draft.props};
         const empty: PostDraft = {message: '', fileInfos: [], uploadsInProgress: [], channelId, rootId, createAt: 0, updateAt: 0};
         setDraft(empty);
         cancelSave();
@@ -479,6 +487,14 @@ function MessageBox({channelId, rootId = '', placeholder, afterSubmit}: Props) {
     // The rich text editor sends and edits the last message itself; these keys are the composer's.
     const submitRef = useRef(submit);
     submitRef.current = submit;
+
+    // Antimatter forums: the New topic form sends the current draft from outside the composer (Ctrl/Cmd+Enter in
+    // its title field).
+    useEffect(() => {
+        onReady?.(() => submitRef.current());
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
     const onRichKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
         if (e.key === 'Escape' && replyTo) {
             e.preventDefault();
