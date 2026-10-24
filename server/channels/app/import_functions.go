@@ -1297,6 +1297,12 @@ func (a *App) importUserTeams(rctx request.CTX, user *model.User, data *[]import
 	for _, tdata := range *data {
 		team := allTeams[strings.ToLower(*tdata.Name)]
 
+		// Antimatter: an import doesn't bring someone banned back into a community (nor into its channels).
+		if appErr := a.checkNotBanned(rctx, team.Id, user.Id); appErr != nil {
+			rctx.Logger().Warn("Not importing the membership of someone banned from a team", mlog.String("team_id", team.Id), mlog.String("user_id", user.Id), mlog.Err(appErr))
+			continue
+		}
+
 		// Team-specific theme Preferences.
 		if tdata.Theme != nil {
 			teamThemePreferencesByID[team.Id] = append(teamThemePreferencesByID[team.Id], model.Preference{

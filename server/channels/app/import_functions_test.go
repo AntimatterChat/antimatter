@@ -2731,6 +2731,25 @@ func TestImportUserTeams(t *testing.T) {
 		require.NoError(t, nErr)
 		require.True(t, teamMember.SchemeAdmin, "group-synced admin should retain admin even though imported roles omit team_admin")
 	})
+
+	// Antimatter: an import doesn't bring someone banned back into a community; their other communities still come in.
+	t.Run("Should skip a team the user is banned from", func(t *testing.T) {
+		user := th.CreateUser(t)
+		bannedTeam := th.CreateTeam(t)
+		_, err := th.App.Srv().Store().Moderation().SaveBan(th.Context, &model.MemberBan{TeamId: bannedTeam.Id, UserId: user.Id, CreatedBy: th.SystemAdminUser.Id})
+		require.NoError(t, err)
+		data := &[]imports.UserTeamImportData{
+			{Name: &bannedTeam.Name},
+			{Name: &th.BasicTeam.Name},
+		}
+		appErr := th.App.importUserTeams(th.Context, user, data, false)
+		require.Nil(t, appErr)
+
+		_, nErr := th.App.Srv().Store().Team().GetMember(th.Context, bannedTeam.Id, user.Id)
+		require.Error(t, nErr, "not in the team they're banned from")
+		_, nErr = th.App.Srv().Store().Team().GetMember(th.Context, th.BasicTeam.Id, user.Id)
+		require.NoError(t, nErr, "in the other one")
+	})
 }
 
 func TestImportUserChannels(t *testing.T) {
