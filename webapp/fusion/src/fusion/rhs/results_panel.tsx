@@ -10,9 +10,10 @@ import type {Post} from '@mattermost/types/posts';
 
 import {getMorePostsForSearch} from 'mattermost-redux/actions/search';
 import {getAllChannels} from 'mattermost-redux/selectors/entities/channels';
+import {getChannelTypeInfo} from 'mattermost-redux/selectors/entities/channel_types';
 import {getSearchFilesResults} from 'mattermost-redux/selectors/entities/files';
 import {getConfig} from 'mattermost-redux/selectors/entities/general';
-import {isPostFlagged} from 'mattermost-redux/selectors/entities/posts';
+import {getPost, isPostFlagged} from 'mattermost-redux/selectors/entities/posts';
 import {getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
 import {getFormattedFileSize} from 'mattermost-redux/utils/file_utils';
 
@@ -29,11 +30,12 @@ import Icon from 'fusion/components/icon';
 import {useDisplayName, useUser} from 'fusion/hooks/users';
 import FileMenu from 'fusion/messages/content/file_menu';
 import {useWhen} from 'fusion/messages/time';
+import {getThreadTitle} from 'fusion/messages/thread_title';
 import {scopeOfChannel} from 'fusion/profiles/community_profiles';
 import {useToast} from 'fusion/shell/toast_context';
 import {am} from 'fusion/utils/class_names';
 import {openDialog} from 'fusion/utils/modals';
-import {permalinkPath} from 'fusion/utils/paths';
+import {permalinkPath, topicPath} from 'fusion/utils/paths';
 import {plainText} from 'fusion/utils/plain_text';
 import {getHistory} from 'utils/browser_history';
 import {ModalIdentifiers, RHSStates} from 'utils/constants';
@@ -74,7 +76,22 @@ function Result({post, terms}: {post: Post; terms: string}) {
     } else if (channel?.type === 'P') {
         icon = 'lock';
     }
-    const jump = () => team && getHistory().push(permalinkPath(team.name, post.id));
+
+    // Antimatter forums (design §4.4): a hit in a forum shows its topic's title above it, and opens the topic
+    // page rather than a permalink. Indexing titles in global search comes later; this reads whichever root the
+    // hit's own thread already has in the store.
+    const forum = useSelector((state: GlobalState) => getChannelTypeInfo(state, post.channel_id).type === 'forum');
+    const topicTitle = useSelector((state: GlobalState) => (forum ? getThreadTitle(getPost(state, post.root_id || post.id)) : ''));
+    const jump = () => {
+        if (!team) {
+            return;
+        }
+        if (forum && channel) {
+            getHistory().push(topicPath(team.name, channel, post.root_id || post.id));
+        } else {
+            getHistory().push(permalinkPath(team.name, post.id));
+        }
+    };
     const action = (label: string, iconName: 'thread' | 'bookmark' | 'pin' | 'link', onClick: () => void, on = false) => (
         <button
             type='button'
@@ -98,6 +115,7 @@ function Result({post, terms}: {post: Post; terms: string}) {
                 className={am('result')}
                 onClick={jump}
             >
+                {forum && topicTitle && <div className={am('result-topic')}>{topicTitle}</div>}
                 <span className={am('where')}>
                     <Icon
                         name={icon}
