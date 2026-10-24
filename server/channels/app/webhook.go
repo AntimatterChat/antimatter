@@ -530,6 +530,11 @@ func (a *App) CreateWebhookPost(rctx request.CTX, userID string, channel *model.
 		}
 		created, _, err := a.CreatePost(rctx, split, channel, flags)
 		if err != nil {
+			// Antimatter: a refusal (the channel's rules on who posts, judged on the hook's maker) stays a 403 with its
+			// reason, rather than looking like a server error.
+			if err.StatusCode == http.StatusForbidden {
+				return nil, err
+			}
 			return nil, model.NewAppError("CreateWebhookPost", "api.post.create_webhook_post.creating.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
 		}
 		if i == 0 {

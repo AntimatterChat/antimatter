@@ -218,7 +218,8 @@ func TestRootPostsInAnnouncementChannels(t *testing.T) {
 		require.Nil(t, f.post(person.Id, f.announcement, "", model.CreatePostFlags{}), "the person allowed")
 
 		f.override(t, f.announcement, model.ChannelOverrideTargetUser, writer.Id, nil, []string{model.PermissionCreateRootPost.Id})
-		requireRootPostRefusal(t, f.post(writer.Id, f.announcement, "", model.CreatePostFlags{}), rootPostDenied, "their own deny beats their role's allow")
+		// Still not a moderator of a channel where moderators start conversations: §3.2 says so.
+		requireRootPostRefusal(t, f.post(writer.Id, f.announcement, "", model.CreatePostFlags{}), moderatorsOnly, "their own deny beats their role's allow")
 	})
 
 	t.Run("a guest", func(t *testing.T) {
