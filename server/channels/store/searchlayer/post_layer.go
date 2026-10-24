@@ -180,8 +180,14 @@ func (s SearchPostStore) searchPostsForUserByEngine(engine searchengine.SearchEn
 		if err != nil {
 			return nil, err
 		}
+		// has:thread depends on the post's replies, which the search engine
+		// doesn't index: GetPostsByIds computes ReplyCount from the
+		// database, so it's checked here, after fetching. The other has:,
+		// pinned: and mentions: filters are re-checked too, defensively:
+		// they're already applied by the search engine's own query.
+		params := paramsList[0]
 		for _, p := range posts {
-			if p.DeleteAt == 0 {
+			if p.DeleteAt == 0 && model.PostMatchesSearchFilters(p, params) {
 				postList.AddPost(p)
 				postList.AddOrder(p.Id)
 			}

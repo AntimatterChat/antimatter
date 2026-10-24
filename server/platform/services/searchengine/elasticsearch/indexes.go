@@ -39,7 +39,9 @@ const (
 
 	// Version of the mappings below. Stored in the index metadata, under
 	// schemaMetaKey, so that outdated indexes can be detected.
-	schemaVersion = 1
+	// 2: added the has_link, has_code, has_embed, has_file, is_pinned and
+	// mentions post fields (F137 search filters).
+	schemaVersion = 2
 
 	// schemaMetaKey is the mappings' _meta key holding schemaVersion.
 	// legacySchemaMetaKey is the one written before the rename of the project
@@ -202,6 +204,7 @@ var (
 	lowercaseField = map[string]any{"type": "keyword", "normalizer": "mm_lowercase", "ignore_above": 1024}
 	longField      = map[string]any{"type": "long"}
 	textField      = map[string]any{"type": "text", "analyzer": "mm_text"}
+	boolField      = map[string]any{"type": "boolean"}
 )
 
 func mappingFor(kind string) map[string]any {
@@ -220,6 +223,12 @@ func mappingFor(kind string) map[string]any {
 			"message":      textField,
 			"attachments":  textField,
 			"hashtags":     lowercaseField,
+			"has_link":     boolField,
+			"has_code":     boolField,
+			"has_embed":    boolField,
+			"has_file":     boolField,
+			"is_pinned":    boolField,
+			"mentions":     lowercaseField,
 		}
 	case indexChannels:
 		properties = map[string]any{

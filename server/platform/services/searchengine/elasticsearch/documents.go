@@ -22,6 +22,17 @@ type postDocument struct {
 	Message     string   `json:"message"`
 	Attachments string   `json:"attachments,omitempty"`
 	Hashtags    []string `json:"hashtags"`
+	// HasLink, HasCode, HasEmbed, HasFile and IsPinned back the has:link,
+	// has:code, has:embed, has:file and pinned: search filters. Mentions
+	// backs mentions:@user. has:thread isn't indexed here: it depends on
+	// other documents (the post's replies), so it's applied as a post-fetch
+	// filter instead, like the database search does.
+	HasLink  bool     `json:"has_link"`
+	HasCode  bool     `json:"has_code"`
+	HasEmbed bool     `json:"has_embed"`
+	HasFile  bool     `json:"has_file"`
+	IsPinned bool     `json:"is_pinned"`
+	Mentions []string `json:"mentions"`
 }
 
 type channelDocument struct {
@@ -85,6 +96,12 @@ func newPostDocument(post *model.Post, teamID, channelType string) *postDocument
 		Message:     post.Message,
 		Attachments: attachmentsText(post),
 		Hashtags:    []string{},
+		HasLink:     model.HasLink(post.Message),
+		HasCode:     model.HasCode(post.Message),
+		HasEmbed:    model.HasEmbed(post.Message),
+		HasFile:     len(post.FileIds) > 0,
+		IsPinned:    post.IsPinned,
+		Mentions:    nonNil(model.PossibleAtMentions(post.Message)),
 	}
 	for tag := range strings.FieldsSeq(post.Hashtags) {
 		doc.Hashtags = append(doc.Hashtags, strings.ToLower(tag))

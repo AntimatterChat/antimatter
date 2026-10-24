@@ -223,6 +223,52 @@ func termClauses(b *boolQuery, p *model.SearchParams, toQuery func(searchTerm) m
 
 var postTextFields = []string{"message", "attachments"}
 
+// hasFlagFields maps a has: filter subtype to its indexed boolean field.
+// "thread" has no entry: it depends on the post's replies, so it's applied
+// as a post-fetch filter instead, after fetching the matched posts from the
+// database, like the database search does.
+var hasFlagFields = map[string]string{
+	"link":  "has_link",
+	"code":  "has_code",
+	"embed": "has_embed",
+	"file":  "has_file",
+}
+
+// hasPinnedMentionsFilters applies the has:, pinned: and mentions: filters
+// that are self-contained in a post's own indexed fields. A has:thread (or
+// any future subtype with no indexed field) still counts as a criterion,
+// even though it adds no clause here: otherwise, used alone, the query would
+// become match_none and the post-fetch filter that actually checks it would
+// never run. It reports whether any criterion was applied.
+func hasPinnedMentionsFilters(b *boolQuery, p *model.SearchParams) bool {
+	used := false
+	for _, flag := range p.HasFlags {
+		if field, ok := hasFlagFields[flag]; ok {
+			b.filter = append(b.filter, termQuery(field, true))
+		}
+		used = true
+	}
+	for _, flag := range p.ExcludedHasFlags {
+		if field, ok := hasFlagFields[flag]; ok {
+			b.mustNot = append(b.mustNot, termQuery(field, true))
+		}
+		used = true
+	}
+	if p.Pinned != nil {
+		b.filter = append(b.filter, termQuery("is_pinned", *p.Pinned))
+		used = true
+	}
+	if len(p.Mentions) > 0 {
+		b.filter = append(b.filter, termsQuery("mentions", p.Mentions))
+		used = true
+	}
+	if len(p.ExcludedMentions) > 0 {
+		b.mustNot = append(b.mustNot, termsQuery("mentions", p.ExcludedMentions))
+		used = true
+	}
+	return used
+}
+
 // postParamsQuery builds the query of one SearchParams.
 func postParamsQuery(p *model.SearchParams) map[string]any {
 	b := &boolQuery{}
@@ -232,6 +278,9 @@ func postParamsQuery(p *model.SearchParams) map[string]any {
 		toQuery = hashtagTermQuery
 	}
 	if termClauses(b, p, toQuery) {
+		used = true
+	}
+	if hasPinnedMentionsFilters(b, p) {
 		used = true
 	}
 	if !used {

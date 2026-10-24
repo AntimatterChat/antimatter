@@ -128,6 +128,31 @@ func TestBuildPostSearch(t *testing.T) {
 		body := buildPostSearch(channels, []*model.SearchParams{{Terms: "!!!"}}, false, 0, 10)
 		assert.Contains(t, toJSON(t, body["query"]), `"should":[{"match_none":{}}]`)
 	})
+
+	t.Run("has:, pinned: and mentions: filters", func(t *testing.T) {
+		params := &model.SearchParams{
+			HasFlags:         []string{"link", "code"},
+			ExcludedHasFlags: []string{"file"},
+			Pinned:           model.NewPointer(true),
+			Mentions:         []string{"bob"},
+			ExcludedMentions: []string{"alice"},
+		}
+		body := buildPostSearch(channels, []*model.SearchParams{params}, false, 0, 10)
+		q := toJSON(t, body["query"])
+		assert.Contains(t, q, `{"term":{"has_link":true}}`)
+		assert.Contains(t, q, `{"term":{"has_code":true}}`)
+		assert.Contains(t, q, `{"term":{"has_file":true}}`, "an excluded has: subtype still queries the same field, under must_not")
+		assert.Contains(t, q, `{"term":{"is_pinned":true}}`)
+		assert.Contains(t, q, `{"terms":{"mentions":["bob"]}}`)
+		assert.Contains(t, q, `{"terms":{"mentions":["alice"]}}`)
+	})
+
+	t.Run("has:thread isn't part of the query: it's a post-fetch filter", func(t *testing.T) {
+		params := &model.SearchParams{HasFlags: []string{"thread"}}
+		body := buildPostSearch(channels, []*model.SearchParams{params}, false, 0, 10)
+		// Without any other criterion, "thread" alone would otherwise match nothing.
+		assert.NotContains(t, toJSON(t, body["query"]), `"match_none"`)
+	})
 }
 
 func TestBuildFileSearch(t *testing.T) {
