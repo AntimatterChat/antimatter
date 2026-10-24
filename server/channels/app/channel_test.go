@@ -1717,6 +1717,9 @@ func TestGetPublicChannelsForTeam(t *testing.T) {
 	require.Nil(t, appErr)
 
 	channels := append(channelList, channelList2...)
+	// Antimatter: the store's lists don't carry the channel types; the API fills them in, as CreateChannel does.
+	th.App.FillInChannelTypes(expectedChannels...)
+	th.App.FillInChannelTypes(channels...)
 	assert.ElementsMatch(t, expectedChannels, channels)
 }
 
@@ -1753,6 +1756,9 @@ func TestGetPrivateChannelsForTeam(t *testing.T) {
 	require.Nil(t, appErr)
 
 	channels := append(channelList, channelList2...)
+	// Antimatter: the store's lists don't carry the channel types; the API fills them in, as CreateChannel does.
+	th.App.FillInChannelTypes(expectedChannels...)
+	th.App.FillInChannelTypes(channels...)
 	assert.ElementsMatch(t, expectedChannels, channels)
 }
 
