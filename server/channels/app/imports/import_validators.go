@@ -196,6 +196,12 @@ func ValidateChannelImportData(data *ChannelImportData) *model.AppError {
 		return model.NewAppError("BulkImport", "app.import.validate_channel_import_data.scheme_invalid.error", nil, "", http.StatusBadRequest)
 	}
 
+	if req := data.ChannelTypeRequest(); !req.IsEmpty() {
+		if _, appErr := req.Apply(model.DefaultChannelTypeInfo()); appErr != nil {
+			return model.NewAppError("BulkImport", "app.import.validate_channel_import_data.am_type_invalid.error", nil, "", http.StatusBadRequest).Wrap(appErr)
+		}
+	}
+
 	return nil
 }
 

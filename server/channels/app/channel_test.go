@@ -1395,7 +1395,9 @@ func TestFillInChannelProps(t *testing.T) {
 				appErr = th.App.FillInChannelProps(th.Context, testCase.Channel)
 				require.Nil(t, appErr)
 
-				assert.Equal(t, testCase.ExpectedChannelProps, testCase.Channel.Props)
+				// Antimatter: every team channel also gets its type (a text channel here).
+				assert.Equal(t, model.AMChannelTypeText, testCase.Channel.Props[model.ChannelPropType])
+				assert.Equal(t, testCase.ExpectedChannelProps, withoutChannelTypeProps(testCase.Channel.Props))
 			})
 		}
 	})
@@ -1508,7 +1510,8 @@ func TestFillInChannelProps(t *testing.T) {
 				require.Nil(t, appErr)
 
 				for _, channel := range testCase.Channels {
-					assert.Equal(t, testCase.ExpectedChannelProps[channel.Name], channel.Props)
+					assert.Equal(t, model.AMChannelTypeText, channel.Props[model.ChannelPropType])
+					assert.Equal(t, testCase.ExpectedChannelProps[channel.Name], withoutChannelTypeProps(channel.Props))
 				}
 			})
 		}

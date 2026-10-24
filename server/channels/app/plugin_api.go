@@ -508,7 +508,13 @@ func (api *PluginAPI) GetPublicChannelsForTeam(teamID string, page, perPage int)
 }
 
 func (api *PluginAPI) GetChannel(channelID string) (*model.Channel, *model.AppError) {
-	return api.app.GetChannel(api.ctx, channelID)
+	channel, appErr := api.app.GetChannel(api.ctx, channelID)
+	if appErr != nil {
+		return nil, appErr
+	}
+	// Antimatter: with its type and settings (am_type and the others), as the API gives it.
+	api.app.FillInChannelTypes(channel)
+	return channel, nil
 }
 
 // GetChannelOfType resolves a channel by ID, requiring it to be of the given type. Generic
@@ -564,7 +570,12 @@ func resolveChannelByID(
 }
 
 func (api *PluginAPI) GetChannelByName(teamID, name string, includeDeleted bool) (*model.Channel, *model.AppError) {
-	return api.app.GetChannelByName(api.ctx, name, teamID, includeDeleted)
+	channel, appErr := api.app.GetChannelByName(api.ctx, name, teamID, includeDeleted)
+	if appErr != nil {
+		return nil, appErr
+	}
+	api.app.FillInChannelTypes(channel)
+	return channel, nil
 }
 
 func (api *PluginAPI) GetChannelByNameForTeamName(teamName, channelName string, includeDeleted bool) (*model.Channel, *model.AppError) {
@@ -579,6 +590,7 @@ func (api *PluginAPI) GetChannelsForTeamForUser(teamID, userID string, includeDe
 	if err != nil {
 		return nil, err
 	}
+	api.app.FillInChannelTypes(channels...)
 	return channels, err
 }
 

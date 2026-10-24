@@ -910,6 +910,21 @@
     "description": "API error steering integrators away from using the channels API on space-type channels; '/channels' is a literal API endpoint path and 'spaces' is a feature name."
   },
   {
+    "id": "api.channel.type.direct.app_error",
+    "translation": "Direct and group messages have no channel type.",
+    "description": "API error when a direct or group message is given a channel type or preset (Antimatter channel types: text, voice or forum)."
+  },
+  {
+    "id": "api.channel.type.fixed.app_error",
+    "translation": "A channel's type can't be changed after it's created. Pick a preset of the same type.",
+    "description": "API error when a request would change a channel's type (text, voice or forum), which is set when the channel is created (Antimatter channel types); a preset is a named set of settings of one type."
+  },
+  {
+    "id": "api.channel.type.invalid.app_error",
+    "translation": "This kind of channel or one of its settings isn't valid.",
+    "description": "API error when a channel type, preset, mode, 'who starts conversations' setting or forum view is unknown or doesn't belong to the channel's type (Antimatter channel types)."
+  },
+  {
     "id": "api.channel.update_channel.banner_info.channel_type.not_allowed",
     "translation": "Channel banner can only be configured on Public and Private channels.",
     "description": "API error when configuring a channel banner on an unsupported channel type; 'Public' and 'Private' are channel types."
@@ -7721,6 +7736,11 @@
     "description": "API error returned when saving sidebar category data (the user's channel grouping in the left-hand sidebar) to the database fails."
   },
   {
+    "id": "app.channel.type.save.app_error",
+    "translation": "The channel's type couldn't be saved.",
+    "description": "Server error when a channel's type settings (Antimatter channel types) couldn't be written to the database."
+  },
+  {
     "id": "app.channel.update.bad_id",
     "translation": "Unable to update the channel.",
     "description": "API error returned when a channel update request references an invalid channel ID."
@@ -9505,6 +9525,11 @@
     "id": "app.import.validate_bot_import_data.owner_missing.error",
     "translation": "Bot owner is missing",
     "description": "Bulk-import validation error when a bot entry in the import file has no owner user specified."
+  },
+  {
+    "id": "app.import.validate_channel_import_data.am_type_invalid.error",
+    "translation": "The channel's type or one of its settings (am_type, am_mode, am_root_posts, am_forum_view) isn't valid.",
+    "description": "Bulk import error when a channel line carries an unknown channel type, mode, 'who starts conversations' setting or forum view; the field names in brackets are the import file's and must not be translated."
   },
   {
     "id": "app.import.validate_channel_import_data.display_name_length.error",
@@ -11360,6 +11385,16 @@
     "id": "app.post.rewrite.parse_response_failed",
     "translation": "Failed to parse rewrite response from AI.",
     "description": "Error shown when the AI message rewrite feature cannot parse the AI's response."
+  },
+  {
+    "id": "app.post.root_posts.denied.app_error",
+    "translation": "You can't start conversations in this channel. Reply in a thread.",
+    "description": "API error when someone's permission override in a channel takes away starting conversations (posting a new message, not a reply)."
+  },
+  {
+    "id": "app.post.root_posts.moderators_only.app_error",
+    "translation": "Only moderators start conversations here. Reply in a thread.",
+    "description": "API error when a member who isn't a moderator posts a new message (not a reply) in an announcement channel or forum, where only moderators start conversations (Antimatter channel types)."
   },
   {
     "id": "app.post.save.app_error",

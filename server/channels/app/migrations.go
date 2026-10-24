@@ -1562,6 +1562,7 @@ func (s *Server) doAppMigrations() {
 		{"Content Flagging Properties Setup", s.doSetupContentFlaggingProperties},
 		{"Boards Properties Setup", s.doSetupBoardsProperties},
 		{"Managed Category Properties Setup", s.doSetupManagedCategoryProperties},
+		{"Antimatter Channel Types Properties Setup", s.doSetupChannelTypeProperties},
 		{"Session Attributes Properties Setup", s.doSetupSessionAttributesProperties},
 		{"Web UI Default Fusion Migration", s.doWebUIDefaultFusionMigration},
 		{"Antimatter Teams In Communities Migration", s.doTeamsInCommunitiesMigration},
@@ -1575,6 +1576,8 @@ func (s *Server) doAppMigrations() {
 		{"Antimatter Agents From Bots Migration", s.doAgentsFromBotsMigration},
 		{"Antimatter General Channel Migration", s.doGeneralChannelMigration},
 		{"Antimatter Favourites Category Migration", s.doFavouritesCategoryMigration},
+		// After the channel types' setup: it writes their property values.
+		{"Antimatter Channel Types Voice Migration", s.doChannelTypesVoiceMigration},
 	}
 
 	for i := range m1 {

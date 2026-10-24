@@ -561,7 +561,7 @@ func (a *App) exportAllChannels(rctx request.CTX, job *model.Job, writer io.Writ
 			}
 
 			foundChannelNames[channel.Name] = true
-			channelLine := importLineFromChannel(channel)
+			channelLine := importLineFromChannel(channel, a.GetChannelTypeInfo(channel.Id))
 			if err := a.exportWriteLine(writer, channelLine); err != nil {
 				return err
 			}

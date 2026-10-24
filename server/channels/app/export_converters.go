@@ -24,8 +24,10 @@ func importLineFromTeam(team *model.TeamForExport) *imports.LineImportData {
 	}
 }
 
-func importLineFromChannel(channel *model.ChannelForExport) *imports.LineImportData {
-	return &imports.LineImportData{
+// importLineFromChannel gives a channel's line, with its type and settings (Antimatter channel types) unless it's a
+// plain text channel.
+func importLineFromChannel(channel *model.ChannelForExport, typeInfo model.ChannelTypeInfo) *imports.LineImportData {
+	line := &imports.LineImportData{
 		Type: "channel",
 		Channel: &imports.ChannelImportData{
 			Team:        &channel.TeamName,
@@ -38,6 +40,15 @@ func importLineFromChannel(channel *model.ChannelForExport) *imports.LineImportD
 			DeletedAt:   &channel.DeleteAt,
 		},
 	}
+	if !typeInfo.IsDefault() {
+		line.Channel.AMType = model.NewPointer(typeInfo.Type)
+		line.Channel.AMMode = model.NewPointer(typeInfo.Mode)
+		line.Channel.AMRootPosts = model.NewPointer(typeInfo.RootPosts)
+		if typeInfo.Type == model.AMChannelTypeForum {
+			line.Channel.AMForumView = model.NewPointer(typeInfo.View)
+		}
+	}
+	return line
 }
 
 func importLineFromDirectChannel(channel *model.DirectChannelForExport, favoritedBy, shownBy []string) *imports.LineImportData {

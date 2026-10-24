@@ -67,6 +67,23 @@ type ChannelImportData struct {
 	Purpose     *string            `json:"purpose,omitempty"`
 	Scheme      *string            `json:"scheme,omitempty"`
 	DeletedAt   *int64             `json:"deleted_at,omitempty"`
+
+	// Antimatter channel types: the channel's type and settings; missing ones are their defaults (a text channel).
+	AMType      *string `json:"am_type,omitempty"`
+	AMMode      *string `json:"am_mode,omitempty"`
+	AMRootPosts *string `json:"am_root_posts,omitempty"`
+	AMForumView *string `json:"am_forum_view,omitempty"`
+}
+
+// ChannelTypeRequest gives the channel type settings the line carries.
+func (d *ChannelImportData) ChannelTypeRequest() model.ChannelTypeRequest {
+	deref := func(s *string) string {
+		if s == nil {
+			return ""
+		}
+		return *s
+	}
+	return model.ChannelTypeRequest{Type: deref(d.AMType), Mode: deref(d.AMMode), RootPosts: deref(d.AMRootPosts), View: deref(d.AMForumView)}
 }
 
 type Avatar struct {

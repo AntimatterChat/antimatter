@@ -319,13 +319,28 @@ func (a *App) importChannel(rctx request.CTX, data *imports.ChannelImportData, d
 		channel.SchemeId = &scheme.Id
 	}
 
+	// Antimatter: a new channel is made with its type and settings; an existing one keeps its type (fixed) and takes
+	// the settings.
+	typeReq := data.ChannelTypeRequest()
 	var chErr *model.AppError
 	var existingDeleteAt int64
 	if channel.Id == "" {
+		if !typeReq.IsEmpty() {
+			for key, value := range map[string]string{model.ChannelPropType: typeReq.Type, model.ChannelPropMode: typeReq.Mode, model.ChannelPropRootPosts: typeReq.RootPosts, model.ChannelPropView: typeReq.View} {
+				if value != "" {
+					channel.AddProp(key, value)
+				}
+			}
+		}
 		if _, chErr = a.CreateChannel(rctx, channel, false); chErr != nil {
 			return chErr
 		}
 	} else {
+		if !typeReq.IsEmpty() {
+			if chErr = a.importChannelType(rctx, channel, typeReq); chErr != nil {
+				return chErr
+			}
+		}
 		// UpdateChannel rejects channels with DeleteAt != 0. If the existing
 		// channel is currently archived — whether from a prior import run or
 		// archived directly on the destination since then — clear it before
@@ -352,6 +367,19 @@ func (a *App) importChannel(rctx request.CTX, data *imports.ChannelImportData, d
 	}
 
 	return nil
+}
+
+// importChannelType sets an existing channel's type settings from an import line, whose missing ones are their
+// defaults; the line can't change the channel's type.
+func (a *App) importChannelType(rctx request.CTX, channel *model.Channel, req model.ChannelTypeRequest) *model.AppError {
+	info, appErr := req.Apply(model.DefaultChannelTypeInfo())
+	if appErr != nil {
+		return appErr
+	}
+	if info.Type != a.GetChannelTypeInfo(channel.Id).Type {
+		return model.NewAppError("BulkImport", "api.channel.type.fixed.app_error", nil, "channel_id="+channel.Id, http.StatusBadRequest)
+	}
+	return a.writeChannelType(rctx, channel.Id, "", info, false)
 }
 
 func (a *App) importUser(rctx request.CTX, data *imports.UserImportData, dryRun bool, deactivateMissingUsers bool, importedUsers model.ImportedUsersPosture, report *imports.ImportReport) *model.AppError {

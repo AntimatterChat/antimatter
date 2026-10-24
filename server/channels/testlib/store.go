@@ -121,6 +121,7 @@ func GetMockStoreForSetupFunctions() *mocks.Store {
 	systemStore.On("GetByName", model.MigrationKeyAntimatterAIConnectionPermissions).Return(&model.System{Name: model.MigrationKeyAntimatterAIConnectionPermissions, Value: "true"}, nil)
 	systemStore.On("GetByName", model.MigrationKeyAntimatterTeamAgentPermissions).Return(&model.System{Name: model.MigrationKeyAntimatterTeamAgentPermissions, Value: "true"}, nil)
 	systemStore.On("GetByName", "AntimatterAgentsFromBotsMigrationComplete").Return(&model.System{Name: "AntimatterAgentsFromBotsMigrationComplete", Value: "true"}, nil)
+	systemStore.On("GetByName", "AmChannelTypesVoiceMigrated").Return(&model.System{Name: "AmChannelTypesVoiceMigrated", Value: "true"}, nil)
 
 	systemStore.On("InsertIfExists", mock.AnythingOfType("*model.System")).Return(&model.System{}, nil).Once()
 	systemStore.On("Save", mock.AnythingOfType("*model.System")).Return(nil)
@@ -182,12 +183,14 @@ func GetMockStoreForSetupFunctions() *mocks.Store {
 	managedCategoryGroup := &model.PropertyGroup{ID: model.NewId(), Name: model.ManagedCategoryPropertyGroupName, Version: model.PropertyGroupVersionV2}
 	boardsGroup := &model.PropertyGroup{ID: model.NewId(), Name: model.BoardsPropertyGroupName, Version: model.PropertyGroupVersionV2}
 	sessionAttributesGroup := &model.PropertyGroup{ID: model.NewId(), Name: model.SessionAttributesPropertyGroupName, Version: model.PropertyGroupVersionV2}
+	channelTypeGroup := &model.PropertyGroup{ID: model.NewId(), Name: model.ChannelTypePropertyGroupName, Version: model.PropertyGroupVersionV2}
 
 	groupsByName[accessControlGroup.Name] = accessControlGroup
 	groupsByName[contentFlaggingGroup.Name] = contentFlaggingGroup
 	groupsByName[managedCategoryGroup.Name] = managedCategoryGroup
 	groupsByName[boardsGroup.Name] = boardsGroup
 	groupsByName[sessionAttributesGroup.Name] = sessionAttributesGroup
+	groupsByName[channelTypeGroup.Name] = channelTypeGroup
 
 	propertyGroupStore.On("Register", mock.AnythingOfType("*model.PropertyGroup")).Return(
 		func(group *model.PropertyGroup) *model.PropertyGroup {
@@ -217,6 +220,7 @@ func GetMockStoreForSetupFunctions() *mocks.Store {
 	propertyGroupStore.On("Get", model.ManagedCategoryPropertyGroupName).Return(managedCategoryGroup, nil)
 	propertyGroupStore.On("Get", model.BoardsPropertyGroupName).Return(boardsGroup, nil)
 	propertyGroupStore.On("Get", model.SessionAttributesPropertyGroupName).Return(sessionAttributesGroup, nil)
+	propertyGroupStore.On("Get", model.ChannelTypePropertyGroupName).Return(channelTypeGroup, nil)
 
 	propertyFieldStore.On("SearchPropertyFields", mock.Anything, mock.Anything).Return([]*model.PropertyField{}, nil)
 	propertyFieldStore.On("CreatePropertyField", mock.Anything).Return(&model.PropertyField{}, nil)
@@ -226,6 +230,15 @@ func GetMockStoreForSetupFunctions() *mocks.Store {
 	managedCategoryField := &model.PropertyField{ID: model.NewId(), GroupID: managedCategoryGroup.ID, Name: model.ManagedCategoryPropertyFieldName}
 	propertyFieldStore.On("GetFieldByName", mock.Anything, managedCategoryGroup.ID, "", model.ManagedCategoryPropertyFieldName).Return(managedCategoryField, nil)
 	propertyFieldStore.On("GetFieldByNameForObjectType", mock.Anything, managedCategoryGroup.ID, "", model.PropertyValueTargetTypeChannel, model.ManagedCategoryPropertyFieldName).Return(managedCategoryField, nil)
+
+	// Antimatter channel types: their fields, and no typed channel.
+	for _, name := range model.ChannelTypeFields() {
+		field := &model.PropertyField{ID: model.NewId(), GroupID: channelTypeGroup.ID, Name: name, ObjectType: model.PropertyFieldObjectTypeChannel}
+		propertyFieldStore.On("GetFieldByNameForObjectType", mock.Anything, channelTypeGroup.ID, "", model.PropertyFieldObjectTypeChannel, name).Return(field, nil)
+	}
+	propertyValueStore.On("SearchPropertyValues", mock.Anything, mock.MatchedBy(func(opts model.PropertyValueSearchOpts) bool {
+		return opts.GroupID == channelTypeGroup.ID
+	})).Return([]*model.PropertyValue{}, nil)
 
 	boardField := &model.PropertyField{ID: model.NewId(), GroupID: boardsGroup.ID, Name: model.BoardsPropertyFieldNameBoard}
 	propertyFieldStore.On("GetFieldByName", mock.Anything, boardsGroup.ID, "", model.BoardsPropertyFieldNameBoard).Return(boardField, nil)

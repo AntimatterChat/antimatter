@@ -84,6 +84,13 @@ type Channels struct {
 	managedCategoryGroupID string
 	managedCategoryFieldID string
 
+	// Antimatter: the channel types' property group and its fields (by name, and their names by id), set at startup,
+	// and each typed channel's settings (channel id -> model.ChannelTypeInfo; see channel_type.go).
+	channelTypeGroupID    string
+	channelTypeFieldIDs   map[string]string
+	channelTypeFieldNames map[string]string
+	channelTypes          sync.Map
+
 	// Antimatter: each channel's permission overrides, cached for permission checks (see channel_override.go).
 	channelOverrides sync.Map
 

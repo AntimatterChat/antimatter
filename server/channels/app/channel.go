@@ -300,6 +300,12 @@ func (a *App) CreateChannel(rctx request.CTX, channel *model.Channel, addMember 
 		return nil, model.NewAppError("CreateChannel", "app.channel.create_channel.spaces_not_enabled.app_error", nil, "", http.StatusForbidden)
 	}
 
+	// Antimatter: its type and settings, from its props (am_preset, then the am_ fields); none is a text channel.
+	typeInfo, typeErr := channelTypeForCreate(channel)
+	if typeErr != nil {
+		return nil, typeErr
+	}
+
 	channel.DisplayName = strings.TrimSpace(channel.DisplayName)
 	channel.DefaultCategoryName = strings.TrimSpace(channel.DefaultCategoryName)
 	channel.ManagedCategoryName = strings.TrimSpace(channel.ManagedCategoryName)
@@ -389,6 +395,11 @@ func (a *App) CreateChannel(rctx request.CTX, channel *model.Channel, addMember 
 		}
 	}
 
+	// Antimatter: before anything is told of the channel, as its attribute values; the channel goes if it fails.
+	if appErr := a.setChannelTypeOnCreate(rctx, sc, typeInfo); appErr != nil {
+		return nil, appErr
+	}
+
 	if len(propertyValues) > 0 {
 		if appErr := a.setChannelPropertyValuesOnCreate(rctx, sc, propertyValues); appErr != nil {
 			return nil, appErr
@@ -398,6 +409,9 @@ func (a *App) CreateChannel(rctx request.CTX, channel *model.Channel, addMember 
 	if sc.IsSpace() {
 		return sc, nil
 	}
+
+	// The creator, the apps' hook and the API get the channel filled in.
+	a.FillInChannelTypes(sc)
 
 	// Antimatter: in a community that has everyone in all its channels, they all come.
 	a.FillCommunityChannelInBackground(rctx, sc)
@@ -941,6 +955,8 @@ func (a *App) UpdateChannel(rctx request.CTX, channel *model.Channel) (*model.Ch
 		return channel, nil
 	}
 
+	// Antimatter: the event carries the channel filled in (its type and settings), as reads do.
+	a.FillInChannelTypes(channel)
 	messageWs := model.NewWebSocketEvent(model.WebsocketEventChannelUpdated, "", channel.Id, "", nil, "")
 	channelJSON, jsonErr := json.Marshal(channel)
 	if jsonErr != nil {
@@ -3945,6 +3961,9 @@ func (a *App) PermanentDeleteChannel(rctx request.CTX, channel *model.Channel) *
 		return model.NewAppError("PermanentDeleteChannel", "app.channel.permanent_delete.app_error", nil, "", http.StatusInternalServerError).Wrap(nErr)
 	}
 
+	// Antimatter: its type and settings go with it.
+	a.forgetChannelType(rctx, channel.Id)
+
 	// Remove any orphaned channel-scope ABAC policy tied to this channel ID.
 	// cleanupChannelAccessControlPolicy intentionally does not gate on
 	// PolicyEnforced (see its doc comment) — the underlying DeletePolicy is a
@@ -4261,6 +4280,9 @@ func (a *App) FillInChannelProps(rctx request.CTX, channel *model.Channel) *mode
 }
 
 func (a *App) FillInChannelsProps(rctx request.CTX, channelList model.ChannelList) *model.AppError {
+	// Antimatter: every team channel's type and settings, from memory.
+	a.FillInChannelTypes(channelList...)
+
 	// Group the channels by team and call GetChannelsByNames just once per team.
 	channelsByTeam := make(map[string]model.ChannelList)
 	for _, channel := range channelList {
