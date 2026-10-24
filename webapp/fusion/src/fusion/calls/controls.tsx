@@ -41,13 +41,19 @@ export function useToggleLabels(my: MyCallState | null) {
         muteLabel = formatMessage({id: 'fusion.calls.modDeafenedYou', defaultMessage: 'A moderator deafened you'});
     } else if (my?.modMuted) {
         muteLabel = formatMessage({id: 'fusion.calls.modMutedYou', defaultMessage: 'A moderator muted you'});
+    } else if (my?.audience) {
+        muteLabel = formatMessage({id: 'fusion.calls.audienceMuted', defaultMessage: 'Only speakers can talk here'});
+    }
+    let hand = my?.handRaised ? formatMessage({id: 'fusion.calls.lowerHand', defaultMessage: 'Lower hand'}) : formatMessage({id: 'fusion.calls.raiseHand', defaultMessage: 'Raise hand'});
+    if (my?.audience) {
+        hand = my.handRaised ? formatMessage({id: 'fusion.calls.cancelRequest', defaultMessage: 'Cancel your request to speak'}) : formatMessage({id: 'fusion.calls.requestToSpeak', defaultMessage: 'Request to speak'});
     }
     return {
         mute: muteLabel,
         deafen: my?.modDeafened ? formatMessage({id: 'fusion.calls.modDeafenedYou', defaultMessage: 'A moderator deafened you'}) : formatMessage({id: 'fusion.calls.deafen', defaultMessage: 'Deafen'}),
         video: my?.videoAllowed === false ? formatMessage({id: 'fusion.calls.cameraNotAllowed', defaultMessage: 'Cameras are turned off in this call'}) : formatMessage({id: 'fusion.calls.camera', defaultMessage: 'Camera'}),
         screen,
-        hand: my?.handRaised ? formatMessage({id: 'fusion.calls.lowerHand', defaultMessage: 'Lower hand'}) : formatMessage({id: 'fusion.calls.raiseHand', defaultMessage: 'Raise hand'}),
+        hand,
         popout: formatMessage({id: 'fusion.calls.popout', defaultMessage: 'Open in a new window'}),
         popoutLabel: formatMessage({id: 'fusion.calls.popoutLabel', defaultMessage: 'Open the call in a new window'}),
         show: my?.voice ? formatMessage({id: 'fusion.calls.showVoice', defaultMessage: 'Show the voice channel'}) : formatMessage({id: 'fusion.calls.showCall', defaultMessage: 'Show the call'}),
@@ -55,9 +61,10 @@ export function useToggleLabels(my: MyCallState | null) {
     };
 }
 
-// muteIcon is the microphone of the mute buttons: locked when a moderator muted (or deafened) the user.
+// muteIcon is the microphone of the mute buttons: locked when a moderator muted (or deafened) the user, or in a
+// stage's audience.
 export function muteIcon(my: MyCallState): 'mic' | 'mic-off' | 'mic-lock' {
-    if (my.modMuted || my.modDeafened) {
+    if (my.modMuted || my.modDeafened || (my.audience && my.muted)) {
         return 'mic-lock';
     }
     return my.muted ? 'mic-off' : 'mic';
@@ -255,9 +262,77 @@ type Props = {
     withPopout?: boolean;
 };
 
+// AudienceControls are a stage's audience's controls: the microphone, locked; requesting to speak (raising their hand);
+// and leaving.
+function AudienceControls({my, withPopout}: Props) {
+    const {callPopout} = useCallsUI();
+    const actions = useCallActions();
+    const labels = useToggleLabels(my);
+    return (
+        <div className={am('voice-controls')}>
+            {my.call.mediaInThisWindow && (
+                <>
+                    <button
+                        className={am('round', 'off')}
+                        aria-label={labels.mute}
+                        title={labels.mute}
+                        aria-disabled={true}
+                        onClick={() => actions.toggleMute(my)}
+                    >
+                        <Icon name='mic-lock'/>
+                    </button>
+                    <button
+                        className={am('round', 'request', {on: my.handRaised})}
+                        aria-pressed={my.handRaised}
+                        onClick={() => actions.toggleHand(my)}
+                    >
+                        <Icon name='hand'/>
+                        <span>{labels.hand}</span>
+                    </button>
+                </>
+            )}
+            {withPopout && !callPopout && (
+                <button
+                    className={am('round')}
+                    title={labels.popout}
+                    aria-label={labels.popoutLabel}
+                    onClick={openCallPopout}
+                >
+                    <Icon name='popout'/>
+                </button>
+            )}
+            <button
+                className={am('round', 'hang')}
+                aria-label={labels.disconnect}
+                onClick={actions.leaveCall}
+            >
+                <Icon name='hangup'/>
+            </button>
+        </div>
+    );
+}
+
 // CallControls is the mockup's row of round call controls, under the stage. Deafen exists in voice channels only;
-// when the call runs in another window (the desktop app's), only leaving can be done from here.
+// when the call runs in another window (the desktop app's), only leaving can be done from here. A stage's audience
+// has its own (see AudienceControls).
 export default function CallControls({my, withPopout = false}: Props) {
+    if (my.audience) {
+        return (
+            <AudienceControls
+                my={my}
+                withPopout={withPopout}
+            />
+        );
+    }
+    return (
+        <SpeakerControls
+            my={my}
+            withPopout={withPopout}
+        />
+    );
+}
+
+function SpeakerControls({my, withPopout = false}: Props) {
     const {callPopout} = useCallsUI();
     const actions = useCallActions();
     const labels = useToggleLabels(my);

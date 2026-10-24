@@ -16,9 +16,10 @@ import CallVideo from './call_video';
 import {isSpeaking} from './calls_api';
 import type {VoiceParticipant} from './calls_api';
 import {raisedHandOrder, useRecentReactions} from './extras';
-import {useCallMedia, useIsVoiceChannel, useLocalCall, useParticipants} from './hooks';
+import {useCallMedia, useCanModerateCall, useIsVoiceChannel, useLocalCall, useParticipants, useStage} from './hooks';
 import {useParticipantMenu} from './participant_menu';
 import {RecordingBadge} from './recording';
+import {AudienceGrid, RaisedHands} from './stage_audience';
 import {TranscriptionOverlay} from './transcription';
 
 // FakeScreen is the mockup's drawing of a shared screen, shown until (or where) the real one can't be.
@@ -281,16 +282,21 @@ function ReactionBubble({userId, emojiName}: {userId: string; emojiName: string}
 }
 
 // Stage is the mockup's stage of a call: a grid of tiles that always fits its space, or the shared screen with the
-// tiles in a strip underneath.
+// tiles in a strip underneath. A stage's call (a voice channel with the stage preset) shows its speakers that way,
+// and under them its audience as a grid of faces, with, for its moderators, the raised hands first.
 export default function Stage({channelId, fullscreen = false}: Props) {
     const {formatMessage} = useIntl();
-    const participants = useParticipants(channelId);
+    const all = useParticipants(channelId);
     const local = useLocalCall();
     const media = useCallMedia(channelId);
     const menu = useParticipantMenu(channelId);
     const voice = useIsVoiceChannel(channelId);
+    const stage = useStage(channelId);
+    const moderate = useCanModerateCall(channelId);
     const withMedia = local?.channelId === channelId && local.mediaInThisWindow;
     const [pinnedId, setPinnedId] = useState('');
+    const participants = stage ? all.filter((p) => !p.audience) : all;
+    const audience = stage ? all.filter((p) => p.audience) : [];
     const hands = raisedHandOrder(participants);
     const reactions = (
         <>
@@ -300,7 +306,7 @@ export default function Stage({channelId, fullscreen = false}: Props) {
         </>
     );
 
-    if (!participants.length) {
+    if (!all.length) {
         return (
             <div className={am('stage')}>
                 <div className={am('empty')}>
@@ -309,6 +315,41 @@ export default function Stage({channelId, fullscreen = false}: Props) {
             </div>
         );
     }
+
+    // A stage: the speakers take the stage below, the audience and the raised hands go under it.
+    let stageParts = null;
+    if (stage) {
+        const audienceHands = raisedHandOrder(audience);
+        stageParts = (
+            <>
+                {moderate && (
+                    <RaisedHands
+                        channelId={channelId}
+                        participants={audience}
+                        hands={audienceHands}
+                    />
+                )}
+                <AudienceGrid
+                    participants={audience}
+                    hands={audienceHands}
+                    onContextMenu={menu.open}
+                />
+            </>
+        );
+        if (!participants.length) {
+            return (
+                <div className={am('stage', 'stage-room')}>
+                    <div className={am('empty')}>
+                        {formatMessage({id: 'fusion.calls.stage.noSpeakers', defaultMessage: 'Nobody is speaking yet. Moderators speak here, and invite others to.'})}
+                    </div>
+                    {stageParts}
+                    {reactions}
+                    {menu.element}
+                </div>
+            );
+        }
+    }
+    const stageClass = am('stage', {'stage-room': Boolean(stage)});
 
     const tiles = participants.map((p) => (
         <Tile
@@ -327,13 +368,14 @@ export default function Stage({channelId, fullscreen = false}: Props) {
     const sharer = participants.find((p) => p.screenSharing);
     if (sharer) {
         return (
-            <div className={am('stage')}>
+            <div className={stageClass}>
                 <ScreenTile
                     sharer={sharer}
                     stream={withMedia ? media.screen : null}
                     fullscreen={fullscreen}
                 />
                 <div className={am('stage-strip')}>{tiles}</div>
+                {stageParts}
                 {reactions}
                 {menu.element}
             </div>
@@ -344,9 +386,10 @@ export default function Stage({channelId, fullscreen = false}: Props) {
     const pinned = participants.findIndex((p) => p.sessionId === pinnedId);
     if (pinned >= 0 && participants.length > 1) {
         return (
-            <div className={am('stage')}>
+            <div className={stageClass}>
                 <div className={am('stage-focus')}>{tiles[pinned]}</div>
                 <div className={am('stage-strip')}>{tiles.filter((_, i) => i !== pinned)}</div>
+                {stageParts}
                 {reactions}
                 {menu.element}
             </div>
@@ -356,13 +399,14 @@ export default function Stage({channelId, fullscreen = false}: Props) {
     const cols = Math.ceil(Math.sqrt(tiles.length));
     const rows = Math.ceil(tiles.length / cols);
     return (
-        <div className={am('stage')}>
+        <div className={stageClass}>
             <div
                 className={am('stage-grid')}
                 style={{'--am-cols': cols, '--am-rows': rows} as React.CSSProperties}
             >
                 {tiles}
             </div>
+            {stageParts}
             {reactions}
             {menu.element}
         </div>

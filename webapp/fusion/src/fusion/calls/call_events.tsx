@@ -15,7 +15,7 @@ import type {GlobalState} from 'types/store';
 
 import {channelLabel, goToChannel, useCallActions} from './actions';
 import {getCallsAPI, useCallsAPIs} from './calls_api';
-import type {CallsErrorEvent, CallsMoveRequest} from './calls_api';
+import type {CallsErrorEvent, CallsMoveRequest, CallsStageInvite} from './calls_api';
 import {useApplyVolumes} from './extras';
 import {useMyCall, useParticipants} from './hooks';
 import {setCallView, setCallWindowOpen, setVoiceChat, useCallsUI} from './ui_state';
@@ -60,7 +60,7 @@ export default function CallEvents() {
         let holding = '';
         const onKeyDown = (e: KeyboardEvent) => {
             const current = latest.current.my;
-            if (e.repeat || holding || !current?.call.mediaInThisWindow || current.modMuted || !isKeybind(store.getState(), e, 'pushToTalk')) {
+            if (e.repeat || holding || !current?.call.mediaInThisWindow || current.modMuted || current.audience || !isKeybind(store.getState(), e, 'pushToTalk')) {
                 return;
             }
             e.preventDefault();
@@ -195,6 +195,16 @@ export default function CallEvents() {
         });
     }, [calls, store, formatMessage]);
 
+    // A moderator inviting the user to speak on a stage: they unmute when they're ready.
+    useEffect(() => {
+        if (!calls) {
+            return undefined;
+        }
+        return calls.on('stage-invite', (invite: CallsStageInvite) => {
+            showToast(formatMessage({id: 'fusion.calls.toast.youInvited', defaultMessage: 'A moderator invited you to speak in {where}: unmute when you\'re ready'}, {where: channelLabel(store.getState(), invite.channelId)}));
+        });
+    }, [calls, store, formatMessage]);
+
     useEffect(() => {
         if (!calls) {
             return undefined;
@@ -228,6 +238,9 @@ export default function CallEvents() {
                 break;
             case 'mod-deafened':
                 text = formatMessage({id: 'fusion.calls.toast.modDeafenedCantUnmute', defaultMessage: 'A moderator deafened you: you can unmute once they undeafen you'});
+                break;
+            case 'stage-audience':
+                text = formatMessage({id: 'fusion.calls.toast.audienceCantUnmute', defaultMessage: 'Only speakers can talk here: request to speak, and a moderator may invite you'});
                 break;
             }
 

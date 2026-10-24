@@ -225,6 +225,10 @@ function makeActions(getState: () => GlobalState, intl: IntlShape, openDirect: (
             showToast(formatMessage({id: 'fusion.calls.toast.modMutedCantUnmute', defaultMessage: 'A moderator muted you: you can unmute once they allow it'}));
             return;
         }
+        if (my.muted && my.audience) {
+            showToast(formatMessage({id: 'fusion.calls.toast.audienceCantUnmute', defaultMessage: 'Only speakers can talk here: request to speak, and a moderator may invite you'}));
+            return;
+        }
         if (my.muted) {
             if (my.deafened) {
                 getVoiceAPI()?.setDeafened(false);
@@ -349,6 +353,38 @@ function makeActions(getState: () => GlobalState, intl: IntlShape, openDirect: (
         showToast(formatMessage({id: 'fusion.calls.toast.movedOther', defaultMessage: 'Moved {name} to {where}'}, {name, where}));
     };
 
+    // In a stage, inviting someone of its audience to speak lowers their hand; they unmute themselves.
+    const inviteToSpeak = async (p: Pick<VoiceParticipant, 'userId'>, channelId: string) => {
+        const invite = getCallsAPI()?.moderation?.inviteToSpeak;
+        if (!invite) {
+            return;
+        }
+        const name = firstName(getState(), p.userId);
+        try {
+            await invite(channelId, p.userId);
+        } catch (e) {
+            showToast(statusOf(e) === 403 ? formatMessage({id: 'fusion.calls.toast.inviteForbidden', defaultMessage: 'You can\'t invite {name} to speak'}, {name}) : formatMessage({id: 'fusion.calls.toast.inviteFailed', defaultMessage: 'Couldn\'t invite {name} to speak'}, {name}));
+            return;
+        }
+        showToast(formatMessage({id: 'fusion.calls.toast.invited', defaultMessage: 'Invited {name} to speak'}, {name}));
+    };
+
+    // Moving an invited speaker back to the audience mutes them; speakers may step down themselves.
+    const moveToAudience = async (p: Pick<VoiceParticipant, 'userId' | 'isMe'>, channelId: string) => {
+        const move = getCallsAPI()?.moderation?.moveToAudience;
+        if (!move) {
+            return;
+        }
+        const name = firstName(getState(), p.userId);
+        try {
+            await move(channelId, p.userId);
+        } catch (e) {
+            showToast(statusOf(e) === 403 ? formatMessage({id: 'fusion.calls.toast.toAudienceForbidden', defaultMessage: 'You can\'t move {name} to the audience'}, {name}) : formatMessage({id: 'fusion.calls.toast.toAudienceFailed', defaultMessage: 'Couldn\'t move {name} to the audience'}, {name}));
+            return;
+        }
+        showToast(p.isMe ? formatMessage({id: 'fusion.calls.toast.youToAudience', defaultMessage: 'You\'re in the audience again'}) : formatMessage({id: 'fusion.calls.toast.toAudience', defaultMessage: 'Moved {name} to the audience'}, {name}));
+    };
+
     // Asking to unmute prompts someone muted to unmute themselves; it can't be asked again right away.
     const askToUnmute = async (p: VoiceParticipant, channelId: string) => {
         const moderation = getCallsAPI()?.moderation;
@@ -424,6 +460,8 @@ function makeActions(getState: () => GlobalState, intl: IntlShape, openDirect: (
         modMute,
         modDeafen,
         moveTo,
+        inviteToSpeak,
+        moveToAudience,
         askToUnmute,
         makeHost,
         endForEveryone,

@@ -95,3 +95,28 @@
 :is(.am-app, .am-layer) .am-voice-mod-row { flex-wrap: wrap; }
 :is(.am-app, .am-layer) .am-voice-mod-row .am-txt { flex: 1 1 200px; }
 :is(.am-app, .am-layer) .am-voice-mod-row .am-txt span { display: block; color: var(--am-text-2); font-size: 13px; }
+
+// A stage's call: the speakers' tiles take the room; under them, for its moderators, the raised hands, and the
+// audience as a compact grid of faces with their count (both scroll when there are many).
+:is(.am-app, .am-layer) .am-stage-room .am-stage-grid { min-height: 160px; }
+:is(.am-app, .am-layer) .am-stage-audience, :is(.am-app, .am-layer) .am-stage-hands { flex: none; padding: 10px 12px; border: 1px solid var(--am-line); border-radius: 14px; background: var(--am-side); }
+:is(.am-app, .am-layer) .am-stage-audience h3, :is(.am-app, .am-layer) .am-stage-hands h3 { display: flex; align-items: center; gap: 8px; margin: 0 0 8px; color: var(--am-muted); font: 700 11px var(--am-font-ui); letter-spacing: .07em; text-transform: uppercase; }
+:is(.am-app, .am-layer) .am-stage-audience .am-count, :is(.am-app, .am-layer) .am-stage-hands .am-count { padding: 0 7px; border-radius: 9px; background: var(--am-raise); color: var(--am-text-2); font: 700 11px/18px var(--am-font-ui); letter-spacing: 0; }
+:is(.am-app, .am-layer) .am-stage-audience ul { display: grid; gap: 8px; max-height: 168px; padding: 2px 0 0; margin: 0; grid-template-columns: repeat(auto-fill, minmax(64px, 1fr)); list-style: none; overflow-y: auto; }
+:is(.am-app, .am-layer) .am-aud-member { position: relative; display: flex; min-width: 0; flex-direction: column; align-items: center; gap: 4px; }
+:is(.am-app, .am-layer) .am-aud-name { max-width: 100%; overflow: hidden; color: var(--am-text-2); font-size: 11.5px; text-overflow: ellipsis; white-space: nowrap; }
+:is(.am-app, .am-layer) .am-aud-hand { position: absolute; top: -2px; right: calc(50% - 30px); display: inline-flex; align-items: center; gap: 2px; height: 18px; padding: 0 5px; border-radius: 9px; background: var(--am-spark); color: #1E1F22; font: 700 10.5px var(--am-font-ui); }
+:is(.am-app, .am-layer) .am-aud-hand .am-ic { width: 12px; height: 12px; }
+:is(.am-app, .am-layer) .am-stage-hands ol { display: grid; gap: 6px; max-height: 150px; padding: 0; margin: 0; list-style: none; overflow-y: auto; }
+:is(.am-app, .am-layer) .am-hand-row { display: flex; min-width: 0; align-items: center; gap: 10px; }
+:is(.am-app, .am-layer) .am-hand-row .am-hand-order { flex: none; width: 18px; color: var(--am-muted); font: 700 12px var(--am-font-ui); text-align: right; }
+:is(.am-app, .am-layer) .am-hand-row .am-grow { min-width: 0; flex: 1; overflow: hidden; font-size: 14px; text-overflow: ellipsis; white-space: nowrap; }
+:is(.am-app, .am-layer) .am-hand-row .am-btn { flex: none; height: 30px; padding: 0 12px; font-size: 13px; }
+
+// The audience's controls: the locked microphone, Request to speak (raising their hand, with its label), and Leave.
+:is(.am-app, .am-layer) .am-round.am-request { display: inline-flex; width: auto; padding: 0 18px; border-radius: 24px; gap: 8px; font: 600 14px var(--am-font-ui); }
+@media (max-width: 600px) {
+  :is(.am-app, .am-layer) .am-stage-room .am-stage-grid { min-height: 120px; }
+  :is(.am-app, .am-layer) .am-stage-audience ul { max-height: 120px; grid-template-columns: repeat(auto-fill, minmax(52px, 1fr)); }
+  :is(.am-app, .am-layer) .am-round.am-request { padding: 0 14px; }
+}

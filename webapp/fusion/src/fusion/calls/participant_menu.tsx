@@ -18,7 +18,7 @@ import {goToChannel, useCallActions, useChannelLabel} from './actions';
 import {getCallsAPI} from './calls_api';
 import type {VoiceParticipant} from './calls_api';
 import {canSetVolume, getUserVolume, setUserVolume} from './extras';
-import {useCanMakeHost, useCanModerateCall, useIsVoiceChannel, useMoveTargets} from './hooks';
+import {useCanMakeHost, useCanModerateCall, useIsVoiceChannel, useMoveTargets, useStage} from './hooks';
 import type {CallsParticipantPermissions} from './plugin_api/calls_public_api';
 
 type PermissionFlag = Exclude<keyof CallsParticipantPermissions, 'sessionId'>;
@@ -64,7 +64,9 @@ type MenuProps = {
 // nothing and can't speak until undeafened), and move them to another voice channel of the community; the mute and
 // the deafen last there until lifted. Disconnecting them comes last. The host (and system admins) can also make them
 // the host. Calls tells which of the mute, the deafen, the move and the kick the user may use on them (not on someone
-// at or above their rank): the others are hidden.
+// at or above their rank): the others are hidden. In a stage, Move to audience takes an invited speaker back to the
+// audience, for the moderators above them and for the speaker themselves, as Calls tells (it's hidden otherwise, and
+// with a Calls version that has no stages).
 function ParticipantMenu({participant: p, channelId, point, onProfile, onClose}: MenuProps) {
     const {formatMessage} = useIntl();
     const store = useStore<GlobalState>();
@@ -74,9 +76,11 @@ function ParticipantMenu({participant: p, channelId, point, onProfile, onClose}:
     const where = useChannelLabel(channelId);
     const voice = useIsVoiceChannel(channelId);
     const moderate = useCanModerateCall(channelId) && !p.isMe;
+    const stage = Boolean(useStage(channelId));
 
-    // The host passes it on to someone in the call (system admins can too); bots can't be hosts.
-    const makeHost = useCanMakeHost(channelId) && !p.isMe && !p.isHost && !user?.is_bot;
+    // The host passes it on to someone in the call (system admins can too); bots can't be hosts, nor can a stage's
+    // audience.
+    const makeHost = useCanMakeHost(channelId) && !p.isMe && !p.isHost && !user?.is_bot && !p.audience;
     const calls = getCallsAPI();
     const moderation = Boolean(calls?.moderation);
     const deafen = voice && Boolean(calls?.moderation?.setModDeafened);
@@ -84,15 +88,19 @@ function ParticipantMenu({participant: p, channelId, point, onProfile, onClose}:
 
     // The menu hides what the user may not do to them (nobody acts on someone at or above their rank); the controls
     // still check for themselves.
-    const perms = useParticipantPermissions(moderate && Boolean(calls?.moderation?.participantPermissions), channelId, p.sessionId);
+    const toAudienceAvailable = stage && !p.audience && Boolean(calls?.moderation?.moveToAudience);
+    const perms = useParticipantPermissions((moderate || (p.isMe && toAudienceAvailable)) && Boolean(calls?.moderation?.participantPermissions), channelId, p.sessionId);
     const may = (flag: PermissionFlag) => perms === null || (perms !== undefined && perms[flag] !== false);
+
+    // Only when Calls says so: the stage's flags are new.
+    const toAudience = toAudienceAvailable && perms?.canMoveToAudience === true;
     const askUnmute = p.muted && moderation && !p.modMuted && !p.modDeafened;
     const mute = !p.muted && may('canMute');
     const modMute = moderation && may('canMute');
     const modDeafen = deafen && may('canDeafen');
     const move = targets.length > 0 && may('canMove');
     const kick = may('canKick');
-    const hostControls = moderate && (askUnmute || mute || modMute || modDeafen || move || makeHost || p.raisedHand || p.screenSharing || kick);
+    const hostControls = moderate && (askUnmute || mute || modMute || modDeafen || move || makeHost || p.raisedHand || p.screenSharing || kick || toAudience);
     const [volume, setVolume] = useState(() => getUserVolume(p.userId));
 
     const run = (action: () => void) => () => {
@@ -169,6 +177,17 @@ function ParticipantMenu({participant: p, channelId, point, onProfile, onClose}:
                     <b>{`${Math.round(volume * 100)}%`}</b>
                 </label>
             )}
+            {p.isMe && toAudience && (
+                <>
+                    <MenuSeparator/>
+                    <MenuItem
+                        icon='leave'
+                        label={formatMessage({id: 'fusion.calls.menu.toAudience', defaultMessage: 'Move to audience'})}
+                        sub={formatMessage({id: 'fusion.calls.menu.toAudienceSelfSub', defaultMessage: 'You stop speaking, and can request to speak again'})}
+                        onClick={run(() => actions.moveToAudience(p, channelId))}
+                    />
+                </>
+            )}
             {hostControls && (
                 <>
                     <MenuSeparator/>
@@ -218,6 +237,14 @@ function ParticipantMenu({participant: p, channelId, point, onProfile, onClose}:
                                 />
                             ))}
                         </Flyout>
+                    )}
+                    {toAudience && (
+                        <MenuItem
+                            icon='leave'
+                            label={formatMessage({id: 'fusion.calls.menu.toAudience', defaultMessage: 'Move to audience'})}
+                            sub={formatMessage({id: 'fusion.calls.menu.toAudienceSub', defaultMessage: 'They\'re muted, and can request to speak again'})}
+                            onClick={run(() => actions.moveToAudience(p, channelId))}
+                        />
                     )}
                     {makeHost && (
                         <MenuItem

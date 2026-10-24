@@ -23571,6 +23571,10 @@
     "defaultMessage": "Unmute",
     "description": ""
   },
+  "fusion.calls.audienceMuted": {
+    "defaultMessage": "Only speakers can talk here",
+    "description": "Label of the locked microphone button for a listener in the audience of a stage (a voice channel where only speakers talk)"
+  },
   "fusion.calls.banner.join": {
     "defaultMessage": "Join call",
     "description": ""
@@ -23642,6 +23646,10 @@
   "fusion.calls.cameraOptions": {
     "defaultMessage": "Camera options",
     "description": ""
+  },
+  "fusion.calls.cancelRequest": {
+    "defaultMessage": "Cancel your request to speak",
+    "description": "Button for a listener in a stage's audience who asked to speak (raised their hand): takes the request back"
   },
   "fusion.calls.card.callIn": {
     "defaultMessage": "A call in {where}",
@@ -23979,6 +23987,18 @@
     "defaultMessage": "Stop screen share",
     "description": ""
   },
+  "fusion.calls.menu.toAudience": {
+    "defaultMessage": "Move to audience",
+    "description": "Item of the menu of someone speaking in a stage (a voice channel where only speakers talk): they become a listener again; also in your own menu to stop speaking"
+  },
+  "fusion.calls.menu.toAudienceSelfSub": {
+    "defaultMessage": "You stop speaking, and can request to speak again",
+    "description": "Explanation under Move to audience in your own menu in a stage"
+  },
+  "fusion.calls.menu.toAudienceSub": {
+    "defaultMessage": "They're muted, and can request to speak again",
+    "description": "Explanation under Move to audience in the menu of someone speaking in a stage"
+  },
   "fusion.calls.menu.volume": {
     "defaultMessage": "Volume",
     "description": ""
@@ -24099,6 +24119,10 @@
     "defaultMessage": "This call is recorded; the recording is posted in the call's thread when it stops.",
     "description": "Tooltip of the Recording badge over a call"
   },
+  "fusion.calls.requestToSpeak": {
+    "defaultMessage": "Request to speak",
+    "description": "Button for a listener in a stage's audience (a voice channel where only speakers talk): raises their hand to ask the moderators to let them speak"
+  },
   "fusion.calls.resolution": {
     "defaultMessage": "Resolution",
     "description": ""
@@ -24195,6 +24219,22 @@
     "defaultMessage": "Windows",
     "description": ""
   },
+  "fusion.calls.stage.audience": {
+    "defaultMessage": "Audience",
+    "description": "Heading of the grid of listeners in a stage (a voice channel where only speakers talk); their number follows"
+  },
+  "fusion.calls.stage.invite": {
+    "defaultMessage": "Invite to speak",
+    "description": "Button beside a listener's raised hand in a stage, for moderators: lets them speak (they unmute themselves)"
+  },
+  "fusion.calls.stage.noSpeakers": {
+    "defaultMessage": "Nobody is speaking yet. Moderators speak here, and invite others to.",
+    "description": "Shown in place of the speakers in a stage (a voice channel where only speakers talk) while no speaker is in the call"
+  },
+  "fusion.calls.stage.raisedHands": {
+    "defaultMessage": "Raised hands",
+    "description": "Heading, for moderators of a stage, of the list of listeners asking to speak, the first asked first; their number follows"
+  },
   "fusion.calls.start": {
     "defaultMessage": "Start a call",
     "description": ""
@@ -24227,6 +24267,10 @@
     "defaultMessage": "Couldn't ask {name} to unmute",
     "description": ""
   },
+  "fusion.calls.toast.audienceCantUnmute": {
+    "defaultMessage": "Only speakers can talk here: request to speak, and a moderator may invite you",
+    "description": "Toast when a listener in a stage's audience tries to unmute, turn their camera on or share their screen"
+  },
   "fusion.calls.toast.connected": {
     "defaultMessage": "Connected to {name}",
     "description": ""
@@ -24250,6 +24294,18 @@
   "fusion.calls.toast.hostMuted": {
     "defaultMessage": "Muted {name} in {where}",
     "description": ""
+  },
+  "fusion.calls.toast.invited": {
+    "defaultMessage": "Invited {name} to speak",
+    "description": "Toast after a moderator invited a listener to speak in a stage; {name} is their first name"
+  },
+  "fusion.calls.toast.inviteFailed": {
+    "defaultMessage": "Couldn't invite {name} to speak",
+    "description": "Toast when inviting a listener to speak in a stage failed; {name} is their first name"
+  },
+  "fusion.calls.toast.inviteForbidden": {
+    "defaultMessage": "You can't invite {name} to speak",
+    "description": "Toast when the server refused to let the user invite someone to speak in a stage (they rank as high as the user or higher); {name} is their first name"
   },
   "fusion.calls.toast.joinedSomeones": {
     "defaultMessage": "Joined {name}’s call in {where}",
@@ -24375,6 +24431,22 @@
     "defaultMessage": "Call started in {where}",
     "description": ""
   },
+  "fusion.calls.toast.toAudience": {
+    "defaultMessage": "Moved {name} to the audience",
+    "description": "Toast after a moderator moved a speaker back to the audience of a stage (they're muted); {name} is their first name"
+  },
+  "fusion.calls.toast.toAudienceFailed": {
+    "defaultMessage": "Couldn't move {name} to the audience",
+    "description": "Toast when moving a speaker back to a stage's audience failed; {name} is their first name"
+  },
+  "fusion.calls.toast.toAudienceForbidden": {
+    "defaultMessage": "You can't move {name} to the audience",
+    "description": "Toast when the server refused to let the user move a speaker back to a stage's audience; {name} is their first name"
+  },
+  "fusion.calls.toast.youInvited": {
+    "defaultMessage": "A moderator invited you to speak in {where}: unmute when you're ready",
+    "description": "Toast when a moderator invited the user, a listener in a stage, to speak; {where} is the voice channel's name"
+  },
   "fusion.calls.toast.youModDeafened": {
     "defaultMessage": "A moderator deafened you in {where}: you'll hear the others and can unmute once they undeafen you",
     "description": "Notice to the user when a moderator deafened them; {where} is the voice channel"
@@ -24394,6 +24466,10 @@
   "fusion.calls.toast.youMoved": {
     "defaultMessage": "A moderator moved you to {where}",
     "description": "Notice to the user when a moderator moved them to another voice channel; {where} is that channel"
+  },
+  "fusion.calls.toast.youToAudience": {
+    "defaultMessage": "You're in the audience again",
+    "description": "Toast after the user stopped speaking in a stage and became a listener again"
   },
   "fusion.calls.transcribe": {
     "defaultMessage": "Transcribe the call",
