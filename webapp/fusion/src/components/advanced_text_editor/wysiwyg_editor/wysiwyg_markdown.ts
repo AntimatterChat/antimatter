@@ -43,6 +43,11 @@ MarkdownManager.prototype.parse = function parse(markdown: string): JSONContent 
     return {type: 'doc', content: manager.parseTokens(tokens)};
 };
 
+// Since @tiptap/markdown 3.25 the serializer backslash-escapes backslashes, backticks, *, _, [, ] and ~ in text.
+// Posts keep the characters people typed (task list markers, `~5 minutes`), so text goes out as written.
+(MarkdownManager.prototype as unknown as {escapeMarkdownSyntax: (text: string) => string}).escapeMarkdownSyntax =
+    (text) => text;
+
 export const isRedundantLinkText = (text: string, href: string): boolean => {
     if (!text || !href) {
         return false;

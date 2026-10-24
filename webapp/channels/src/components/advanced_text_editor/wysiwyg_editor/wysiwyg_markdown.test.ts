@@ -119,6 +119,12 @@ describe('serializeToMarkdown', () => {
         editor.destroy();
     });
 
+    it('sends markdown characters typed as text without backslashes', () => {
+        editor.commands.setContent(paragraph({type: 'text', text: 'snake_case, a*b, [draft] ~5 min, C:\\temp, `x`'}));
+
+        expect(serializeToMarkdown(editor)).toBe('snake_case, a*b, [draft] ~5 min, C:\\temp, `x`');
+    });
+
     it('serializes an autolinked URL as a bare URL', () => {
         editor.commands.setContent(paragraph(linkText('https://mmtest.atlassian.net/', 'https://mmtest.atlassian.net/')));
 
