@@ -75,9 +75,10 @@ func (k *banTestKit) teamAdmin(t *testing.T) (*model.User, *model.Client4) {
 	return user, client
 }
 
-func closeBody(resp *http.Response) {
-	if resp != nil && resp.Body != nil {
-		resp.Body.Close()
+// closeResp closes a response's body, when there is a response (a failed request may have none).
+func closeResp(resp *http.Response) {
+	if resp != nil {
+		closeBody(resp)
 	}
 }
 
@@ -87,10 +88,10 @@ func (k *banTestKit) ban(t *testing.T, client *model.Client4, userID string, req
 	require.NoError(t, err)
 	resp, err := client.DoAPIPut(context.Background(), "/teams/"+k.team.Id+"/bans/"+userID, string(data))
 	if err != nil {
-		closeBody(resp)
+		closeResp(resp)
 		return nil, resp, err
 	}
-	defer closeBody(resp)
+	defer closeResp(resp)
 	var result model.MemberBanResult
 	require.NoError(t, json.NewDecoder(resp.Body).Decode(&result))
 	return &result, resp, nil
@@ -99,7 +100,7 @@ func (k *banTestKit) ban(t *testing.T, client *model.Client4, userID string, req
 func (k *banTestKit) unban(t *testing.T, client *model.Client4, userID string) (*http.Response, error) {
 	t.Helper()
 	resp, err := client.DoAPIDelete(context.Background(), "/teams/"+k.team.Id+"/bans/"+userID)
-	closeBody(resp)
+	closeResp(resp)
 	return resp, err
 }
 
@@ -107,10 +108,10 @@ func (k *banTestKit) bans(t *testing.T, client *model.Client4) ([]*model.MemberB
 	t.Helper()
 	resp, err := client.DoAPIGet(context.Background(), "/teams/"+k.team.Id+"/bans", "")
 	if err != nil {
-		closeBody(resp)
+		closeResp(resp)
 		return nil, resp, err
 	}
-	defer closeBody(resp)
+	defer closeResp(resp)
 	var bans []*model.MemberBan
 	require.NoError(t, json.NewDecoder(resp.Body).Decode(&bans))
 	return bans, resp, nil
@@ -134,10 +135,10 @@ func (k *banTestKit) createLink(t *testing.T, client *model.Client4, request mod
 	require.NoError(t, err)
 	resp, err := client.DoAPIPost(context.Background(), "/teams/"+k.team.Id+"/invite_links", string(data))
 	if err != nil {
-		closeBody(resp)
+		closeResp(resp)
 		return nil, resp, err
 	}
-	defer closeBody(resp)
+	defer closeResp(resp)
 	var link model.TeamInviteLink
 	require.NoError(t, json.NewDecoder(resp.Body).Decode(&link))
 	return &link, resp, nil
@@ -147,10 +148,10 @@ func (k *banTestKit) links(t *testing.T, client *model.Client4) ([]*model.TeamIn
 	t.Helper()
 	resp, err := client.DoAPIGet(context.Background(), "/teams/"+k.team.Id+"/invite_links", "")
 	if err != nil {
-		closeBody(resp)
+		closeResp(resp)
 		return nil, resp, err
 	}
-	defer closeBody(resp)
+	defer closeResp(resp)
 	var links []*model.TeamInviteLink
 	require.NoError(t, json.NewDecoder(resp.Body).Decode(&links))
 	return links, resp, nil
@@ -159,7 +160,7 @@ func (k *banTestKit) links(t *testing.T, client *model.Client4) ([]*model.TeamIn
 func (k *banTestKit) revokeLink(t *testing.T, client *model.Client4, linkID string) (*http.Response, error) {
 	t.Helper()
 	resp, err := client.DoAPIDelete(context.Background(), "/teams/"+k.team.Id+"/invite_links/"+linkID)
-	closeBody(resp)
+	closeResp(resp)
 	return resp, err
 }
 
