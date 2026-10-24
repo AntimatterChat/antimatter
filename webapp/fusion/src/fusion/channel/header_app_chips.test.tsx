@@ -47,7 +47,7 @@ describe('fusion/channel/HeaderAppChips', () => {
     });
 
     test('an app\'s chip that throws doesn\'t take the others down', () => {
-        jest.spyOn(console, 'error').mockImplementation(() => {});
+        const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
         const Broken = () => {
             throw new Error('broken');
         };
@@ -59,6 +59,10 @@ describe('fusion/channel/HeaderAppChips', () => {
             ]),
         );
         expect(screen.getByText('Next call')).toBeInTheDocument();
-        jest.restoreAllMocks();
+        expect(consoleSpy).toHaveBeenCalled();
+
+        // mockRestore (not jest.restoreAllMocks) also forgets the expected error, which the shared console guard
+        // would otherwise report.
+        consoleSpy.mockRestore();
     });
 });
