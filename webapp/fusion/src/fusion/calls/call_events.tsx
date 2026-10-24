@@ -5,15 +5,17 @@ import {useEffect, useRef} from 'react';
 import {useIntl} from 'react-intl';
 import {useStore} from 'react-redux';
 
+import {getCurrentChannelId} from 'mattermost-redux/selectors/entities/channels';
+
 import {showToast} from 'fusion/components/toast';
 import {comboOf, isKeybind} from 'fusion/shell/keybinds';
 import type {KeyAction} from 'fusion/shell/keybinds';
 
 import type {GlobalState} from 'types/store';
 
-import {channelLabel, useCallActions} from './actions';
+import {channelLabel, goToChannel, useCallActions} from './actions';
 import {getCallsAPI, useCallsAPIs} from './calls_api';
-import type {CallsErrorEvent} from './calls_api';
+import type {CallsErrorEvent, CallsMoveRequest} from './calls_api';
 import {useApplyVolumes} from './extras';
 import {useMyCall, useParticipants} from './hooks';
 import {setCallView, setCallWindowOpen, setVoiceChat, useCallsUI} from './ui_state';
@@ -159,6 +161,40 @@ export default function CallEvents() {
         }
     }, [modMuted, callChannelId, store, formatMessage]);
 
+    // Likewise for a moderator's deafen: they hear nothing and can't speak until it's lifted.
+    const modDeafened = Boolean(my?.modDeafened);
+    const wasModDeafened = useRef(modDeafened);
+    useEffect(() => {
+        if (modDeafened === wasModDeafened.current) {
+            return;
+        }
+        wasModDeafened.current = modDeafened;
+        if (!callChannelId) {
+            return;
+        }
+        const where = channelLabel(store.getState(), callChannelId);
+        if (modDeafened) {
+            showToast(formatMessage({id: 'fusion.calls.toast.youModDeafened', defaultMessage: 'A moderator deafened you in {where}: you\'ll hear the others and can unmute once they undeafen you'}, {where}));
+        } else {
+            showToast(formatMessage({id: 'fusion.calls.toast.youModUndeafened', defaultMessage: 'A moderator undeafened you in {where}'}, {where}));
+        }
+    }, [modDeafened, callChannelId, store, formatMessage]);
+
+    // A moderator moving the user to another voice channel: Calls switches calls; the view of the voice channel they
+    // were in follows them there.
+    useEffect(() => {
+        if (!calls) {
+            return undefined;
+        }
+        return calls.on('move', (request: CallsMoveRequest) => {
+            const state = store.getState();
+            showToast(formatMessage({id: 'fusion.calls.toast.youMoved', defaultMessage: 'A moderator moved you to {where}'}, {where: channelLabel(state, request.toChannelId)}));
+            if (getCurrentChannelId(state) === request.channelId) {
+                goToChannel(state, request.toChannelId);
+            }
+        });
+    }, [calls, store, formatMessage]);
+
     useEffect(() => {
         if (!calls) {
             return undefined;
@@ -189,6 +225,9 @@ export default function CallEvents() {
                 break;
             case 'mod-muted':
                 text = formatMessage({id: 'fusion.calls.toast.modMutedCantUnmute', defaultMessage: 'A moderator muted you: you can unmute once they allow it'});
+                break;
+            case 'mod-deafened':
+                text = formatMessage({id: 'fusion.calls.toast.modDeafenedCantUnmute', defaultMessage: 'A moderator deafened you: you can unmute once they undeafen you'});
                 break;
             }
 

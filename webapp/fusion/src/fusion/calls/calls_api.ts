@@ -15,17 +15,18 @@ import type {
     CallsErrorEvent,
     CallsIncomingCall,
     CallsModMute,
+    CallsMoveRequest,
     CallsParticipant,
     CallsUnmuteRequest,
     LocalCall,
 } from './plugin_api/calls_public_api';
 import type {AntimatterVoiceChannelsAPI, VoiceParticipant as VoicePluginParticipant} from './plugin_api/voice_channels_public_api';
 
-export type {AntimatterCallsAPI, AntimatterVoiceChannelsAPI, CallsCall, CallsErrorEvent, CallsIncomingCall, CallsModMute, CallsParticipant, CallsUnmuteRequest, LocalCall};
+export type {AntimatterCallsAPI, AntimatterVoiceChannelsAPI, CallsCall, CallsErrorEvent, CallsIncomingCall, CallsModMute, CallsMoveRequest, CallsParticipant, CallsUnmuteRequest, LocalCall};
 
-// Someone in a call or a voice channel, as the call UI shows them: deafened in voice channels, and whether a
-// moderator muted them (which Calls knows, not the voice channels plugin).
-export type VoiceParticipant = VoicePluginParticipant & {modMuted: boolean};
+// Someone in a call or a voice channel, as the call UI shows them: deafened in voice channels (by themselves or a
+// moderator), and whether a moderator muted or deafened them (which Calls knows, not the voice channels plugin).
+export type VoiceParticipant = VoicePluginParticipant & {modMuted: boolean; modDeafened: boolean};
 
 // Not in version 1 of the API: the channels that have a call. Calls' state is read when it's missing.
 type CallsSelectorsNext = AntimatterCallsAPI['selectors'] & {
@@ -98,10 +99,17 @@ export function getModMutes(state: GlobalState, channelId: string): CallsModMute
     return (calls && channelId && calls.selectors.getModMutes?.(state, channelId)) || NO_MOD_MUTES;
 }
 
-const converted = new WeakMap<object, {mutes: CallsModMute[]; result: VoiceParticipant[]}>();
+// getModDeafens lists who a moderator deafened in a voice channel's call (older Calls versions have no moderator
+// deafen).
+export function getModDeafens(state: GlobalState, channelId: string): CallsModMute[] {
+    const calls = getCallsAPI();
+    return (calls && channelId && calls.selectors.getModDeafens?.(state, channelId)) || NO_MOD_MUTES;
+}
 
-// getParticipants lists the people in a channel's call, with whether they are deafened in voice channels and muted by
-// a moderator.
+const converted = new WeakMap<object, {mutes: CallsModMute[]; deafens: CallsModMute[]; result: VoiceParticipant[]}>();
+
+// getParticipants lists the people in a channel's call, with whether they are deafened in voice channels, and muted
+// or deafened by a moderator.
 export function getParticipants(state: GlobalState, channelId: string): VoiceParticipant[] {
     if (!channelId) {
         return NO_PARTICIPANTS;
@@ -118,15 +126,20 @@ export function getParticipants(state: GlobalState, channelId: string): VoicePar
         return NO_PARTICIPANTS;
     }
     const mutes = getModMutes(state, channelId);
+    const deafens = getModDeafens(state, channelId);
 
     // The plugins keep their arrays stable while unchanged, so the converted one can be too.
     const cached = converted.get(list);
-    if (cached && cached.mutes === mutes) {
+    if (cached && cached.mutes === mutes && cached.deafens === deafens) {
         return cached.result;
     }
     const muted = new Set(mutes.map((m) => m.userId));
-    const result = list.map((p) => ({...p, deafened: 'deafened' in p ? p.deafened : false, modMuted: muted.has(p.userId)}));
-    converted.set(list, {mutes, result});
+    const deafened = new Set(deafens.map((m) => m.userId));
+    const result = list.map((p) => {
+        const modDeafened = deafened.has(p.userId);
+        return {...p, deafened: ('deafened' in p && p.deafened) || modDeafened, modMuted: muted.has(p.userId), modDeafened};
+    });
+    converted.set(list, {mutes, deafens, result});
     return result;
 }
 
@@ -156,7 +169,8 @@ export function participantsEqual(a: VoiceParticipant[], b: VoiceParticipant[]):
         const q = b[i];
         return p.sessionId === q.sessionId && p.userId === q.userId && p.muted === q.muted && p.deafened === q.deafened &&
             p.video === q.video && p.screenSharing === q.screenSharing && p.speaking === q.speaking &&
-            p.raisedHand === q.raisedHand && p.isHost === q.isHost && p.isMe === q.isMe && p.modMuted === q.modMuted;
+            p.raisedHand === q.raisedHand && p.isHost === q.isHost && p.isMe === q.isMe && p.modMuted === q.modMuted &&
+            p.modDeafened === q.modDeafened;
     });
 }
 

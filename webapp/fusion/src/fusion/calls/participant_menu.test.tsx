@@ -16,6 +16,8 @@ const mockActions = {
     hostLowerHand: jest.fn(),
     hostStopScreen: jest.fn(),
     modMute: jest.fn(),
+    modDeafen: jest.fn(),
+    moveTo: jest.fn(),
     askToUnmute: jest.fn(),
     openDirect: jest.fn(),
     callUser: jest.fn(),
@@ -23,6 +25,8 @@ const mockActions = {
 };
 let mockModerate = true;
 let mockMakeHost = false;
+let mockVoice = true;
+let mockTargets: Array<{id: string; display_name: string}> = [];
 jest.mock('./actions', () => ({
     useCallActions: () => mockActions,
     useChannelLabel: () => 'Lobby',
@@ -31,7 +35,8 @@ jest.mock('./actions', () => ({
 jest.mock('./hooks', () => ({
     useCanModerateCall: () => mockModerate,
     useCanMakeHost: () => mockMakeHost,
-    useIsVoiceChannel: () => true,
+    useIsVoiceChannel: () => mockVoice,
+    useMoveTargets: (channelId: string) => (channelId ? mockTargets : []),
 }));
 jest.mock('./extras', () => ({canSetVolume: () => false, getUserVolume: () => 1, setUserVolume: jest.fn()}));
 
@@ -47,6 +52,7 @@ const participant = (over: Partial<VoiceParticipant> = {}): VoiceParticipant => 
     isHost: false,
     isMe: false,
     modMuted: false,
+    modDeafened: false,
     ...over,
 });
 
@@ -71,6 +77,8 @@ describe('fusion/calls/participant_menu', () => {
         document.body.append(layer);
         mockModerate = true;
         mockMakeHost = false;
+        mockVoice = true;
+        mockTargets = [];
         Object.values(mockActions).forEach((fn) => fn.mockClear());
         window.antimatterCalls = {version: 1, moderation: {}} as unknown as AntimatterCallsAPI;
     });
@@ -85,6 +93,7 @@ describe('fusion/calls/participant_menu', () => {
     };
 
     test('a moderator mutes someone, or mutes them for the call', async () => {
+        mockVoice = false;
         open(participant());
         expect(screen.queryByRole('menuitem', {name: 'Ask to unmute'})).not.toBeInTheDocument();
         await userEvent.click(screen.getByRole('menuitem', {name: 'Mute'}));
@@ -123,17 +132,74 @@ describe('fusion/calls/participant_menu', () => {
 
     test('without moderation rights, or for yourself, there are no host controls', () => {
         mockModerate = false;
+        mockTargets = [{id: 'v2', display_name: 'Gaming'}];
+        window.antimatterCalls = {version: 1, moderation: {setModDeafened: jest.fn(), move: jest.fn()}} as unknown as AntimatterCallsAPI;
         open(participant({muted: true}));
         expect(screen.queryByRole('menuitem', {name: 'Ask to unmute'})).not.toBeInTheDocument();
-        expect(screen.queryByRole('menuitem', {name: /Mute for this call/})).not.toBeInTheDocument();
+        expect(screen.queryByRole('menuitem', {name: /Mute in this channel/})).not.toBeInTheDocument();
+        expect(screen.queryByRole('menuitem', {name: /Deafen/})).not.toBeInTheDocument();
+        expect(screen.queryByRole('menuitem', {name: 'Move to'})).not.toBeInTheDocument();
     });
 
     test('older Calls versions offer the host controls they have', () => {
         window.antimatterCalls = {version: 1} as unknown as AntimatterCallsAPI;
+        mockTargets = [{id: 'v2', display_name: 'Gaming'}];
         open(participant({muted: true}));
         expect(screen.queryByRole('menuitem', {name: 'Ask to unmute'})).not.toBeInTheDocument();
-        expect(screen.queryByRole('menuitem', {name: /Mute for this call/})).not.toBeInTheDocument();
+        expect(screen.queryByRole('menuitem', {name: /Mute in this channel/})).not.toBeInTheDocument();
+        expect(screen.queryByRole('menuitem', {name: /Deafen/})).not.toBeInTheDocument();
+        expect(screen.queryByRole('menuitem', {name: 'Move to'})).not.toBeInTheDocument();
         expect(screen.getByRole('menuitem', {name: 'Kick from voice channel'})).toBeInTheDocument();
+    });
+
+    describe('in a voice channel', () => {
+        beforeEach(() => {
+            window.antimatterCalls = {version: 1, moderation: {setModDeafened: jest.fn(), move: jest.fn()}} as unknown as AntimatterCallsAPI;
+        });
+
+        test('the moderator mute lasts in the channel', async () => {
+            open(participant());
+            expect(screen.queryByRole('menuitem', {name: /Mute for this call/})).not.toBeInTheDocument();
+            await userEvent.click(screen.getByRole('menuitem', {name: /Mute in this channel/}));
+            expect(mockActions.modMute).toHaveBeenCalledWith(expect.objectContaining({sessionId: 's1'}), 'room', true);
+        });
+
+        test('a moderator deafens someone, and undeafens them', async () => {
+            open(participant());
+            await userEvent.click(screen.getByRole('menuitem', {name: /^Deafen/}));
+            expect(mockActions.modDeafen).toHaveBeenCalledWith(expect.objectContaining({userId: 'u1'}), 'room', true);
+        });
+
+        test('someone deafened by a moderator is undeafened, not asked to unmute', async () => {
+            open(participant({muted: true, deafened: true, modDeafened: true}));
+            expect(screen.queryByRole('menuitem', {name: 'Ask to unmute'})).not.toBeInTheDocument();
+            await userEvent.click(screen.getByRole('menuitem', {name: 'Undeafen'}));
+            expect(mockActions.modDeafen).toHaveBeenCalledWith(expect.objectContaining({userId: 'u1'}), 'room', false);
+        });
+
+        test('a moderator moves someone to another voice channel, from the menu that also disconnects them', async () => {
+            mockTargets = [{id: 'v2', display_name: 'Gaming'}, {id: 'v3', display_name: 'Music'}];
+            open(participant());
+            expect(screen.getByRole('menuitem', {name: 'Move to'})).toBeInTheDocument();
+            expect(screen.getByRole('menuitem', {name: 'Kick from voice channel'})).toBeInTheDocument();
+            await userEvent.click(screen.getByRole('menuitem', {name: 'Music'}));
+            expect(mockActions.moveTo).toHaveBeenCalledWith(expect.objectContaining({sessionId: 's1'}), 'room', 'v3');
+        });
+
+        test('there\'s nowhere to move to without other voice channels', () => {
+            open(participant());
+            expect(screen.queryByRole('menuitem', {name: 'Move to'})).not.toBeInTheDocument();
+        });
+    });
+
+    test('outside voice channels, nobody is deafened or moved', () => {
+        mockVoice = false;
+        mockTargets = [{id: 'v2', display_name: 'Gaming'}];
+        window.antimatterCalls = {version: 1, moderation: {setModDeafened: jest.fn(), move: jest.fn()}} as unknown as AntimatterCallsAPI;
+        open(participant());
+        expect(screen.queryByRole('menuitem', {name: /Deafen/})).not.toBeInTheDocument();
+        expect(screen.queryByRole('menuitem', {name: 'Move to'})).not.toBeInTheDocument();
+        expect(screen.getByRole('menuitem', {name: 'Remove from call'})).toBeInTheDocument();
     });
 
     test('the host makes someone else the host', async () => {

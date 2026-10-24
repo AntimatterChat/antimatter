@@ -23927,6 +23927,14 @@
     "defaultMessage": "Message",
     "description": ""
   },
+  "fusion.calls.menu.modDeafen": {
+    "defaultMessage": "Deafen",
+    "description": "Participant menu item for moderators: deafen someone in a voice channel (they hear nothing and can't speak)"
+  },
+  "fusion.calls.menu.modDeafenSub": {
+    "defaultMessage": "They hear nothing and can't speak here until you undeafen them",
+    "description": "Explanation under the Deafen item of the participant menu"
+  },
   "fusion.calls.menu.modMute": {
     "defaultMessage": "Mute for this call",
     "description": ""
@@ -23934,6 +23942,26 @@
   "fusion.calls.menu.modMuteSub": {
     "defaultMessage": "They stay muted until you allow it, even if they rejoin",
     "description": ""
+  },
+  "fusion.calls.menu.modMuteVoice": {
+    "defaultMessage": "Mute in this channel",
+    "description": "Participant menu item for moderators in a voice channel: mute someone there until allowed to unmute"
+  },
+  "fusion.calls.menu.modMuteVoiceSub": {
+    "defaultMessage": "They stay muted here until you allow it, even in later calls",
+    "description": "Explanation under the 'Mute in this channel' item of the participant menu"
+  },
+  "fusion.calls.menu.modUndeafen": {
+    "defaultMessage": "Undeafen",
+    "description": "Participant menu item for moderators: lift the deafen they gave someone in a voice channel"
+  },
+  "fusion.calls.menu.moveTo": {
+    "defaultMessage": "Move to",
+    "description": "Participant menu item for moderators opening the list of voice channels to move someone to"
+  },
+  "fusion.calls.menu.moveToLabel": {
+    "defaultMessage": "Move to a voice channel",
+    "description": "Accessible name of the list of voice channels to move someone to"
   },
   "fusion.calls.menu.mute": {
     "defaultMessage": "Mute",
@@ -23966,6 +23994,14 @@
   "fusion.calls.minutes": {
     "defaultMessage": "{minutes} min",
     "description": ""
+  },
+  "fusion.calls.modDeafened": {
+    "defaultMessage": "Deafened by a moderator",
+    "description": "Tooltip of the icon shown on someone a moderator deafened in a voice channel"
+  },
+  "fusion.calls.modDeafenedYou": {
+    "defaultMessage": "A moderator deafened you",
+    "description": "Tooltip of the microphone and headphones buttons when a moderator deafened the user"
   },
   "fusion.calls.modMuted": {
     "defaultMessage": "Muted by a moderator",
@@ -24219,6 +24255,26 @@
     "defaultMessage": "Couldn't make {name} the host",
     "description": "Notice when making someone the host of a call failed; {name} is their first name"
   },
+  "fusion.calls.toast.modDeafened": {
+    "defaultMessage": "Deafened {name} in {where}: they hear nothing and can't speak until you undeafen them",
+    "description": "Notice after a moderator deafened someone in a voice channel; {name} is their first name, {where} the voice channel"
+  },
+  "fusion.calls.toast.modDeafenedCantUndeafen": {
+    "defaultMessage": "A moderator deafened you: you'll hear the others once they undeafen you",
+    "description": "Notice when someone a moderator deafened in a voice channel tries to undeafen themselves"
+  },
+  "fusion.calls.toast.modDeafenedCantUnmute": {
+    "defaultMessage": "A moderator deafened you: you can unmute once they undeafen you",
+    "description": "Notice when someone a moderator deafened in a voice channel tries to unmute"
+  },
+  "fusion.calls.toast.modDeafenFailed": {
+    "defaultMessage": "Couldn't change {name}'s deafen",
+    "description": "Notice when deafening or undeafening someone in a voice channel failed; {name} is their first name"
+  },
+  "fusion.calls.toast.modDeafenForbidden": {
+    "defaultMessage": "You can't deafen {name}",
+    "description": "Notice when a moderator may not deafen someone (e.g. they rank higher); {name} is their first name"
+  },
   "fusion.calls.toast.modMuted": {
     "defaultMessage": "Muted {name} for this call: they can't unmute until you allow it",
     "description": ""
@@ -24226,6 +24282,10 @@
   "fusion.calls.toast.modMutedCantUnmute": {
     "defaultMessage": "A moderator muted you: you can unmute once they allow it",
     "description": ""
+  },
+  "fusion.calls.toast.modMutedVoice": {
+    "defaultMessage": "Muted {name} in {where}: they can't unmute until you allow it",
+    "description": "Notice after a moderator muted someone in a voice channel until they allow it; {name} is their first name, {where} the voice channel"
   },
   "fusion.calls.toast.modMuteFailed": {
     "defaultMessage": "Couldn't change {name}'s mute",
@@ -24235,6 +24295,10 @@
     "defaultMessage": "You can't mute {name}",
     "description": ""
   },
+  "fusion.calls.toast.modUndeafened": {
+    "defaultMessage": "{name} can hear again",
+    "description": "Notice after a moderator undeafened someone in a voice channel; {name} is their first name"
+  },
   "fusion.calls.toast.modUnmuted": {
     "defaultMessage": "{name} can unmute again",
     "description": ""
@@ -24242,6 +24306,22 @@
   "fusion.calls.toast.moved": {
     "defaultMessage": "Moved to {name}",
     "description": ""
+  },
+  "fusion.calls.toast.movedOther": {
+    "defaultMessage": "Moved {name} to {where}",
+    "description": "Notice after a moderator moved someone to another voice channel; {name} is their first name, {where} the voice channel"
+  },
+  "fusion.calls.toast.moveFailed": {
+    "defaultMessage": "Couldn't move {name} to {where}",
+    "description": "Notice when moving someone to another voice channel failed; {name} is their first name, {where} the voice channel"
+  },
+  "fusion.calls.toast.moveForbidden": {
+    "defaultMessage": "You can't move {name}",
+    "description": "Notice when a moderator may not move someone to another voice channel; {name} is their first name"
+  },
+  "fusion.calls.toast.moveRefused": {
+    "defaultMessage": "{name} can't join {where}",
+    "description": "Notice when someone can't be moved to a voice channel they may not join; {name} is their first name, {where} the voice channel"
   },
   "fusion.calls.toast.recordingStarted": {
     "defaultMessage": "Recording started",
@@ -24267,13 +24347,25 @@
     "defaultMessage": "Call started in {where}",
     "description": ""
   },
+  "fusion.calls.toast.youModDeafened": {
+    "defaultMessage": "A moderator deafened you in {where}: you'll hear the others and can unmute once they undeafen you",
+    "description": "Notice to the user when a moderator deafened them; {where} is the voice channel"
+  },
   "fusion.calls.toast.youModMuted": {
     "defaultMessage": "A moderator muted you in {where}: you can unmute once they allow it",
     "description": ""
   },
+  "fusion.calls.toast.youModUndeafened": {
+    "defaultMessage": "A moderator undeafened you in {where}",
+    "description": "Notice to the user when a moderator undeafened them; {where} is the voice channel"
+  },
   "fusion.calls.toast.youModUnmuted": {
     "defaultMessage": "A moderator allowed you to unmute in {where}",
     "description": ""
+  },
+  "fusion.calls.toast.youMoved": {
+    "defaultMessage": "A moderator moved you to {where}",
+    "description": "Notice to the user when a moderator moved them to another voice channel; {where} is that channel"
   },
   "fusion.calls.transcribe": {
     "defaultMessage": "Transcribe the call",

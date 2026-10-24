@@ -217,6 +217,10 @@ function makeActions(getState: () => GlobalState, intl: IntlShape, openDirect: (
     // They're called straight from click handlers: screen sharing needs the user's gesture.
     const toggleMute = (my: MyCallState) => {
         const calls = getCallsAPI();
+        if (my.muted && my.modDeafened) {
+            showToast(formatMessage({id: 'fusion.calls.toast.modDeafenedCantUnmute', defaultMessage: 'A moderator deafened you: you can unmute once they undeafen you'}));
+            return;
+        }
         if (my.muted && my.modMuted) {
             showToast(formatMessage({id: 'fusion.calls.toast.modMutedCantUnmute', defaultMessage: 'A moderator muted you: you can unmute once they allow it'}));
             return;
@@ -230,7 +234,13 @@ function makeActions(getState: () => GlobalState, intl: IntlShape, openDirect: (
             calls?.setMuted(true);
         }
     };
-    const toggleDeafen = (my: MyCallState) => getVoiceAPI()?.setDeafened(!my.deafened);
+    const toggleDeafen = (my: MyCallState) => {
+        if (my.modDeafened) {
+            showToast(formatMessage({id: 'fusion.calls.toast.modDeafenedCantUndeafen', defaultMessage: 'A moderator deafened you: you\'ll hear the others once they undeafen you'}));
+            return;
+        }
+        getVoiceAPI()?.setDeafened(!my.deafened);
+    };
     const toggleVideo = (my: MyCallState) => {
         getCallsAPI()?.setVideo(!my.video).catch(() => {
             // Calls reports camera errors itself.
@@ -267,24 +277,76 @@ function makeActions(getState: () => GlobalState, intl: IntlShape, openDirect: (
     const hostLowerHand = (p: VoiceParticipant, channelId: string) => getCallsAPI()?.host.lowerHand(p.sessionId, channelId);
     const hostStopScreen = (p: VoiceParticipant, channelId: string) => getCallsAPI()?.host.stopScreen(p.sessionId, channelId);
 
-    // A moderator mute keeps someone muted for the call, also when they leave and come back, until lifted.
+    // A moderator mute keeps someone muted for the call, also when they leave and come back, until lifted; in a voice
+    // channel, also in its later calls.
     const modMute = async (p: VoiceParticipant, channelId: string, muted: boolean) => {
         const moderation = getCallsAPI()?.moderation;
         if (!moderation) {
             return;
         }
         const name = firstName(getState(), p.userId);
+        const where = channelLabel(getState(), channelId);
+        const voice = isVoiceChannel(getState(), channelId);
         try {
             await moderation.setModMuted(channelId, p.userId, muted);
         } catch (e) {
             showToast(statusOf(e) === 403 ? formatMessage({id: 'fusion.calls.toast.modMuteForbidden', defaultMessage: 'You can\'t mute {name}'}, {name}) : formatMessage({id: 'fusion.calls.toast.modMuteFailed', defaultMessage: 'Couldn\'t change {name}\'s mute'}, {name}));
             return;
         }
-        if (muted) {
+        if (muted && voice) {
+            showToast(formatMessage({id: 'fusion.calls.toast.modMutedVoice', defaultMessage: 'Muted {name} in {where}: they can\'t unmute until you allow it'}, {name, where}));
+        } else if (muted) {
             showToast(formatMessage({id: 'fusion.calls.toast.modMuted', defaultMessage: 'Muted {name} for this call: they can\'t unmute until you allow it'}, {name}));
         } else {
             showToast(formatMessage({id: 'fusion.calls.toast.modUnmuted', defaultMessage: '{name} can unmute again'}, {name}));
         }
+    };
+
+    // A moderator deafen (in voice channels) keeps someone from hearing and speaking there until lifted, also in later
+    // calls; the Calls server sends them no audio.
+    const modDeafen = async (p: VoiceParticipant, channelId: string, deafened: boolean) => {
+        const setModDeafened = getCallsAPI()?.moderation?.setModDeafened;
+        if (!setModDeafened) {
+            return;
+        }
+        const name = firstName(getState(), p.userId);
+        const where = channelLabel(getState(), channelId);
+        try {
+            await setModDeafened(channelId, p.userId, deafened);
+        } catch (e) {
+            showToast(statusOf(e) === 403 ? formatMessage({id: 'fusion.calls.toast.modDeafenForbidden', defaultMessage: 'You can\'t deafen {name}'}, {name}) : formatMessage({id: 'fusion.calls.toast.modDeafenFailed', defaultMessage: 'Couldn\'t change {name}\'s deafen'}, {name}));
+            return;
+        }
+        if (deafened) {
+            showToast(formatMessage({id: 'fusion.calls.toast.modDeafened', defaultMessage: 'Deafened {name} in {where}: they hear nothing and can\'t speak until you undeafen them'}, {name, where}));
+        } else {
+            showToast(formatMessage({id: 'fusion.calls.toast.modUndeafened', defaultMessage: '{name} can hear again'}, {name}));
+        }
+    };
+
+    // Moving someone in a voice channel's call to another voice channel: their app switches calls (the server
+    // disconnects them otherwise).
+    const moveTo = async (p: VoiceParticipant, channelId: string, toChannelId: string) => {
+        const move = getCallsAPI()?.moderation?.move;
+        if (!move) {
+            return;
+        }
+        const name = firstName(getState(), p.userId);
+        const where = channelLabel(getState(), toChannelId);
+        try {
+            await move(channelId, p.sessionId, toChannelId);
+        } catch (e) {
+            const status = statusOf(e);
+            if (status === 403) {
+                showToast(formatMessage({id: 'fusion.calls.toast.moveForbidden', defaultMessage: 'You can\'t move {name}'}, {name}));
+            } else if (status === 400) {
+                showToast(formatMessage({id: 'fusion.calls.toast.moveRefused', defaultMessage: '{name} can\'t join {where}'}, {name, where}));
+            } else {
+                showToast(formatMessage({id: 'fusion.calls.toast.moveFailed', defaultMessage: 'Couldn\'t move {name} to {where}'}, {name, where}));
+            }
+            return;
+        }
+        showToast(formatMessage({id: 'fusion.calls.toast.movedOther', defaultMessage: 'Moved {name} to {where}'}, {name, where}));
     };
 
     // Asking to unmute prompts someone muted to unmute themselves; it can't be asked again right away.
@@ -360,6 +422,8 @@ function makeActions(getState: () => GlobalState, intl: IntlShape, openDirect: (
         hostLowerHand,
         hostStopScreen,
         modMute,
+        modDeafen,
+        moveTo,
         askToUnmute,
         makeHost,
         endForEveryone,

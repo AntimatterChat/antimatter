@@ -34,9 +34,23 @@ function VoicePerson({participant: p, onContextMenu}: {participant: VoicePartici
     const {formatMessage} = useIntl();
     const name = useDisplayName(useUser(p.userId));
 
-    // After LIVE and the camera, one audio icon: a moderator mute beats deafened, which beats muted.
+    // After LIVE and the camera, one audio icon: a moderator's deafen beats their mute, which beats deafened, which
+    // beats muted.
     let audio = null;
-    if (p.modMuted) {
+    if (p.modDeafened) {
+        audio = (
+            <span
+                className={am('mod-muted')}
+                title={formatMessage({id: 'fusion.calls.modDeafened', defaultMessage: 'Deafened by a moderator'})}
+                aria-label={formatMessage({id: 'fusion.calls.modDeafened', defaultMessage: 'Deafened by a moderator'})}
+            >
+                <Icon
+                    name='headphones-off'
+                    size='xs'
+                />
+            </span>
+        );
+    } else if (p.modMuted) {
         audio = (
             <span
                 className={am('mod-muted')}

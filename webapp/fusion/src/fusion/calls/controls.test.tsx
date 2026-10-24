@@ -154,6 +154,7 @@ describe('fusion/calls/controls CallControls', () => {
         handRaised: false,
         isHost: false,
         modMuted: false,
+        modDeafened: false,
         otherSharing: false,
         videoAllowed: true,
         screenAllowed: true,
@@ -228,5 +229,20 @@ describe('fusion/calls/controls CallControls', () => {
         // Clicking tells them (see toggleMute) rather than unmuting.
         await userEvent.click(mute);
         expect(mockActions.toggleMute).toHaveBeenCalledWith(my);
+    });
+
+    test('deafened by a moderator, the microphone and the headphones say why', async () => {
+        mockCalls();
+        const my = myCall({voice: true, muted: true, deafened: true, modDeafened: true});
+        renderWithContext(<CallControls my={my}/>);
+
+        const [mute, deafen] = screen.getAllByRole('button', {name: 'A moderator deafened you'});
+        expect(mute.querySelector('use')).toHaveAttribute('href', '#am-i-mic-lock');
+        expect(deafen).toHaveAttribute('title', 'A moderator deafened you');
+        expect(deafen.querySelector('use')).toHaveAttribute('href', '#am-i-headphones-off');
+
+        // Clicking tells them (see toggleDeafen) rather than undeafening.
+        await userEvent.click(deafen);
+        expect(mockActions.toggleDeafen).toHaveBeenCalledWith(my);
     });
 });

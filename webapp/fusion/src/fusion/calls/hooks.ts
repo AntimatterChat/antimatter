@@ -4,8 +4,10 @@
 import {useEffect, useMemo, useState} from 'react';
 import {shallowEqual, useSelector} from 'react-redux';
 
+import type {Channel} from '@mattermost/types/channels';
+
 import {Permissions} from 'mattermost-redux/constants';
-import {getChannel} from 'mattermost-redux/selectors/entities/channels';
+import {getAllChannels, getChannel} from 'mattermost-redux/selectors/entities/channels';
 import {haveIChannelPermission, haveITeamPermission} from 'mattermost-redux/selectors/entities/roles';
 import {getCurrentUser, getCurrentUserId} from 'mattermost-redux/selectors/entities/users';
 import {isSystemAdmin} from 'mattermost-redux/utils/user_utils';
@@ -71,6 +73,9 @@ export type MyCallState = {
     // A moderator muted them: they can't unmute until it's lifted.
     modMuted: boolean;
 
+    // A moderator deafened them (in voice channels): they hear nothing and can't unmute or undeafen until it's lifted.
+    modDeafened: boolean;
+
     // Someone else shares their screen: there's one screen share per call.
     otherSharing: boolean;
     videoAllowed: boolean;
@@ -108,12 +113,13 @@ export function useMyCall(): MyCallState | null {
             me,
             voice,
             muted: flags.muted,
-            deafened: flags.deafened,
+            deafened: flags.deafened || Boolean(me?.modDeafened),
             video: Boolean(me?.video),
             screen,
             handRaised: Boolean(me?.raisedHand),
             isHost: Boolean(me?.isHost),
             modMuted: Boolean(me?.modMuted),
+            modDeafened: Boolean(me?.modDeafened),
             otherSharing: Boolean(flags.sharingSession) && !screen,
             videoAllowed: flags.videoAllowed,
             screenAllowed: flags.screenAllowed,
@@ -229,11 +235,16 @@ export function useUserTalk(userId?: string): Talk | null {
 // admins, the channel's admins, the community's admins, and in voice channels the community's moderators. Calls
 // also keeps anyone from muting someone above them.
 export function canModerateCall(state: GlobalState, channelId: string): boolean {
+    return getCall(state, channelId)?.hostId === getCurrentUserId(state) || canModerateCallsIn(state, channelId);
+}
+
+// canModerateCallsIn is canModerateCall but for being the call's host: the right to moderate any call of the channel.
+export function canModerateCallsIn(state: GlobalState, channelId: string): boolean {
     const channel = getChannel(state, channelId);
     if (!channel) {
         return false;
     }
-    if (isSystemAdmin(getCurrentUser(state)?.roles || '') || getCall(state, channelId)?.hostId === getCurrentUserId(state)) {
+    if (isSystemAdmin(getCurrentUser(state)?.roles || '')) {
         return true;
     }
     if (haveIChannelPermission(state, channel.team_id, channel.id, Permissions.MANAGE_CHANNEL_ROLES)) {
@@ -249,6 +260,26 @@ export function canModerateCall(state: GlobalState, channelId: string): boolean 
 export function useCanModerateCall(channelId: string): boolean {
     useCallsAPIs();
     return useSelector((state: GlobalState) => canModerateCall(state, channelId));
+}
+
+const NO_CHANNELS: Channel[] = [];
+
+// moveTargets lists the voice channels of the community of a voice channel where the user may move someone in its
+// call to, as Calls checks it: those whose calls they moderate (not as a call's host), by name. Calls also checks that
+// the person moved may join it.
+export function moveTargets(state: GlobalState, channelId: string): Channel[] {
+    const channel = getChannel(state, channelId);
+    if (!channel?.team_id || !isVoiceChannel(state, channelId)) {
+        return NO_CHANNELS;
+    }
+    const targets = Object.values(getAllChannels(state)).filter((c) => c.id !== channelId && c.team_id === channel.team_id && c.delete_at === 0 &&
+        isVoiceChannel(state, c.id) && canModerateCallsIn(state, c.id));
+    return targets.length ? targets.sort((a, b) => a.display_name.localeCompare(b.display_name)) : NO_CHANNELS;
+}
+
+export function useMoveTargets(channelId: string): Channel[] {
+    useCallsAPIs();
+    return useSelector((state: GlobalState) => moveTargets(state, channelId), shallowEqual);
 }
 
 // canEndCall tells whether the user may end the call of a channel for everyone, as Calls checks it: its moderators

@@ -33,8 +33,11 @@ describe('getParticipants', () => {
         delete window.antimatterVoiceChannels;
     });
 
-    const callsAPI = (participants: CallsParticipant[], mutes: CallsModMute[]) => {
-        window.antimatterCalls = {version: 1, selectors: {getParticipants: () => participants, getModMutes: () => mutes}} as unknown as AntimatterCallsAPI;
+    const callsAPI = (participants: CallsParticipant[], mutes: CallsModMute[], deafens: CallsModMute[] = []) => {
+        window.antimatterCalls = {
+            version: 1,
+            selectors: {getParticipants: () => participants, getModMutes: () => mutes, getModDeafens: () => deafens},
+        } as unknown as AntimatterCallsAPI;
     };
 
     test('tells who a moderator muted, and stays the same while nothing changes', () => {
@@ -52,7 +55,17 @@ describe('getParticipants', () => {
         callsAPI([], [{userId: 'u1', byUserId: 'mod'}]);
         window.antimatterVoiceChannels = {version: 1, selectors: {isVoiceChannel: () => true, getParticipants: () => voice}} as unknown as AntimatterVoiceChannelsAPI;
 
-        expect(getParticipants(state, 'room')).toEqual([{sessionId: 's1', userId: 'u1', deafened: true, modMuted: true}]);
+        expect(getParticipants(state, 'room')).toEqual([{sessionId: 's1', userId: 'u1', deafened: true, modMuted: true, modDeafened: false}]);
+    });
+
+    test('tells who a moderator deafened: they show deafened', () => {
+        const voice = [{sessionId: 's1', userId: 'u1', deafened: false}, {sessionId: 's2', userId: 'u2', deafened: false}] as VoiceParticipant[];
+        callsAPI([], [], [{userId: 'u2', byUserId: 'mod'}]);
+        window.antimatterVoiceChannels = {version: 1, selectors: {isVoiceChannel: () => true, getParticipants: () => voice}} as unknown as AntimatterVoiceChannelsAPI;
+
+        const result = getParticipants(state, 'room');
+        expect(result.map((p) => [p.userId, p.deafened, p.modDeafened, p.modMuted])).toEqual([['u1', false, false, false], ['u2', true, true, false]]);
+        expect(getParticipants(state, 'room')).toBe(result);
     });
 
     test('older Calls versions have no moderator mutes', () => {
@@ -60,5 +73,6 @@ describe('getParticipants', () => {
         window.antimatterCalls = {version: 1, selectors: {getParticipants: () => list}} as unknown as AntimatterCallsAPI;
 
         expect(getParticipants(state, 'channel')[0].modMuted).toBe(false);
+        expect(getParticipants(state, 'channel')[0].modDeafened).toBe(false);
     });
 });

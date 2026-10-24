@@ -7,7 +7,7 @@ import {TestHelper} from 'utils/test_helper';
 
 import type {GlobalState} from 'types/store';
 
-import {canEndCall, canMakeHost} from './hooks';
+import {canEndCall, canMakeHost, moveTargets} from './hooks';
 import type {AntimatterCallsAPI, CallsCall} from './plugin_api/calls_public_api';
 import type {AntimatterVoiceChannelsAPI} from './plugin_api/voice_channels_public_api';
 
@@ -57,5 +57,49 @@ describe('fusion/calls/hooks: ending a call and making someone host', () => {
     test('there is nothing to end without a call', () => {
         expect(canEndCall(stateFor('admin', 'system_admin system_user'), 'other')).toBe(false);
         expect(canMakeHost(stateFor('admin', 'system_admin system_user'), 'other')).toBe(false);
+    });
+});
+
+// Where the call UI offers to move someone in a voice channel's call to: the other voice channels of the community whose
+// calls the user moderates (Calls checks the same).
+describe('fusion/calls/hooks: moving someone to another voice channel', () => {
+    const voice = new Set(['room', 'gaming', 'music', 'elsewhere', 'old']);
+    const stateFor = (userId: string, roles = 'system_user'): GlobalState => configureStore({
+        entities: {
+            users: {currentUserId: userId, profiles: {[userId]: TestHelper.getUserMock({id: userId, roles})}},
+            channels: {
+                channels: {
+                    room: TestHelper.getChannelMock({id: 'room', team_id: 'team', type: 'O', display_name: 'Lobby'}),
+                    music: TestHelper.getChannelMock({id: 'music', team_id: 'team', type: 'O', display_name: 'Music'}),
+                    gaming: TestHelper.getChannelMock({id: 'gaming', team_id: 'team', type: 'P', display_name: 'Gaming'}),
+                    text: TestHelper.getChannelMock({id: 'text', team_id: 'team', type: 'O', display_name: 'Text'}),
+                    old: TestHelper.getChannelMock({id: 'old', team_id: 'team', type: 'O', display_name: 'Old', delete_at: 1}),
+                    elsewhere: TestHelper.getChannelMock({id: 'elsewhere', team_id: 'other', type: 'O', display_name: 'Elsewhere'}),
+                },
+            },
+            teams: {currentTeamId: 'team', teams: {team: TestHelper.getTeamMock({id: 'team'})}},
+        },
+    } as never).getState();
+
+    beforeEach(() => {
+        window.antimatterCalls = {version: 1, selectors: {getCall: () => null}} as unknown as AntimatterCallsAPI;
+        window.antimatterVoiceChannels = {version: 1, selectors: {isVoiceChannel: (_: unknown, id: string) => voice.has(id)}} as unknown as AntimatterVoiceChannelsAPI;
+    });
+    afterEach(() => {
+        delete window.antimatterCalls;
+        delete window.antimatterVoiceChannels;
+    });
+
+    test('a system admin moves people to the other open voice channels of the community, by name', () => {
+        expect(moveTargets(stateFor('admin', 'system_admin system_user'), 'room').map((c) => c.id)).toEqual(['gaming', 'music']);
+    });
+
+    test('nobody else, without the rights in those channels', () => {
+        expect(moveTargets(stateFor('someone'), 'room')).toEqual([]);
+    });
+
+    test('only from a voice channel', () => {
+        expect(moveTargets(stateFor('admin', 'system_admin system_user'), 'text')).toEqual([]);
+        expect(moveTargets(stateFor('admin', 'system_admin system_user'), 'unknown')).toEqual([]);
     });
 });

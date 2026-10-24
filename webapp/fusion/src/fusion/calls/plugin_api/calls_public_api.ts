@@ -33,9 +33,12 @@ export type CallsParticipant = {
 
     // A moderator muted them for the call: they can't unmute until it's lifted.
     modMuted: boolean;
+
+    // A moderator deafened them (in voice channels): they hear nothing and can't unmute until it's lifted.
+    modDeafened: boolean;
 };
 
-// Someone muted by a moderator in the call of a channel, and by whom.
+// Someone muted (or deafened) by a moderator in the call of a channel, and by whom.
 export type CallsModMute = {
     userId: string;
     byUserId: string;
@@ -45,6 +48,14 @@ export type CallsModMute = {
 export type CallsUnmuteRequest = {
     channelId: string;
     sessionId: string;
+    byUserId: string;
+};
+
+// A moderator moves the user from the call of a voice channel to another voice channel.
+export type CallsMoveRequest = {
+    channelId: string;
+    sessionId: string;
+    toChannelId: string;
     byUserId: string;
 };
 
@@ -117,8 +128,8 @@ export type CallsErrorEvent =
     // The call ended because of an error (Calls shows the error modal).
     {kind: 'call-error'; error: Error} |
 
-    // The user can't unmute: a moderator muted them for the call.
-    {kind: 'mod-muted'} |
+    // The user can't unmute: a moderator muted them for the call, or deafened them.
+    {kind: 'mod-muted' | 'mod-deafened'} |
 
     // Any other error of the calls client.
     {kind: 'other'; error: Error};
@@ -179,7 +190,7 @@ export type CallsCaption = {
     captionId: string;
 };
 
-export type CallsEvent = 'change' | 'error' | 'unmute-request';
+export type CallsEvent = 'change' | 'error' | 'unmute-request' | 'move';
 
 export type AntimatterCallsAPI = {
     version: 1;
@@ -219,6 +230,9 @@ export type AntimatterCallsAPI = {
 
         // Who a moderator muted in the call of a channel.
         getModMutes(state: CallsGlobalState, channelId: string): CallsModMute[];
+
+        // Who a moderator deafened in the call of a voice channel. Optional: older versions lack it.
+        getModDeafens?(state: CallsGlobalState, channelId: string): CallsModMute[];
     };
 
     // Joins (or starts) the call of a channel, through the same checks as Calls' own call button.
@@ -268,11 +282,13 @@ export type AntimatterCallsAPI = {
     // 'change' fires when the call of this window starts connecting, connects or closes, when
     // its local or remote video or screen streams change, and on mute, hand and device changes:
     // re-read the getters then. 'error' gets a CallsErrorEvent. 'unmute-request' fires when a
-    // moderator asks the user, muted in the call of this window, to unmute. Returns the
-    // unsubscribe function.
+    // moderator asks the user, muted in the call of this window, to unmute. 'move' fires when a
+    // moderator moves the user to another voice channel: Calls switches to its call itself, the UI
+    // follows. Returns the unsubscribe function.
     on(event: 'change', cb: () => void): () => void;
     on(event: 'error', cb: (event: CallsErrorEvent) => void): () => void;
     on(event: 'unmute-request', cb: (request: CallsUnmuteRequest) => void): () => void;
+    on(event: 'move', cb: (request: CallsMoveRequest) => void): () => void;
 
     // Host controls on the call of this window (or of the desktop app's call window), or on the call of the given
     // channel, for the call's moderators.
@@ -283,8 +299,9 @@ export type AntimatterCallsAPI = {
         stopScreen(sessionId: string, channelId?: string): void;
     };
 
-    // Moderation of a channel's call (its host, channel and community admins, system admins). They reject with an
-    // Error carrying the HTTP status (e.g. 429 when asked again too soon, 403 when not allowed).
+    // Moderation of a channel's call (its host, channel and community admins, system admins, and in voice channels the
+    // community's moderators). They reject with an Error carrying the HTTP status (e.g. 429 when asked again too soon,
+    // 403 when not allowed, 400 when it can't be done, as moving someone to a channel they can't join).
     moderation: {
 
         // Mutes someone for the call, until lifted: they can't unmute, also after leaving and joining again.
@@ -292,6 +309,12 @@ export type AntimatterCallsAPI = {
 
         // Asks a muted participant to unmute themselves.
         askToUnmute(channelId: string, sessionId: string): Promise<void>;
+
+        // In voice channels: deafens someone until lifted (they hear nothing and can't unmute, also after leaving
+        // and joining again), and moves someone to another voice channel of the community (their app switches
+        // calls; they're disconnected otherwise). Optional: older versions lack them.
+        setModDeafened?(channelId: string, userId: string, deafened: boolean): Promise<void>;
+        move?(channelId: string, sessionId: string, toChannelId: string): Promise<void>;
     };
 
     // Starts or stops the transcription of the call of this window (host only). While it runs, each participant's

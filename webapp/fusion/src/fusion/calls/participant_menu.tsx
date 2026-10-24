@@ -6,7 +6,7 @@ import {useIntl} from 'react-intl';
 import {useStore} from 'react-redux';
 
 import {Popover} from 'fusion/components/layer';
-import {MenuHeading, MenuItem, MenuSeparator} from 'fusion/components/menu';
+import {Flyout, MenuHeading, MenuItem, MenuSeparator} from 'fusion/components/menu';
 import {useDisplayName, useUser} from 'fusion/hooks/users';
 import UserPopover from 'fusion/popovers/user_popover';
 import {am} from 'fusion/utils/class_names';
@@ -18,7 +18,7 @@ import {goToChannel, useCallActions, useChannelLabel} from './actions';
 import {getCallsAPI} from './calls_api';
 import type {VoiceParticipant} from './calls_api';
 import {canSetVolume, getUserVolume, setUserVolume} from './extras';
-import {useCanMakeHost, useCanModerateCall, useIsVoiceChannel} from './hooks';
+import {useCanMakeHost, useCanModerateCall, useIsVoiceChannel, useMoveTargets} from './hooks';
 
 type MenuProps = {
     participant: VoiceParticipant;
@@ -30,7 +30,10 @@ type MenuProps = {
 
 // ParticipantMenu is the mockup's user context menu for someone in a call: profile, message, call, copy their
 // username, and for the call's host and moderators the host controls Calls offers, asking them to unmute, and a
-// moderator mute, which they can't lift themselves. The host (and system admins) can also make them the host.
+// moderator mute, which they can't lift themselves. In voice channels, moderators can also deafen them (they hear
+// nothing and can't speak until undeafened), and move them to another voice channel of the community; the mute and
+// the deafen last there until lifted. Disconnecting them comes last. The host (and system admins) can also make them
+// the host.
 function ParticipantMenu({participant: p, channelId, point, onProfile, onClose}: MenuProps) {
     const {formatMessage} = useIntl();
     const store = useStore<GlobalState>();
@@ -43,13 +46,27 @@ function ParticipantMenu({participant: p, channelId, point, onProfile, onClose}:
 
     // The host passes it on to someone in the call (system admins can too); bots can't be hosts.
     const makeHost = useCanMakeHost(channelId) && !p.isMe && !p.isHost && !user?.is_bot;
-    const moderation = Boolean(getCallsAPI()?.moderation);
+    const calls = getCallsAPI();
+    const moderation = Boolean(calls?.moderation);
+    const deafen = voice && Boolean(calls?.moderation?.setModDeafened);
+    const targets = useMoveTargets(voice && moderate && calls?.moderation?.move ? channelId : '');
     const [volume, setVolume] = useState(() => getUserVolume(p.userId));
 
     const run = (action: () => void) => () => {
         onClose();
         action();
     };
+
+    // In voice channels the moderator mute lasts until lifted; elsewhere, the call.
+    let modMuteLabel = formatMessage({id: 'fusion.calls.menu.liftModMute', defaultMessage: 'Allow to unmute'});
+    let modMuteSub: string | undefined;
+    if (!p.modMuted && voice) {
+        modMuteLabel = formatMessage({id: 'fusion.calls.menu.modMuteVoice', defaultMessage: 'Mute in this channel'});
+        modMuteSub = formatMessage({id: 'fusion.calls.menu.modMuteVoiceSub', defaultMessage: 'They stay muted here until you allow it, even in later calls'});
+    } else if (!p.modMuted) {
+        modMuteLabel = formatMessage({id: 'fusion.calls.menu.modMute', defaultMessage: 'Mute for this call'});
+        modMuteSub = formatMessage({id: 'fusion.calls.menu.modMuteSub', defaultMessage: 'They stay muted until you allow it, even if they rejoin'});
+    }
 
     return (
         <Popover
@@ -114,7 +131,7 @@ function ParticipantMenu({participant: p, channelId, point, onProfile, onClose}:
                     <MenuSeparator/>
                     <MenuHeading>{formatMessage({id: 'fusion.calls.menu.in', defaultMessage: 'In {where}'}, {where})}</MenuHeading>
                     {p.muted ? (
-                        moderation && !p.modMuted && (
+                        moderation && !p.modMuted && !p.modDeafened && (
                             <MenuItem
                                 icon='mic'
                                 label={formatMessage({id: 'fusion.calls.menu.askUnmute', defaultMessage: 'Ask to unmute'})}
@@ -131,10 +148,34 @@ function ParticipantMenu({participant: p, channelId, point, onProfile, onClose}:
                     {moderation && (
                         <MenuItem
                             icon='mic-lock'
-                            label={p.modMuted ? formatMessage({id: 'fusion.calls.menu.liftModMute', defaultMessage: 'Allow to unmute'}) : formatMessage({id: 'fusion.calls.menu.modMute', defaultMessage: 'Mute for this call'})}
-                            sub={p.modMuted ? undefined : formatMessage({id: 'fusion.calls.menu.modMuteSub', defaultMessage: 'They stay muted until you allow it, even if they rejoin'})}
+                            label={modMuteLabel}
+                            sub={modMuteSub}
                             onClick={run(() => actions.modMute(p, channelId, !p.modMuted))}
                         />
+                    )}
+                    {deafen && (
+                        <MenuItem
+                            icon={p.modDeafened ? 'headphones' : 'headphones-off'}
+                            label={p.modDeafened ? formatMessage({id: 'fusion.calls.menu.modUndeafen', defaultMessage: 'Undeafen'}) : formatMessage({id: 'fusion.calls.menu.modDeafen', defaultMessage: 'Deafen'})}
+                            sub={p.modDeafened ? undefined : formatMessage({id: 'fusion.calls.menu.modDeafenSub', defaultMessage: 'They hear nothing and can\'t speak here until you undeafen them'})}
+                            onClick={run(() => actions.modDeafen(p, channelId, !p.modDeafened))}
+                        />
+                    )}
+                    {targets.length > 0 && (
+                        <Flyout
+                            icon='speaker'
+                            label={formatMessage({id: 'fusion.calls.menu.moveTo', defaultMessage: 'Move to'})}
+                            menuLabel={formatMessage({id: 'fusion.calls.menu.moveToLabel', defaultMessage: 'Move to a voice channel'})}
+                        >
+                            {targets.map((target) => (
+                                <MenuItem
+                                    key={target.id}
+                                    icon='speaker'
+                                    label={target.display_name}
+                                    onClick={run(() => actions.moveTo(p, channelId, target.id))}
+                                />
+                            ))}
+                        </Flyout>
                     )}
                     {makeHost && (
                         <MenuItem

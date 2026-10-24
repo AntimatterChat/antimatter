@@ -37,12 +37,14 @@ export function useToggleLabels(my: MyCallState | null) {
         screen = formatMessage({id: 'fusion.calls.someoneSharing', defaultMessage: 'Someone else is sharing their screen'});
     }
     let muteLabel = my?.muted ? formatMessage({id: 'fusion.calls.unmute', defaultMessage: 'Unmute'}) : formatMessage({id: 'fusion.calls.mute', defaultMessage: 'Mute'});
-    if (my?.modMuted) {
+    if (my?.modDeafened) {
+        muteLabel = formatMessage({id: 'fusion.calls.modDeafenedYou', defaultMessage: 'A moderator deafened you'});
+    } else if (my?.modMuted) {
         muteLabel = formatMessage({id: 'fusion.calls.modMutedYou', defaultMessage: 'A moderator muted you'});
     }
     return {
         mute: muteLabel,
-        deafen: formatMessage({id: 'fusion.calls.deafen', defaultMessage: 'Deafen'}),
+        deafen: my?.modDeafened ? formatMessage({id: 'fusion.calls.modDeafenedYou', defaultMessage: 'A moderator deafened you'}) : formatMessage({id: 'fusion.calls.deafen', defaultMessage: 'Deafen'}),
         video: my?.videoAllowed === false ? formatMessage({id: 'fusion.calls.cameraNotAllowed', defaultMessage: 'Cameras are turned off in this call'}) : formatMessage({id: 'fusion.calls.camera', defaultMessage: 'Camera'}),
         screen,
         hand: my?.handRaised ? formatMessage({id: 'fusion.calls.lowerHand', defaultMessage: 'Lower hand'}) : formatMessage({id: 'fusion.calls.raiseHand', defaultMessage: 'Raise hand'}),
@@ -53,9 +55,9 @@ export function useToggleLabels(my: MyCallState | null) {
     };
 }
 
-// muteIcon is the microphone of the mute buttons: locked when a moderator muted the user.
+// muteIcon is the microphone of the mute buttons: locked when a moderator muted (or deafened) the user.
 export function muteIcon(my: MyCallState): 'mic' | 'mic-off' | 'mic-lock' {
-    if (my.modMuted) {
+    if (my.modMuted || my.modDeafened) {
         return 'mic-lock';
     }
     return my.muted ? 'mic-off' : 'mic';
@@ -296,7 +298,7 @@ export default function CallControls({my, withPopout = false}: Props) {
                         className={am('round', {off: my.muted})}
                         aria-label={labels.mute}
                         aria-pressed={my.muted}
-                        title={my.modMuted ? labels.mute : undefined}
+                        title={my.modMuted || my.modDeafened ? labels.mute : undefined}
                         onClick={() => actions.toggleMute(my)}
                     >
                         <Icon name={muteIcon(my)}/>
@@ -306,6 +308,7 @@ export default function CallControls({my, withPopout = false}: Props) {
                             className={am('round', {off: my.deafened})}
                             aria-label={labels.deafen}
                             aria-pressed={my.deafened}
+                            title={my.modDeafened ? labels.deafen : undefined}
                             onClick={() => actions.toggleDeafen(my)}
                         >
                             <Icon name={my.deafened ? 'headphones-off' : 'headphones'}/>
