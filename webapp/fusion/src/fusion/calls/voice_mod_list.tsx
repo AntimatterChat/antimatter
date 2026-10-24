@@ -19,9 +19,6 @@ import {getCallsAPI, getModDeafens, getModMutes, isVoiceChannel, useCallsAPIs} f
 import {canModerateCallsIn} from './hooks';
 import type {CallsLastingMute} from './plugin_api/calls_public_api';
 
-// The voice channels app, whose settings tab is the voice channel's own section of the channel settings.
-export const VOICE_CHANNELS_PLUGIN_ID = 'com.antimatterchat.voice-channels';
-
 // canListVoiceMutes tells whether the user sees the lasting mutes and deafens of a voice channel in its settings, as
 // Calls lets them list them: those who may moderate its calls (not as a call's host).
 export function canListVoiceMutes(state: GlobalState, channelId: string): boolean {
@@ -104,7 +101,7 @@ function MuteRow({entry, channelId, onLifted}: {entry: CallsLastingMute; channel
     );
 }
 
-// VoiceModerationSection is the part of a voice channel's settings that lists who a moderator muted or deafened
+// VoiceModerationSection is the voice channel's settings tab that lists who a moderator muted or deafened
 // there (it lasts until lifted, also while they're away), who did and since when, with a button to lift each, for
 // those who may moderate the channel's calls (see canListVoiceMutes). Lifting follows the participant menu's rule:
 // only who ranks at least as high as whoever gave it; the others' buttons are disabled, with why.

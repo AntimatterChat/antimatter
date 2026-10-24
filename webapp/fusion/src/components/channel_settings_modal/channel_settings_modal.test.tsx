@@ -116,8 +116,6 @@ jest.mock('./channel_settings_configuration_tab', () => {
 
 jest.mock('fusion/calls/voice_mod_list', () => ({
     __esModule: true,
-    VOICE_CHANNELS_PLUGIN_ID: 'com.antimatterchat.voice-channels',
-    canListVoiceMutes: () => mockCanListVoiceMutes,
     useCanListVoiceMutes: () => mockCanListVoiceMutes,
     default: () => <div data-testid='voice-mod-list'>{'Muted and deafened'}</div>,
 }));
@@ -762,47 +760,24 @@ describe('ChannelSettingsModal', () => {
             expect(screen.queryByRole('tab', {name: /plugin tab/i})).not.toBeInTheDocument();
         });
 
-        describe('the voice channel\'s own tab', () => {
-            const voiceTab = (shouldRender: boolean) => makePluginTabRegistration({
-                id: 'voice-tab',
-                pluginId: 'com.antimatterchat.voice-channels',
-                uiName: 'Voice',
-                shouldRender: jest.fn(() => shouldRender),
-            });
-            const openVoiceTab = async (registration: ChannelSettingsTabComponent) => {
-                renderWithContext(<ChannelSettingsModal {...baseProps}/>, makeTestState([registration]));
-                await userEvent.click(await screen.findByRole('tab', {name: /voice/i}));
-            };
-
-            it('shows its moderators who is muted or deafened there, under the app\'s settings', async () => {
+        describe('the voice channel\'s Muted and deafened tab', () => {
+            it('shows its moderators who is muted or deafened there', async () => {
                 mockCanListVoiceMutes = true;
-                await openVoiceTab(voiceTab(true));
-                expect(screen.getByText('Plugin Tab Content')).toBeInTheDocument();
+                renderWithContext(<ChannelSettingsModal {...baseProps}/>, makeTestState());
+                await userEvent.click(await screen.findByRole('tab', {name: 'Muted and deafened'}));
                 expect(screen.getByTestId('voice-mod-list')).toBeInTheDocument();
             });
 
-            it('shows moderators who can\'t change the app\'s settings the list only', async () => {
-                mockCanListVoiceMutes = true;
-                await openVoiceTab(voiceTab(false));
-                expect(screen.queryByText('Plugin Tab Content')).not.toBeInTheDocument();
-                expect(screen.getByTestId('voice-mod-list')).toBeInTheDocument();
-            });
-
-            it('shows the others no list, and no tab without the app\'s settings either', async () => {
-                await openVoiceTab(voiceTab(true));
-                expect(screen.getByText('Plugin Tab Content')).toBeInTheDocument();
-                expect(screen.queryByTestId('voice-mod-list')).not.toBeInTheDocument();
-            });
-
-            it('has no tab for those who neither moderate nor change the app\'s settings', async () => {
-                renderWithContext(<ChannelSettingsModal {...baseProps}/>, makeTestState([voiceTab(false)]));
+            it('isn\'t there for the others', async () => {
+                renderWithContext(<ChannelSettingsModal {...baseProps}/>, makeTestState());
                 await waitFor(() => {
                     expect(screen.getByRole('tablist')).toBeInTheDocument();
                 });
-                expect(screen.queryByRole('tab', {name: /voice/i})).not.toBeInTheDocument();
+                expect(screen.queryByRole('tab', {name: 'Muted and deafened'})).not.toBeInTheDocument();
+                expect(screen.queryByTestId('voice-mod-list')).not.toBeInTheDocument();
             });
 
-            it('leaves other apps\' tabs to their own rule', async () => {
+            it('leaves the apps\' tabs to their own rule', async () => {
                 mockCanListVoiceMutes = true;
                 renderWithContext(<ChannelSettingsModal {...baseProps}/>, makeTestState([makePluginTabRegistration({shouldRender: jest.fn(() => false)})]));
                 await waitFor(() => {
