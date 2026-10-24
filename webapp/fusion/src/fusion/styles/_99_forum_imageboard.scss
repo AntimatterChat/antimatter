@@ -1,0 +1,101 @@
+@use 'breakpoints' as *;
+
+// The forum's image board view (fusion/forum/imageboard_view.tsx) — design §4.4. Shares the topics view's bar,
+// search, filters and New topic form styles (_99_forum_topics.scss); this is only the card grid and its cards.
+// Light and dark themes come from the shared tokens (_00_tokens.scss); nothing here is colour-coded on its own.
+
+:is(.am-app, .am-layer) .am-board-view {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 0;
+  flex: 1;
+  padding: 12px 16px 16px;
+  overflow-y: auto;
+}
+
+:is(.am-app, .am-layer) .am-board-card {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 14px;
+  padding: 14px;
+  border: 1px solid var(--am-line);
+  border-radius: 10px;
+  background: var(--am-side);
+}
+:is(.am-app, .am-layer) .am-board-card.am-no-image { grid-template-columns: 1fr; }
+
+:is(.am-app, .am-layer) .am-board-thumb { width: 100%; height: 140px; border-radius: 8px; object-fit: cover; }
+
+:is(.am-app, .am-layer) .am-board-main { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+:is(.am-app, .am-layer) .am-board-title {
+  align-self: flex-start;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: 600 16px var(--am-font-display);
+  color: var(--am-text);
+  text-align: left;
+  cursor: pointer;
+}
+:is(.am-app, .am-layer) .am-board-title:hover { text-decoration: underline; }
+
+:is(.am-app, .am-layer) .am-board-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: var(--am-muted);
+}
+:is(.am-app, .am-layer) .am-board-id { color: var(--am-faint); }
+:is(.am-app, .am-layer) .am-board-meta .am-board-vote { margin-left: auto; }
+
+:is(.am-app, .am-layer) .am-board-body {
+  font-size: 13px;
+  color: var(--am-text-2);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 6;
+  overflow: hidden;
+}
+
+:is(.am-app, .am-layer) .am-board-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 12px;
+  color: var(--am-muted);
+}
+
+:is(.am-app, .am-layer) .am-board-replies {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 4px;
+  padding-left: 10px;
+  border-left: 2px solid var(--am-line);
+}
+:is(.am-app, .am-layer) .am-board-reply {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--am-muted);
+  min-width: 0;
+}
+:is(.am-app, .am-layer) .am-board-reply-thumb { width: 28px; height: 28px; border-radius: 6px; object-fit: cover; flex: none; }
+:is(.am-app, .am-layer) .am-board-reply-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+
+// The New topic form, image board view (design §4.4: "the same form leads with the attachment area"): no layout
+// change beyond the DOM order (new_topic_form.tsx), but the composer gets a little room to breathe when it's first.
+:is(.am-app, .am-layer) .am-new-topic.am-lead-attachment { gap: 10px; }
+
+// Phone width (design §4.4, §4.1's own rule: no horizontal scroll, controls wrap or stack): already a single
+// column of cards; only the per-card grid (image beside text) stacks.
+@media #{$phone} {
+  :is(.am-app, .am-layer) .am-board-card { grid-template-columns: 1fr; }
+  :is(.am-app, .am-layer) .am-board-thumb { height: 180px; }
+  :is(.am-app, .am-layer) .am-board-meta .am-board-vote { margin-left: 0; }
+}

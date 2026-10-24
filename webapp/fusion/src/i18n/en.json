@@ -26151,9 +26151,25 @@
     "defaultMessage": "Ask a question",
     "description": "Button that opens the New topic form in a Q&A forum."
   },
+  "fusion.forum.boardCounts": {
+    "defaultMessage": "{replies, plural, one {# reply} other {# replies}}, {images, plural, one {# image} other {# images}}",
+    "description": "An image board card: its reply and image counts (design §4.4's mockup: \"34 replies, 12 images\")."
+  },
+  "fusion.forum.boardOpenTopic": {
+    "defaultMessage": "Open topic",
+    "description": "Button on an image board card that opens the topic page."
+  },
+  "fusion.forum.boardTopicId": {
+    "defaultMessage": "Topic {id}",
+    "description": "An image board card: its topic's short id, shown for reference only (design §4.4's mockup: \"#a1f3\")."
+  },
   "fusion.forum.bodyPlaceholder": {
     "defaultMessage": "Write the first post…",
     "description": "Placeholder of the New topic form's message box."
+  },
+  "fusion.forum.bodyPlaceholderBoard": {
+    "defaultMessage": "Add images, then describe them…",
+    "description": "Placeholder of the New topic form's message box, image board view: it leads with the attachment area (design §4.4)."
   },
   "fusion.forum.cancelTopic": {
     "defaultMessage": "Cancel",
@@ -26206,6 +26222,10 @@
   "fusion.forum.noTopics": {
     "defaultMessage": "No topics yet.",
     "description": "The forum topics view's empty state, no search in progress."
+  },
+  "fusion.forum.noTopicsBoard": {
+    "defaultMessage": "No topics yet.",
+    "description": "The image board view's empty state."
   },
   "fusion.forum.questionPlaceholder": {
     "defaultMessage": "What do you want to ask?",
