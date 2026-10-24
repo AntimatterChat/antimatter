@@ -50,6 +50,13 @@ afterEach(() => {
 const row = (id: string) => document.querySelector(`[data-link="${id}"]`) as HTMLElement;
 
 describe('InviteLinksDialog', () => {
+    test('is wide, like the community settings modal\'s other full-pane dialogs', async () => {
+        jest.spyOn(Client4, 'getTeamInviteLinks').mockResolvedValue([]);
+        renderWithContext(<InviteLinksDialog onExited={jest.fn()}/>, state);
+
+        expect(await screen.findByRole('dialog', {name: 'Invite links'})).toHaveClass('am-wide');
+    });
+
     test('lists the links, with their uses and their end; ended and used-up ones can only be revoked', async () => {
         jest.spyOn(Client4, 'getTeamInviteLinks').mockResolvedValue([
             link('open'),

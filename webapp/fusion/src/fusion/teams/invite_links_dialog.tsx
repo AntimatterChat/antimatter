@@ -177,6 +177,7 @@ export default function InviteLinksDialog({onExited}: {onExited: () => void}) {
             onClose={onExited}
             onSubmit={create}
             small={false}
+            className={am('wide')}
         >
             <div className={am('pane', 'invite-links')}>
                 <h2>{title}</h2>
