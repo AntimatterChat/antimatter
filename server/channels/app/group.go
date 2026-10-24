@@ -153,10 +153,12 @@ func (a *App) publishReceivedGroupEvent(group *model.Group) *model.AppError {
 		return model.NewAppError("publishReceivedGroupEvent", "api.marshal_error", nil, "", http.StatusInternalServerError).Wrap(jsonErr)
 	}
 
-	messageWs := model.NewWebSocketEvent(model.WebsocketEventReceivedGroup, "", "", "", nil, "")
+	// Antimatter: a community's roles and teams go to that community's members only (who holds which role is the
+	// community's business); server-wide groups, which everyone sees, to everyone.
+	messageWs := model.NewWebSocketEvent(model.WebsocketEventReceivedGroup, group.TeamId, "", "", nil, "")
 	messageWs.Add("group", string(groupJSON))
 
-	// Antimatter: a community's roles are everyone's to see, its default role (not mentioned) too.
+	// Antimatter: a community's roles are all its members' to see, its default role (not mentioned) too.
 	if !group.AllowReference && !group.BelongsToTeam() {
 		restrictBroadcastToGroupReaders(messageWs.GetBroadcast())
 	}
@@ -965,8 +967,9 @@ func (a *App) publishGroupMemberEvent(eventName model.WebsocketEventType, groupM
 	return nil
 }
 
-// publishCustomGroupMembers tells everyone who's in a custom group now: Antimatter shows them all as roles and teams
-// (colours, badges, the member list), where Mattermost only told the people who joined or left.
+// publishCustomGroupMembers tells who's in a custom group now: Antimatter shows them all as roles and teams (colours,
+// badges, the member list), where Mattermost only told the people who joined or left. A community's roles and teams
+// go to that community's members only (see publishReceivedGroupEvent).
 func (a *App) publishCustomGroupMembers(groupID string) {
 	group, appErr := a.GetGroup(groupID, &model.GetGroupOpts{IncludeMemberIDs: true}, nil)
 	if appErr != nil || group.Source != model.GroupSourceCustom {

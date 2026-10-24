@@ -160,6 +160,30 @@ func TestAntimatterLifecycles(t *testing.T) {
 		assert.Equal(t, http.StatusForbidden, resp.StatusCode)
 	})
 
+	t.Run("a community's roles and teams are for those who see the community", func(t *testing.T) {
+		role := newRole(t, team.Id, "seen", th.BasicUser.Id)
+		outsider := th.CreateUser(t)
+		client := loggedIn(t, outsider)
+
+		_, resp, err := client.GetGroup(context.Background(), role.Id, "")
+		require.Error(t, err)
+		CheckForbiddenStatus(t, resp)
+		_, resp, err = client.GetGroupMembers(context.Background(), role.Id)
+		require.Error(t, err)
+		CheckForbiddenStatus(t, resp)
+		listResp, err := client.DoAPIGet(context.Background(), "/groups?in_team_id="+team.Id, "")
+		require.Error(t, err)
+		CheckForbiddenStatus(t, model.BuildResponse(listResp))
+		if listResp != nil {
+			listResp.Body.Close()
+		}
+
+		_, _, err = th.Client.GetGroup(context.Background(), role.Id, "")
+		require.NoError(t, err, "the community's members see it")
+		_, _, err = th.Client.GetGroupMembers(context.Background(), role.Id)
+		require.NoError(t, err)
+	})
+
 	t.Run("a role of one team can't be used in another team's channel", func(t *testing.T) {
 		otherTeam := th.CreateTeam(t)
 		foreign := newRole(t, otherTeam.Id, "foreign")

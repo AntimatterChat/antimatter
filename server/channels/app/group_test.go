@@ -576,6 +576,32 @@ func TestPublishReceivedGroupEvent(t *testing.T) {
 		}
 	})
 
+	// Antimatter: who holds which role in a community is for its members, not for everyone connected.
+	t.Run("a community's group goes to that community's members only", func(t *testing.T) {
+		teamID := model.NewId()
+		ev := capturePublishedGroup(t, func() {
+			require.Nil(t, th.App.publishReceivedGroupEvent(&model.Group{
+				Id:             model.NewId(),
+				DisplayName:    "dn_" + model.NewId(),
+				Source:         model.GroupSourceCustom,
+				AllowReference: true,
+				TeamId:         teamID,
+			}))
+		})
+		assert.Equal(t, teamID, ev.GetBroadcast().TeamId)
+		assertBroadcastUnrestricted(t, ev)
+
+		ev = capturePublishedGroup(t, func() {
+			require.Nil(t, th.App.publishReceivedGroupEvent(&model.Group{
+				Id:             model.NewId(),
+				DisplayName:    "dn_" + model.NewId(),
+				Source:         model.GroupSourceCustom,
+				AllowReference: true,
+			}))
+		})
+		assert.Empty(t, ev.GetBroadcast().TeamId, "a server-wide group goes to everyone")
+	})
+
 	t.Run("gate is applied through the real mutation paths", func(t *testing.T) {
 		newGroupFixture := func(t *testing.T, allowReference bool) *model.Group {
 			t.Helper()

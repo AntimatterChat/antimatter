@@ -108,6 +108,15 @@ func (api *API) InitGroup() {
 		api.APISessionRequired(deleteGroupMembers)).Methods(http.MethodDelete)
 }
 
+// checkCommunityGroupVisible refuses the roles and teams of a community (Mattermost team) the session can't see: who
+// holds which role, and which teams there are, is the community's business.
+func checkCommunityGroupVisible(c *Context, group *model.Group) *model.AppError {
+	if group.TeamId == "" || c.App.SessionHasPermissionToTeam(*c.AppContext.Session(), group.TeamId, model.PermissionViewTeam) {
+		return nil
+	}
+	return model.MakePermissionError(c.AppContext.Session(), []*model.Permission{model.PermissionViewTeam})
+}
+
 func getGroup(c *Context, w http.ResponseWriter, r *http.Request) {
 	c.RequireGroupId()
 	if c.Err != nil {
@@ -134,6 +143,11 @@ func getGroup(c *Context, w http.ResponseWriter, r *http.Request) {
 			c.SetPermissionError(model.PermissionSysconsoleReadUserManagementGroups)
 			return
 		}
+	}
+
+	if appErr := checkCommunityGroupVisible(c, group); appErr != nil {
+		c.Err = appErr
+		return
 	}
 
 	if appErr := configuredForGroupBySource(c.App, group.Source); appErr != nil {
@@ -773,6 +787,16 @@ func getGroupMembers(c *Context, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	group, appErr := c.App.GetGroup(c.Params.GroupId, nil, nil)
+	if appErr != nil {
+		c.Err = appErr
+		return
+	}
+	if appErr = checkCommunityGroupVisible(c, group); appErr != nil {
+		c.Err = appErr
+		return
+	}
+
 	restrictions, appErr := c.App.GetViewUsersRestrictions(c.AppContext, c.AppContext.Session().UserId)
 	if appErr != nil {
 		c.Err = appErr
@@ -1098,6 +1122,10 @@ func getGroups(c *Context, w http.ResponseWriter, r *http.Request) {
 	if id := r.URL.Query().Get("in_team_id"); id != "" {
 		if !model.IsValidId(id) {
 			c.SetInvalidURLParam("in_team_id")
+			return
+		}
+		if !c.App.SessionHasPermissionToTeam(*c.AppContext.Session(), id, model.PermissionViewTeam) {
+			c.SetPermissionError(model.PermissionViewTeam)
 			return
 		}
 		filterTeamID = id
