@@ -186,7 +186,11 @@ func TestAntimatterLifecycles(t *testing.T) {
 
 	t.Run("listing groups leaves out the roles and teams of communities the caller isn't in", func(t *testing.T) {
 		name := "listed" + model.NewId()[:8]
-		role := newRole(t, team.Id, name, th.BasicUser.Id)
+		// Its member isn't BasicUser: the permission granted below would otherwise reach BasicUser in the team's
+		// channels and change what the later subtests' channel admin holds.
+		holder := th.CreateUser(t)
+		th.LinkUserToTeam(t, holder, team)
+		role := newRole(t, team.Id, name, holder.Id)
 		outsider := th.CreateUser(t)
 		list := func(t *testing.T, client *model.Client4) *model.GroupsWithCount {
 			t.Helper()
@@ -210,7 +214,7 @@ func TestAntimatterLifecycles(t *testing.T) {
 		require.Contains(t, ids(member.Groups), role.Id, "the community's members list it")
 		for _, g := range member.Groups {
 			if g.Id == role.Id {
-				assert.Contains(t, g.MemberIDs, th.BasicUser.Id)
+				assert.Contains(t, g.MemberIDs, holder.Id)
 			}
 		}
 		assert.Contains(t, ids(list(t, th.SystemAdminClient).Groups), role.Id, "a system admin sees every community's")
