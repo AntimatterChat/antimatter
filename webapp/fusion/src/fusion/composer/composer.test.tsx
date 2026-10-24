@@ -142,7 +142,9 @@ describe('fusion/composer/Composer', () => {
 
         test('onReady gets a function that sends the current draft', async () => {
             let send: (() => void) | undefined;
-            renderWithExtraProps({onReady: (fn: () => void) => { send = fn; }});
+            renderWithExtraProps({onReady: (fn: () => void) => {
+                send = fn;
+            }});
 
             await userEvent.type(screen.getByRole('textbox', {name: 'Write to General'}), 'Body text');
             expect(send).toBeInstanceOf(Function);

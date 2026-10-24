@@ -19,8 +19,8 @@ import {getCurrentUserId} from 'mattermost-redux/selectors/entities/users';
 
 import {markThreadAsRead, updateThreadLastOpened} from 'actions/views/threads';
 
-import Composer from 'fusion/composer/composer';
 import Icon from 'fusion/components/icon';
+import Composer from 'fusion/composer/composer';
 import Message from 'fusion/messages/message';
 import {getThreadTitle} from 'fusion/messages/thread_title';
 import {am} from 'fusion/utils/class_names';

@@ -17,7 +17,7 @@ export function orderReplies(replies: Post[], mode: ChannelKindMode, acceptedId:
     const accepted = byAge.filter((r) => r.id === acceptedId);
     const rest = byAge.filter((r) => r.id !== acceptedId).sort((a, b) => {
         const votes = countVotes(reactionsByPost[b.id], b.user_id) - countVotes(reactionsByPost[a.id], a.user_id);
-        return votes !== 0 ? votes : a.create_at - b.create_at;
+        return votes === 0 ? a.create_at - b.create_at : votes;
     });
     return [...accepted, ...rest];
 }

@@ -116,9 +116,7 @@ function TopicRow({topic, channel, mode}: {topic: ForumTopic; channel: Channel; 
                             size='xs'
                         />
                     )}
-                    {topic.accepted_answer_id ?
-                        formatMessage({id: 'fusion.forum.answered', defaultMessage: 'Answered', description: 'A Q&A topic row: it has an accepted answer.'}) :
-                        formatMessage({id: 'fusion.forum.unansweredMark', defaultMessage: 'Unanswered', description: 'A Q&A topic row: it has no accepted answer yet.'})}
+                    {topic.accepted_answer_id ? formatMessage({id: 'fusion.forum.answered', defaultMessage: 'Answered', description: 'A Q&A topic row: it has an accepted answer.'}) : formatMessage({id: 'fusion.forum.unansweredMark', defaultMessage: 'Unanswered', description: 'A Q&A topic row: it has no accepted answer yet.'})}
                 </div>
             )}
             {mode === 'ideas' && (
@@ -267,9 +265,7 @@ export default function TopicsView({channel}: {channel: Channel}) {
                 {error && <div className={am('note-box')}>{error}</div>}
                 {empty && !error && (
                     <div className={am('empty')}>
-                        {search.trim() ?
-                            formatMessage({id: 'fusion.forum.noResults', defaultMessage: 'No topics found for "{search}".', description: 'The forum topics view\'s empty state while searching.'}, {search: search.trim()}) :
-                            formatMessage({id: 'fusion.forum.noTopics', defaultMessage: 'No topics yet.', description: 'The forum topics view\'s empty state, no search in progress.'})}
+                        {search.trim() ? formatMessage({id: 'fusion.forum.noResults', defaultMessage: 'No topics found for "{search}".', description: 'The forum topics view\'s empty state while searching.'}, {search: search.trim()}) : formatMessage({id: 'fusion.forum.noTopics', defaultMessage: 'No topics yet.', description: 'The forum topics view\'s empty state, no search in progress.'})}
                     </div>
                 )}
                 {topics.map((topic) => (

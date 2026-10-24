@@ -11,8 +11,8 @@ import {putPostOnTop, removePostFromTop} from 'mattermost-redux/actions/channels
 import {addPostReminder, patchForumTopic} from 'mattermost-redux/actions/posts';
 import {setThreadFollow} from 'mattermost-redux/actions/threads';
 import {Posts} from 'mattermost-redux/constants';
-import {getChannel} from 'mattermost-redux/selectors/entities/channels';
 import {getChannelTypeInfo} from 'mattermost-redux/selectors/entities/channel_types';
+import {getChannel} from 'mattermost-redux/selectors/entities/channels';
 import {getConfig} from 'mattermost-redux/selectors/entities/general';
 import {getOnTopEntry} from 'mattermost-redux/selectors/entities/on_top_posts';
 import {getPost, isPostFlagged} from 'mattermost-redux/selectors/entities/posts';
@@ -282,9 +282,7 @@ export default function MessageMenu({post, anchor, inThread, onClose, onMoreReac
             {canAccept && (
                 <MenuItem
                     icon='check'
-                    label={isAccepted ?
-                        formatMessage({id: 'fusion.messageMenu.unaccept', defaultMessage: 'Unaccept answer', description: 'A Q&A forum reply\'s ⋯ menu: clears it as the question\'s accepted answer.'}) :
-                        formatMessage({id: 'fusion.messageMenu.accept', defaultMessage: 'Accept answer', description: 'A Q&A forum reply\'s ⋯ menu, shown to the asker and moderators: marks it as the accepted answer.'})}
+                    label={isAccepted ? formatMessage({id: 'fusion.messageMenu.unaccept', defaultMessage: 'Unaccept answer', description: 'A Q&A forum reply\'s ⋯ menu: clears it as the question\'s accepted answer.'}) : formatMessage({id: 'fusion.messageMenu.accept', defaultMessage: 'Accept answer', description: 'A Q&A forum reply\'s ⋯ menu, shown to the asker and moderators: marks it as the accepted answer.'})}
                     onClick={run(async () => {
                         const result = await dispatch(patchForumTopic(topicRoot!.id, {accepted_answer_id: isAccepted ? '' : post.id}));
                         if (result && 'error' in result && result.error) {

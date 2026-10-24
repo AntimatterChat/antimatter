@@ -31,9 +31,7 @@ export default function VoteButton({post, className}: {post: Post; className?: s
     }
     const votes = countVotes(reactions, post.user_id);
     const mine = hasVoted(reactions, me, post.user_id);
-    const label = mine ?
-        formatMessage({id: 'fusion.forum.voteRemove', defaultMessage: 'Remove your vote', description: 'Accessible label and tooltip of a forum topic\'s or reply\'s 👍 vote button, once you\'ve voted.'}) :
-        formatMessage({id: 'fusion.forum.vote', defaultMessage: 'Vote for this', description: 'Accessible label and tooltip of a forum topic\'s or reply\'s 👍 vote button, before you\'ve voted.'});
+    const label = mine ? formatMessage({id: 'fusion.forum.voteRemove', defaultMessage: 'Remove your vote', description: 'Accessible label and tooltip of a forum topic\'s or reply\'s 👍 vote button, once you\'ve voted.'}) : formatMessage({id: 'fusion.forum.vote', defaultMessage: 'Vote for this', description: 'Accessible label and tooltip of a forum topic\'s or reply\'s 👍 vote button, before you\'ve voted.'});
     return (
         <button
             type='button'

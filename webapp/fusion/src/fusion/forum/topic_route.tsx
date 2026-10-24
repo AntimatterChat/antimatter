@@ -5,11 +5,11 @@ import React, {useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {useHistory, useParams} from 'react-router-dom';
 
+import {getCurrentChannel} from 'mattermost-redux/selectors/entities/channels';
+
 import {onChannelByIdentifierEnter} from 'components/channel_layout/channel_identifier_router/actions';
 import type {Match} from 'components/channel_layout/channel_identifier_router/channel_identifier_router';
 import LoadingScreen from 'components/loading_screen';
-
-import {getCurrentChannel} from 'mattermost-redux/selectors/entities/channels';
 
 import TopicPage from './topic_page';
 
