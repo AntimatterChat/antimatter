@@ -64,6 +64,18 @@ export type CallsLastingMute = {
     canLiftDeafen: boolean;
 };
 
+// What the user may do to a participant of a call from its menu, as the server works it out for them: mute them
+// (also with a moderator mute), deafen and move them (in voice channels), and disconnect them. Nobody may act on
+// someone at or above their rank, and those who may not moderate the call may do nothing. The controls still check
+// for themselves: menus use it to hide what would be refused.
+export type CallsParticipantPermissions = {
+    sessionId: string;
+    canMute: boolean;
+    canDeafen: boolean;
+    canMove: boolean;
+    canKick: boolean;
+};
+
 // A moderator moves the user from the call of a voice channel to another voice channel.
 export type CallsMoveRequest = {
     channelId: string;
@@ -332,6 +344,10 @@ export type AntimatterCallsAPI = {
         // The moderator mutes and deafens of a channel, the latest first, for those who may moderate its calls (403
         // otherwise); lift them with setModMuted and setModDeafened. Optional: older versions lack it.
         listModMutes?(channelId: string): Promise<CallsLastingMute[]>;
+
+        // What the user may do to a participant (session ID) of the call of a channel, for its menu. Optional: older
+        // versions lack it, and their menus offer every control.
+        participantPermissions?(channelId: string, sessionId: string): Promise<CallsParticipantPermissions>;
     };
 
     // Starts or stops the transcription of the call of this window (host only). While it runs, each participant's

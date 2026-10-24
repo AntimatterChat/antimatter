@@ -1,7 +1,7 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {useIntl} from 'react-intl';
 import {useStore} from 'react-redux';
 
@@ -19,6 +19,36 @@ import {getCallsAPI} from './calls_api';
 import type {VoiceParticipant} from './calls_api';
 import {canSetVolume, getUserVolume, setUserVolume} from './extras';
 import {useCanMakeHost, useCanModerateCall, useIsVoiceChannel, useMoveTargets} from './hooks';
+import type {CallsParticipantPermissions} from './plugin_api/calls_public_api';
+
+type PermissionFlag = Exclude<keyof CallsParticipantPermissions, 'sessionId'>;
+
+// useParticipantPermissions asks Calls, as the menu opens, what the user may do to someone (the server works it out):
+// undefined while it answers, null when it can't tell (older Calls, or a failed request), where the menu offers the
+// controls as it used to.
+function useParticipantPermissions(ask: boolean, channelId: string, sessionId: string) {
+    const key = `${channelId}:${sessionId}`;
+    const [answer, setAnswer] = useState<{key: string; perms: CallsParticipantPermissions | null}>();
+    useEffect(() => {
+        const get = getCallsAPI()?.moderation?.participantPermissions;
+        if (!ask || !get) {
+            return undefined;
+        }
+        let current = true;
+        get(channelId, sessionId).then(
+            (perms) => current && setAnswer({key, perms: perms || null}),
+            () => current && setAnswer({key, perms: null}),
+        );
+        return () => {
+            current = false;
+        };
+    }, [ask, channelId, sessionId, key]);
+
+    if (!ask) {
+        return null;
+    }
+    return answer?.key === key ? answer.perms : undefined;
+}
 
 type MenuProps = {
     participant: VoiceParticipant;
@@ -33,7 +63,8 @@ type MenuProps = {
 // moderator mute, which they can't lift themselves. In voice channels, moderators can also deafen them (they hear
 // nothing and can't speak until undeafened), and move them to another voice channel of the community; the mute and
 // the deafen last there until lifted. Disconnecting them comes last. The host (and system admins) can also make them
-// the host.
+// the host. Calls tells which of the mute, the deafen, the move and the kick the user may use on them (not on someone
+// at or above their rank): the others are hidden.
 function ParticipantMenu({participant: p, channelId, point, onProfile, onClose}: MenuProps) {
     const {formatMessage} = useIntl();
     const store = useStore<GlobalState>();
@@ -50,6 +81,18 @@ function ParticipantMenu({participant: p, channelId, point, onProfile, onClose}:
     const moderation = Boolean(calls?.moderation);
     const deafen = voice && Boolean(calls?.moderation?.setModDeafened);
     const targets = useMoveTargets(voice && moderate && calls?.moderation?.move ? channelId : '');
+
+    // The menu hides what the user may not do to them (nobody acts on someone at or above their rank); the controls
+    // still check for themselves.
+    const perms = useParticipantPermissions(moderate && Boolean(calls?.moderation?.participantPermissions), channelId, p.sessionId);
+    const may = (flag: PermissionFlag) => perms === null || (perms !== undefined && perms[flag] !== false);
+    const askUnmute = p.muted && moderation && !p.modMuted && !p.modDeafened;
+    const mute = !p.muted && may('canMute');
+    const modMute = moderation && may('canMute');
+    const modDeafen = deafen && may('canDeafen');
+    const move = targets.length > 0 && may('canMove');
+    const kick = may('canKick');
+    const hostControls = moderate && (askUnmute || mute || modMute || modDeafen || move || makeHost || p.raisedHand || p.screenSharing || kick);
     const [volume, setVolume] = useState(() => getUserVolume(p.userId));
 
     const run = (action: () => void) => () => {
@@ -126,26 +169,25 @@ function ParticipantMenu({participant: p, channelId, point, onProfile, onClose}:
                     <b>{`${Math.round(volume * 100)}%`}</b>
                 </label>
             )}
-            {moderate && (
+            {hostControls && (
                 <>
                     <MenuSeparator/>
                     <MenuHeading>{formatMessage({id: 'fusion.calls.menu.in', defaultMessage: 'In {where}'}, {where})}</MenuHeading>
-                    {p.muted ? (
-                        moderation && !p.modMuted && !p.modDeafened && (
-                            <MenuItem
-                                icon='mic'
-                                label={formatMessage({id: 'fusion.calls.menu.askUnmute', defaultMessage: 'Ask to unmute'})}
-                                onClick={run(() => actions.askToUnmute(p, channelId))}
-                            />
-                        )
-                    ) : (
+                    {askUnmute && (
+                        <MenuItem
+                            icon='mic'
+                            label={formatMessage({id: 'fusion.calls.menu.askUnmute', defaultMessage: 'Ask to unmute'})}
+                            onClick={run(() => actions.askToUnmute(p, channelId))}
+                        />
+                    )}
+                    {mute && (
                         <MenuItem
                             icon='mic-off'
                             label={formatMessage({id: 'fusion.calls.menu.mute', defaultMessage: 'Mute'})}
                             onClick={run(() => actions.hostMute(p, channelId))}
                         />
                     )}
-                    {moderation && (
+                    {modMute && (
                         <MenuItem
                             icon='mic-lock'
                             label={modMuteLabel}
@@ -153,7 +195,7 @@ function ParticipantMenu({participant: p, channelId, point, onProfile, onClose}:
                             onClick={run(() => actions.modMute(p, channelId, !p.modMuted))}
                         />
                     )}
-                    {deafen && (
+                    {modDeafen && (
                         <MenuItem
                             icon={p.modDeafened ? 'headphones' : 'headphones-off'}
                             label={p.modDeafened ? formatMessage({id: 'fusion.calls.menu.modUndeafen', defaultMessage: 'Undeafen'}) : formatMessage({id: 'fusion.calls.menu.modDeafen', defaultMessage: 'Deafen'})}
@@ -161,7 +203,7 @@ function ParticipantMenu({participant: p, channelId, point, onProfile, onClose}:
                             onClick={run(() => actions.modDeafen(p, channelId, !p.modDeafened))}
                         />
                     )}
-                    {targets.length > 0 && (
+                    {move && (
                         <Flyout
                             icon='speaker'
                             label={formatMessage({id: 'fusion.calls.menu.moveTo', defaultMessage: 'Move to'})}
@@ -199,12 +241,14 @@ function ParticipantMenu({participant: p, channelId, point, onProfile, onClose}:
                             onClick={run(() => actions.hostStopScreen(p, channelId))}
                         />
                     )}
-                    <MenuItem
-                        icon='hangup'
-                        danger={true}
-                        label={voice ? formatMessage({id: 'fusion.calls.menu.kick', defaultMessage: 'Kick from voice channel'}) : formatMessage({id: 'fusion.calls.menu.remove', defaultMessage: 'Remove from call'})}
-                        onClick={run(() => actions.hostRemove(p, channelId))}
-                    />
+                    {kick && (
+                        <MenuItem
+                            icon='hangup'
+                            danger={true}
+                            label={voice ? formatMessage({id: 'fusion.calls.menu.kick', defaultMessage: 'Kick from voice channel'}) : formatMessage({id: 'fusion.calls.menu.remove', defaultMessage: 'Remove from call'})}
+                            onClick={run(() => actions.hostRemove(p, channelId))}
+                        />
+                    )}
                 </>
             )}
         </Popover>
