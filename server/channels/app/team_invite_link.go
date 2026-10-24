@@ -107,6 +107,12 @@ func (a *App) RevokeTeamInviteLink(rctx request.CTX, session model.Session, team
 // resolveInviteId finds the community an invite code lets one into: its permanent invite code, or one of its invite
 // links (then given too), which must still work. An unknown or revoked code isn't found, as upstream's.
 func (a *App) resolveInviteId(rctx request.CTX, inviteId string) (*model.Team, *model.TeamInviteLink, *model.AppError) {
+	return a.resolveInviteIdFor(rctx, inviteId, "")
+}
+
+// resolveInviteIdFor is resolveInviteId for someone joining (userID, or "" for anyone): a used-up link still finds
+// its community for someone already in it, who takes no use (joinByInviteLink). Everything else must still hold.
+func (a *App) resolveInviteIdFor(rctx request.CTX, inviteId, userID string) (*model.Team, *model.TeamInviteLink, *model.AppError) {
 	notFound := func(err error) *model.AppError {
 		return model.NewAppError("resolveInviteId", "app.team.get_by_invite_id.finding.app_error", nil, "", http.StatusNotFound).Wrap(err)
 	}
@@ -132,19 +138,26 @@ func (a *App) resolveInviteId(rctx request.CTX, inviteId string) (*model.Team, *
 	if err != nil || team.DeleteAt != 0 {
 		return nil, nil, notFound(err)
 	}
-	if appErr := a.checkInviteLinkWorks(rctx, link); appErr != nil {
+	alreadyIn := false
+	if userID != "" {
+		if member, memberErr := a.Srv().Store().Team().GetMember(rctx, team.Id, userID); memberErr == nil && member.DeleteAt == 0 {
+			alreadyIn = true
+		}
+	}
+	if appErr := a.checkInviteLinkWorks(rctx, link, alreadyIn); appErr != nil {
 		return nil, nil, appErr
 	}
 	return team, link, nil
 }
 
-// checkInviteLinkWorks tells why a link doesn't let anyone in: it has ended, it's used up, or its creator may no
-// longer invite to the community (they left it, were banned or deactivated, or lost the right).
-func (a *App) checkInviteLinkWorks(rctx request.CTX, link *model.TeamInviteLink) *model.AppError {
+// checkInviteLinkWorks tells why a link doesn't let anyone in: it has ended, it's used up (unless ignoreUses, for
+// someone already in, who takes none), or its creator may no longer invite to the community (they left it, were
+// banned or deactivated, or lost the right).
+func (a *App) checkInviteLinkWorks(rctx request.CTX, link *model.TeamInviteLink, ignoreUses bool) *model.AppError {
 	if link.IsExpired(model.GetMillis()) {
 		return model.NewAppError("checkInviteLinkWorks", "app.team_invite_link.expired.app_error", nil, "", http.StatusBadRequest)
 	}
-	if link.IsUsedUp() {
+	if !ignoreUses && link.IsUsedUp() {
 		return model.NewAppError("checkInviteLinkWorks", "app.team_invite_link.used_up.app_error", nil, "", http.StatusBadRequest)
 	}
 	creator, err := a.Srv().Store().User().Get(rctx, link.CreatorId)

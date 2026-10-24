@@ -750,7 +750,7 @@ func (a *App) AddUserToTeamWithToken(rctx request.CTX, userID string, token *mod
 // AddUserToTeamByInviteId joins someone to a community by its permanent invite code or one of its invite links
 // (Antimatter: which takes one of the link's uses).
 func (a *App) AddUserToTeamByInviteId(rctx request.CTX, inviteId string, userID string) (*model.Team, *model.TeamMember, *model.AppError) {
-	team, link, appErr := a.resolveInviteId(rctx, inviteId)
+	team, link, appErr := a.resolveInviteIdFor(rctx, inviteId, userID)
 	if appErr != nil {
 		appErr.Where = "AddUserToTeamByInviteId"
 		return nil, nil, appErr
