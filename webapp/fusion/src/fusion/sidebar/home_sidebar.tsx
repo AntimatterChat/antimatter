@@ -3,14 +3,16 @@
 
 import React, {useMemo, useRef, useState} from 'react';
 import {useIntl} from 'react-intl';
-import {useDispatch, useSelector} from 'react-redux';
+import {shallowEqual, useDispatch, useSelector} from 'react-redux';
 import {Link, useLocation} from 'react-router-dom';
 
 import {Client4} from 'mattermost-redux/client';
 import {getDirectAndGroupChannels} from 'mattermost-redux/selectors/entities/channels';
 import {getFeatureFlagValue} from 'mattermost-redux/selectors/entities/general';
+import {getUnreadFinishedRecapsBadge} from 'mattermost-redux/selectors/entities/recaps';
 import {getScheduledPostsByTeamCount, isScheduledPostsEnabled} from 'mattermost-redux/selectors/entities/scheduled_posts';
 import {getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
+import {getThreadCountsInCurrentTeam} from 'mattermost-redux/selectors/entities/threads';
 import {getCurrentUserId, getUser, getUsers} from 'mattermost-redux/selectors/entities/users';
 import {getUserIdFromChannelName} from 'mattermost-redux/utils/channel_utils';
 
@@ -21,6 +23,7 @@ import {useRecapsEntryShown} from 'components/common/hooks/useAIFeatures';
 
 import {useCallsOnTop} from 'fusion/calls/calls_on_top';
 import Icon from 'fusion/components/icon';
+import {useHideUnreads} from 'fusion/focus/focus';
 import {useUnreadMentions} from 'fusion/hooks/mentions';
 import CollectionsPopover from 'fusion/popovers/collections_popover';
 import {getHiddenDirectIds} from 'fusion/privacy/blocking';
@@ -81,6 +84,17 @@ export default function HomeSidebar() {
     const linkRefs = useRef<Partial<Record<Collection, HTMLButtonElement | null>>>({});
 
     const mentions = useUnreadMentions();
+    const hideUnreads = useHideUnreads();
+
+    // Followed threads: the number of them with unread replies (the count mattermost-redux keeps per team), unless
+    // there are unread mentions in them, which get the same badge treatment as the Mentions link above.
+    const threadCounts = useSelector(getThreadCountsInCurrentTeam);
+    const threadsBadge = hideUnreads ? 0 : (threadCounts?.total_unread_mentions || threadCounts?.total_unread_threads || 0);
+
+    // Recaps finished (or failed) since you last viewed them.
+    const {count: unreadRecapsCount} = useSelector(getUnreadFinishedRecapsBadge, shallowEqual);
+    const recapsBadge = hideUnreads ? 0 : unreadRecapsCount;
+
     const team = useSelector(getCurrentTeam);
     const users = useSelector(getUsers);
     const hidden = useSelector(getHiddenChannelIds);
@@ -215,11 +229,11 @@ export default function HomeSidebar() {
             <div className={am('chan-scroll')}>
                 <div className={am('home-links')}>
                     {link('mentions', 'at', formatMessage({id: 'fusion.home.mentions', defaultMessage: 'Mentions'}), mentions)}
-                    {link('threads', 'thread', formatMessage({id: 'fusion.home.threads', defaultMessage: 'Followed threads'}))}
+                    {link('threads', 'thread', formatMessage({id: 'fusion.home.threads', defaultMessage: 'Followed threads'}), threadsBadge)}
                     {link('saved', 'pin', formatMessage({id: 'fusion.home.saved', defaultMessage: 'Saved messages'}))}
                     {team && page('drafts', 'pen', formatMessage({id: 'fusion.home.drafts', defaultMessage: 'Drafts'}), draftCount)}
                     {team && scheduledEnabled && page(SCHEDULED_POST_URL_SUFFIX, 'clock', formatMessage({id: 'fusion.home.scheduled', defaultMessage: 'Scheduled'}), scheduledCount)}
-                    {team && recapsEnabled && page('recaps', 'sparkle', formatMessage({id: 'fusion.home.recaps', defaultMessage: 'Recaps'}))}
+                    {team && recapsEnabled && page('recaps', 'sparkle', formatMessage({id: 'fusion.home.recaps', defaultMessage: 'Recaps'}), recapsBadge)}
                     <button
                         className={am('ch')}
                         onClick={async () => {
