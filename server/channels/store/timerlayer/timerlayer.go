@@ -9482,6 +9482,22 @@ func (s *TimerLayerPostStore) Update(rctx request.CTX, newPost *model.Post, oldP
 	return result, err
 }
 
+func (s *TimerLayerPostStore) UpdateProps(rctx request.CTX, postID string, set model.StringInterface, remove []string) (*model.Post, error) {
+	start := time.Now()
+
+	result, err := s.PostStore.UpdateProps(rctx, postID, set, remove)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("PostStore.UpdateProps", success, elapsed)
+	}
+	return result, err
+}
+
 func (s *TimerLayerPostAcknowledgementStore) BatchDelete(acknowledgements []*model.PostAcknowledgement) error {
 	start := time.Now()
 

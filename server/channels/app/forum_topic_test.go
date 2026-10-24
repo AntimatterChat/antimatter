@@ -11,6 +11,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/mattermost/mattermost/server/public/model"
+	"github.com/mattermost/mattermost/server/public/shared/request"
 )
 
 // Antimatter forums: a topic's accepted answer (Q&A) and status (Ideas), who may set them, the system replies they
@@ -220,10 +221,7 @@ func TestIdeasVotersFollow(t *testing.T) {
 	mainHelper.Parallel(t)
 	f := setupForum(t, model.ChannelPresetForumIdeas)
 	th := f.th
-	following := func(userID, postID string) bool {
-		membership, appErr := th.App.GetThreadMembershipForUser(userID, postID)
-		return appErr == nil && membership != nil && membership.Following
-	}
+	following := func(userID, postID string) bool { return isFollowing(th, userID, postID) }
 	react := func(t *testing.T, userID, postID, emoji string) *model.Reaction {
 		t.Helper()
 		reaction, appErr := th.App.SaveReactionForPost(th.Context, &model.Reaction{UserId: userID, PostId: postID, EmojiName: emoji})
@@ -280,4 +278,43 @@ func TestGetForumTopicsModes(t *testing.T) {
 	assert.Empty(t, list.Topics[0].AcceptedAnswerId)
 	assert.Empty(t, list.Topics[0].Status)
 	assert.Equal(t, "First topic", list.Topics[0].Post.GetProp(model.PostPropsThreadTitle))
+}
+
+func isFollowing(th *TestHelper, userID, postID string) bool {
+	membership, appErr := th.App.GetThreadMembershipForUser(userID, postID)
+	return appErr == nil && membership != nil && membership.Following
+}
+
+// A moderator's status change and the author's edit of the message, one after the other from what each read
+// before, both stay: the topic patch writes only its props, and an edit keeps them.
+func TestForumTopicPatchAndEditBothSurvive(t *testing.T) {
+	mainHelper.Parallel(t)
+	f := setupForum(t, model.ChannelPresetForumIdeas)
+	th := f.th
+	moderator := f.moderator(t)
+	planned := model.TopicStatusPlanned
+	th.Context = th.Context.WithSession(&model.Session{UserId: f.member.Id, Id: model.NewId()}).(*request.Context)
+
+	// The author's client read the topic before the status changed, and saves an edit after it.
+	readByAuthor := f.topic.Clone()
+	_, appErr := th.App.PatchForumTopic(th.Context, forumSession(moderator), f.topic.Id, &model.ForumTopicPatch{Status: &planned})
+	require.Nil(t, appErr)
+	readByAuthor.Message = "Edited after the status changed"
+	_, _, appErr = th.App.UpdatePost(th.Context, readByAuthor, nil)
+	require.Nil(t, appErr)
+
+	// The moderator acts on what they read before the next edit.
+	edit := readByAuthor.Clone()
+	edit.Message = "Edited again"
+	_, _, appErr = th.App.UpdatePost(th.Context, edit, nil)
+	require.Nil(t, appErr)
+	done := model.TopicStatusDone
+	_, appErr = th.App.PatchForumTopic(th.Context, forumSession(moderator), f.topic.Id, &model.ForumTopicPatch{Status: &done})
+	require.Nil(t, appErr)
+
+	stored, err := th.App.Srv().Store().Post().GetSingle(th.Context, f.topic.Id, false)
+	require.NoError(t, err)
+	assert.Equal(t, "Edited again", stored.Message, "the edits survive the status changes")
+	assert.Equal(t, model.TopicStatusDone, stored.GetProp(model.PostPropsTopicStatus), "and the status the edits")
+	assert.Equal(t, "First topic", stored.GetProp(model.PostPropsThreadTitle))
 }

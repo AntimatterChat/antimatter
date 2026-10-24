@@ -4,12 +4,16 @@
 package sqlstore
 
 import (
+	"encoding/json"
+
+	"github.com/lib/pq"
 	"github.com/pkg/errors"
 
 	sq "github.com/mattermost/squirrel"
 
 	"github.com/mattermost/mattermost/server/public/model"
 	"github.com/mattermost/mattermost/server/public/shared/request"
+	"github.com/mattermost/mattermost/server/v8/channels/store"
 )
 
 // Antimatter forums: the topic list. A topic is a live, non-system root post of the channel; its thread row (when it
@@ -200,4 +204,32 @@ func (s *SqlPostStore) latestForumReplies(rctx request.CTX, rootIDs []string, n 
 		replies[post.RootId] = append(replies[post.RootId], post)
 	}
 	return replies, nil
+}
+
+// UpdateProps sets and removes props of one live post in a single statement (a JSONB update of Posts.Props), so a
+// concurrent edit of its message or of its other props isn't lost, and bumps UpdateAt but not EditAt.
+func (s *SqlPostStore) UpdateProps(rctx request.CTX, postID string, set model.StringInterface, remove []string) (*model.Post, error) {
+	if set == nil {
+		set = model.StringInterface{}
+	}
+	if remove == nil {
+		remove = []string{}
+	}
+	setJSON, err := json.Marshal(set)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to encode the props to set")
+	}
+	result, err := s.GetMaster().Exec(
+		`UPDATE Posts SET Props = (COALESCE(Props, '{}'::jsonb) - ?::text[]) || ?::jsonb, UpdateAt = ? WHERE Id = ? AND DeleteAt = 0`,
+		pq.Array(remove), string(setJSON), model.GetMillis(), postID,
+	)
+	if err != nil {
+		return nil, errors.Wrapf(err, "failed to update the props of post %s", postID)
+	}
+	if n, err := result.RowsAffected(); err != nil {
+		return nil, errors.Wrap(err, "failed to count the updated posts")
+	} else if n == 0 {
+		return nil, store.NewErrNotFound("Post", postID)
+	}
+	return s.GetSingle(RequestContextWithMaster(rctx), postID, false)
 }

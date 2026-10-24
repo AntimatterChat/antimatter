@@ -11825,6 +11825,27 @@ func (s *RetryLayerPostStore) Update(rctx request.CTX, newPost *model.Post, oldP
 
 }
 
+func (s *RetryLayerPostStore) UpdateProps(rctx request.CTX, postID string, set model.StringInterface, remove []string) (*model.Post, error) {
+
+	tries := 0
+	for {
+		result, err := s.PostStore.UpdateProps(rctx, postID, set, remove)
+		if err == nil {
+			return result, nil
+		}
+		if !isRepeatableError(err) {
+			return result, err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
 func (s *RetryLayerPostAcknowledgementStore) BatchDelete(acknowledgements []*model.PostAcknowledgement) error {
 
 	tries := 0

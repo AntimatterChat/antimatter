@@ -445,6 +445,9 @@ type PostStore interface {
 	// GetForumTopics gives a page of a forum's topics (Antimatter): its live, non-system root posts with their thread
 	// counts and votes, sorted and filtered as the options ask, and the latest replies of each when asked.
 	GetForumTopics(rctx request.CTX, opts model.ForumTopicsOptions) (*model.ForumTopicList, error)
+	// UpdateProps sets and removes props of one live post in a single statement, leaving the rest of it as it is,
+	// and bumps its UpdateAt (not its EditAt): for props only the server writes (Antimatter forum topics).
+	UpdateProps(rctx request.CTX, postID string, set model.StringInterface, remove []string) (*model.Post, error)
 	Overwrite(rctx request.CTX, post *model.Post) (*model.Post, error)
 	OverwriteMultiple(rctx request.CTX, posts []*model.Post) ([]*model.Post, int, error)
 	GetPostsByIds(postIds []string) ([]*model.Post, error)

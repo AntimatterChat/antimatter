@@ -1602,6 +1602,36 @@ func (_m *PostStore) Update(rctx request.CTX, newPost *model.Post, oldPost *mode
 	return r0, r1
 }
 
+// UpdateProps provides a mock function with given fields: rctx, postID, set, remove
+func (_m *PostStore) UpdateProps(rctx request.CTX, postID string, set model.StringInterface, remove []string) (*model.Post, error) {
+	ret := _m.Called(rctx, postID, set, remove)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdateProps")
+	}
+
+	var r0 *model.Post
+	var r1 error
+	if rf, ok := ret.Get(0).(func(request.CTX, string, model.StringInterface, []string) (*model.Post, error)); ok {
+		return rf(rctx, postID, set, remove)
+	}
+	if rf, ok := ret.Get(0).(func(request.CTX, string, model.StringInterface, []string) *model.Post); ok {
+		r0 = rf(rctx, postID, set, remove)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*model.Post)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(request.CTX, string, model.StringInterface, []string) error); ok {
+		r1 = rf(rctx, postID, set, remove)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // NewPostStore creates a new instance of PostStore. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.
 // The first argument is typically a *testing.T value.
 func NewPostStore(t interface {

@@ -148,21 +148,21 @@ func (a *App) PatchForumTopic(rctx request.CTX, session model.Session, postID st
 		return a.PreparePostForClientWithEmbedsAndImages(rctx, root, &model.PreparePostForClientOpts{IncludePriority: true}), nil
 	}
 
-	now := model.GetMillis()
-	updated, appErr := a.updateTopicProps(rctx, root, func(post *model.Post) {
-		if answerChanged {
-			if answer != nil {
-				post.AddProp(model.PostPropsAcceptedAnswer, answer.Id)
-			} else {
-				post.DelProp(model.PostPropsAcceptedAnswer)
-			}
+	set := model.StringInterface{}
+	var remove []string
+	if answerChanged {
+		if answer != nil {
+			set[model.PostPropsAcceptedAnswer] = answer.Id
+		} else {
+			remove = append(remove, model.PostPropsAcceptedAnswer)
 		}
-		if statusChanged {
-			post.AddProp(model.PostPropsTopicStatus, *patch.Status)
-			post.AddProp(model.PostPropsTopicStatusBy, session.UserId)
-			post.AddProp(model.PostPropsTopicStatusAt, now)
-		}
-	})
+	}
+	if statusChanged {
+		set[model.PostPropsTopicStatus] = *patch.Status
+		set[model.PostPropsTopicStatusBy] = session.UserId
+		set[model.PostPropsTopicStatusAt] = model.GetMillis()
+	}
+	updated, appErr := a.updateTopicProps(rctx, root.Id, set, remove)
 	if appErr != nil {
 		return nil, appErr
 	}
@@ -191,16 +191,15 @@ func (a *App) sessionMayAcceptAnswer(rctx request.CTX, session model.Session, ro
 	return a.SessionIsChannelModerator(rctx, session, channel)
 }
 
-// updateTopicProps changes a topic's server-owned props without editing it: UpdateAt changes, EditAt doesn't (no
-// "Edited" mark), there's no edit history, and post_edited goes out.
-func (a *App) updateTopicProps(rctx request.CTX, root *model.Post, apply func(*model.Post)) (*model.Post, *model.AppError) {
-	post := root.Clone()
-	apply(post)
-	saved, err := a.Srv().Store().Post().Overwrite(rctx, post)
+// updateTopicProps changes a topic's server-owned props without editing it, in one statement that touches only
+// those props (an edit of the message or of other props at the same moment isn't lost): UpdateAt changes, EditAt
+// doesn't (no "Edited" mark), there's no edit history, and post_edited goes out.
+func (a *App) updateTopicProps(rctx request.CTX, postID string, set model.StringInterface, remove []string) (*model.Post, *model.AppError) {
+	saved, err := a.Srv().Store().Post().UpdateProps(rctx, postID, set, remove)
 	if err != nil {
-		var appErr *model.AppError
-		if errors.As(err, &appErr) {
-			return nil, appErr
+		var nfErr *store.ErrNotFound
+		if errors.As(err, &nfErr) {
+			return nil, model.NewAppError("updateTopicProps", "app.post.get.app_error", nil, "", http.StatusNotFound).Wrap(err)
 		}
 		return nil, model.NewAppError("updateTopicProps", "app.topic.update.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
 	}
@@ -281,7 +280,7 @@ func (a *App) clearAcceptedAnswerOf(rctx request.CTX, reply *model.Post) {
 	if accepted, _ := root.GetProp(model.PostPropsAcceptedAnswer).(string); accepted != reply.Id {
 		return
 	}
-	if _, appErr := a.updateTopicProps(rctx, root, func(post *model.Post) { post.DelProp(model.PostPropsAcceptedAnswer) }); appErr != nil {
+	if _, appErr := a.updateTopicProps(rctx, root.Id, nil, []string{model.PostPropsAcceptedAnswer}); appErr != nil {
 		rctx.Logger().Warn("Failed to take back the accepted answer of a topic", mlog.String("post_id", root.Id), mlog.Err(appErr))
 	}
 }

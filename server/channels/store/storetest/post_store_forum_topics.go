@@ -200,3 +200,44 @@ func testPostStoreGetForumTopics(t *testing.T, rctx request.CTX, ss store.Store)
 		assert.Equal(t, []string{first.Id}, topicIDs(f.list(model.ForumTopicsOptions{PerPage: 1, Before: cursor})), "and only once")
 	})
 }
+
+// UpdateProps writes only the props it's given, in one statement: a concurrent edit of the message, or of other
+// props, survives it.
+func testPostStoreUpdateProps(t *testing.T, rctx request.CTX, ss store.Store) {
+	channel, err := ss.Channel().Save(rctx, &model.Channel{TeamId: model.NewId(), DisplayName: "Forum", Name: "forum-" + model.NewId(), Type: model.ChannelTypeOpen}, -1)
+	require.NoError(t, err)
+	post, err := ss.Post().Save(rctx, &model.Post{ChannelId: channel.Id, UserId: model.NewId(), Message: "Before", Props: model.StringInterface{
+		model.PostPropsThreadTitle: "Topic", model.PostPropsAcceptedAnswer: "old",
+	}})
+	require.NoError(t, err)
+	stale := post.Clone()
+
+	// Someone edits the message (and adds a prop) meanwhile.
+	edited := stale.Clone()
+	edited.Message = "Edited meanwhile"
+	edited.AddProp("other", "kept")
+	edited.EditAt = model.GetMillis()
+	_, err = ss.Post().Update(rctx, edited, stale)
+	require.NoError(t, err)
+	current, err := ss.Post().GetSingle(rctx, post.Id, false)
+	require.NoError(t, err)
+
+	updated, err := ss.Post().UpdateProps(rctx, post.Id, model.StringInterface{model.PostPropsTopicStatus: model.TopicStatusPlanned, model.PostPropsTopicStatusAt: int64(5)}, []string{model.PostPropsAcceptedAnswer})
+	require.NoError(t, err)
+	assert.Equal(t, "Edited meanwhile", updated.Message, "the edit survives")
+	assert.Equal(t, "kept", updated.GetProp("other"))
+	assert.Equal(t, "Topic", updated.GetProp(model.PostPropsThreadTitle))
+	assert.Equal(t, model.TopicStatusPlanned, updated.GetProp(model.PostPropsTopicStatus))
+	assert.EqualValues(t, 5, updated.GetProp(model.PostPropsTopicStatusAt))
+	assert.Nil(t, updated.GetProp(model.PostPropsAcceptedAnswer), "removed")
+	assert.Equal(t, current.EditAt, updated.EditAt, "not an edit")
+	assert.GreaterOrEqual(t, updated.UpdateAt, current.UpdateAt)
+
+	_, err = ss.Post().UpdateProps(rctx, model.NewId(), model.StringInterface{"x": "y"}, nil)
+	var nfErr *store.ErrNotFound
+	assert.ErrorAs(t, err, &nfErr, "no such post")
+
+	require.NoError(t, ss.Post().Delete(rctx, post.Id, model.GetMillis(), post.UserId))
+	_, err = ss.Post().UpdateProps(rctx, post.Id, nil, []string{model.PostPropsTopicStatus})
+	assert.ErrorAs(t, err, &nfErr, "nor a deleted one")
+}
