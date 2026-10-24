@@ -724,6 +724,7 @@ export default function SettingsModal({tab, onTab, onClose}: Props) {
                         key={key}
                         type='button'
                         className={am({on: tab === key})}
+                        aria-current={tab === key ? 'page' : undefined}
                         onClick={() => onTab(key)}
                     >
                         {formatMessage(label)}
@@ -737,6 +738,7 @@ export default function SettingsModal({tab, onTab, onClose}: Props) {
                                 key={plugin.id}
                                 type='button'
                                 className={am({on: tab === `plugin:${plugin.id}`})}
+                                aria-current={tab === `plugin:${plugin.id}` ? 'page' : undefined}
                                 onClick={() => onTab(`plugin:${plugin.id}`)}
                             >
                                 {plugin.uiName}

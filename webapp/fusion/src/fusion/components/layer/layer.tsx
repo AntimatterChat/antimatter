@@ -158,8 +158,56 @@ function place(pop: HTMLElement, placement: Placement, anchor?: HTMLElement | nu
     pop.style.top = clamp(top, h, vh) + 'px';
 }
 
-// Popover is a floating .am-pop: placed next to its anchor, closed by Escape or a click elsewhere. On a phone it's a
-// sheet (.am-sheet) from the bottom of the screen instead, the whole width, as menus are in phone apps.
+// The open popovers and dialogs of each window, newest last. Escape closes only the newest: a picker opened from a
+// dialog, or a confirmation over the settings, closes without what's under it.
+const escapeStacks = new WeakMap<Document, Array<{current: () => void}>>();
+
+// useEscape calls onEscape when Escape is pressed while this layer is the newest of its window.
+function useEscape(onEscape: () => void, ref: React.RefObject<HTMLElement>) {
+    const handler = useRef(onEscape);
+    handler.current = onEscape;
+    useEffect(() => {
+        const doc = ref.current?.ownerDocument || document;
+        const stack = escapeStacks.get(doc) || [];
+        escapeStacks.set(doc, stack);
+        stack.push(handler);
+        const onKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'Escape' && stack[stack.length - 1] === handler) {
+                e.stopPropagation();
+                handler.current();
+            }
+        };
+        doc.addEventListener('keydown', onKeyDown, true);
+        return () => {
+            stack.splice(stack.indexOf(handler), 1);
+            doc.removeEventListener('keydown', onKeyDown, true);
+        };
+
+        // The layer keeps its place in the stack for as long as it's open.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+}
+
+// useReturnFocus gives the focus back, when the layer closes, to what had it when the layer opened (the button that
+// opened it), unless the focus has gone somewhere else since.
+function useReturnFocus(ref: React.RefObject<HTMLElement>) {
+    useEffect(() => {
+        const doc = ref.current?.ownerDocument || document;
+        const opener = doc.activeElement as HTMLElement | null;
+        return () => {
+            const now = doc.activeElement;
+            if (opener?.isConnected && (!now || now === doc.body || ref.current?.contains(now))) {
+                opener.focus({preventScroll: true});
+            }
+        };
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+}
+
+// Popover is a floating .am-pop: placed next to its anchor, closed by Escape (when it's the newest layer) or a click
+// elsewhere; closing gives the focus back to the button that opened it. On a phone it's a sheet (.am-sheet) from the
+// bottom of the screen instead, the whole width, as menus are in phone apps.
 export function Popover({anchor, point, placement = 'below', className, role = 'dialog', label, describedBy, onClose, children, style, toggles, sheet: canSheet = true, onEscape}: PopoverProps) {
     const ref = useRef<HTMLDivElement>(null);
     const [, setPlaced] = useState(false);
@@ -168,6 +216,13 @@ export function Popover({anchor, point, placement = 'below', className, role = '
     const onEscapeRef = useRef(onEscape);
     onEscapeRef.current = onEscape;
     const sheet = useIsPhone() && canSheet;
+    useEscape(() => {
+        // onEscape may take Escape for itself (a view inside the popover goes back) and keep the popover open.
+        if (!onEscapeRef.current?.()) {
+            onClose();
+        }
+    }, ref);
+    useReturnFocus(ref);
 
     // The press that opened it, for an anchor that isn't shown: taken once, as the popover follows its anchor.
     const pressed = useRef(lastPress);
@@ -203,23 +258,9 @@ export function Popover({anchor, point, placement = 'below', className, role = '
             }
             onClose();
         };
-        const onKeyDown = (e: KeyboardEvent) => {
-            if (e.key === 'Escape') {
-                e.stopPropagation();
-                if (onEscapeRef.current?.()) {
-                    e.preventDefault();
-                    return;
-                }
-                onClose();
-            }
-        };
         const doc = ref.current?.ownerDocument || document;
         doc.addEventListener('pointerdown', onPointerDown, true);
-        doc.addEventListener('keydown', onKeyDown, true);
-        return () => {
-            doc.removeEventListener('pointerdown', onPointerDown, true);
-            doc.removeEventListener('keydown', onKeyDown, true);
-        };
+        return () => doc.removeEventListener('pointerdown', onPointerDown, true);
     }, [anchor, onClose]);
 
     return (
@@ -271,25 +312,30 @@ type DialogProps = {
     onSubmit?: (e: React.FormEvent) => void;
 };
 
-// Dialog is a modal on a scrim (.am-scrim > .am-modal), closed by Escape or a click on the scrim.
+const FOCUSABLE = 'input:not([disabled]), textarea:not([disabled]), select:not([disabled]), button:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])';
+
+// Dialog is a modal on a scrim (.am-scrim > .am-modal), closed by Escape or a click on the scrim. It takes the focus
+// (unless a field of it has it already) and gives it back when it closes.
 export function Dialog({label, onClose, small = true, top = false, children, className, onSubmit}: DialogProps) {
+    const ref = useRef<HTMLElement>(null);
+    useEscape(onClose, ref);
+    useReturnFocus(ref);
+
     useEffect(() => {
-        const onKeyDown = (e: KeyboardEvent) => {
-            if (e.key === 'Escape') {
-                e.stopPropagation();
-                onClose();
-            }
-        };
-        document.addEventListener('keydown', onKeyDown, true);
-        return () => document.removeEventListener('keydown', onKeyDown, true);
-    }, [onClose]);
+        const modal = ref.current;
+        if (modal && !modal.contains(document.activeElement)) {
+            (modal.querySelector<HTMLElement>(FOCUSABLE) || modal).focus({preventScroll: true});
+        }
+    }, []);
 
     const content = onSubmit ? (
         <form
+            ref={ref as React.RefObject<HTMLFormElement>}
             className={am('modal', {small}) + (className ? ' ' + className : '')}
             role='dialog'
             aria-modal='true'
             aria-label={label}
+            tabIndex={-1}
             onSubmit={(e) => {
                 e.preventDefault();
                 onSubmit(e);
@@ -299,10 +345,12 @@ export function Dialog({label, onClose, small = true, top = false, children, cla
         </form>
     ) : (
         <div
+            ref={ref as React.RefObject<HTMLDivElement>}
             className={am('modal', {small}) + (className ? ' ' + className : '')}
             role='dialog'
             aria-modal='true'
             aria-label={label}
+            tabIndex={-1}
         >
             {children}
         </div>

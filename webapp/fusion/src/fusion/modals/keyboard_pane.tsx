@@ -68,8 +68,10 @@ export default function KeyboardPane() {
                 setRecording(null);
             }
         };
-        document.addEventListener('keydown', onKeyDown, true);
-        return () => document.removeEventListener('keydown', onKeyDown, true);
+
+        // On the window, ahead of the settings dialog's own keys: Escape stops recording, not the dialog.
+        window.addEventListener('keydown', onKeyDown, true);
+        return () => window.removeEventListener('keydown', onKeyDown, true);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [recording]);
 

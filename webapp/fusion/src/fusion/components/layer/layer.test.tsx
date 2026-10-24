@@ -2,7 +2,8 @@
 // See LICENSE.txt for license information.
 
 import {fireEvent, render, screen} from '@testing-library/react';
-import React from 'react';
+import userEvent from '@testing-library/user-event';
+import React, {useState} from 'react';
 import {IntlProvider} from 'react-intl';
 
 import {Dialog, LAYER_ID, Popover} from './layer';
@@ -200,6 +201,84 @@ describe('fusion/components/layer', () => {
             fireEvent.click(screen.getByText('Save'));
             expect(onSubmit).toHaveBeenCalledTimes(1);
             expect(onClose).not.toHaveBeenCalled();
+        });
+    });
+
+    describe('Escape and focus', () => {
+        test('Escape closes the newest layer only', async () => {
+            const closeDialog = jest.fn();
+            const closePicker = jest.fn();
+            function DialogWithPicker() {
+                const [picking, setPicking] = useState(false);
+                return (
+                    <Dialog
+                        label='Settings'
+                        onClose={closeDialog}
+                    >
+                        <button onClick={() => setPicking(true)}>{'Pick'}</button>
+                        {picking && (
+                            <Popover
+                                className='picker'
+                                label='Picker'
+                                onClose={closePicker}
+                            >
+                                <input aria-label='Search'/>
+                            </Popover>
+                        )}
+                    </Dialog>
+                );
+            }
+            render(wrap(<DialogWithPicker/>));
+
+            await userEvent.click(screen.getByText('Pick'));
+            await userEvent.keyboard('{Escape}');
+            expect(closePicker).toHaveBeenCalledTimes(1);
+            expect(closeDialog).not.toHaveBeenCalled();
+        });
+
+        test('Escape a popover takes for itself (a view going back) leaves it open', () => {
+            const onClose = jest.fn();
+            const onEscape = jest.fn(() => true);
+            render(wrap(
+                <Popover
+                    label='Picker'
+                    onClose={onClose}
+                    onEscape={onEscape}
+                >
+                    <input aria-label='Search'/>
+                </Popover>,
+            ));
+
+            fireEvent.keyDown(document, {key: 'Escape'});
+            expect(onEscape).toHaveBeenCalledTimes(1);
+            expect(onClose).not.toHaveBeenCalled();
+        });
+
+        test('a dialog takes the focus and gives it back when it closes', async () => {
+            function Opener() {
+                const [open, setOpen] = useState(false);
+                return (
+                    <>
+                        <button onClick={() => setOpen(true)}>{'Open'}</button>
+                        {open && (
+                            <Dialog
+                                label='Confirm'
+                                onClose={() => setOpen(false)}
+                            >
+                                <button>{'Cancel'}</button>
+                            </Dialog>
+                        )}
+                    </>
+                );
+            }
+            render(wrap(<Opener/>));
+
+            await userEvent.click(screen.getByText('Open'));
+            expect(screen.getByText('Cancel')).toHaveFocus();
+
+            await userEvent.keyboard('{Escape}');
+            expect(screen.queryByText('Cancel')).not.toBeInTheDocument();
+            expect(screen.getByText('Open')).toHaveFocus();
         });
     });
 });
