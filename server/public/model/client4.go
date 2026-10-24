@@ -2919,6 +2919,16 @@ func (c *Client4) UpdateChannelPrivacy(ctx context.Context, channelId string, pr
 	return DecodeJSONFromResponse[*Channel](r)
 }
 
+// UpdateChannelType changes a team channel's preset or type settings (Antimatter channel types); its type stays.
+func (c *Client4) UpdateChannelType(ctx context.Context, channelId string, req *ChannelTypeRequest) (*Channel, *Response, error) {
+	r, err := c.doAPIPutJSON(ctx, c.channelRoute(channelId).Join("type"), req)
+	if err != nil {
+		return nil, BuildResponse(r), err
+	}
+	defer closeBody(r)
+	return DecodeJSONFromResponse[*Channel](r)
+}
+
 // RestoreChannel restores a previously deleted channel. Any missing fields are not updated.
 func (c *Client4) RestoreChannel(ctx context.Context, channelId string) (*Channel, *Response, error) {
 	r, err := c.doAPIPost(ctx, c.channelRoute(channelId).Join("restore"), "")

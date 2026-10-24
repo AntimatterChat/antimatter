@@ -26,10 +26,11 @@ type ChannelOverride struct {
 }
 
 // ChannelOverridePermissions are the permissions an override may allow or deny: what one does in a channel. Who can
-// see a channel stays its membership (see role-gated channels).
+// see a channel stays its membership (see role-gated channels). create_root_post is only ever given by overrides.
 func ChannelOverridePermissions() []string {
 	return []string{
 		PermissionCreatePost.Id,
+		PermissionCreateRootPost.Id,
 		PermissionAddReaction.Id,
 		PermissionRemoveReaction.Id,
 		PermissionUploadFile.Id,

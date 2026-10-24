@@ -156,6 +156,7 @@ const (
 	AuditEventUpdateChannelMemberSchemeRoles     = "updateChannelMemberSchemeRoles"     // update scheme-based roles
 	AuditEventUpdateChannelPrivacy               = "updateChannelPrivacy"               // change channel privacy settings
 	AuditEventUpdateChannelScheme                = "updateChannelScheme"                // update permission scheme applied to channel
+	AuditEventUpdateChannelType                  = "updateChannelType"                  // Antimatter: change a channel's preset or type settings
 )
 
 // Commands

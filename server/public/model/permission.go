@@ -89,6 +89,10 @@ var PermissionCreateEmojis *Permission
 var PermissionDeleteEmojis *Permission
 var PermissionDeleteOthersEmojis *Permission
 var PermissionCreatePost *Permission
+
+// PermissionCreateRootPost (Antimatter) is starting a conversation (a root post) in a channel, or opening a topic in a
+// forum: override-only, no role holds it (see App.CanStartConversations).
+var PermissionCreateRootPost *Permission
 var PermissionCreatePostPublic *Permission
 var PermissionCreatePostEphemeral *Permission
 var PermissionReadDeletedPosts *Permission
@@ -812,6 +816,12 @@ func initializePermissions() {
 		"create_post",
 		"authentication.permissions.create_post.name",
 		"authentication.permissions.create_post.description",
+		PermissionScopeChannel,
+	}
+	PermissionCreateRootPost = &Permission{
+		"create_root_post",
+		"authentication.permissions.create_root_post.name",
+		"authentication.permissions.create_root_post.description",
 		PermissionScopeChannel,
 	}
 	PermissionCreatePostPublic = &Permission{
