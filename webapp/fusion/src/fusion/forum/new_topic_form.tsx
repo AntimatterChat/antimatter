@@ -30,7 +30,7 @@ export default function NewTopicForm({channel, mode, onClose}: Props) {
     const [titleError, setTitleError] = useState('');
     const titleRef = useRef<HTMLInputElement>(null);
     const bodyRef = useRef<HTMLDivElement>(null);
-    const sendRef = useRef<() => void>();
+    const sendRef = useRef<() => void>(undefined);
 
     const focusBody = () => {
         bodyRef.current?.querySelector<HTMLElement>('textarea, [contenteditable="true"]')?.focus();
