@@ -51,6 +51,10 @@ export type ChannelTypeUpdate = {
     view?: ChannelForumView;
 };
 
+// What the Fusion channelTypes store keeps for one channel: its settings, normalised, and the preset they match ('',
+// read from props.am_preset, for custom settings that no preset matches).
+export type ChannelTypeEntry = ChannelTypeInfo & {preset: ChannelPresetId | ''};
+
 export type ChannelStats = {
     channel_id: string;
     member_count: number;
@@ -311,6 +315,10 @@ export type ChannelsState = {
 
     // Antimatter: the overrides of the channels whose were loaded, applied to permission checks.
     overrides?: RelationOneToOne<Channel, ChannelOverride[]>;
+
+    // Antimatter channel types: the settings of the channels whose payload carried them (props.am_type), kept across
+    // updates that don't (so a plain channel_updated never blanks out a known type). See channel_types.ts.
+    channelTypes?: RelationOneToOne<Channel, ChannelTypeEntry>;
 
     // Antimatter: the messages on top of the channels whose were loaded, the latest put there first.
     onTop?: RelationOneToOne<Channel, OnTopPost[]>;

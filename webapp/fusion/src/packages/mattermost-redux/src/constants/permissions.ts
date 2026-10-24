@@ -64,6 +64,10 @@ const values = {
     MANAGE_OUTGOING_OAUTH_CONNECTIONS: 'manage_outgoing_oauth_connections',
     CREATE_POST: 'create_post',
     CREATE_POST_PUBLIC: 'create_post_public',
+
+    // Antimatter channel types: starting a conversation (a root post) in a channel, or opening a topic in a forum.
+    // Override-only, like the ones below: no role holds it.
+    CREATE_ROOT_POST: 'create_root_post',
     EDIT_POST: 'edit_post',
     EDIT_OTHERS_POSTS: 'edit_others_posts',
     DELETE_POST: 'delete_post',

@@ -16,6 +16,7 @@ import type {
     ChannelModerationPatch,
     ChannelsWithTotalCount,
     ChannelSearchOpts,
+    ChannelTypeUpdate,
     ServerChannel,
     ChannelStats,
     ChannelWithTeamData,
@@ -269,6 +270,16 @@ export function patchChannel(channelId: string, patch: Partial<Channel>): Action
         clientFunc: Client4.patchChannel,
         onSuccess: [ChannelTypes.RECEIVED_CHANNEL],
         params: [channelId, patch],
+    });
+}
+
+// updateChannelType (Antimatter channel types) picks another preset of the channel's type, or changes its settings;
+// the type itself never changes. The filled-in channel comes back and refreshes the channelTypes store too.
+export function updateChannelType(channelId: string, body: ChannelTypeUpdate): ActionFuncAsync<Channel> {
+    return bindClientFunc({
+        clientFunc: Client4.updateChannelType,
+        onSuccess: [ChannelTypes.RECEIVED_CHANNEL],
+        params: [channelId, body],
     });
 }
 

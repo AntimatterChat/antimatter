@@ -8,12 +8,18 @@ import {combineReducers} from 'redux';
 import type {ChannelOverride} from '@mattermost/types/channel_overrides';
 import type {
     Channel,
+    ChannelForumView,
     ChannelJoinRequest,
     ChannelJoinRequestsState,
+    ChannelKindMode,
+    ChannelKindType,
     ChannelMembership,
     ChannelStats,
     ChannelMemberCountByGroup,
     ChannelMemberCountsByGroup,
+    ChannelPresetId,
+    ChannelRootPosts,
+    ChannelTypeEntry,
     ServerChannel,
     ChannelsState,
     OnTopLoading,
@@ -880,6 +886,61 @@ export function overrides(state: RelationOneToOne<Channel, ChannelOverride[]> = 
     }
 }
 
+// Antimatter channel types: each type's first mode, for the rare payload that carries am_type without am_mode.
+const DEFAULT_MODE: Record<ChannelKindType, ChannelKindMode> = {text: 'chat', voice: 'talk', forum: 'discussion'};
+
+// channelTypeFromProps reads one channel's Antimatter channel type settings from its props (am_type, am_mode,
+// am_root_posts, am_preset, am_forum_view), or undefined when the payload wasn't filled in (props.am_type missing): a
+// channel without it isn't necessarily a text channel, just one this payload didn't carry the settings of.
+function channelTypeFromProps(props: Record<string, unknown> | undefined): ChannelTypeEntry | undefined {
+    const type = props?.am_type;
+    if (type !== 'text' && type !== 'voice' && type !== 'forum') {
+        return undefined;
+    }
+    const entry: ChannelTypeEntry = {
+        type,
+        mode: (props?.am_mode as ChannelKindMode) || DEFAULT_MODE[type],
+        root_posts: (props?.am_root_posts as ChannelRootPosts) || 'members',
+        preset: (props?.am_preset as ChannelPresetId) || '',
+    };
+    if (type === 'forum') {
+        entry.view = (props?.am_forum_view as ChannelForumView) || 'topics';
+    }
+    return entry;
+}
+
+// channelTypes are the Antimatter channel types of the channels whose were loaded, fed only from payloads that carry
+// props.am_type (FillInChannelsProps always does, for every team channel; direct and group messages never do), so a
+// payload that wasn't filled in never erases a known type.
+export function channelTypes(state: RelationOneToOne<Channel, ChannelTypeEntry> = {}, action: MMReduxAction) {
+    switch (action.type) {
+    case ChannelTypes.RECEIVED_CHANNEL: {
+        const entry = channelTypeFromProps(action.data?.props);
+        if (!entry) {
+            return state;
+        }
+        return {...state, [action.data.id]: entry};
+    }
+    case ChannelTypes.RECEIVED_CHANNELS:
+    case ChannelTypes.RECEIVED_ALL_CHANNELS: {
+        const list: Array<{id: string; props?: Record<string, unknown>}> = action.data || [];
+        let next = state;
+        for (const c of list) {
+            const entry = channelTypeFromProps(c.props);
+            if (entry) {
+                next = next === state ? {...state} : next;
+                next[c.id] = entry;
+            }
+        }
+        return next;
+    }
+    case UserTypes.LOGOUT_SUCCESS:
+        return {};
+    default:
+        return state;
+    }
+}
+
 const NO_ON_TOP: OnTopPost[] = [];
 
 // onTop are the messages on top of the channels whose were loaded (Antimatter), the latest put there first. Expired
@@ -1264,6 +1325,9 @@ export default combineReducers({
 
     // Antimatter: channel overrides, by channel
     overrides,
+
+    // Antimatter channel types: the settings of the channels whose payload carried them, by channel
+    channelTypes,
 
     // Antimatter: messages on top, by channel, and their loads under way
     onTop,
