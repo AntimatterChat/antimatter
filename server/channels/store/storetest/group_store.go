@@ -5730,8 +5730,8 @@ func groupTestGetGroupsVisibleTo(t *testing.T, rctx request.CTX, ss store.Store)
 
 	listed := func(userID string) []string {
 		t.Helper()
-		groups, err := ss.Group().GetGroups(0, 100, model.GroupSearchOpts{Q: prefix, IncludeMemberIDs: true, IncludeMemberCount: true, FilterVisibleToUserId: userID}, nil)
-		require.NoError(t, err)
+		groups, lErr := ss.Group().GetGroups(0, 100, model.GroupSearchOpts{Q: prefix, IncludeMemberIDs: true, IncludeMemberCount: true, FilterVisibleToUserId: userID}, nil)
+		require.NoError(t, lErr)
 		var ids []string
 		for _, g := range groups {
 			ids = append(ids, g.Id)
