@@ -6,8 +6,8 @@ import {defineMessage, useIntl} from 'react-intl';
 import type {MessageDescriptor} from 'react-intl';
 import {useDispatch, useSelector} from 'react-redux';
 
-import type {ChannelKindType} from '@mattermost/types/channels';
 import type {ChannelOverride} from '@mattermost/types/channel_overrides';
+import type {ChannelKindType} from '@mattermost/types/channels';
 
 import {getMissingProfilesByIds} from 'mattermost-redux/actions/users';
 import {Permissions} from 'mattermost-redux/constants';
@@ -44,9 +44,7 @@ export const LINES: Array<{key: string; label: Label; permissions: string[]}> = 
     {key: 'settings', label: defineMessage({id: 'fusion.overrides.settings', defaultMessage: 'Manage the channel'}), permissions: [Permissions.MANAGE_PUBLIC_CHANNEL_PROPERTIES, Permissions.MANAGE_PRIVATE_CHANNEL_PROPERTIES]},
     {
         key: 'rootPost',
-        label: (channelKind: ChannelKindType) => (channelKind === 'forum' ?
-            defineMessage({id: 'fusion.overrides.openTopics', defaultMessage: 'Open topics', description: 'Permissions editor row (Antimatter channel types): who may open a new topic in a forum.'}) :
-            defineMessage({id: 'fusion.overrides.startConversations', defaultMessage: 'Start conversations', description: 'Permissions editor row (Antimatter channel types): who may start a new conversation in a text or voice channel.'})),
+        label: (channelKind: ChannelKindType) => (channelKind === 'forum' ? defineMessage({id: 'fusion.overrides.openTopics', defaultMessage: 'Open topics', description: 'Permissions editor row (Antimatter channel types): who may open a new topic in a forum.'}) : defineMessage({id: 'fusion.overrides.startConversations', defaultMessage: 'Start conversations', description: 'Permissions editor row (Antimatter channel types): who may start a new conversation in a text or voice channel.'})),
         permissions: [Permissions.CREATE_ROOT_POST],
     },
 ];

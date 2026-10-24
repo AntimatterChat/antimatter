@@ -1,8 +1,8 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import type {Channel} from '@mattermost/types/channels';
 import type {ChannelOverride} from '@mattermost/types/channel_overrides';
+import type {Channel} from '@mattermost/types/channels';
 import type {GroupMembership, GroupPermissions} from '@mattermost/types/groups';
 import type {MemberTimeout} from '@mattermost/types/moderation';
 import type {Role} from '@mattermost/types/roles';

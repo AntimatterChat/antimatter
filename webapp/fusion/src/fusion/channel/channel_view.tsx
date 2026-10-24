@@ -6,8 +6,8 @@ import {useIntl} from 'react-intl';
 import {useSelector} from 'react-redux';
 
 import {Permissions} from 'mattermost-redux/constants';
-import {getChannelMessageCount, getCurrentChannel, isDeactivatedDirectChannel} from 'mattermost-redux/selectors/entities/channels';
 import {getChannelTypeInfo} from 'mattermost-redux/selectors/entities/channel_types';
+import {getChannelMessageCount, getCurrentChannel, isDeactivatedDirectChannel} from 'mattermost-redux/selectors/entities/channels';
 import {canStartConversations, getMemberTimeout, haveIChannelPermission} from 'mattermost-redux/selectors/entities/roles';
 import {getCurrentUserId} from 'mattermost-redux/selectors/entities/users';
 import {getUserIdFromChannelName} from 'mattermost-redux/utils/channel_utils';
@@ -142,9 +142,7 @@ export default function ChannelView({resolvingPermalink = false}: Props) {
                     className={am('note-box')}
                     style={{margin: 0}}
                 >
-                    {channelTypeInfo?.type === 'forum' ?
-                        formatMessage({id: 'fusion.channel.topicsRestricted', defaultMessage: 'Only moderators open topics here. Reply in a thread.', description: 'Replaces the composer in a forum (Antimatter channel types) where only moderators open topics; everyone can still reply.'}) :
-                        formatMessage({id: 'fusion.channel.rootPostsRestricted', defaultMessage: 'Only moderators post here. Reply in a thread.', description: 'Replaces the composer in a text or voice channel (Antimatter channel types) where only moderators start conversations; everyone can still reply.'})}
+                    {channelTypeInfo?.type === 'forum' ? formatMessage({id: 'fusion.channel.topicsRestricted', defaultMessage: 'Only moderators open topics here. Reply in a thread.', description: 'Replaces the composer in a forum (Antimatter channel types) where only moderators open topics; everyone can still reply.'}) : formatMessage({id: 'fusion.channel.rootPostsRestricted', defaultMessage: 'Only moderators post here. Reply in a thread.', description: 'Replaces the composer in a text or voice channel (Antimatter channel types) where only moderators start conversations; everyone can still reply.'})}
                 </div>
             </div>
         );

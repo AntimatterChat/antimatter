@@ -12,8 +12,8 @@ import {patchTeam} from 'mattermost-redux/actions/teams';
 import {Client4} from 'mattermost-redux/client';
 import {General, Permissions} from 'mattermost-redux/constants';
 import {getManagedCategoryMappings} from 'mattermost-redux/selectors/entities/channel_categories';
-import {getMyChannels} from 'mattermost-redux/selectors/entities/channels';
 import {getChannelTypeInfo} from 'mattermost-redux/selectors/entities/channel_types';
+import {getMyChannels} from 'mattermost-redux/selectors/entities/channels';
 import {getTeam} from 'mattermost-redux/selectors/entities/teams';
 
 import {isChannelPresetId} from 'fusion/channel/channel_type_presets';
@@ -195,7 +195,12 @@ export function applyTemplate(teamId: string, template: TeamTemplate): ActionFun
         };
         const byName = new Map<string, Channel>(getMyChannels(getState()).filter((c) => c.team_id === teamId).map((c) => [c.name, c]));
         const created = await Promise.all(template.channels.filter((c) => !byName.has(c.name)).map((c) => dispatch(createChannel({
-            team_id: teamId, name: c.name, display_name: c.display_name, type: c.type, purpose: c.purpose || '', header: c.header || '',
+            team_id: teamId,
+            name: c.name,
+            display_name: c.display_name,
+            type: c.type,
+            purpose: c.purpose || '',
+            header: c.header || '',
             ...(c.preset ? {props: {am_preset: c.preset}} : {}),
         } as Channel, ''))));
         for (const result of created) {

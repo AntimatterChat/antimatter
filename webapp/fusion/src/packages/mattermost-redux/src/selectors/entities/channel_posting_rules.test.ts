@@ -1,8 +1,8 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import type {Channel, ChannelTypeEntry} from '@mattermost/types/channels';
 import type {ChannelOverride} from '@mattermost/types/channel_overrides';
+import type {Channel, ChannelTypeEntry} from '@mattermost/types/channels';
 import type {GlobalState} from '@mattermost/types/store';
 
 import {Permissions} from 'mattermost-redux/constants';

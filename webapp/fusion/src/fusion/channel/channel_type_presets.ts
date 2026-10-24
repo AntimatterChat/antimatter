@@ -59,47 +59,79 @@ export type ChannelPresetCard = {
 // The presets, in picker order (the design's §2 table).
 export const CHANNEL_PRESETS: ChannelPresetCard[] = [
     {
-        id: 'text_chat', type: 'text', mode: 'chat', root_posts: 'members',
+        id: 'text_chat',
+        type: 'text',
+        mode: 'chat',
+        root_posts: 'members',
         label: defineMessage({id: 'fusion.preset.textChat', defaultMessage: 'Chat', description: 'Name of the default text channel preset, on its card in the channel type picker.'}),
         description: defineMessage({id: 'fusion.preset.textChat.description', defaultMessage: 'Messages, files and threads', description: 'Subtitle of the Chat preset card: what the channel offers.'}),
     },
     {
-        id: 'text_announcement', type: 'text', mode: 'chat', root_posts: 'moderators',
+        id: 'text_announcement',
+        type: 'text',
+        mode: 'chat',
+        root_posts: 'moderators',
         label: defineMessage({id: 'fusion.preset.textAnnouncement', defaultMessage: 'Announcement', description: 'Name of the text channel preset where only moderators post, on its card in the channel type picker.'}),
         description: defineMessage({id: 'fusion.preset.textAnnouncement.description', defaultMessage: 'Moderators post; everyone replies in threads', description: 'Subtitle of the Announcement preset card: what the channel offers.'}),
     },
     {
-        id: 'voice_talk', type: 'voice', mode: 'talk', root_posts: 'members',
+        id: 'voice_talk',
+        type: 'voice',
+        mode: 'talk',
+        root_posts: 'members',
         label: defineMessage({id: 'fusion.preset.voiceTalk', defaultMessage: 'Talk', description: 'Name of the default voice channel preset, on its card in the channel type picker.'}),
         description: defineMessage({id: 'fusion.preset.voiceTalk.description', defaultMessage: 'An always-open call; drop in and talk', description: 'Subtitle of the Talk preset card: what the channel offers.'}),
     },
     {
-        id: 'voice_stage', type: 'voice', mode: 'stage', root_posts: 'members',
+        id: 'voice_stage',
+        type: 'voice',
+        mode: 'stage',
+        root_posts: 'members',
         label: defineMessage({id: 'fusion.preset.voiceStage', defaultMessage: 'Stage', description: 'Name of the voice channel preset with speakers and an audience, on its card in the channel type picker.'}),
         description: defineMessage({id: 'fusion.preset.voiceStage.description', defaultMessage: 'Speakers talk, the audience listens and asks to speak', description: 'Subtitle of the Stage preset card: what the channel offers.'}),
     },
     {
-        id: 'forum_agora', type: 'forum', mode: 'discussion', root_posts: 'members', view: 'topics',
+        id: 'forum_agora',
+        type: 'forum',
+        mode: 'discussion',
+        root_posts: 'members',
+        view: 'topics',
         label: defineMessage({id: 'fusion.preset.forumAgora', defaultMessage: 'Discussion', description: 'Name of the default forum preset, on its card in the channel type picker.'}),
         description: defineMessage({id: 'fusion.preset.forumAgora.description', defaultMessage: 'Members open topics and reply', description: 'Subtitle of the Discussion preset card: what the forum offers.'}),
     },
     {
-        id: 'forum_qa', type: 'forum', mode: 'qa', root_posts: 'members', view: 'topics',
+        id: 'forum_qa',
+        type: 'forum',
+        mode: 'qa',
+        root_posts: 'members',
+        view: 'topics',
         label: defineMessage({id: 'fusion.preset.forumQa', defaultMessage: 'Q&A', description: 'Name of the question-and-answer forum preset, on its card in the channel type picker.'}),
         description: defineMessage({id: 'fusion.preset.forumQa.description', defaultMessage: 'Questions, voted answers, one accepted answer', description: 'Subtitle of the Q&A preset card: what the forum offers.'}),
     },
     {
-        id: 'forum_ideas', type: 'forum', mode: 'ideas', root_posts: 'members', view: 'topics',
+        id: 'forum_ideas',
+        type: 'forum',
+        mode: 'ideas',
+        root_posts: 'members',
+        view: 'topics',
         label: defineMessage({id: 'fusion.preset.forumIdeas', defaultMessage: 'Ideas', description: 'Name of the ideas-board forum preset, on its card in the channel type picker.'}),
         description: defineMessage({id: 'fusion.preset.forumIdeas.description', defaultMessage: 'Members suggest and upvote; moderators set a status', description: 'Subtitle of the Ideas preset card: what the forum offers.'}),
     },
     {
-        id: 'forum_announcement', type: 'forum', mode: 'discussion', root_posts: 'moderators', view: 'topics',
+        id: 'forum_announcement',
+        type: 'forum',
+        mode: 'discussion',
+        root_posts: 'moderators',
+        view: 'topics',
         label: defineMessage({id: 'fusion.preset.forumAnnouncement', defaultMessage: 'Announcements', description: 'Name of the forum preset where only moderators open topics, on its card in the channel type picker.'}),
         description: defineMessage({id: 'fusion.preset.forumAnnouncement.description', defaultMessage: 'Moderators open topics; members reply', description: 'Subtitle of the Announcements forum preset card: what the forum offers.'}),
     },
     {
-        id: 'forum_imageboard', type: 'forum', mode: 'discussion', root_posts: 'members', view: 'imageboard',
+        id: 'forum_imageboard',
+        type: 'forum',
+        mode: 'discussion',
+        root_posts: 'members',
+        view: 'imageboard',
         label: defineMessage({id: 'fusion.preset.forumImageboard', defaultMessage: 'Image board', description: 'Name of the image-board forum preset, on its card in the channel type picker.'}),
         description: defineMessage({id: 'fusion.preset.forumImageboard.description', defaultMessage: 'Each topic opens on its image and latest replies', description: 'Subtitle of the Image board preset card: what the forum offers.'}),
     },
@@ -132,9 +164,7 @@ export function presetForInfo(info: {type: ChannelKindType; mode: ChannelKindMod
 
 // Channel settings' two fine-tuning controls (design §4.2), labelled by type.
 export function rootPostsLabel(type: ChannelKindType): MessageDescriptor {
-    return type === 'forum' ?
-        defineMessage({id: 'fusion.channelType.whoOpensTopics', defaultMessage: 'Who can open topics', description: 'Channel settings Type tab: the setting choosing who may open a new topic in a forum.'}) :
-        defineMessage({id: 'fusion.channelType.whoStarts', defaultMessage: 'Who can start conversations', description: 'Channel settings Type tab: the setting choosing who may start a new conversation in a text or voice channel.'});
+    return type === 'forum' ? defineMessage({id: 'fusion.channelType.whoOpensTopics', defaultMessage: 'Who can open topics', description: 'Channel settings Type tab: the setting choosing who may open a new topic in a forum.'}) : defineMessage({id: 'fusion.channelType.whoStarts', defaultMessage: 'Who can start conversations', description: 'Channel settings Type tab: the setting choosing who may start a new conversation in a text or voice channel.'});
 }
 
 export const ROOT_POSTS_OPTIONS: Array<{id: ChannelRootPosts; label: MessageDescriptor}> = [
