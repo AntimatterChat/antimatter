@@ -13,6 +13,44 @@ import type {IDMappedObjects, RelationOneToManyUnique, RelationOneToOne} from '.
 // **G**roup direct message to 2+ others
 export type ChannelType = 'O' | 'P' | 'D' | 'G' | 'threads';
 
+// Antimatter channel types: a team channel is text, voice or forum (fixed when it's made), in one of its type's modes,
+// with settings on top (the server's model/channel_type.go). Every team channel the server gives carries them in its
+// props (am_type, am_mode, am_root_posts, am_preset, and am_forum_view for forums); a channel without props.am_type
+// wasn't filled in, it isn't a text channel.
+export type ChannelKindType = 'text' | 'voice' | 'forum';
+export type ChannelKindMode = 'chat' | 'talk' | 'stage' | 'discussion' | 'qa' | 'ideas';
+export type ChannelRootPosts = 'members' | 'moderators';
+export type ChannelForumView = 'topics' | 'imageboard';
+
+// A preset is a named bundle of a type, a mode and settings, as the picker offers it ('' in props.am_preset: custom
+// settings). Not "Preset": teams/templates.ts has one.
+export type ChannelPresetId =
+    'text_chat' |
+    'text_announcement' |
+    'voice_talk' |
+    'voice_stage' |
+    'forum_agora' |
+    'forum_qa' |
+    'forum_ideas' |
+    'forum_announcement' |
+    'forum_imageboard';
+
+export type ChannelTypeInfo = {
+    type: ChannelKindType;
+    mode: ChannelKindMode;
+    root_posts: ChannelRootPosts;
+    view?: ChannelForumView;
+};
+
+// What PUT /channels/{id}/type takes: a preset of the channel's type first, then the fields given on top of it. A
+// channel's creation carries the same as props (am_preset, am_type, am_mode, am_root_posts, am_forum_view).
+export type ChannelTypeUpdate = {
+    preset?: ChannelPresetId;
+    mode?: ChannelKindMode;
+    root_posts?: ChannelRootPosts;
+    view?: ChannelForumView;
+};
+
 export type ChannelStats = {
     channel_id: string;
     member_count: number;

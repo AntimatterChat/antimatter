@@ -28,6 +28,7 @@ import type {
     ChannelModerationPatch,
     ChannelStats,
     ChannelsWithTotalCount,
+    ChannelTypeUpdate,
     ChannelUnread,
     ChannelViewResponse,
     ChannelWithTeamData,
@@ -1909,6 +1910,14 @@ export default class Client4 {
         return this.doFetch<ServerChannel>(
             `${this.getChannelRoute(channelId)}/privacy`,
             {method: 'put', body: JSON.stringify({privacy})},
+        );
+    };
+
+    // Antimatter channel types: picks another preset of the channel's type, or changes its settings (its type stays).
+    updateChannelType = (channelId: string, body: ChannelTypeUpdate) => {
+        return this.doFetch<ServerChannel>(
+            `${this.getChannelRoute(channelId)}/type`,
+            {method: 'put', body: JSON.stringify(body)},
         );
     };
 

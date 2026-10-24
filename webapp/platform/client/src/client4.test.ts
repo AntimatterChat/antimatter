@@ -17,6 +17,37 @@ describe('Client4', () => {
         nock.restore();
     });
 
+    describe('channel types', () => {
+        let client: Client4;
+
+        beforeEach(() => {
+            client = new Client4();
+            client.setUrl('http://mattermost.example.com');
+        });
+
+        test('updateChannelType should PUT the body to the channel\'s type route', async () => {
+            const channel = {id: 'ch1', props: {am_type: 'forum', am_mode: 'qa', am_root_posts: 'members', am_preset: 'forum_qa', am_forum_view: 'topics'}};
+            nock(client.getBaseRoute()).
+                put('/channels/ch1/type', {preset: 'forum_qa'}).
+                reply(200, channel);
+
+            const result = await client.updateChannelType('ch1', {preset: 'forum_qa'});
+
+            expect(result).toEqual(channel);
+        });
+
+        test('createChannel should pass a preset through the props', async () => {
+            const body = {name: 'beam-questions', display_name: 'Beam questions', type: 'O' as const, team_id: 'team1', props: {am_preset: 'forum_qa'}};
+            nock(client.getBaseRoute()).
+                post('/channels', body).
+                reply(201, {...body, id: 'ch1'});
+
+            const result = await client.createChannel(body);
+
+            expect(result.id).toBe('ch1');
+        });
+    });
+
     describe('property field routes', () => {
         let client: Client4;
 
