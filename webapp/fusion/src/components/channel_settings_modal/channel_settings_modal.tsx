@@ -43,6 +43,7 @@ import ChannelSettingsConfigurationTab from './channel_settings_configuration_ta
 import ChannelSettingsInfoTab from './channel_settings_info_tab';
 import ChannelSettingsPermissionsPolicyTab from './channel_settings_permissions_policy_tab';
 import ChannelSettingsPluginTab from './channel_settings_plugin_tab';
+import ChannelSettingsTypeTab from './channel_settings_type_tab';
 
 import './channel_settings_modal.scss';
 
@@ -57,6 +58,7 @@ type ChannelSettingsModalProps = {
 
 const BuiltInTabIds = {
     INFO: 'info',
+    TYPE: 'type',
     ACCESS_RULES: 'access_rules',
     PERMISSIONS_POLICY: 'permissions_policy',
     CONFIGURATION: 'configuration',
@@ -159,6 +161,10 @@ function ChannelSettingsModal({channelId, isOpen, onExited, focusOriginElement}:
     const shouldShowConfigurationTab = canManageBanner || canManageChannelTranslation || canManageSharedChannels || canManageJoinLeaveMessages;
     const shouldShowInfoTab = canManageChannelProperties;
 
+    // Antimatter channel types: the Type tab (picking another preset, or tuning who starts conversations and a
+    // forum's default view). Direct and group messages have no channel type.
+    const shouldShowTypeTab = canManageChannelProperties && !isDMorGM;
+
     // Antimatter: who archives depends on the kind of community too (see canArchiveChannel).
     const canArchive = useSelector((state: GlobalState) => canArchiveChannel(state, channel));
 
@@ -226,6 +232,13 @@ function ChannelSettingsModal({channelId, isOpen, onExited, focusOriginElement}:
                 display: shouldShowInfoTab,
             },
             {
+                name: BuiltInTabIds.TYPE,
+                uiName: formatMessage({id: 'fusion.channelSettings.type', defaultMessage: 'Type', description: 'Name of the channel settings tab for the channel\'s type and preset (Antimatter channel types).'}),
+                icon: 'icon icon-apps',
+                iconTitle: formatMessage({id: 'generic_icons.channel_type', defaultMessage: 'Type Icon', description: 'Accessible name of the channel settings Type tab\'s icon.'}),
+                display: shouldShowTypeTab,
+            },
+            {
                 name: BuiltInTabIds.ACCESS_RULES,
                 uiName: formatMessage({id: 'channel_settings.tab.membership_policy', defaultMessage: 'Membership Policy'}),
                 icon: 'icon icon-shield-outline',
@@ -257,6 +270,7 @@ function ChannelSettingsModal({channelId, isOpen, onExited, focusOriginElement}:
     }, [
         formatMessage,
         shouldShowInfoTab,
+        shouldShowTypeTab,
         shouldShowAccessRulesTab,
         shouldShowPermissionsPolicyTab,
         shouldShowConfigurationTab,
@@ -367,6 +381,16 @@ function ChannelSettingsModal({channelId, isOpen, onExited, focusOriginElement}:
         );
     };
 
+    const renderTypeTab = () => {
+        return (
+            <ChannelSettingsTypeTab
+                channel={channel}
+                setAreThereUnsavedChanges={setAreThereUnsavedChanges}
+                showTabSwitchError={showTabSwitchError}
+            />
+        );
+    };
+
     const renderConfigurationTab = () => {
         return (
             <ChannelSettingsConfigurationTab
@@ -414,6 +438,8 @@ function ChannelSettingsModal({channelId, isOpen, onExited, focusOriginElement}:
         switch (tab) {
         case BuiltInTabIds.INFO:
             return renderInfoTab();
+        case BuiltInTabIds.TYPE:
+            return renderTypeTab();
         case BuiltInTabIds.ACCESS_RULES:
             return renderAccessRulesTab();
         case BuiltInTabIds.PERMISSIONS_POLICY:
