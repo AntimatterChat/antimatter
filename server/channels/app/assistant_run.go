@@ -86,8 +86,8 @@ func assistantPostCounts(post *model.Post) bool {
 
 // maybeQueueAssistantPost puts a new message in its channel's window, when someone has the assistant open there.
 func (a *App) maybeQueueAssistantPost(post *model.Post, channel *model.Channel) {
-	s := a.Config().AISettings.Assistant
-	if s == nil || !model.SafeDereference(s.Enable) || channel == nil || channel.DeleteAt != 0 || !assistantPostCounts(post) {
+	s := &a.Config().AssistantSettings
+	if !model.SafeDereference(s.Enable) || channel == nil || channel.DeleteAt != 0 || !assistantPostCounts(post) {
 		return
 	}
 	if len(a.assistantViewers(channel.Id, true)) == 0 {

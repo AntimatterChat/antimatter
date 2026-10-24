@@ -4561,7 +4561,10 @@ type Config struct {
 	TextToSpeechSettings        TextToSpeechSettings
 	AIRecapSettings             AIRecapSettings
 	AISettings                  AISettings
-	IPFilteringSettings         IPFilteringSettings
+	// Antimatter: the assistant (assistant.go). Its own section: the System Console's AI › Built-in features page
+	// saves AISettings as a whole.
+	AssistantSettings   AssistantSettings
+	IPFilteringSettings IPFilteringSettings
 }
 
 func (o *Config) Auditable() map[string]any {
@@ -4685,6 +4688,7 @@ func (o *Config) SetDefaults() {
 	o.DeliveryTrackingSettings.SetDefaults()
 	o.AIRecapSettings.SetDefaults()
 	o.AISettings.SetDefaults()
+	o.AssistantSettings.SetDefaults()
 	o.IPFilteringSettings.SetDefaults()
 }
 
@@ -4859,6 +4863,10 @@ func (o *Config) IsValid() *AppError {
 	}
 
 	if appErr := o.isValidAISettings(); appErr != nil {
+		return appErr
+	}
+
+	if appErr := o.AssistantSettings.isValid(); appErr != nil {
 		return appErr
 	}
 

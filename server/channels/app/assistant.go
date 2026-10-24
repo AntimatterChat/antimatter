@@ -110,10 +110,7 @@ type assistantConfig struct {
 }
 
 func (a *App) assistantConfigFor(teamID string) *assistantConfig {
-	s := a.Config().AISettings.Assistant
-	if s == nil {
-		return &assistantConfig{}
-	}
+	s := &a.Config().AssistantSettings
 	cfg := &assistantConfig{
 		enabled:             model.SafeDereference(s.Enable),
 		engine:              model.SafeDereference(s.Engine),
@@ -266,11 +263,11 @@ func (a *App) assistantCommunitySettings(teamID string) *model.AssistantCommunit
 
 // GetAssistantCommunitySettings gives a community's settings, for its admins.
 func (a *App) GetAssistantCommunitySettings(teamID string) *model.AssistantCommunitySettingsInfo {
-	s := a.Config().AISettings.Assistant
+	s := &a.Config().AssistantSettings
 	info := &model.AssistantCommunitySettingsInfo{
 		TeamId:        teamID,
-		ServerEnabled: s != nil && model.SafeDereference(s.Enable),
-		MayOverride:   s != nil && model.SafeDereference(s.AllowCommunityOverride),
+		ServerEnabled: model.SafeDereference(s.Enable),
+		MayOverride:   model.SafeDereference(s.AllowCommunityOverride),
 	}
 	if cs := a.assistantCommunitySettings(teamID); cs != nil {
 		info.Settings = *cs
@@ -282,8 +279,8 @@ func (a *App) GetAssistantCommunitySettings(teamID string) *model.AssistantCommu
 // must be one the community may use (its own connection, or a server-wide one shared with it).
 func (a *App) SetAssistantCommunitySettings(rctx request.CTX, teamID string, settings *model.AssistantCommunitySettings) (*model.AssistantCommunitySettingsInfo, *model.AppError) {
 	const where = "SetAssistantCommunitySettings"
-	s := a.Config().AISettings.Assistant
-	if s == nil || !model.SafeDereference(s.AllowCommunityOverride) {
+	s := &a.Config().AssistantSettings
+	if !model.SafeDereference(s.AllowCommunityOverride) {
 		return nil, model.NewAppError(where, "app.assistant.community_override.app_error", nil, "", http.StatusForbidden)
 	}
 	if appErr := settings.IsValid(); appErr != nil {

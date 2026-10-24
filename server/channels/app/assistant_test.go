@@ -40,7 +40,7 @@ func setupAssistantTest(t *testing.T) *assistantTest {
 	t.Helper()
 	th := setupAITest(t)
 	th.App.UpdateConfig(func(cfg *model.Config) {
-		s := cfg.AISettings.Assistant
+		s := &cfg.AssistantSettings
 		s.Enable = model.NewPointer(true)
 		s.Engine = model.NewPointer(model.AssistantEngineRules)
 		// The tests run the windows themselves.
@@ -332,8 +332,8 @@ func TestAssistantOnlyWhereThePersonMayRead(t *testing.T) {
 	})
 
 	t.Run("the community's settings", func(t *testing.T) {
-		th.App.UpdateConfig(func(cfg *model.Config) { cfg.AISettings.Assistant.AllowCommunityOverride = model.NewPointer(true) })
-		defer th.App.UpdateConfig(func(cfg *model.Config) { cfg.AISettings.Assistant.AllowCommunityOverride = model.NewPointer(false) })
+		th.App.UpdateConfig(func(cfg *model.Config) { cfg.AssistantSettings.AllowCommunityOverride = model.NewPointer(true) })
+		defer th.App.UpdateConfig(func(cfg *model.Config) { cfg.AssistantSettings.AllowCommunityOverride = model.NewPointer(false) })
 		channel := th.CreateChannel(t, th.BasicTeam)
 		at.open(at.maya, channel)
 		_, appErr := th.App.SetAssistantCommunitySettings(th.Context, th.BasicTeam.Id, &model.AssistantCommunitySettings{Enabled: model.NewPointer(false)})
@@ -367,8 +367,8 @@ func TestAssistantOnlyWhereThePersonMayRead(t *testing.T) {
 	})
 
 	t.Run("the server's switch", func(t *testing.T) {
-		th.App.UpdateConfig(func(cfg *model.Config) { cfg.AISettings.Assistant.Enable = model.NewPointer(false) })
-		defer th.App.UpdateConfig(func(cfg *model.Config) { cfg.AISettings.Assistant.Enable = model.NewPointer(true) })
+		th.App.UpdateConfig(func(cfg *model.Config) { cfg.AssistantSettings.Enable = model.NewPointer(false) })
+		defer th.App.UpdateConfig(func(cfg *model.Config) { cfg.AssistantSettings.Enable = model.NewPointer(true) })
 		channel := th.CreateChannel(t, th.BasicTeam)
 		require.Nil(t, th.App.setAssistantPresenceEntry(th.Context, at.maya.Id, channel.Id, true))
 		at.run(channel, at.post(at.maya, channel, "cpu on www-1?"))
@@ -389,7 +389,7 @@ func TestAssistantOnlyWhereThePersonMayRead(t *testing.T) {
 // The hourly budget of cards per person.
 func TestAssistantCardBudget(t *testing.T) {
 	at := setupAssistantTest(t)
-	at.th.App.UpdateConfig(func(cfg *model.Config) { cfg.AISettings.Assistant.CardsPerUserHour = model.NewPointer(1) })
+	at.th.App.UpdateConfig(func(cfg *model.Config) { cfg.AssistantSettings.CardsPerUserHour = model.NewPointer(1) })
 	at.open(at.maya, at.channel)
 	at.run(at.channel, at.post(at.maya, at.channel, "cpu on www-1?"))
 	at.run(at.channel, at.post(at.maya, at.channel, "memory on www-1?"))
@@ -705,7 +705,7 @@ func TestAssistantModelEngine(t *testing.T) {
 		req.Models.Decisions = "decider"
 	})
 	th.App.UpdateConfig(func(cfg *model.Config) {
-		s := cfg.AISettings.Assistant
+		s := &cfg.AssistantSettings
 		s.Engine = model.NewPointer(model.AssistantEngineModel)
 		s.ConnectionId = model.NewPointer(c.Id)
 		s.ThresholdPercent = model.NewPointer(70)
@@ -772,7 +772,7 @@ func TestAssistantModelEngine(t *testing.T) {
 		d.mu.Lock()
 		d.card, d.tool, d.toolConf, d.argChoice, d.argConf = 0.9, at.tool("host_metrics"), 0.9, "www-1", 0.9
 		d.mu.Unlock()
-		th.App.UpdateConfig(func(cfg *model.Config) { cfg.AISettings.Assistant.DecisionsPerChannelHour = model.NewPointer(1) })
+		th.App.UpdateConfig(func(cfg *model.Config) { cfg.AssistantSettings.DecisionsPerChannelHour = model.NewPointer(1) })
 		channel := th.CreateChannel(t, th.BasicTeam)
 		at.open(at.maya, channel)
 		before := decisions()
@@ -783,8 +783,8 @@ func TestAssistantModelEngine(t *testing.T) {
 		assert.Equal(t, before+1, decisions(), "no more decisions this hour")
 
 		th.App.UpdateConfig(func(cfg *model.Config) {
-			cfg.AISettings.Assistant.DecisionsPerChannelHour = model.NewPointer(60)
-			cfg.AISettings.Assistant.DecisionsPerUserHour = model.NewPointer(0)
+			cfg.AssistantSettings.DecisionsPerChannelHour = model.NewPointer(60)
+			cfg.AssistantSettings.DecisionsPerUserHour = model.NewPointer(0)
 		})
 		other := th.CreateChannel(t, th.BasicTeam)
 		at.open(at.maya, other)
@@ -793,9 +793,9 @@ func TestAssistantModelEngine(t *testing.T) {
 	})
 
 	t.Run("no decision model, no decisions", func(t *testing.T) {
-		th.App.UpdateConfig(func(cfg *model.Config) { cfg.AISettings.Assistant.DecisionsPerUserHour = model.NewPointer(30) })
+		th.App.UpdateConfig(func(cfg *model.Config) { cfg.AssistantSettings.DecisionsPerUserHour = model.NewPointer(30) })
 		chatOnly := createTestAIConnection(t, th, llm, model.AIConnectionScopeServer, nil)
-		th.App.UpdateConfig(func(cfg *model.Config) { cfg.AISettings.Assistant.ConnectionId = model.NewPointer(chatOnly.Id) })
+		th.App.UpdateConfig(func(cfg *model.Config) { cfg.AssistantSettings.ConnectionId = model.NewPointer(chatOnly.Id) })
 		channel := th.CreateChannel(t, th.BasicTeam)
 		at.open(at.maya, channel)
 		before := decisions()

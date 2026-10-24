@@ -1157,9 +1157,6 @@ export type AISettings = {
     Recaps: AIFeatureSettings;
     AutoTranslation: AIFeatureSettings;
     TextToSpeech: AIFeatureSettings;
-
-    // Antimatter: the assistant (assistant.ts).
-    Assistant: AssistantSettings;
 };
 
 export type AIRecapSettings = {
@@ -1224,6 +1221,9 @@ export type AdminConfig = {
     TextToSpeechSettings: TextToSpeechSettings;
     AIRecapSettings: AIRecapSettings;
     AISettings: AISettings;
+
+    // Antimatter: the assistant (assistant.ts).
+    AssistantSettings: AssistantSettings;
     IPFilteringSettings: IPFilteringSettings;
     MobileEphemeralModeSettings: MobileEphemeralModeSettings;
 };

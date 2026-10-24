@@ -740,6 +740,23 @@
         "AutoTranslation": null,
         "TextToSpeech": null
     },
+    "AssistantSettings": {
+        "Enable": null,
+        "Engine": null,
+        "AllowCommunityOverride": null,
+        "ConnectionId": null,
+        "Model": null,
+        "ThresholdPercent": null,
+        "DecisionsPerUserHour": null,
+        "DecisionsPerChannelHour": null,
+        "CardsPerUserHour": null,
+        "DebounceSeconds": null,
+        "OfferTimeoutSeconds": null,
+        "AllowedTools": null,
+        "Patterns": null,
+        "SeedEntities": null,
+        "DictionarySources": null
+    },
     "IPFilteringSettings": {
         "Rules": null
     },

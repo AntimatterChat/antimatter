@@ -132,7 +132,7 @@ export type AssistantOfferEventData = {
     offer: AssistantOfferView;
 };
 
-// The assistant's server settings (AISettings.Assistant).
+// The assistant's server settings (AssistantSettings).
 export type AssistantSettings = {
     Enable: boolean;
     Engine: AssistantEngine;

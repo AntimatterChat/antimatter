@@ -16617,7 +16617,7 @@
   {
     "id": "model.assistant.entities.app_error",
     "translation": "The assistant's seed entities aren't valid.",
-    "description": "Validation error (Antimatter) for the assistant's seed entities (AISettings.Assistant.SeedEntities): not a JSON list, too many, a type that isn't lower case, or a value or alias that's empty or too long."
+    "description": "Validation error (Antimatter) for the assistant's seed entities (AssistantSettings.SeedEntities): not a JSON list, too many, a type that isn't lower case, or a value or alias that's empty or too long."
   },
   {
     "id": "model.assistant.muted_tools.app_error",
@@ -16627,12 +16627,12 @@
   {
     "id": "model.assistant.patterns.app_error",
     "translation": "The assistant's patterns aren't valid.",
-    "description": "Validation error (Antimatter) for the assistant's intent patterns (AISettings.Assistant.Patterns): not a JSON list, too many, a pattern ID used twice, an unknown kind (insight or action), an expression that doesn't compile, or no tools."
+    "description": "Validation error (Antimatter) for the assistant's intent patterns (AssistantSettings.Patterns): not a JSON list, too many, a pattern ID used twice, an unknown kind (insight or action), an expression that doesn't compile, or no tools."
   },
   {
     "id": "model.assistant.sources.app_error",
     "translation": "The assistant's dictionary sources aren't valid.",
-    "description": "Validation error (Antimatter) for the assistant's dictionary sources (AISettings.Assistant.DictionarySources): not a JSON list, too many, or a source without a tool, an entity type or a field."
+    "description": "Validation error (Antimatter) for the assistant's dictionary sources (AssistantSettings.DictionarySources): not a JSON list, too many, or a source without a tool, an entity type or a field."
   },
   {
     "id": "model.authorize.is_valid.auth_code.app_error",
@@ -17315,11 +17315,6 @@
     "description": "Configuration validation error shown to a system admin when the access control sync job interval setting is below the 60 second minimum. Blocks saving the configuration."
   },
   {
-    "id": "model.config.is_valid.ai.assistant.app_error",
-    "translation": "The assistant's setting {{.Setting}} isn't valid.",
-    "description": "Config validation error (Antimatter): one of the assistant's settings (AISettings.Assistant) is out of range or malformed. {{.Setting}} is the setting's name, not translated."
-  },
-  {
     "id": "model.config.is_valid.ai.connection_id.app_error",
     "translation": "The model connection of {{.Feature}} isn't a valid ID.",
     "description": "Config validation error: an AISettings feature (Rewrite, Recaps, AutoTranslation, TextToSpeech) names an invalid model connection ID. {{.Feature}} is the setting's name, not translated."
@@ -17373,6 +17368,11 @@
     "id": "model.config.is_valid.amazons3_timeout.app_error",
     "translation": "Invalid timeout value {{.Value}}. Should be a positive number.",
     "description": "Config validation error shown to system admins for the Amazon S3 file storage request timeout setting; {{.Value}} is the rejected timeout value."
+  },
+  {
+    "id": "model.config.is_valid.assistant.app_error",
+    "translation": "The assistant's setting {{.Setting}} isn't valid.",
+    "description": "Config validation error (Antimatter): one of the assistant's settings (AssistantSettings) is out of range or malformed. {{.Setting}} is the setting's name, not translated."
   },
   {
     "id": "model.config.is_valid.atmos_camo_image_proxy_removed.app_error",

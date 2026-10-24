@@ -246,8 +246,7 @@ func TestAssistantDebounce(t *testing.T) {
 func TestAssistantSettingsAreChecked(t *testing.T) {
 	cfg := &model.Config{}
 	cfg.SetDefaults()
-	s := cfg.AISettings.Assistant
-	require.NotNil(t, s)
+	s := &cfg.AssistantSettings
 	assert.False(t, *s.Enable, "off by default")
 	assert.Equal(t, model.AssistantEngineRules, *s.Engine)
 	assert.Nil(t, cfg.IsValid())
@@ -272,15 +271,15 @@ func TestAssistantSettingsAreChecked(t *testing.T) {
 		"connection": func(s *model.AssistantSettings) { s.ConnectionId = model.NewPointer("nope") },
 	} {
 		c := cfg.Clone()
-		change(c.AISettings.Assistant)
+		change(&c.AssistantSettings)
 		assert.NotNil(t, c.IsValid(), name)
 	}
 
 	c := cfg.Clone()
-	c.AISettings.Assistant.Patterns = json.RawMessage(`[{"id":"ops.mine","kind":"insight","match":["\\bping\\s+{host}"],"tools":["*ping*"]}]`)
-	c.AISettings.Assistant.SeedEntities = json.RawMessage(`[{"type":"host","value":"www-1","aliases":["www1"]}]`)
+	c.AssistantSettings.Patterns = json.RawMessage(`[{"id":"ops.mine","kind":"insight","match":["\\bping\\s+{host}"],"tools":["*ping*"]}]`)
+	c.AssistantSettings.SeedEntities = json.RawMessage(`[{"type":"host","value":"www-1","aliases":["www1"]}]`)
 	require.Nil(t, c.IsValid())
-	patterns, appErr := model.ParseAssistantPatterns(c.AISettings.Assistant.Patterns)
+	patterns, appErr := model.ParseAssistantPatterns(c.AssistantSettings.Patterns)
 	require.Nil(t, appErr)
 	matches := assistantMatchRules("ping www1", testAssistantDictionary(), compileAssistantPatterns(patterns))
 	require.Len(t, matches, 1, "a pattern of the settings replaces the built-in ones")

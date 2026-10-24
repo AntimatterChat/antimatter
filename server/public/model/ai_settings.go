@@ -52,8 +52,6 @@ type AISettings struct {
 	Recaps          *AIFeatureSettings `access:"integrations_integration_management"`
 	AutoTranslation *AIFeatureSettings `access:"integrations_integration_management"`
 	TextToSpeech    *AIFeatureSettings `access:"integrations_integration_management"`
-	// Assistant is the ambient assistant's settings (assistant.go).
-	Assistant *AssistantSettings `access:"integrations_integration_management"`
 }
 
 func (s *AISettings) SetDefaults() {
@@ -73,10 +71,6 @@ func (s *AISettings) SetDefaults() {
 		s.TextToSpeech = &AIFeatureSettings{}
 	}
 	s.TextToSpeech.SetDefaults()
-	if s.Assistant == nil {
-		s.Assistant = &AssistantSettings{}
-	}
-	s.Assistant.SetDefaults()
 }
 
 func (o *Config) isValidAISettings() *AppError {
@@ -91,12 +85,6 @@ func (o *Config) isValidAISettings() *AppError {
 			return appErr
 		}
 	}
-	if s.Assistant != nil {
-		if appErr := s.Assistant.isValid(); appErr != nil {
-			return appErr
-		}
-	}
-
 	at := o.AutoTranslationSettings
 	if at.Enable != nil && *at.Enable && at.Provider != nil {
 		switch *at.Provider {

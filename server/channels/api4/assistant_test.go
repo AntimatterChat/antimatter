@@ -23,7 +23,7 @@ import (
 func setupAssistantAPI(t *testing.T) (*TestHelper, aiTestClients, *model.Client4, *model.Channel) {
 	th, clients := setupAIConnectionsAPI(t)
 	th.App.UpdateConfig(func(cfg *model.Config) {
-		s := cfg.AISettings.Assistant
+		s := &cfg.AssistantSettings
 		s.Enable = model.NewPointer(true)
 		s.DebounceSeconds = model.NewPointer(0)
 		s.Patterns = json.RawMessage(`[
@@ -258,7 +258,7 @@ func TestAssistantAPI(t *testing.T) {
 		require.Error(t, err, "not unless the server lets communities")
 		CheckForbiddenStatus(t, resp)
 
-		th.App.UpdateConfig(func(cfg *model.Config) { cfg.AISettings.Assistant.AllowCommunityOverride = model.NewPointer(true) })
+		th.App.UpdateConfig(func(cfg *model.Config) { cfg.AssistantSettings.AllowCommunityOverride = model.NewPointer(true) })
 		info, _, err = clients.communityAdmin.SetAssistantCommunitySettings(ctx, th.BasicTeam.Id, &model.AssistantCommunitySettings{Enabled: model.NewPointer(false)})
 		require.NoError(t, err)
 		require.NotNil(t, info.Settings.Enabled)

@@ -64,7 +64,7 @@ const (
 	AssistantEntityMaxRunes    = 80
 )
 
-// AssistantSettings are the assistant's server settings (AISettings.Assistant). It's off until a system admin turns
+// AssistantSettings are the assistant's server settings (Config.AssistantSettings). It's off until a system admin turns
 // it on; a community's admins may then change it for their community when AllowCommunityOverride is on.
 type AssistantSettings struct {
 	Enable *bool `access:"integrations_integration_management"`
@@ -137,7 +137,7 @@ func (s *AssistantSettings) SetDefaults() {
 
 func (s *AssistantSettings) isValid() *AppError {
 	invalid := func(field string) *AppError {
-		return NewAppError("Config.IsValid", "model.config.is_valid.ai.assistant.app_error", map[string]any{"Setting": field}, "", http.StatusBadRequest)
+		return NewAppError("Config.IsValid", "model.config.is_valid.assistant.app_error", map[string]any{"Setting": field}, "", http.StatusBadRequest)
 	}
 	if s.Engine != nil && !IsValidAssistantEngine(*s.Engine) {
 		return invalid("Engine")
