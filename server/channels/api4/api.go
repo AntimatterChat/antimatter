@@ -376,6 +376,7 @@ func Init(srv *app.Server) (*API, error) {
 	api.InitCommunityAttributes()
 	api.InitCommunityProfile()
 	api.InitOnTopPosts()
+	api.InitForumTopics()
 	api.InitPost()
 	api.InitFile()
 	api.InitUpload()

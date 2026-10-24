@@ -102,6 +102,9 @@ func (a *App) SaveReactionForPost(rctx request.CTX, reaction *model.Reaction) (*
 		}
 	}
 
+	// Antimatter: a vote for an idea makes the voter follow it.
+	a.followTopicOnVote(rctx, reaction, post, channel)
+
 	// The post is always modified since the UpdateAt always changes
 	a.Srv().Store().Post().InvalidateLastPostTimeCache(channel.Id)
 

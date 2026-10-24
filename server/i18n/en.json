@@ -13080,6 +13080,91 @@
     "description": "API validation error when a toast (brief in-app popup notification) request omits the recipient user's ID."
   },
   {
+    "id": "app.topic.accept.not_a_reply.app_error",
+    "translation": "Only a reply in this topic can be its answer.",
+    "description": "API error when the message chosen as a Q&A forum topic's accepted answer isn't a live reply of that topic."
+  },
+  {
+    "id": "app.topic.accept.not_allowed.app_error",
+    "translation": "Only the person who asked and the forum's moderators can choose the answer.",
+    "description": "API error when someone who neither asked the question nor moderates the forum tries to mark or unmark a reply as a Q&A topic's accepted answer."
+  },
+  {
+    "id": "app.topic.answer.accepted",
+    "translation": "@{{.Username}} marked @{{.AuthorUsername}}'s reply as the answer.",
+    "description": "System message in a Q&A forum topic when someone accepts a reply as its answer. {{.Username}} is who accepted it, {{.AuthorUsername}} who wrote the reply."
+  },
+  {
+    "id": "app.topic.answer.removed",
+    "translation": "@{{.Username}} removed the accepted answer.",
+    "description": "System message in a Q&A forum topic when someone takes back its accepted answer. {{.Username}} is who did it."
+  },
+  {
+    "id": "app.topic.list.app_error",
+    "translation": "Unable to get the forum's topics.",
+    "description": "API error when the server fails to read a forum channel's list of topics."
+  },
+  {
+    "id": "app.topic.mode.app_error",
+    "translation": "This forum doesn't have that. Accepted answers are for Q&A forums, statuses for Ideas forums.",
+    "description": "API error when a request uses accepted answers in a forum that isn't a Q&A forum, or statuses in a forum that isn't an Ideas forum (Antimatter forum presets)."
+  },
+  {
+    "id": "app.topic.not_a_forum.app_error",
+    "translation": "This channel isn't a forum.",
+    "description": "API error when the topic list is asked of a channel that isn't a forum channel."
+  },
+  {
+    "id": "app.topic.not_a_topic.app_error",
+    "translation": "This message isn't a forum topic.",
+    "description": "API error when a topic's answer or status is changed on a message that isn't the first post of a topic in a forum channel."
+  },
+  {
+    "id": "app.topic.status.changed",
+    "translation": "@{{.Username}} set the status to {{.Status}}.",
+    "description": "System message in an Ideas forum topic when a moderator changes its status. {{.Username}} is the moderator, {{.Status}} the status name (Open, Planned, In progress, Done or Declined)."
+  },
+  {
+    "id": "app.topic.status.invalid.app_error",
+    "translation": "Unknown status. Use open, planned, in_progress, done or declined.",
+    "description": "API error when an Ideas forum topic is given a status that doesn't exist; the listed values are literal API values."
+  },
+  {
+    "id": "app.topic.status.name.declined",
+    "translation": "Declined",
+    "description": "Status name of an idea in an Ideas forum: it won't be done. Used in the system message about a status change."
+  },
+  {
+    "id": "app.topic.status.name.done",
+    "translation": "Done",
+    "description": "Status name of an idea in an Ideas forum: it has been done. Used in the system message about a status change."
+  },
+  {
+    "id": "app.topic.status.name.in_progress",
+    "translation": "In progress",
+    "description": "Status name of an idea in an Ideas forum: work on it has started. Used in the system message about a status change."
+  },
+  {
+    "id": "app.topic.status.name.open",
+    "translation": "Open",
+    "description": "Status name of an idea in an Ideas forum: suggested, not decided yet. Used in the system message about a status change."
+  },
+  {
+    "id": "app.topic.status.name.planned",
+    "translation": "Planned",
+    "description": "Status name of an idea in an Ideas forum: it will be done. Used in the system message about a status change."
+  },
+  {
+    "id": "app.topic.status.not_allowed.app_error",
+    "translation": "Only the forum's moderators can set an idea's status.",
+    "description": "API error when someone who doesn't moderate an Ideas forum tries to change a topic's status."
+  },
+  {
+    "id": "app.topic.update.app_error",
+    "translation": "Unable to update the topic.",
+    "description": "API error when the server fails to save a forum topic's accepted answer or status."
+  },
+  {
     "id": "app.update_error",
     "translation": "update error",
     "description": "Low-level database error detail meaning an update query failed; terse developer-facing text."

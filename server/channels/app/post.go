@@ -2263,6 +2263,9 @@ func (a *App) DeletePost(rctx request.CTX, postID, deleteByID string) (*model.Po
 		}
 	}
 
+	// Antimatter: a deleted reply is no longer its forum topic's accepted answer.
+	a.clearAcceptedAnswerOf(rctx, post)
+
 	appErr = a.CleanUpAfterPostDeletion(rctx, post, deleteByID)
 	if appErr != nil {
 		return nil, appErr
