@@ -52,6 +52,8 @@ import {a11yRegion} from 'fusion/utils/a11y_regions';
 import {am} from 'fusion/utils/class_names';
 import PluggableErrorBoundary from 'plugins/pluggable/error_boundary';
 import Constants from 'utils/constants';
+import {execCommandInsertText} from 'utils/exec_commands';
+import {formatGithubCodePaste, formatMarkdownLinkMessage, formatMarkdownMessage, getHtmlTable, hasMarkdownFormatting, isGitHubCodeBlock, isTextUrl} from 'utils/paste';
 import {generateId} from 'utils/utils';
 
 import type {GlobalState} from 'types/store';
@@ -613,6 +615,40 @@ function MessageBox({channelId, rootId = '', placeholder, afterSubmit, extraProp
         setPending((p) => p.filter((x) => x.clientId !== clientId));
     };
 
+    // The plain-text textarea's paste handling, converting pasted HTML (tables, links, formatting, code) to
+    // Markdown with the same helpers the classic textbox uses. Pasted files win over everything else (handled by
+    // the caller before this runs); plain text with no markdown-worthy HTML on the clipboard pastes unchanged.
+    const handlePlainTextPaste = (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
+        const {clipboardData} = e;
+        const textarea = textareaRef.current;
+        const selectionStart = textarea ? textarea.selectionStart : null;
+        const selectionEnd = textarea ? textarea.selectionEnd : null;
+        const hasSelection = selectionStart !== null && selectionEnd !== null && selectionStart < selectionEnd;
+        const hasFormatting = hasMarkdownFormatting(clipboardData);
+        const htmlTable = getHtmlTable(clipboardData);
+        const shouldApplyLinkMarkdown = hasSelection && isTextUrl(clipboardData);
+        const shouldApplyGithubCodeBlock = Boolean(htmlTable && isGitHubCodeBlock(htmlTable.className));
+
+        if (!hasFormatting && !shouldApplyLinkMarkdown) {
+            return;
+        }
+
+        e.preventDefault();
+
+        // execCommand's 'insertText' triggers the textarea's native 'input' event, so the existing onChange handler
+        // picks up the result — no need to set the draft message here ourselves.
+        if (shouldApplyLinkMarkdown) {
+            const formattedLink = formatMarkdownLinkMessage({selectionStart: selectionStart as number, selectionEnd: selectionEnd as number, message: draft.message, clipboardData});
+            execCommandInsertText(formattedLink);
+        } else if (shouldApplyGithubCodeBlock) {
+            const {formattedCodeBlock} = formatGithubCodePaste({selectionStart, selectionEnd, message: draft.message, clipboardData});
+            execCommandInsertText(formattedCodeBlock);
+        } else {
+            const {formattedMarkdown} = formatMarkdownMessage(clipboardData, draft.message, selectionStart ?? draft.message.length);
+            execCommandInsertText(formattedMarkdown);
+        }
+    };
+
     // Files dropped anywhere on the conversation go to its composer, as in the mockup.
     const uploadRef = useRef(upload);
     uploadRef.current = upload;
@@ -848,10 +884,13 @@ function MessageBox({channelId, rootId = '', placeholder, afterSubmit, extraProp
                             }}
                             onKeyDown={onKeyDown}
                             onPaste={(e) => {
+                                // Pasted files win over pasted HTML, as in the rich editor.
                                 if (e.clipboardData.files.length) {
                                     e.preventDefault();
                                     upload(e.clipboardData.files);
+                                    return;
                                 }
+                                handlePlainTextPaste(e);
                             }}
                         />
                     )}

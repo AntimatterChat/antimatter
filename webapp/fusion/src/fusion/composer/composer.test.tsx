@@ -8,6 +8,7 @@ import {onSubmit} from 'actions/views/create_comment';
 
 import {LAYER_ID} from 'fusion/components/layer';
 import {act, fireEvent, renderWithContext, screen, userEvent, waitFor, within} from 'tests/react_testing_utils';
+import {execCommandInsertText} from 'utils/exec_commands';
 import {TestHelper} from 'utils/test_helper';
 
 import type {ComposerModeProps} from 'types/store/plugins';
@@ -32,6 +33,7 @@ jest.mock('fusion/shell/toast_context', () => ({useToast: () => jest.fn()}));
 let mockBurnAllowed = false;
 jest.mock('components/common/hooks/useCreateBurnOnReadAccess', () => ({useCreateBurnOnReadAccess: () => mockBurnAllowed}));
 jest.mock('./ai_rewrite', () => ({__esModule: true, default: () => null, useAIRewriteAvailable: () => false}));
+jest.mock('utils/exec_commands', () => ({execCommandInsertText: jest.fn()}));
 jest.mock('./autocomplete', () => ({__esModule: true, default: jest.requireActual('react').forwardRef(() => null)}));
 jest.mock('./away_note', () => ({__esModule: true, default: () => null}));
 jest.mock('./sleep_note', () => ({__esModule: true, default: () => null}));
@@ -406,6 +408,57 @@ describe('fusion/composer/Composer', () => {
             render({}, {ComposerMode: [{...poll, shouldRender: () => false}]});
             await userEvent.click(screen.getByRole('button', {name: 'Add a file and more'}));
             expect(screen.queryByRole('menuitem', {name: 'Create a poll'})).not.toBeInTheDocument();
+        });
+    });
+
+    // The plain-text textarea (the default composer, with no rich text editor flag/preference): pasted HTML
+    // converts to Markdown, the same way the classic textbox does, with the same helpers (utils/paste).
+    describe('plain-text paste', () => {
+        const pasteHtml = (html: string, plainText = '') => {
+            const textarea = screen.getByRole('textbox', {name: 'Write to General'});
+            fireEvent.paste(textarea, {
+                clipboardData: {
+                    files: [],
+                    types: ['text/html', 'text/plain'],
+                    getData: (type: string) => (type === 'text/plain' ? plainText : html),
+                },
+            });
+        };
+
+        test.each([
+            ['a table', '<table><tr><td>test</td><td>test</td></tr><tr><td>test</td><td>test</td></tr></table>', '| test | test |\n| --- | --- |\n| test | test |\n'],
+            ['a link', '<a href="https://test.domain">link text</a>', '[link text](https://test.domain)'],
+            ['strikethrough formatting', '<p>a <del>struck</del> word</p>', 'a ~~struck~~ word'],
+            ['a fenced code block', '<pre><code class="language-js">const a = 1;\nconsole.log(a);</code></pre>', '```js\nconst a = 1;\nconsole.log(a);\n```'],
+        ])('converts pasted %s to Markdown', (_name, html, expectedMarkdown) => {
+            render();
+            pasteHtml(html);
+
+            expect(execCommandInsertText).toHaveBeenCalledWith(expectedMarkdown);
+        });
+
+        test('plain text with no markdown-worthy HTML on the clipboard pastes unchanged', () => {
+            render();
+            pasteHtml('<span style="color: red">a * b</span>', 'a * b');
+
+            expect(execCommandInsertText).not.toHaveBeenCalled();
+        });
+
+        test('pasted files win over pasted HTML: they attach, and no markdown is inserted', () => {
+            render();
+            const textarea = screen.getByRole('textbox', {name: 'Write to General'});
+            const file = new File(['png'], 'screenshot.png', {type: 'image/png'});
+
+            fireEvent.paste(textarea, {
+                clipboardData: {
+                    files: [file],
+                    types: ['Files', 'text/html', 'text/plain'],
+                    getData: (type: string) => (type === 'text/plain' ? 'screenshot.png' : '<strong>screenshot.png</strong>'),
+                },
+            });
+
+            expect(uploadFile).toHaveBeenCalledWith(expect.objectContaining({file, name: 'screenshot.png', channelId: 'c1'}));
+            expect(execCommandInsertText).not.toHaveBeenCalled();
         });
     });
 
