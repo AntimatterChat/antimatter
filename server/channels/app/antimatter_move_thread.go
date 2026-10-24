@@ -20,7 +20,7 @@ import (
 
 // antimatterThreadTitleProp is where Fusion keeps a topic's name (a named
 // thread), on the thread's first message.
-const antimatterThreadTitleProp = "am_thread_title"
+const antimatterThreadTitleProp = model.PostPropsThreadTitle
 
 // IsThreadModerator says whether a user moderates the threads of the channel
 // source: its channel moderators (IsChannelModerator: its channel admins, the
@@ -77,6 +77,13 @@ func moveThreadError(id string, params map[string]any, status int) *model.AppErr
 // gets a pointer to the new one, and the target a note that the messages came
 // from elsewhere. It returns the moved first message.
 func (a *App) MoveThreadToChannel(rctx request.CTX, postID, targetChannelID string, flatten bool, user *model.User) (*model.Post, *model.AppError) {
+	return a.MoveThreadToChannelWithTitle(rctx, postID, targetChannelID, flatten, "", user)
+}
+
+// MoveThreadToChannelWithTitle is MoveThreadToChannel with the title the thread gets as a topic when the target is a
+// forum (forums take only topics): title, else the thread's own; without either the move is refused, as is
+// flattening it into a forum. Elsewhere the title is ignored.
+func (a *App) MoveThreadToChannelWithTitle(rctx request.CTX, postID, targetChannelID string, flatten bool, title string, user *model.User) (*model.Post, *model.AppError) {
 	post, appErr := a.GetSinglePost(rctx, postID, false)
 	if appErr != nil {
 		return nil, appErr
@@ -126,6 +133,13 @@ func (a *App) MoveThreadToChannel(rctx request.CTX, postID, targetChannelID stri
 	if appErr = a.checkCommunityRules(rctx, user, target); appErr != nil {
 		return nil, appErr
 	}
+	// Antimatter: a forum takes only topics, so the thread comes in as one, with a title.
+	forumTitle := ""
+	if a.isForumChannel(target) {
+		if forumTitle, appErr = forumTitleForMove(root, title, flatten); appErr != nil {
+			return nil, appErr
+		}
+	}
 
 	thread, appErr := a.GetPostThread(rctx, root.Id, model.GetPostsOptions{}, user.Id)
 	if appErr != nil {
@@ -154,6 +168,9 @@ func (a *App) MoveThreadToChannel(rctx request.CTX, postID, targetChannelID stri
 
 	rctx.Logger().Info("Moving a thread", mlog.String("user_id", user.Id), mlog.String("root_id", root.Id), mlog.String("from_channel_id", source.Id), mlog.String("to_channel_id", target.Id), mlog.Int("messages", wpl.NumPosts()), mlog.Bool("flatten", flatten))
 
+	if forumTitle != "" {
+		wpl.Posts[0].AddProp(model.PostPropsThreadTitle, forumTitle)
+	}
 	newRoot, _, appErr := a.copyPostList(rctx, wpl, target, copyPostListOptions{keepTimes: true, silent: true, flatten: flatten})
 	if appErr != nil {
 		return nil, appErr

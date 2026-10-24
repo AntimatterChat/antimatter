@@ -252,6 +252,9 @@ func (a *App) CreatePost(rctx request.CTX, post *model.Post, channel *model.Chan
 	silentRequested := flags.SilentNotification
 
 	post.SanitizeProps()
+	// Antimatter: a topic's accepted answer and status are the server's to write (PatchForumTopic), from no client or
+	// app, nor carried over by a moved copy.
+	post.RemoveServerOwnedProps()
 
 	var pchan chan store.StoreResult[*model.PostList]
 	if post.RootId != "" {
@@ -287,8 +290,8 @@ func (a *App) CreatePost(rctx request.CTX, post *model.Post, channel *model.Chan
 		}
 	}
 
-	// Antimatter: the channel's type rules (who starts conversations), for everyone but apps, system messages and the
-	// copies of moved threads (checkChannelPostingRules).
+	// Antimatter: the channel's type rules (forums take only topics; who starts conversations), see
+	// checkChannelPostingRules.
 	if err = a.checkChannelPostingRules(rctx, post, channel, flags); err != nil {
 		return nil, false, err
 	}
@@ -443,6 +446,12 @@ func (a *App) CreatePost(rctx request.CTX, post *model.Post, channel *model.Chan
 		}
 		post = newPost
 		willBePostedPluginIDs = deliveredIDs
+
+		// Antimatter: nor can an app's hook give a post server-owned props, or take a topic's title away.
+		post.RemoveServerOwnedProps()
+		if err = a.checkForumStructure(post, channel); err != nil {
+			return nil, false, err
+		}
 	}
 
 	// Pre-fill the CreateAt field for link previews to get the correct timestamp.
@@ -1154,6 +1163,14 @@ func (a *App) UpdatePost(rctx request.CTX, receivedUpdatedPost *model.Post, upda
 		if appErr2 != nil {
 			return nil, false, appErr2
 		}
+	}
+
+	// Antimatter: an edit keeps the server-owned props (a topic's accepted answer and status, written by
+	// PatchForumTopic only) whatever it brings, from a client, an app or a hook; a forum topic edited without a title
+	// keeps its own (applyForumTopicEdit).
+	newPost.KeepServerOwnedPropsFrom(oldPost)
+	if appErr = a.applyForumTopicEdit(newPost, oldPost); appErr != nil {
+		return nil, false, appErr
 	}
 
 	// Always use incoming metadata when provided, otherwise retain existing
@@ -3463,6 +3480,12 @@ func (a *App) MoveThread(rctx request.CTX, postID string, sourceChannelID, chann
 	// Antimatter: nor by the target's rule on who starts conversations; the one moving them is.
 	if appErr = a.CanStartConversations(rctx, user.Id, targetChannel); appErr != nil {
 		return appErr
+	}
+	// Antimatter: a forum takes only topics; this move keeps the thread's own title, and has none to give it.
+	if a.isForumChannel(targetChannel) && wpl.NumPosts() > 0 {
+		if _, appErr = forumTitleForMove(wpl.RootPost(), "", false); appErr != nil {
+			return appErr
+		}
 	}
 
 	var targetTeam *model.Team

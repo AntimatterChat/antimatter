@@ -87,12 +87,20 @@ func (a *App) CanStartConversations(rctx request.CTX, userID string, channel *mo
 	return model.NewAppError("CanStartConversations", "app.post.root_posts.denied.app_error", nil, "", http.StatusForbidden)
 }
 
-// checkChannelPostingRules is what a channel's type asks of a post, in CreatePost: rule 2, a root post needs
-// create_root_post (judged on its author: an incoming webhook's maker, the one who ran a command, a bot). System
-// messages, apps' posts (trusted, as on the rest of the plugin API) and the copies of a moved or copied thread (the
-// one moving it is checked instead, in MoveThreadToChannel and MoveThread) skip it; imports don't go through here.
+// checkChannelPostingRules is what a channel's type asks of a post, in CreatePost. Rule 1, a forum takes only topics:
+// a root post there needs a title, from everyone, apps and moved copies included (checkForumStructure). Rule 2, a
+// root post needs create_root_post (judged on its author: an incoming webhook's maker, the one who ran a command, a
+// bot); apps' posts (trusted, as on the rest of the plugin API) and the copies of a moved or copied thread (the one
+// moving it is checked instead, in MoveThreadToChannel and MoveThread) skip it. System messages skip both; imports
+// don't go through here (they check rule 1 themselves).
 func (a *App) checkChannelPostingRules(rctx request.CTX, post *model.Post, channel *model.Channel, flags model.CreatePostFlags) *model.AppError {
-	if post.RootId != "" || post.IsSystemMessage() || flags.FromPlugin || flags.RelocatedPost {
+	if post.IsSystemMessage() {
+		return nil
+	}
+	if appErr := a.checkForumStructure(post, channel); appErr != nil {
+		return appErr
+	}
+	if post.RootId != "" || flags.FromPlugin || flags.RelocatedPost {
 		return nil
 	}
 	return a.CanStartConversations(rctx, post.UserId, channel)

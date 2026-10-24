@@ -2300,6 +2300,15 @@ func (a *App) importMultiplePostLines(rctx request.CTX, lines []imports.LineImpo
 		if line.Post.IsPinned != nil {
 			post.IsPinned = *line.Post.IsPinned
 		}
+		// Antimatter: a forum takes only topics, imported ones too.
+		if a.isForumChannel(channel) && !post.IsSystemMessage() {
+			if post.TopicTitle() == "" {
+				return line.LineNumber, model.NewAppError("importMultiplePostLines", "app.import.validate_post_import_data.forum_title_required.error", nil, "", http.StatusBadRequest)
+			}
+			if appErr := model.ValidateForumTopicTitle(post.TopicTitle()); appErr != nil {
+				return line.LineNumber, appErr
+			}
+		}
 		if line.Post.ThreadFollowers != nil {
 			threadMemberships, lineNumber, err := a.extractThreadMembers(rctx, &line, users, post, deactivateMissingUsers, report)
 			if err != nil {

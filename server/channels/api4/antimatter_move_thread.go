@@ -50,7 +50,7 @@ func moveThreadToChannel(c *Context, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	moved, appErr := c.App.MoveThreadToChannel(c.AppContext, c.Params.PostId, params.ChannelId, params.Flatten, user)
+	moved, appErr := c.App.MoveThreadToChannelWithTitle(c.AppContext, c.Params.PostId, params.ChannelId, params.Flatten, params.Title, user)
 	if appErr != nil {
 		c.Err = appErr
 		return

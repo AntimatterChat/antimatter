@@ -9702,6 +9702,11 @@
     "description": "Bulk-import validation error when a post entry's creation timestamp is zero; 'CreateAt' is a literal field name and should stay untranslated."
   },
   {
+    "id": "app.import.validate_post_import_data.forum_title_required.error",
+    "translation": "A post line for a forum needs a title (props.am_thread_title): forums only take topics.",
+    "description": "Bulk import error when a post line for a forum channel has no topic title; 'props.am_thread_title' is a literal field name. Antimatter forums hold only topics, each a title and a first post."
+  },
+  {
     "id": "app.import.validate_post_import_data.message_length.error",
     "translation": "Post Message property is longer than the maximum permitted length.",
     "description": "Bulk-import validation error when a post entry's message text exceeds the maximum length; 'Message' is a literal field name."
@@ -11182,6 +11187,16 @@
     "description": "Internal error during notification processing when the team of a deleted post cannot be loaded."
   },
   {
+    "id": "app.post.forum.title_required.app_error",
+    "translation": "Forums only take topics: give your post a title.",
+    "description": "API error when someone posts a new message (not a reply) in a forum channel without a topic title. Antimatter forums hold only topics, each a title and a first post."
+  },
+  {
+    "id": "app.post.forum.title_too_long.app_error",
+    "translation": "A topic's title can be at most {{.Max}} characters long.",
+    "description": "API error when a forum topic's title is too long. {{.Max}} is the maximum number of characters."
+  },
+  {
     "id": "app.post.get.app_error",
     "translation": "Unable to get the post.",
     "description": "Generic API error when the server fails to fetch a post (message) from the database."
@@ -11265,6 +11280,16 @@
     "id": "app.post.marshal.app_error",
     "translation": "Failed to marshal post.",
     "description": "Internal error when serializing a post to JSON fails; developer/log-facing."
+  },
+  {
+    "id": "app.post.move_thread.forum_flatten.app_error",
+    "translation": "A thread can't become messages of a forum: forums only take topics. Move it as a topic instead.",
+    "description": "API error when someone moves a thread into a forum channel with the option that turns its replies into separate messages; a forum holds only topics (a title and a first post, with replies under it)."
+  },
+  {
+    "id": "app.post.move_thread.forum_title_required.app_error",
+    "translation": "A thread moved into a forum needs a title: forums only take topics.",
+    "description": "API error when a thread without a title is moved into a forum channel and no title is given for it; a forum holds only topics (a title and a first post)."
   },
   {
     "id": "app.post.move_thread.from_another_channel",
