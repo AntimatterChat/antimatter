@@ -441,6 +441,7 @@ func Init(srv *app.Server) (*API, error) {
 	api.InitAIConnections()
 	api.InitAIAgents()
 	api.InitAITools()
+	api.InitAssistant()
 	api.InitProperties()
 
 	// If we allow testing then listen for manual testing URL hits
