@@ -7,7 +7,8 @@ import {useSelector} from 'react-redux';
 
 import {Permissions} from 'mattermost-redux/constants';
 import {getChannelMessageCount, getCurrentChannel, isDeactivatedDirectChannel} from 'mattermost-redux/selectors/entities/channels';
-import {getMemberTimeout, haveIChannelPermission} from 'mattermost-redux/selectors/entities/roles';
+import {getChannelTypeInfo} from 'mattermost-redux/selectors/entities/channel_types';
+import {canStartConversations, getMemberTimeout, haveIChannelPermission} from 'mattermost-redux/selectors/entities/roles';
 import {getCurrentUserId} from 'mattermost-redux/selectors/entities/users';
 import {getUserIdFromChannelName} from 'mattermost-redux/utils/channel_utils';
 
@@ -62,6 +63,12 @@ export default function ChannelView({resolvingPermalink = false}: Props) {
     }, [timeout]);
     const readOnly = useSelector((state: GlobalState) => Boolean(channel?.team_id) && Boolean(state.entities.channels.myMembers[channel!.id]) &&
         !haveIChannelPermission(state, channel!.team_id, channel!.id, Permissions.CREATE_POST));
+
+    // Antimatter channel types: an announcement channel (or forum) where only moderators start conversations. Unlike
+    // readOnly above, I can still reply in threads, so the message list and the thread's own composer stay; only the
+    // root-level composer is replaced.
+    const rootPostsRestricted = useSelector((state: GlobalState) => Boolean(channel) && !readOnly && !canStartConversations(state, channel!));
+    const channelTypeInfo = useSelector((state: GlobalState) => (channel ? getChannelTypeInfo(state, channel.id) : undefined));
 
     // The message a link opened: highlighted while the address names it, and the one the list stays around.
     const {linkedPostId, anchorPostId, leaveAnchor} = usePermalinkAnchor(channel?.id, resolvingPermalink);
@@ -125,6 +132,19 @@ export default function ChannelView({resolvingPermalink = false}: Props) {
                     {!archived && deactivated && formatMessage({id: 'fusion.channel.deactivated', defaultMessage: 'You are viewing a conversation with a deactivated user. New messages cannot be posted.'})}
                     {!archived && !deactivated && timeout && formatMessage({id: 'fusion.channel.timedOut', defaultMessage: 'You\'re timed out until {time}: you can read, but not send messages or react.'}, {time: formatTime(timeout.until)})}
                     {!archived && !deactivated && !timeout && formatMessage({id: 'fusion.channel.readOnly', defaultMessage: 'You can\'t send messages in this channel.'})}
+                </div>
+            </div>
+        );
+    } else if (rootPostsRestricted) {
+        composer = (
+            <div className={am('composer')}>
+                <div
+                    className={am('note-box')}
+                    style={{margin: 0}}
+                >
+                    {channelTypeInfo?.type === 'forum' ?
+                        formatMessage({id: 'fusion.channel.topicsRestricted', defaultMessage: 'Only moderators open topics here. Reply in a thread.', description: 'Replaces the composer in a forum (Antimatter channel types) where only moderators open topics; everyone can still reply.'}) :
+                        formatMessage({id: 'fusion.channel.rootPostsRestricted', defaultMessage: 'Only moderators post here. Reply in a thread.', description: 'Replaces the composer in a text or voice channel (Antimatter channel types) where only moderators start conversations; everyone can still reply.'})}
                 </div>
             </div>
         );
