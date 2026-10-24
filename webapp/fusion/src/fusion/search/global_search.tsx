@@ -11,7 +11,7 @@ import type {UserProfile} from '@mattermost/types/users';
 
 import {Client4} from 'mattermost-redux/client';
 import {getAllChannels, getMyChannelMemberships, makeGetChannel} from 'mattermost-redux/selectors/entities/channels';
-import {getCurrentTeam, getMyTeams, getTeam} from 'mattermost-redux/selectors/entities/teams';
+import {getCurrentTeam, getMyTeams, getTeams} from 'mattermost-redux/selectors/entities/teams';
 import {getCurrentUserId, getUsers} from 'mattermost-redux/selectors/entities/users';
 import {getUserIdFromChannelName} from 'mattermost-redux/utils/channel_utils';
 
@@ -99,7 +99,8 @@ export default function GlobalSearch() {
     const memberships = useSelector(getMyChannelMemberships);
     const users = useSelector(getUsers);
     const statuses = useSelector((state: GlobalState) => state.entities.users.statuses);
-    const teamsById = useSelector((state: GlobalState) => (id: string) => getTeam(state, id));
+    const teams = useSelector(getTeams);
+    const teamsById = (id: string) => teams[id];
     const [query, setQuery] = useState('');
     const [filter, setFilter] = useState<Filter>('all');
     const [selected, setSelected] = useState(0);
