@@ -146,6 +146,13 @@ describe('window.WebappUtils.channels exposes channel actions', () => {
     });
 });
 
+// ASSISTANT_DISPLAY.md #2: apps use Fusion's own attachment card renderer when the host publishes it.
+describe('window.WebappUtils.cards exposes Fusion\'s attachment card renderer', () => {
+    test('MessageAttachmentCard is defined', () => {
+        expect(typeof (window as any).WebappUtils.cards.MessageAttachmentCard).toBe('function');
+    });
+});
+
 describe('messageHtmlToComponent wrapper', () => {
     const message = 'test';
     const options = {emoji: true, images: false};

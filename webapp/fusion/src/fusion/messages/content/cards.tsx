@@ -287,10 +287,13 @@ function Actions({post, actions}: {post: Post; actions: PostAction[]}) {
     );
 }
 
-function Card({post, attachment}: {post: Post; attachment: MessageAttachment}) {
+// post is omitted for a card that isn't a posted message (ASSISTANT_DISPLAY.md #2: an assistant result, shown with
+// a channel id but no post of its own). hideActions drops the actions block regardless of what the attachment
+// carries, for the same case (assistant results carry none, but this never shows one that slipped through).
+function Card({post, attachment, hideActions}: {post?: Post; attachment: MessageAttachment; hideActions?: boolean}) {
     const intl = useIntl();
     const [lightbox, openImage] = useLightbox();
-    const images = post.metadata?.images;
+    const images = post?.metadata?.images;
     const author = attachment.author_name || attachment.author_icon ? (
         <>
             {attachment.author_icon && (
@@ -330,7 +333,9 @@ function Card({post, attachment}: {post: Post; attachment: MessageAttachment}) {
     const fieldValue = (value: unknown) => (value === undefined || value === null ? '' : String(value));
     const fields = (attachment.fields || []).filter((f) => f && (f.title || fieldValue(f.value)));
     const imageMeta = attachment.image_url ? secureGetFromRecord(images, attachment.image_url) : undefined;
-    const footer = [attachment.footer, intl.formatTime(post.create_at, {hour: 'numeric', minute: '2-digit'})].filter(Boolean).join(' · ');
+
+    // A posted message's footer carries its own time; a card with no post shows only the attachment's own footer.
+    const footer = [attachment.footer, post ? intl.formatTime(post.create_at, {hour: 'numeric', minute: '2-digit'}) : undefined].filter(Boolean).join(' · ');
 
     return (
         <>
@@ -338,7 +343,7 @@ function Card({post, attachment}: {post: Post; attachment: MessageAttachment}) {
                 <div className={am('card-pretext')}>
                     <Markdown
                         message={attachment.pretext}
-                        postId={post.id}
+                        postId={post?.id}
                     />
                 </div>
             )}
@@ -376,7 +381,7 @@ function Card({post, attachment}: {post: Post; attachment: MessageAttachment}) {
                     <div className={am('card-text')}>
                         <Markdown
                             message={attachment.text}
-                            postId={post.id}
+                            postId={post?.id}
                         />
                     </div>
                 )}
@@ -392,7 +397,7 @@ function Card({post, attachment}: {post: Post; attachment: MessageAttachment}) {
                                     <dd>
                                         <Markdown
                                             message={fieldValue(field.value)}
-                                            postId={post.id}
+                                            postId={post?.id}
                                         />
                                     </dd>
                                 )}
@@ -417,7 +422,7 @@ function Card({post, attachment}: {post: Post; attachment: MessageAttachment}) {
                                 type='button'
                                 className={am('card-image')}
                                 aria-label={intl.formatMessage({id: 'fusion.card.openImage', defaultMessage: 'Open image'})}
-                                onClick={() => openImage({src, name: attachment.title || attachment.fallback || '', width: imageMeta?.width, height: imageMeta?.height, userId: post.user_id, at: post.create_at})}
+                                onClick={() => openImage({src, name: attachment.title || attachment.fallback || '', width: imageMeta?.width, height: imageMeta?.height, userId: post?.user_id, at: post?.create_at})}
                             >
                                 <img
                                     src={src}
@@ -428,7 +433,7 @@ function Card({post, attachment}: {post: Post; attachment: MessageAttachment}) {
                         )}
                     </ExternalImage>
                 )}
-                {attachment.actions && attachment.actions.length > 0 && (
+                {!hideActions && post && attachment.actions && attachment.actions.length > 0 && (
                     <Actions
                         post={post}
                         actions={attachment.actions}
@@ -473,5 +478,28 @@ export default function Cards({post}: {post: Post}) {
                 />
             ))}
         </>
+    );
+}
+
+// MessageAttachmentCard draws attachments that aren't a posted message's: an assistant result, with a channel but
+// no post of its own (ASSISTANT_DISPLAY.md #2). Published on window.WebappUtils.cards (plugins/published_cards.ts,
+// plugins/export.ts) so an app's card looks exactly like a formatted message, with actions always hidden (results
+// carry none, but this never shows one that slipped through). summary is the group's accessible label, so a screen
+// reader announces it even for a chart-only result.
+export function MessageAttachmentCard({attachments, summary}: {attachments: MessageAttachment[]; summary: string}) {
+    const shown = isMessageAttachmentArray(attachments) ? attachments : [];
+    return (
+        <div
+            role='group'
+            aria-label={summary}
+        >
+            {shown.map((attachment, i) => (
+                <Card
+                    key={i}
+                    attachment={attachment}
+                    hideActions={true}
+                />
+            ))}
+        </div>
     );
 }

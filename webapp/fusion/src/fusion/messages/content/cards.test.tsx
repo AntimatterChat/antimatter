@@ -8,7 +8,7 @@ import type {Post} from '@mattermost/types/posts';
 
 import {renderWithContext} from 'tests/react_testing_utils';
 
-import Cards, {sparkline} from './cards';
+import Cards, {MessageAttachmentCard, sparkline} from './cards';
 
 const post = (attachment: Record<string, unknown>) => ({
     id: 'p1',
@@ -61,5 +61,42 @@ describe('Cards', () => {
         // The threshold is above every value: higher on screen means a smaller y.
         expect(line.threshold).toBeLessThan(Math.min(...ys));
         expect(line.last.x).toBeCloseTo(92);
+    });
+});
+
+// MessageAttachmentCard is published on window.WebappUtils.cards for apps that aren't rendering a post
+// (ASSISTANT_DISPLAY.md #2): an assistant result, with a channel but no post of its own.
+describe('MessageAttachmentCard', () => {
+    test('draws a chart and fields with no post, and drops actions', () => {
+        renderWithContext(
+            <MessageAttachmentCard
+                attachments={[{
+                    title: 'CPU on www-1',
+                    color: '#3E8EDE',
+                    fields: [{title: 'Now', value: '4.1%', short: true}, {title: 'Peak', value: '5.8%', short: true}],
+                    chart: {values: [3.1, 3.4, 4.0, 4.1], threshold: 80, label: 'CPU %'},
+                    actions: [{id: 'ack', name: 'Acknowledge', type: 'button'}],
+                }]}
+                summary='CPU on www-1: 4.1% now'
+            />,
+        );
+
+        expect(screen.getByRole('group', {name: 'CPU on www-1: 4.1% now'})).toBeInTheDocument();
+        expect(screen.getByText('CPU on www-1')).toBeInTheDocument();
+        const chart = screen.getByRole('img', {name: 'CPU %'});
+        expect(chart.querySelector('polyline')).toHaveAttribute('points');
+        const terms = screen.getAllByRole('term');
+        expect(terms.map((t) => t.textContent)).toEqual(['Now', 'Peak']);
+        expect(screen.queryByRole('button', {name: 'Acknowledge'})).not.toBeInTheDocument();
+    });
+
+    test('falls back to an empty group for a non-array attachments value', () => {
+        renderWithContext(
+            <MessageAttachmentCard
+                attachments={'not-an-array' as unknown as Parameters<typeof MessageAttachmentCard>[0]['attachments']}
+                summary='Nothing to show'
+            />,
+        );
+        expect(screen.getByRole('group', {name: 'Nothing to show'})).toBeEmptyDOMElement();
     });
 });
