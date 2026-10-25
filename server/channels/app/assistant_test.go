@@ -368,19 +368,19 @@ func TestAssistantPostCardAttachments(t *testing.T) {
 
 	t.Run("caps are applied", func(t *testing.T) {
 		many := make([]*model.MessageAttachment, 0, assistantPostAttachmentsMax+3)
-		for i := 0; i < assistantPostAttachmentsMax+3; i++ {
+		for i := range assistantPostAttachmentsMax + 3 {
 			many = append(many, &model.MessageAttachment{Title: fmt.Sprintf("a%d", i)})
 		}
 		longText := strings.Repeat("x", assistantPostAttachmentTextMax+500)
 		longValue := strings.Repeat("y", assistantPostFieldValueMax+100)
 		many[0].Text = longText
 		fields := make([]*model.MessageAttachmentField, 0, assistantPostFieldsMax+5)
-		for i := 0; i < assistantPostFieldsMax+5; i++ {
+		for i := range assistantPostFieldsMax + 5 {
 			fields = append(fields, &model.MessageAttachmentField{Title: fmt.Sprintf("f%d", i), Value: longValue})
 		}
 		many[0].Fields = fields
 		values := make([]float64, 0, assistantPostChartValuesMax+10)
-		for i := 0; i < assistantPostChartValuesMax+10; i++ {
+		for i := range assistantPostChartValuesMax + 10 {
 			values = append(values, float64(i))
 		}
 		many[0].Chart = &model.MessageAttachmentChart{Values: values}
@@ -431,7 +431,7 @@ func TestAssistantPostCardAttachments(t *testing.T) {
 // tool's result is a JSON payload an app made up, so this stays defensive rather than trusting the parse.
 func TestAssistantSanitizeChartDropsNonFinite(t *testing.T) {
 	values := make([]float64, 0, assistantPostChartValuesMax+5)
-	for i := 0; i < assistantPostChartValuesMax+5; i++ {
+	for i := range assistantPostChartValuesMax + 5 {
 		values = append(values, float64(i))
 	}
 	threshold := math.NaN()
