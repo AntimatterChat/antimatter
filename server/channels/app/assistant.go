@@ -5,6 +5,7 @@ package app
 
 import (
 	"encoding/json"
+	"math"
 	"net/http"
 	"slices"
 	"sort"
@@ -770,15 +771,21 @@ func (a *App) PostAssistantCard(rctx request.CTX, userID, channelID, cardID stri
 	if ok, _ := a.HasPermissionToChannel(rctx, user.Id, channel.Id, model.PermissionCreatePost); !ok {
 		return nil, model.NewAppError(where, "api.context.permissions.app_error", nil, "create_post", http.StatusForbidden)
 	}
-	title := card.ToolTitle
-	if title == "" {
-		title = card.Tool
+
+	post := &model.Post{UserId: user.Id, ChannelId: channel.Id}
+	if attachments, summary, ok := assistantResultAttachments(card.Result); ok {
+		// ASSISTANT_DISPLAY.md #4: a card whose result is the attachments format posts as a formatted message,
+		// exactly like a bot's (props.attachments), sanitised: no actions, http(s) links only, text/fields/chart
+		// capped, at most assistantPostAttachmentsMax attachments.
+		post.Message = truncateRunes(summary, model.PostMessageMaxRunesV2)
+		model.ParseMessageAttachment(post, attachments)
+	} else {
+		title := card.ToolTitle
+		if title == "" {
+			title = card.Tool
+		}
+		post.Message = truncateRunes("**"+title+"**\n"+card.Result, model.PostMessageMaxRunesV2)
 	}
-	message := "**" + title + "**\n" + card.Result
-	if utf8.RuneCountInString(message) > model.PostMessageMaxRunesV2 {
-		message = string([]rune(message)[:model.PostMessageMaxRunesV2])
-	}
-	post := &model.Post{UserId: user.Id, ChannelId: channel.Id, Message: message}
 	post.AddProp(model.PostPropAssistantCard, card.Id)
 	saved, _, appErr := a.CreatePostAsUser(rctx, post, rctx.Session().Id, false)
 	if appErr != nil {
@@ -791,4 +798,120 @@ func (a *App) PostAssistantCard(rctx request.CTX, userID, channelID, cardID stri
 		rctx.Logger().Debug("The assistant couldn't mark a card as posted", mlog.Err(appErr))
 	}
 	return saved, nil
+}
+
+// The caps PostAssistantCard applies to the attachments format (ASSISTANT_DISPLAY.md #1/#4): a tool's result is a
+// JSON payload an app made up, not something the person typed, so it gets no benefit of the doubt before it becomes
+// a post everyone in the channel sees.
+const (
+	assistantPostAttachmentsMax    = 10
+	assistantPostAttachmentTextMax = 2000
+	assistantPostFieldsMax         = 20
+	assistantPostFieldValueMax     = 300
+	assistantPostChartValuesMax    = 60
+)
+
+// assistantCardResult is the JSON shape a tool's result may take (ASSISTANT_DISPLAY.md #1): the same
+// message-attachment format integrations already post, plus the post's one-line message.
+type assistantCardResult struct {
+	Attachments []*model.MessageAttachment `json:"attachments"`
+	Summary     string                     `json:"summary"`
+}
+
+// assistantResultAttachments reads a tool's result as the attachments format, sanitised for posting. ok is false
+// for anything else (plain text, or JSON without attachments), which PostAssistantCard posts as it always has.
+func assistantResultAttachments(result string) (attachments []*model.MessageAttachment, summary string, ok bool) {
+	var parsed assistantCardResult
+	if err := json.Unmarshal([]byte(result), &parsed); err != nil || len(parsed.Attachments) == 0 {
+		return nil, "", false
+	}
+	shown := parsed.Attachments
+	if len(shown) > assistantPostAttachmentsMax {
+		shown = shown[:assistantPostAttachmentsMax]
+	}
+	sanitized := make([]*model.MessageAttachment, 0, len(shown))
+	for _, attachment := range shown {
+		if attachment == nil {
+			continue
+		}
+		sanitized = append(sanitized, sanitizeAssistantAttachment(attachment))
+	}
+	return sanitized, parsed.Summary, true
+}
+
+// sanitizeAssistantAttachment drops what a formatted post never carries from the assistant (actions), keeps links
+// to http(s) only, and caps text, fields and chart values.
+func sanitizeAssistantAttachment(attachment *model.MessageAttachment) *model.MessageAttachment {
+	clean := *attachment
+	clean.Actions = nil
+
+	if !model.IsValidHTTPURL(clean.TitleLink) {
+		clean.TitleLink = ""
+	}
+	if !model.IsValidHTTPURL(clean.AuthorLink) {
+		clean.AuthorLink = ""
+	}
+	if !model.IsValidHTTPURL(clean.ImageURL) {
+		clean.ImageURL = ""
+	}
+	if !model.IsValidHTTPURL(clean.AuthorIcon) {
+		clean.AuthorIcon = ""
+	}
+	if !model.IsValidHTTPURL(clean.FooterIcon) {
+		clean.FooterIcon = ""
+	}
+
+	clean.Text = truncateRunes(clean.Text, assistantPostAttachmentTextMax)
+
+	fields := clean.Fields
+	if len(fields) > assistantPostFieldsMax {
+		fields = fields[:assistantPostFieldsMax]
+	}
+	cleanFields := make([]*model.MessageAttachmentField, 0, len(fields))
+	for _, field := range fields {
+		if field == nil {
+			continue
+		}
+		cleanField := *field
+		if value, isString := cleanField.Value.(string); isString {
+			cleanField.Value = truncateRunes(value, assistantPostFieldValueMax)
+		}
+		cleanFields = append(cleanFields, &cleanField)
+	}
+	clean.Fields = cleanFields
+
+	clean.Chart = sanitizeAssistantChart(clean.Chart)
+
+	return &clean
+}
+
+// sanitizeAssistantChart keeps at most assistantPostChartValuesMax finite values, the most recent ones (oldest
+// first, as ASSISTANT_DISPLAY.md #1 specifies), and drops a non-finite threshold.
+func sanitizeAssistantChart(chart *model.MessageAttachmentChart) *model.MessageAttachmentChart {
+	if chart == nil {
+		return nil
+	}
+	values := make([]float64, 0, len(chart.Values))
+	for _, v := range chart.Values {
+		if !math.IsNaN(v) && !math.IsInf(v, 0) {
+			values = append(values, v)
+		}
+	}
+	if len(values) > assistantPostChartValuesMax {
+		values = values[len(values)-assistantPostChartValuesMax:]
+	}
+	clean := &model.MessageAttachmentChart{Values: values, Label: chart.Label}
+	if chart.Threshold != nil && !math.IsNaN(*chart.Threshold) && !math.IsInf(*chart.Threshold, 0) {
+		threshold := *chart.Threshold
+		clean.Threshold = &threshold
+	}
+	return clean
+}
+
+// truncateRunes shortens s to at most maxRunes runes, as the rest of the assistant does for text going into a post.
+func truncateRunes(s string, maxRunes int) string {
+	if utf8.RuneCountInString(s) <= maxRunes {
+		return s
+	}
+	return string([]rune(s)[:maxRunes])
 }

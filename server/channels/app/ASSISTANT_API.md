@@ -162,9 +162,21 @@ the tool: 403 `app.ai.tools.call_not_allowed.app_error`; assistant off or channe
 ### POST /channels/{channel_id}/cards/{card_id}/post
 
 Posts an insight's content to its channel as the person, with the normal permission check (`create_post`; not in
-an archived channel). No body. Response: 201 and the post. Its message is `**<tool_title>**\n<result>`; its prop
-`assistant_card` is the card's ID (the assistant ignores such messages). An action: 400
-`app.assistant.post_insight_only.app_error`.
+an archived channel). No body. Response: 201 and the post; its prop `assistant_card` is the card's ID (the
+assistant ignores such messages). An action: 400 `app.assistant.post_insight_only.app_error`.
+
+When the result is JSON with `attachments` (ASSISTANT_DISPLAY.md #1, the same format integrations post), the post
+looks like a formatted message: its message is `summary` and its `props.attachments` are the card's attachments,
+sanitised for posting (ASSISTANT_DISPLAY.md #4):
+
+- actions are dropped (an assistant result never carries buttons);
+- `title_link`, `author_link` and `image_url` keep only http(s) links, otherwise dropped;
+- `author_icon` and `footer_icon` keep only http(s) links, otherwise dropped;
+- an attachment's text and each field's value are capped (2000 and 300 runes), and at most 20 fields are kept;
+- at most 10 attachments;
+- a chart keeps at most 60 values (the most recent, oldest first) and drops a non-finite value or threshold.
+
+A result without `attachments` posts as before: its message is `**<tool_title>**\n<result>`.
 
 ### GET /muted_tools, PUT /muted_tools
 

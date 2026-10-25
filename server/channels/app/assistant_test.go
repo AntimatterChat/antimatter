@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"math"
 	"net/http"
 	"strings"
 	"sync"
@@ -269,6 +270,189 @@ func TestAssistantFeedsArePersonal(t *testing.T) {
 		at.run(at.channel, at.post(at.maya, at.channel, "disk on www-1?"))
 		assert.Len(t, at.feed(at.maya, at.channel), left, "a muted tool isn't suggested any more")
 	})
+}
+
+// setAssistantCardResult overwrites a card's result for the next PostAssistantCard call, as if a tool had
+// returned it (ASSISTANT_DISPLAY.md #1), and puts it back in the "new" status so it posts again.
+func (at *assistantTest) setAssistantCardResult(u *model.User, channel *model.Channel, card *model.AssistantCard, result assistantCardResult) {
+	at.t.Helper()
+	raw, err := json.Marshal(result)
+	require.NoError(at.t, err)
+	_, appErr := at.th.App.changeAssistantCard(at.th.Context, u.Id, channel.Id, card.Id, func(c *model.AssistantCard) *model.AppError {
+		c.Status = model.AssistantCardStatusNew
+		c.Result = string(raw)
+		return nil
+	})
+	require.Nil(at.t, appErr)
+}
+
+// PostAssistantCard draws a formatted message from a result in the attachments format (ASSISTANT_DISPLAY.md #1/#4):
+// the summary as the post's message, and the attachments sanitised into props.attachments. A result without
+// attachments still posts as it always has (the title and the raw text).
+func TestAssistantPostCardAttachments(t *testing.T) {
+	at := setupAssistantTest(t)
+	at.open(at.maya, at.channel)
+	at.run(at.channel, at.post(at.maya, at.channel, "cpu on www-1?"))
+	card := at.feed(at.maya, at.channel)[0]
+
+	t.Run("an attachment result posts the summary and the attachments", func(t *testing.T) {
+		threshold := 80.0
+		at.setAssistantCardResult(at.maya, at.channel, card, assistantCardResult{
+			Summary: "CPU on www-1: 4.1% now",
+			Attachments: []*model.MessageAttachment{{
+				Title:      "CPU on www-1",
+				TitleLink:  "https://grafana.example/d/www-1",
+				AuthorName: "Grafana",
+				Text:       "4.1% now",
+				Fields:     []*model.MessageAttachmentField{{Title: "Now", Value: "4.1%", Short: true}},
+				Chart:      &model.MessageAttachmentChart{Values: []float64{3.1, 3.4, 4.1}, Threshold: &threshold, Label: "CPU %"},
+			}},
+		})
+
+		post, appErr := at.th.App.PostAssistantCard(at.th.Context, at.maya.Id, at.channel.Id, card.Id)
+		require.Nil(t, appErr)
+		assert.Equal(t, "CPU on www-1: 4.1% now", post.Message)
+		assert.Equal(t, model.PostTypeMessageAttachment, post.Type)
+
+		attachments := post.Attachments()
+		require.Len(t, attachments, 1)
+		assert.Equal(t, "CPU on www-1", attachments[0].Title)
+		assert.Equal(t, "https://grafana.example/d/www-1", attachments[0].TitleLink)
+		require.Len(t, attachments[0].Fields, 1)
+		assert.Equal(t, "4.1%", attachments[0].Fields[0].Value)
+		require.NotNil(t, attachments[0].Chart)
+		assert.Equal(t, []float64{3.1, 3.4, 4.1}, attachments[0].Chart.Values)
+		assert.Equal(t, 80.0, *attachments[0].Chart.Threshold)
+	})
+
+	t.Run("actions are stripped", func(t *testing.T) {
+		at.setAssistantCardResult(at.maya, at.channel, card, assistantCardResult{
+			Summary: "ok",
+			Attachments: []*model.MessageAttachment{{
+				Title:   "t",
+				Actions: []*model.PostAction{{Id: "ack", Name: "Acknowledge", Type: "button"}},
+			}},
+		})
+
+		post, appErr := at.th.App.PostAssistantCard(at.th.Context, at.maya.Id, at.channel.Id, card.Id)
+		require.Nil(t, appErr)
+		attachments := post.Attachments()
+		require.Len(t, attachments, 1)
+		assert.Empty(t, attachments[0].Actions)
+	})
+
+	t.Run("unsafe links are dropped", func(t *testing.T) {
+		at.setAssistantCardResult(at.maya, at.channel, card, assistantCardResult{
+			Summary: "ok",
+			Attachments: []*model.MessageAttachment{{
+				Title:      "t",
+				TitleLink:  "javascript:alert(1)",
+				AuthorName: "a",
+				AuthorLink: "ftp://example.com/a",
+				AuthorIcon: "data:image/png;base64,xx",
+				ImageURL:   "ftp://example.com/i.png",
+				FooterIcon: "http://example.com/icon.png",
+			}},
+		})
+
+		post, appErr := at.th.App.PostAssistantCard(at.th.Context, at.maya.Id, at.channel.Id, card.Id)
+		require.Nil(t, appErr)
+		attachments := post.Attachments()
+		require.Len(t, attachments, 1)
+		assert.Empty(t, attachments[0].TitleLink)
+		assert.Empty(t, attachments[0].AuthorLink)
+		assert.Empty(t, attachments[0].AuthorIcon)
+		assert.Empty(t, attachments[0].ImageURL)
+		assert.Equal(t, "http://example.com/icon.png", attachments[0].FooterIcon, "an http(s) icon is kept")
+	})
+
+	t.Run("caps are applied", func(t *testing.T) {
+		many := make([]*model.MessageAttachment, 0, assistantPostAttachmentsMax+3)
+		for i := 0; i < assistantPostAttachmentsMax+3; i++ {
+			many = append(many, &model.MessageAttachment{Title: fmt.Sprintf("a%d", i)})
+		}
+		longText := strings.Repeat("x", assistantPostAttachmentTextMax+500)
+		longValue := strings.Repeat("y", assistantPostFieldValueMax+100)
+		many[0].Text = longText
+		fields := make([]*model.MessageAttachmentField, 0, assistantPostFieldsMax+5)
+		for i := 0; i < assistantPostFieldsMax+5; i++ {
+			fields = append(fields, &model.MessageAttachmentField{Title: fmt.Sprintf("f%d", i), Value: longValue})
+		}
+		many[0].Fields = fields
+		values := make([]float64, 0, assistantPostChartValuesMax+10)
+		for i := 0; i < assistantPostChartValuesMax+10; i++ {
+			values = append(values, float64(i))
+		}
+		many[0].Chart = &model.MessageAttachmentChart{Values: values}
+
+		at.setAssistantCardResult(at.maya, at.channel, card, assistantCardResult{Summary: "ok", Attachments: many})
+
+		post, appErr := at.th.App.PostAssistantCard(at.th.Context, at.maya.Id, at.channel.Id, card.Id)
+		require.Nil(t, appErr)
+		attachments := post.Attachments()
+		assert.Len(t, attachments, assistantPostAttachmentsMax, "at most 10 attachments")
+		assert.Len(t, attachments[0].Text, assistantPostAttachmentTextMax, "text capped")
+		assert.Len(t, attachments[0].Fields, assistantPostFieldsMax, "fields capped")
+		assert.Len(t, attachments[0].Fields[0].Value.(string), assistantPostFieldValueMax, "a field's value capped")
+		require.NotNil(t, attachments[0].Chart)
+		assert.Len(t, attachments[0].Chart.Values, assistantPostChartValuesMax, "chart values capped at 60 finite numbers")
+		assert.Equal(t, float64(assistantPostChartValuesMax+10-1), attachments[0].Chart.Values[len(attachments[0].Chart.Values)-1], "the most recent values are kept")
+	})
+
+	t.Run("a text result is unchanged", func(t *testing.T) {
+		_, appErr := at.th.App.changeAssistantCard(at.th.Context, at.maya.Id, at.channel.Id, card.Id, func(c *model.AssistantCard) *model.AppError {
+			c.Status = model.AssistantCardStatusNew
+			c.Result = "plain text, not JSON"
+			return nil
+		})
+		require.Nil(t, appErr)
+
+		post, appErr := at.th.App.PostAssistantCard(at.th.Context, at.maya.Id, at.channel.Id, card.Id)
+		require.Nil(t, appErr)
+		assert.Contains(t, post.Message, "plain text, not JSON")
+		assert.Empty(t, post.Attachments())
+	})
+
+	t.Run("posting is refused for a non-member of a private channel", func(t *testing.T) {
+		th := at.th
+		private := th.CreatePrivateChannel(t, th.BasicTeam)
+		th.AddUserToChannel(t, at.maya, private)
+		at.open(at.maya, private)
+		at.run(private, at.post(at.maya, private, "cpu on www-1?"))
+		privateCard := at.feed(at.maya, private)[0]
+
+		_, appErr := at.th.App.PostAssistantCard(at.th.Context, at.olivia.Id, private.Id, privateCard.Id)
+		require.NotNil(t, appErr)
+		assert.Equal(t, http.StatusForbidden, appErr.StatusCode)
+	})
+}
+
+// sanitizeAssistantChart drops a non-finite value or threshold: valid JSON can't spell NaN or Infinity, but a
+// tool's result is a JSON payload an app made up, so this stays defensive rather than trusting the parse.
+func TestAssistantSanitizeChartDropsNonFinite(t *testing.T) {
+	values := make([]float64, 0, assistantPostChartValuesMax+5)
+	for i := 0; i < assistantPostChartValuesMax+5; i++ {
+		values = append(values, float64(i))
+	}
+	threshold := math.NaN()
+	clean := sanitizeAssistantChart(&model.MessageAttachmentChart{
+		Values:    append(append([]float64{}, values...), math.NaN(), math.Inf(1), math.Inf(-1)),
+		Threshold: &threshold,
+		Label:     "CPU %",
+	})
+
+	require.NotNil(t, clean)
+	assert.Len(t, clean.Values, assistantPostChartValuesMax, "at most 60 finite values")
+	assert.Equal(t, values[len(values)-assistantPostChartValuesMax:], clean.Values, "the most recent values, oldest first")
+	assert.Nil(t, clean.Threshold, "a non-finite threshold is dropped")
+	assert.Equal(t, "CPU %", clean.Label)
+
+	ok := 42.0
+	cleanOK := sanitizeAssistantChart(&model.MessageAttachmentChart{Values: []float64{1, 2}, Threshold: &ok})
+	require.NotNil(t, cleanOK.Threshold)
+	assert.Equal(t, ok, *cleanOK.Threshold, "a finite threshold is kept")
+
+	assert.Nil(t, sanitizeAssistantChart(nil))
 }
 
 // Direct and group messages and private channels count only for their members; archived channels, and channels
