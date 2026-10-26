@@ -758,3 +758,49 @@ func TestSendPersistentNotificationsFileHintsABAC(t *testing.T) {
 		assert.Equal(t, "true", received.GetData()["image"], "image hint should still be sent to an allowed recipient")
 	})
 }
+
+// A sweep over many channels of one community reads the community's notification settings once.
+func TestPersistentNotificationsAuxiliaryDataReusesCommunityNotifyPropsPerTeam(t *testing.T) {
+	mainHelper.Parallel(t)
+	th := SetupWithStoreMock(t)
+
+	user1 := &model.User{Id: "uid1", Username: "user-1", NotifyProps: model.StringMap{model.PushNotifyProp: model.UserNotifyMention}}
+	user2 := &model.User{Id: "uid2", Username: "user-2"}
+	profileMap := map[string]*model.User{user1.Id: user1, user2.Id: user2}
+	team := &model.Team{Id: "tid"}
+	other := &model.Team{Id: "tid2"}
+	channelsMap := map[string]*model.Channel{}
+	for i, teamID := range []string{team.Id, team.Id, team.Id, other.Id} {
+		id := "chid" + string(rune('a'+i))
+		channelsMap[id] = &model.Channel{Id: id, TeamId: teamID, Type: model.ChannelTypeOpen}
+	}
+	teamsMap := map[string]*model.Team{team.Id: team, other.Id: other}
+
+	mockStore := th.App.Srv().Store().(*storemocks.Store)
+	mockChannel := storemocks.ChannelStore{}
+	mockStore.On("Channel").Return(&mockChannel)
+	mockChannel.On("GetAllChannelMembersNotifyPropsForChannel", mock.Anything, mock.Anything).Return(map[string]model.StringMap{}, nil)
+	mockUser := storemocks.UserStore{}
+	mockStore.On("User").Return(&mockUser)
+	mockUser.On("GetAllProfilesInChannel", mock.Anything, mock.Anything, mock.Anything).Return(profileMap, nil)
+	mockGroup := storemocks.GroupStore{}
+	mockStore.On("Group").Return(&mockGroup)
+	mockGroup.On("GetGroups", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return([]*model.Group{}, nil)
+	mockPreference := storemocks.PreferenceStore{}
+	mockStore.On("Preference").Return(&mockPreference)
+	mockPreference.On("GetCategoryAndName", model.PreferenceCategoryCommunityNotify, team.Id).Return(model.Preferences{
+		{UserId: user1.Id, Category: model.PreferenceCategoryCommunityNotify, Name: team.Id, Value: `{"push":"all"}`},
+	}, nil)
+	mockPreference.On("GetCategoryAndName", model.PreferenceCategoryCommunityNotify, other.Id).Return(model.Preferences{}, nil)
+
+	_, channelProfileMap, _, _, err := th.App.persistentNotificationsAuxiliaryData(th.Context, channelsMap, teamsMap)
+	require.NoError(t, err)
+	mockPreference.AssertNumberOfCalls(t, "GetCategoryAndName", 2)
+	for id, c := range channelsMap {
+		want := model.UserNotifyMention
+		if c.TeamId == team.Id {
+			want = model.UserNotifyAll
+		}
+		assert.Equal(t, want, channelProfileMap[id][user1.Id].NotifyProps[model.PushNotifyProp], "channel %s", id)
+	}
+}

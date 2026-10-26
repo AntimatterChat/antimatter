@@ -33,13 +33,26 @@ func (a *App) communityNotifyProps(teamID string) (map[string]model.StringMap, e
 // over their own: copies, the map too, when someone set some; the profiles themselves otherwise. Channels of no
 // community (direct and group messages) follow the person's own settings.
 func (a *App) withCommunityNotifyProps(rctx request.CTX, teamID string, profileMap map[string]*model.User) map[string]*model.User {
+	return a.withCommunityNotifyPropsMemo(rctx, teamID, profileMap, nil)
+}
+
+// withCommunityNotifyPropsMemo is withCommunityNotifyProps keeping each community's settings in memo (by community)
+// for the calls that share it, such as one sweep over many channels: a nil memo keeps nothing.
+func (a *App) withCommunityNotifyPropsMemo(rctx request.CTX, teamID string, profileMap map[string]*model.User, memo map[string]map[string]model.StringMap) map[string]*model.User {
 	if teamID == "" || len(profileMap) == 0 {
 		return profileMap
 	}
-	overrides, err := a.communityNotifyProps(teamID)
-	if err != nil {
-		rctx.Logger().Warn("Failed to get the notification settings of a community", mlog.String("team_id", teamID), mlog.Err(err))
-		return profileMap
+	overrides, known := memo[teamID]
+	if !known {
+		var err error
+		overrides, err = a.communityNotifyProps(teamID)
+		if err != nil {
+			rctx.Logger().Warn("Failed to get the notification settings of a community", mlog.String("team_id", teamID), mlog.Err(err))
+			overrides = nil
+		}
+		if memo != nil {
+			memo[teamID] = overrides
+		}
 	}
 	if len(overrides) == 0 {
 		return profileMap
