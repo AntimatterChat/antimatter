@@ -24203,6 +24203,10 @@
     "defaultMessage": "Looking for screens and windows…",
     "description": ""
   },
+  "fusion.calls.sources.macPermission": {
+    "defaultMessage": "Allow screen recording for the app in System Settings › Privacy & Security › Screen & System Audio Recording, then try again.",
+    "description": "Notice shown on macOS when the desktop app can't list the screens and windows to share in a call (screen recording not allowed yet). 'System Settings › Privacy & Security › Screen & System Audio Recording' is the macOS settings path: use the names macOS shows in the target language."
+  },
   "fusion.calls.sources.screens": {
     "defaultMessage": "Screens",
     "description": ""
