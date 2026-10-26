@@ -7,7 +7,7 @@ import {renderWithContext, screen, userEvent} from 'tests/react_testing_utils';
 
 import FusionErrorBoundary, {PageError} from './error_boundary';
 
-function Boom({fail}: {fail: boolean}): JSX.Element {
+function Boom({fail}: {fail: boolean}): React.JSX.Element {
     if (fail) {
         throw new Error('boom');
     }
@@ -72,17 +72,12 @@ describe('fusion/components/FusionErrorBoundary', () => {
         expect(screen.getByText('drawn')).toBeInTheDocument();
     });
 
+    // jsdom's window.location can't be replaced: the reload is given to the page here.
     test('the page fallback offers to reload', async () => {
         const reload = jest.fn();
-        const location = window.location;
-        Object.defineProperty(window, 'location', {configurable: true, value: {...location, reload}});
-        try {
-            renderWithContext(<PageError/>);
-            expect(screen.getByRole('alert')).toHaveTextContent('Something went wrong.');
-            await userEvent.click(screen.getByRole('button', {name: 'Reload'}));
-            expect(reload).toHaveBeenCalled();
-        } finally {
-            Object.defineProperty(window, 'location', {configurable: true, value: location});
-        }
+        renderWithContext(<PageError onReload={reload}/>);
+        expect(screen.getByRole('alert')).toHaveTextContent('Something went wrong.');
+        await userEvent.click(screen.getByRole('button', {name: 'Reload'}));
+        expect(reload).toHaveBeenCalled();
     });
 });

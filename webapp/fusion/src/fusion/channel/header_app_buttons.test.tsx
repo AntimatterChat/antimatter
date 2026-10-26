@@ -27,6 +27,7 @@ describe('fusion/channel/HeaderAppButtons', () => {
                 components: {
                     ChannelHeaderButton: [{id: 'b1', pluginId: 'zoom', icon: <span>{'Z'}</span>, tooltipText: 'Start a meeting', dropdownText: 'Start a meeting', action}],
                     AppBar: [],
+                    RightHandSidebarComponent: [],
                 },
             },
         } as never,

@@ -28,14 +28,15 @@ jest.mock('mattermost-redux/selectors/entities/channels', () => ({
     getMyChannelMember: () => ({last_viewed_at: 10}),
 }));
 
-// Reading a conversation takes it out of the unread ones, as the real reducer does.
+// Reading a conversation takes it out of the unread ones, as the real reducer does. The action it dispatches changes
+// the store's state (its membership), or the selectors wouldn't run again (react-redux skips them for the same state).
 const mockMarkChannelAsRead = jest.fn();
 jest.mock('mattermost-redux/actions/channels', () => ({
     ...jest.requireActual('mattermost-redux/actions/channels'),
     markChannelAsRead: (channelId: string) => (dispatch: (a: unknown) => void) => {
         mockMarkChannelAsRead(channelId);
         mockUnreadChannels = mockUnreadChannels.filter((c) => c.id !== channelId);
-        dispatch({type: 'MOCK_CHANNEL_READ', channelId});
+        dispatch({type: 'RECEIVED_MY_CHANNEL_MEMBER', data: {channel_id: channelId, user_id: 'me', last_viewed_at: 99999, msg_count: 0, mention_count: 0, notify_props: {}}});
         return {data: true};
     },
 }));

@@ -8,6 +8,16 @@ import {formatText} from 'utils/text_formatting';
 
 import TimestampText, {RELATIVE_TICK_MS} from './timestamp_text';
 
+// The tests' react-intl answers in English whatever the provider says (tests/react-intl_mock): the language is set here.
+let mockLocale = 'en';
+jest.mock('react-intl', () => {
+    const actual = jest.requireActual('react-intl');
+    return {
+        ...actual,
+        useIntl: () => actual.createIntl({locale: mockLocale, defaultLocale: 'en', messages: {}}),
+    };
+});
+
 const emojiMap = {has: () => false, get: () => undefined} as any; // eslint-disable-line @typescript-eslint/no-explicit-any
 
 // sec-fusion #12: <t:…> timestamps were formatted once, in the browser's language and time zone, past the reader's
@@ -21,6 +31,7 @@ describe('fusion/messages/TimestampText', () => {
 
     afterEach(() => {
         jest.useRealTimers();
+        mockLocale = 'en';
     });
 
     test('formatText leaves the timestamp for the component to draw', () => {
@@ -43,6 +54,7 @@ describe('fusion/messages/TimestampText', () => {
     });
 
     test('shows the time in the reader\'s language', () => {
+        mockLocale = 'fr';
         const at = Date.UTC(2026, 0, 15, 12, 0) / 1000;
         renderWithContext(
             <TimestampText
@@ -50,7 +62,6 @@ describe('fusion/messages/TimestampText', () => {
                 format='D'
             />,
             state({useAutomaticTimezone: 'false', manualTimezone: 'Europe/Paris', automaticTimezone: ''}),
-            {locale: 'fr'},
         );
         expect(screen.getByText('15 janvier 2026')).toBeInTheDocument();
     });

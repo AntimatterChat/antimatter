@@ -56,8 +56,12 @@ export function MessageError({postId}: {postId: string}) {
     );
 }
 
+function reloadPage() {
+    window.location.reload();
+}
+
 // PageError stands in for the whole Fusion UI when it couldn't be drawn, with a way back in.
-export function PageError() {
+export function PageError({onReload = reloadPage}: {onReload?: () => void}) {
     const {formatMessage} = useIntl();
     return (
         <div
@@ -70,7 +74,7 @@ export function PageError() {
                 <button
                     type='button'
                     className={am('crash-reload')}
-                    onClick={() => window.location.reload()}
+                    onClick={() => onReload()}
                 >
                     {formatMessage({id: 'fusion.error.reload', defaultMessage: 'Reload'})}
                 </button>

@@ -18,7 +18,7 @@ describe('fusion/sidebar/useLastMessage', () => {
             preferences: {myPreferences: prefs},
             channels: {channels: {c1: channel}},
             posts: {
-                posts: {p1: TestHelper.getPostMock({id: 'p1', channel_id: 'c1', user_id: userId, message: 'secret plans', create_at: 100, props})},
+                posts: {p1: TestHelper.getPostMock({id: 'p1', type: '', channel_id: 'c1', user_id: userId, message: 'secret plans', create_at: 100, props})},
                 postsInChannel: {c1: [{order: ['p1'], recent: true, oldest: false}]},
             },
         },
