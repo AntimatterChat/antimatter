@@ -4,8 +4,10 @@
 package storetest
 
 import (
+	"sync"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
 	"github.com/mattermost/mattermost/server/public/model"
@@ -16,6 +18,7 @@ import (
 func TestReadReceiptStore(t *testing.T, rctx request.CTX, ss store.Store, s SqlStore) {
 	t.Run("GetReadCountForPost", func(t *testing.T) { testGetReadCountForPost(t, rctx, ss) })
 	t.Run("PermanentDeleteByUser", func(t *testing.T) { testReadReceiptPermanentDeleteByUser(t, rctx, ss) })
+	t.Run("SaveConcurrentDuplicateIsIdempotent", func(t *testing.T) { testReadReceiptSaveConcurrentDuplicateIsIdempotent(t, rctx, ss) })
 }
 
 func testReadReceiptPermanentDeleteByUser(t *testing.T, rctx request.CTX, ss store.Store) {
@@ -121,4 +124,32 @@ func testGetReadCountForPost(t *testing.T, rctx request.CTX, ss store.Store) {
 	if count != 0 {
 		t.Fatalf("expected read count for post3 to be 0, got %d", count)
 	}
+}
+
+// Two reveals of the same post by the same user at once (two tabs, a double tap) both succeed: the second gets the
+// receipt the first saved.
+func testReadReceiptSaveConcurrentDuplicateIsIdempotent(t *testing.T, rctx request.CTX, ss store.Store) {
+	postID, userID := model.NewId(), model.NewId()
+	const reveals = 4
+	var wg sync.WaitGroup
+	saved := make([]*model.ReadReceipt, reveals)
+	asked := make([]*model.ReadReceipt, reveals)
+	errs := make([]error, reveals)
+	for i := range reveals {
+		asked[i] = &model.ReadReceipt{PostID: postID, UserID: userID, ExpireAt: model.GetMillis() + int64(1000*(i+1))}
+		wg.Go(func() { saved[i], errs[i] = ss.ReadReceipt().Save(rctx, asked[i]) })
+	}
+	wg.Wait()
+
+	first := 0
+	stored, err := ss.ReadReceipt().Get(rctx, postID, userID)
+	require.NoError(t, err)
+	for i := range reveals {
+		require.NoError(t, errs[i], "reveal %d", i)
+		assert.Equal(t, stored.ExpireAt, saved[i].ExpireAt, "every reveal gets the stored receipt")
+		if saved[i] == asked[i] {
+			first++
+		}
+	}
+	assert.Equal(t, 1, first, "one reveal saved it")
 }

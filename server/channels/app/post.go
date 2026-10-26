@@ -4184,8 +4184,13 @@ func (a *App) getOrCreateReadReceipt(rctx request.CTX, post *model.Post, userID 
 		ExpireAt: userExpireAt,
 	}
 
-	if _, err := a.Srv().Store().ReadReceipt().Save(rctx, receipt); err != nil {
+	saved, err := a.Srv().Store().ReadReceipt().Save(rctx, receipt)
+	if err != nil {
 		return nil, false, model.NewAppError("RevealPost", "app.reveal_post.read_receipt.save.error", nil, "", http.StatusInternalServerError).Wrap(err)
+	}
+	if saved != receipt {
+		// Another reveal by the same user (a second tab, a double tap) saved the receipt first.
+		return saved, false, nil
 	}
 
 	// If all recipients have read the post, update temporary post expiration

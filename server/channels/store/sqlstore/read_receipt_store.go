@@ -45,6 +45,8 @@ func readReceiptSliceColumns() []string {
 func (s *SqlReadReceiptStore) InvalidateReadReceiptForPostsCache(postID string) {
 }
 
+// Save stores a receipt and returns it. When the user already has one for the post (two reveals at once), the
+// stored receipt is returned instead, unchanged: the caller tells the two apart by the pointer it gets back.
 func (s *SqlReadReceiptStore) Save(rctx request.CTX, receipt *model.ReadReceipt) (*model.ReadReceipt, error) {
 	query := s.getQueryBuilder().
 		Insert("ReadReceipts").
@@ -53,11 +55,19 @@ func (s *SqlReadReceiptStore) Save(rctx request.CTX, receipt *model.ReadReceipt)
 			receipt.PostID,
 			receipt.UserID,
 			receipt.ExpireAt,
-		)
+		).
+		Suffix("ON CONFLICT (PostId, UserId) DO NOTHING")
 
-	_, err := s.GetMaster().ExecBuilder(query)
+	result, err := s.GetMaster().ExecBuilder(query)
 	if err != nil {
 		return nil, err
+	}
+	if inserted, err := result.RowsAffected(); err == nil && inserted == 0 {
+		var existing model.ReadReceipt
+		if err := s.GetMaster().GetBuilder(&existing, s.selectQueryBuilder.Where(sq.Eq{"PostId": receipt.PostID, "UserId": receipt.UserID})); err != nil {
+			return nil, errors.Wrapf(err, "failed to get ReadReceipt with id=%s", receipt.PostID+"_"+receipt.UserID)
+		}
+		return &existing, nil
 	}
 
 	return receipt, nil
