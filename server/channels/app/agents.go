@@ -42,6 +42,7 @@ func (a *App) GetAgents(rctx request.CTX, userID string) ([]model.BridgeAgentInf
 		return nil, appErr
 	}
 	infos := make([]model.BridgeAgentInfo, 0, len(agents))
+	providers := map[string]string{} // by connection: the agents share few, each is read once
 	for i, agent := range agents {
 		info := model.BridgeAgentInfo{
 			ID:          agent.UserId,
@@ -50,9 +51,14 @@ func (a *App) GetAgents(rctx request.CTX, userID string) ([]model.BridgeAgentInf
 			ServiceID:   agent.ConnectionId,
 			IsDefault:   i == 0,
 		}
-		if c, err := a.Srv().Store().AIConnection().Get(rctx, agent.ConnectionId); err == nil {
-			info.ServiceType = c.Provider
+		provider, known := providers[agent.ConnectionId]
+		if !known {
+			if c, err := a.Srv().Store().AIConnection().Get(rctx, agent.ConnectionId); err == nil {
+				provider = c.Provider
+			}
+			providers[agent.ConnectionId] = provider
 		}
+		info.ServiceType = provider
 		infos = append(infos, info)
 	}
 	return infos, nil
