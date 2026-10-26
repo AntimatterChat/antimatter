@@ -4,6 +4,8 @@
 package app
 
 import (
+	"crypto/sha256"
+	"encoding/base32"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -174,13 +176,18 @@ func agentsServiceToConnection(svc agentsPluginService) *migratedAIConnection {
 // built-in features should use (from the default bot), and the transcription service.
 func agentsConfigToConnections(cfg agentsPluginConfig) (connections []*migratedAIConnection, featureConnection, featureModel string) {
 	byServiceID := map[string]*migratedAIConnection{}
-	for _, svc := range cfg.Services {
+	for i, svc := range cfg.Services {
 		m := agentsServiceToConnection(svc)
 		if m == nil {
 			continue
 		}
 		if m.connection.Id == "" {
-			m.connection.Id = model.NewId()
+			// The same ID at every start, so a migration retried after a failed save doesn't make it twice.
+			seed := svc.ID
+			if seed == "" {
+				seed = fmt.Sprintf("#%d|%s|%s", i, svc.Type, svc.Name)
+			}
+			m.connection.Id = migratedAIConnectionID("service:" + seed)
 		}
 		connections = append(connections, m)
 		byServiceID[svc.ID] = m
@@ -234,7 +241,7 @@ func agentsConfigToConnections(cfg agentsPluginConfig) (connections []*migratedA
 				if target == nil {
 					target = &migratedAIConnection{
 						connection: &model.AIConnection{
-							Id:       model.NewId(),
+							Id:       migratedAIConnectionID("embeddings:" + baseURL),
 							Name:     "Embeddings",
 							Scope:    model.AIConnectionScopeServer,
 							Provider: model.AIProviderOpenAICompatible,
@@ -294,10 +301,12 @@ func (s *Server) doAIConnectionsFromAgentsMigration() error {
 	}
 
 	a := New(ServerConnector(s.Channels()))
-	migrated := 0
+	migrated, failed := 0, 0
+	saved := map[string]bool{}
 	for _, m := range connections {
 		c := m.connection
 		if existing, err := s.Store().AIConnection().Get(rctx, c.Id); err == nil && existing != nil {
+			saved[c.Id] = true
 			continue
 		}
 		apiKey, headers := m.apiKey, m.headers
@@ -307,15 +316,18 @@ func (s *Server) doAIConnectionsFromAgentsMigration() error {
 		}
 		if _, err := s.Store().AIConnection().Save(rctx, c); err != nil {
 			s.Log().Error("Couldn't save a model connection migrated from the Agents plugin", mlog.String("connection_id", c.Id), mlog.String("name", c.Name), mlog.Err(err))
+			failed++
 			continue
 		}
+		saved[c.Id] = true
 		migrated++
 		if c.NeedsAttention != "" {
 			s.Log().Warn("A model connection migrated from the Agents plugin needs attention", mlog.String("connection_id", c.Id), mlog.String("name", c.Name))
 		}
 	}
 
-	if featureConnection != "" {
+	// The built-in features only point at a connection that exists.
+	if featureConnection != "" && saved[featureConnection] {
 		cfgNow := s.Config()
 		rewrite := !cfgNow.AISettings.Rewrite.IsConfigured()
 		recaps := !cfgNow.AISettings.Recaps.IsConfigured()
@@ -334,5 +346,20 @@ func (s *Server) doAIConnectionsFromAgentsMigration() error {
 	}
 
 	s.Log().Info("Migrated the Agents plugin's services to model connections", mlog.Int("connections", migrated))
+	if failed > 0 {
+		// Left undone: the next start saves the connections that failed (the saved ones are skipped).
+		s.Log().Error("Some of the Agents plugin's services aren't model connections yet: they'll be migrated at the next start", mlog.Int("failed", failed))
+		return nil
+	}
 	return markDone()
 }
+
+// migratedAIConnectionID gives a connection made by the migration a valid ID derived from seed, the same at every
+// start.
+func migratedAIConnectionID(seed string) string {
+	sum := sha256.Sum256([]byte("antimatter-agents-migration:" + seed))
+	return migratedIDEncoding.EncodeToString(sum[:16])
+}
+
+// migratedIDEncoding is model.NewId's encoding, for IDs that look like any other.
+var migratedIDEncoding = base32.NewEncoding("ybndrfg8ejkmcpqxot1uwisza345h769").WithPadding(base32.NoPadding)
