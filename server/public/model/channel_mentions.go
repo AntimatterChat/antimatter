@@ -13,20 +13,52 @@ import (
 // stays a hashtag.
 var channelMentionRegexp = regexp.MustCompile(`\B(?:~[a-zA-Z0-9\-_]+|#[a-zA-Z0-9][a-zA-Z0-9\-_]*)`)
 
-// channelMentionNames returns the channel names linked in s, without their ~ or #, in order.
-func channelMentionNames(s string) []string {
+// channelMentionSpans returns where the channel links of s are, each from its ~ or # to the end of the name.
+func channelMentionSpans(s string) [][]int {
 	if !strings.ContainsAny(s, "~#") {
 		return nil
 	}
-	var names []string
+	var spans [][]int
 	for _, loc := range channelMentionRegexp.FindAllStringIndex(s, -1) {
 		// &#39; is an HTML entity and ##name a heading, not channels.
 		if s[loc[0]] == '#' && loc[0] > 0 && (s[loc[0]-1] == '&' || s[loc[0]-1] == '#') {
 			continue
 		}
+		spans = append(spans, loc)
+	}
+	return spans
+}
+
+// channelMentionNames returns the channel names linked in s, without their ~ or #, in order.
+func channelMentionNames(s string) []string {
+	var names []string
+	for _, loc := range channelMentionSpans(s) {
 		names = append(names, s[loc[0]+1:loc[1]])
 	}
 	return names
+}
+
+// ReplaceChannelMentions replaces each whole channel link of s (~name, or #name) with what replace gives for its
+// sign and name, or leaves it when replace says no. A link is only ever matched whole: ~town-square never matches
+// the start of ~town-square-events.
+func ReplaceChannelMentions(s string, replace func(sigil byte, name string) (string, bool)) string {
+	spans := channelMentionSpans(s)
+	if len(spans) == 0 {
+		return s
+	}
+	var b strings.Builder
+	last := 0
+	for _, loc := range spans {
+		out, ok := replace(s[loc[0]], s[loc[0]+1:loc[1]])
+		if !ok {
+			continue
+		}
+		b.WriteString(s[last:loc[0]])
+		b.WriteString(out)
+		last = loc[1]
+	}
+	b.WriteString(s[last:])
+	return b.String()
 }
 
 func ChannelMentions(message string) []string {

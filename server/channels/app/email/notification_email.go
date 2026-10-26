@@ -173,17 +173,18 @@ func (es *Service) GenerateHyperlinkForChannels(postMessage, teamName, landingUR
 		return "", err
 	}
 
-	visited := make(map[string]bool)
+	openChannels := make(map[string]bool)
 	for _, ch := range channels {
-		if !visited[ch.Id] && ch.Type == model.ChannelTypeOpen {
-			channelURL := landingURL + "/channels/" + ch.Name
-			// ~channel and, in Antimatter, #channel; each link keeps the sign its author wrote.
-			for _, sigil := range []string{"~", "#"} {
-				channelHyperLink := fmt.Sprintf("<a href='%s'>%s</a>", channelURL, sigil+ch.Name)
-				postMessage = strings.ReplaceAll(postMessage, sigil+ch.Name, channelHyperLink)
-			}
-			visited[ch.Id] = true
+		if ch.Type == model.ChannelTypeOpen {
+			openChannels[ch.Name] = true
 		}
 	}
-	return postMessage, nil
+	// ~channel and, in Antimatter, #channel; each link keeps the sign its author wrote. Each mention is replaced
+	// whole, so a channel whose name starts another's (town-square, town-square-events) never breaks its link.
+	return model.ReplaceChannelMentions(postMessage, func(sigil byte, name string) (string, bool) {
+		if !openChannels[name] {
+			return "", false
+		}
+		return fmt.Sprintf("<a href='%s'>%s</a>", landingURL+"/channels/"+name, string(sigil)+name), true
+	}), nil
 }

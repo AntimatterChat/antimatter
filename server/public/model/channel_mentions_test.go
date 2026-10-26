@@ -504,3 +504,17 @@ func TestPostCurrentTeamIdHandling(t *testing.T) {
 		assert.NotNil(t, post.GetProp(PostPropsCurrentTeamId))
 	})
 }
+
+func TestReplaceChannelMentions(t *testing.T) {
+	link := func(sigil byte, name string) (string, bool) {
+		if name != "town-square" && name != "town-square-events" {
+			return "", false
+		}
+		return "[" + string(sigil) + name + "]", true
+	}
+	assert.Equal(t, "[~town-square-events] then [~town-square] and [#town-square]",
+		ReplaceChannelMentions("~town-square-events then ~town-square and #town-square", link), "each mention whole")
+	assert.Equal(t, "~town ~town-squares #random", ReplaceChannelMentions("~town ~town-squares #random", link), "the others are left")
+	assert.Equal(t, "C#town-square &#39; ##town-square", ReplaceChannelMentions("C#town-square &#39; ##town-square", link), "nor what isn't a link")
+	assert.Equal(t, "no mention", ReplaceChannelMentions("no mention", link))
+}
