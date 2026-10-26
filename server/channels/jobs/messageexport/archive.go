@@ -60,13 +60,20 @@ func writeZip(backend filestore.FileBackend, filePath string, fill func(zw *zip.
 	pr, pw := io.Pipe()
 	fillErr := make(chan error, 1)
 	go func() {
+		var err error
+		defer func() {
+			// The job's panic handler only covers its own goroutine: a panic here would stop the whole server.
+			if r := recover(); r != nil {
+				err = fmt.Errorf("panic while writing the export archive: %v", r)
+			}
+			pw.CloseWithError(err)
+			fillErr <- err
+		}()
 		zw := zip.NewWriter(pw)
-		err := fill(zw)
+		err = fill(zw)
 		if err == nil {
 			err = zw.Close()
 		}
-		pw.CloseWithError(err)
-		fillErr <- err
 	}()
 
 	_, writeErr := backend.WriteFile(pr, filePath)
