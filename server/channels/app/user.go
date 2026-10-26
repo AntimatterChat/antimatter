@@ -2969,6 +2969,11 @@ func (a *App) DemoteUserToGuest(rctx request.CTX, user *model.User) *model.AppEr
 }
 
 func (a *App) PublishUserTyping(userID, channelID, parentId string) *model.AppError {
+	// Antimatter: someone who shows as offline on purpose (Invisible) doesn't show as typing either.
+	if status, appErr := a.GetStatus(userID); appErr == nil && status.Status == model.StatusOffline && status.Manual {
+		return nil
+	}
+
 	omitUsers := make(map[string]bool, 1)
 	omitUsers[userID] = true
 
