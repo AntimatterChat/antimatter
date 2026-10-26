@@ -127,8 +127,9 @@ func TestVerifySignature(t *testing.T) {
 
 func TestBuiltinPluginPublicKeys(t *testing.T) {
 	fingerprints := map[string]string{
-		"Antimatter": antimatterPluginPublicKeyFingerprint,
-		"Mattermost": mattermostPluginPublicKeyFingerprint,
+		"Antimatter":         antimatterPluginPublicKeyFingerprint,
+		"Mattermost":         mattermostPluginPublicKeyFingerprint,
+		"Mattermost Federal": mfiPluginPublicKeyFingerprint,
 	}
 	require.Len(t, builtinPluginPublicKeys, len(fingerprints))
 
@@ -228,6 +229,37 @@ func TestVerifyPlugin(t *testing.T) {
 		pluginFile, signatureFile := openPluginAndSignature(t)
 		require.Nil(t, th.App.ch.verifyPlugin(logger, pluginFile, signatureFile))
 	})
+}
+
+// TestVerifyPluginMFIKey checks that plugins signed by Mattermost Federal (MFI), whose key Mattermost trusts by
+// default, verify without any admin-configured key, and aren't taken for Antimatter builds.
+func TestVerifyPluginMFIKey(t *testing.T) {
+	mainHelper.Parallel(t)
+	path, _ := fileutils.FindDir("tests")
+	logger := mlog.CreateConsoleTestLogger(t)
+	th := Setup(t)
+
+	for _, signatureFilename := range []string{"testplugin-mfi.tar.gz.asc", "testplugin-mfi.tar.gz.sig"} {
+		t.Run(signatureFilename, func(t *testing.T) {
+			open := func(name string) *os.File {
+				f, err := os.Open(filepath.Join(path, name))
+				require.NoError(t, err)
+				t.Cleanup(func() { f.Close() })
+				return f
+			}
+
+			require.Nil(t, th.App.ch.verifyPlugin(logger, open("testplugin-mfi.tar.gz"), open(signatureFilename)))
+
+			signer, appErr := th.App.ch.verifyPluginSigner(logger, open("testplugin-mfi.tar.gz"), open(signatureFilename))
+			require.Nil(t, appErr)
+			require.Equal(t, pluginSigner{name: "Mattermost Federal", builtin: true}, signer)
+			require.False(t, signer.isAntimatter())
+
+			// The MFI key doesn't verify a plugin it didn't sign.
+			_, verified := verifyPluginWithKeys(logger, []pluginPublicKey{{name: "Mattermost Federal", key: mfiPluginPublicKey}}, open("testplugin.tar.gz"), open("testplugin.tar.gz.asc"))
+			require.False(t, verified)
+		})
+	}
 }
 
 func TestPluginSignerIsAntimatter(t *testing.T) {
