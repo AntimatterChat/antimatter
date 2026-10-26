@@ -448,6 +448,97 @@ func ValidateLogPaths(cfg *model.Config, loggingRoot string) error {
 	return validateAdvancedLoggingPaths(cfg.ExperimentalAuditSettings.AdvancedLoggingJSON, "ExperimentalAuditSettings.AdvancedLoggingJSON", loggingRoot)
 }
 
+// logFileTarget is a file a log or audit target of a configuration writes to.
+type logFileTarget struct {
+	setting string // the configuration setting it comes from, as ValidateLogPaths names it
+	target  string // the advanced logging target's name; empty for the basic log and audit files
+	path    string
+}
+
+// describe names the target as ValidateLogPaths' errors do.
+func (t logFileTarget) describe() string {
+	if t.target == "" {
+		return t.setting
+	}
+	return fmt.Sprintf("%s target %q", t.setting, t.target)
+}
+
+// logFileTargets lists the files cfg's active log and audit targets write to, in ValidateLogPaths' order.
+func logFileTargets(cfg *model.Config) []logFileTarget {
+	if cfg == nil {
+		return nil
+	}
+	var targets []logFileTarget
+	if model.SafeDereference(cfg.LogSettings.EnableFile) {
+		targets = append(targets, logFileTarget{setting: "LogSettings.FileLocation", path: GetLogFileLocation(model.SafeDereference(cfg.LogSettings.FileLocation))})
+	}
+	targets = append(targets, advancedLoggingFileTargets(cfg.LogSettings.AdvancedLoggingJSON, "LogSettings.AdvancedLoggingJSON")...)
+	if model.SafeDereference(cfg.ExperimentalAuditSettings.FileEnabled) {
+		targets = append(targets, logFileTarget{setting: "ExperimentalAuditSettings.FileName", path: model.SafeDereference(cfg.ExperimentalAuditSettings.FileName)})
+	}
+	return append(targets, advancedLoggingFileTargets(cfg.ExperimentalAuditSettings.AdvancedLoggingJSON, "ExperimentalAuditSettings.AdvancedLoggingJSON")...)
+}
+
+// advancedLoggingFileTargets lists the file targets of an advanced logging config, skipping what
+// validateAdvancedLoggingPaths skips.
+func advancedLoggingFileTargets(loggingJSON json.RawMessage, setting string) []logFileTarget {
+	if utils.IsEmptyJSON(loggingJSON) {
+		return nil
+	}
+	logCfg := make(mlog.LoggerConfiguration)
+	if err := json.Unmarshal(loggingJSON, &logCfg); err != nil {
+		return nil
+	}
+	var targets []logFileTarget
+	for _, targetName := range slices.Sorted(maps.Keys(logCfg)) {
+		target := logCfg[targetName]
+		if !strings.EqualFold(target.Type, "file") {
+			continue
+		}
+		var fileOption struct {
+			Filename string `json:"filename"`
+		}
+		if err := json.Unmarshal(target.Options, &fileOption); err != nil {
+			continue
+		}
+		targets = append(targets, logFileTarget{setting: setting, target: targetName, path: fileOption.Filename})
+	}
+	return targets
+}
+
+// ValidateLogPathChanges is ValidateLogPaths for a configuration change from oldCfg to newCfg: a file outside
+// loggingRoot is refused only when the change brings it in. A file the same setting of oldCfg already writes to
+// (a configuration upgraded from an older version or from Mattermost that keeps its logs in /var/log/mattermost,
+// say) is left alone, so the admin can still save other settings; the loggers write it in the logging root anyway
+// (ConfineLogPaths). A new path, a target newly turned on, or a path moved to another setting is still refused.
+func ValidateLogPathChanges(oldCfg, newCfg *model.Config, loggingRoot string) error {
+	carried := map[string]map[string]bool{}
+	for _, target := range logFileTargets(oldCfg) {
+		if carried[target.setting] == nil {
+			carried[target.setting] = map[string]bool{}
+		}
+		carried[target.setting][comparableLogPath(target.path)] = true
+	}
+
+	for _, target := range logFileTargets(newCfg) {
+		err := ValidateLogFilePath(target.path, loggingRoot)
+		if err == nil || carried[target.setting][comparableLogPath(target.path)] {
+			continue
+		}
+		return fmt.Errorf("%s: %w", target.describe(), err)
+	}
+	return nil
+}
+
+// comparableLogPath gives the form two log paths are compared in: absolute and cleaned, without resolving symlinks
+// (the value compared is the configured one).
+func comparableLogPath(path string) string {
+	if abs, err := filepath.Abs(path); err == nil {
+		return abs
+	}
+	return filepath.Clean(path)
+}
+
 // validateAdvancedLoggingPaths validates the file targets of an advanced logging config.
 //
 // Unparseable JSON is skipped rather than reported: it defines no file target, so it cannot write

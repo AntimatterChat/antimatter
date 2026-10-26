@@ -108,14 +108,23 @@ func (ps *PlatformService) SaveConfig(newCfg *model.Config, sendConfigChangeClus
 	}
 
 	if err := config.ValidateLogPaths(newCfg, ps.getLogRootPath()); err != nil {
-		// mlog rather than ps.logger: after startup the global logger *is* ps.logger, and
-		// SaveConfig is reachable from paths that do not guarantee a configured logger.
-		mlog.Error(config.LogPathOutsideRootWarning, mlog.Err(err))
+		// Antimatter: only a change that brings a path outside the root in is refused. A path the
+		// active config already has (carried over from an upgrade) doesn't block saving other
+		// settings; the loggers write it in the logging root (loggingConfig).
+		if changeErr := config.ValidateLogPathChanges(ps.Config(), newCfg, ps.getLogRootPath()); changeErr != nil {
+			// mlog rather than ps.logger: after startup the global logger *is* ps.logger, and
+			// SaveConfig is reachable from paths that do not guarantee a configured logger.
+			mlog.Error(config.LogPathOutsideRootWarning, mlog.Err(changeErr))
 
-		// The flag is read from the *active* config, not newCfg, so a single patch cannot both
-		// disable enforcement and introduce an out-of-root path.
-		if config.IsLogPathEnforcementEnabled(ps.Config()) {
-			return nil, nil, model.NewAppError("saveConfig", "app.save_config.log_path_outside_root.app_error", nil, "", http.StatusBadRequest)
+			// The flag is read from the *active* config, not newCfg, so a single patch cannot both
+			// disable enforcement and introduce an out-of-root path.
+			if config.IsLogPathEnforcementEnabled(ps.Config()) {
+				return nil, nil, model.NewAppError("saveConfig", "app.save_config.log_path_outside_root.app_error", nil, "", http.StatusBadRequest)
+			}
+		} else if config.IsLogPathEnforcementEnabled(ps.Config()) {
+			mlog.Warn(config.LogPathFallbackWarning, mlog.Err(err))
+		} else {
+			mlog.Error(config.LogPathOutsideRootWarning, mlog.Err(err))
 		}
 	}
 

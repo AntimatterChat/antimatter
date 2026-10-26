@@ -787,3 +787,64 @@ func TestConfineLogPaths(t *testing.T) {
 		assert.Empty(t, moved)
 	})
 }
+
+func TestValidateLogPathChanges(t *testing.T) {
+	base := t.TempDir()
+	root := filepath.Join(base, "logs")
+	require.NoError(t, os.MkdirAll(root, 0700))
+	outside := filepath.Join(base, "var-log-mattermost")
+
+	legacy := &model.Config{}
+	legacy.SetDefaults()
+	*legacy.LogSettings.EnableFile = true
+	*legacy.LogSettings.FileLocation = outside
+	legacy.LogSettings.AdvancedLoggingJSON = json.RawMessage(`{"ldap": {"type": "file", "format": "json", "levels": [{"id": 2, "name": "error"}], "options": {"filename": "` + filepath.Join(outside, "ldap.log") + `"}}}`)
+
+	t.Run("unchanged legacy paths pass", func(t *testing.T) {
+		require.Error(t, ValidateLogPaths(legacy, root))
+		require.NoError(t, ValidateLogPathChanges(legacy, legacy.Clone(), root))
+		// The same path written differently is the same path.
+		changed := legacy.Clone()
+		*changed.LogSettings.FileLocation = outside + string(filepath.Separator)
+		require.NoError(t, ValidateLogPathChanges(legacy, changed, root))
+	})
+
+	t.Run("moving a legacy path into the root passes", func(t *testing.T) {
+		changed := legacy.Clone()
+		*changed.LogSettings.FileLocation = root
+		require.NoError(t, ValidateLogPathChanges(legacy, changed, root))
+	})
+
+	t.Run("a new path outside the root is refused", func(t *testing.T) {
+		changed := legacy.Clone()
+		*changed.LogSettings.FileLocation = filepath.Join(base, "elsewhere")
+		err := ValidateLogPathChanges(legacy, changed, root)
+		require.Error(t, err)
+		assert.Contains(t, err.Error(), "LogSettings.FileLocation")
+
+		changed = legacy.Clone()
+		changed.LogSettings.AdvancedLoggingJSON = json.RawMessage(`{"ldap": {"type": "file", "format": "json", "levels": [{"id": 2, "name": "error"}], "options": {"filename": "` + filepath.Join(outside, "other.log") + `"}}}`)
+		err = ValidateLogPathChanges(legacy, changed, root)
+		require.Error(t, err)
+		assert.Contains(t, err.Error(), `LogSettings.AdvancedLoggingJSON target "ldap"`)
+	})
+
+	t.Run("a legacy path in another setting is refused", func(t *testing.T) {
+		changed := legacy.Clone()
+		*changed.ExperimentalAuditSettings.FileEnabled = true
+		*changed.ExperimentalAuditSettings.FileName = filepath.Join(outside, "ldap.log")
+		err := ValidateLogPathChanges(legacy, changed, root)
+		require.Error(t, err)
+		assert.Contains(t, err.Error(), "ExperimentalAuditSettings.FileName")
+	})
+
+	t.Run("turning on a target with an outside path is refused", func(t *testing.T) {
+		old := legacy.Clone()
+		*old.LogSettings.EnableFile = false
+		require.Error(t, ValidateLogPathChanges(old, legacy, root))
+	})
+
+	t.Run("from no configuration, every outside path is new", func(t *testing.T) {
+		require.Error(t, ValidateLogPathChanges(nil, legacy, root))
+	})
+}

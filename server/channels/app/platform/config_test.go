@@ -289,6 +289,87 @@ func TestSaveConfigLogPathEnforcement(t *testing.T) {
 		assert.JSONEq(t, string(outOfRootTarget), string(ps.Config().LogSettings.AdvancedLoggingJSON))
 	})
 
+	// A configuration upgraded from an older version or from Mattermost may keep its logs outside the root. The
+	// server starts (the loggers write those targets in the root), and the admin can still save other settings:
+	// only a change bringing a path outside the root in is refused.
+	upgraded := func(t *testing.T) *PlatformService {
+		t.Helper()
+		ps := setup(t, false)
+		cfg := ps.Config().Clone()
+		*cfg.LogSettings.FileLocation = outside
+		*cfg.ExperimentalAuditSettings.FileEnabled = true
+		*cfg.ExperimentalAuditSettings.FileName = filepath.Join(outside, "audit.log")
+		cfg.LogSettings.AdvancedLoggingJSON = outOfRootTarget
+		_, _, appErr := ps.SaveConfig(cfg, false)
+		require.Nil(t, appErr)
+
+		// Enforcement turned on afterwards, as on the first start of an upgraded server.
+		cfg = ps.Config().Clone()
+		cfg.FeatureFlags.EnforceLogPathRoot = true
+		_, _, err := ps.configStore.Set(cfg)
+		require.NoError(t, err)
+		require.True(t, config.IsLogPathEnforcementEnabled(ps.Config()))
+		return ps
+	}
+
+	t.Run("flag on accepts out-of-root paths carried over unchanged", func(t *testing.T) {
+		ps := upgraded(t)
+
+		cfg := ps.Config().Clone()
+		*cfg.TeamSettings.SiteName = "Renamed"
+		_, _, appErr := ps.SaveConfig(cfg, false)
+		require.Nil(t, appErr)
+		assert.Equal(t, "Renamed", *ps.Config().TeamSettings.SiteName)
+		assert.Equal(t, outside, *ps.Config().LogSettings.FileLocation)
+	})
+
+	t.Run("flag on still rejects a new out-of-root path next to carried-over ones", func(t *testing.T) {
+		for name, change := range map[string]func(cfg *model.Config){
+			"file location": func(cfg *model.Config) { *cfg.LogSettings.FileLocation = filepath.Join(outside, "elsewhere") },
+			"audit file": func(cfg *model.Config) {
+				*cfg.ExperimentalAuditSettings.FileName = filepath.Join(outside, "audit2.log")
+			},
+			"advanced target": func(cfg *model.Config) {
+				cfg.LogSettings.AdvancedLoggingJSON = json.RawMessage(`{"evil": {"type": "file", "format": "json", "levels": [{"id": 2, "name": "error"}], "options": {"filename": "` + filepath.Join(outside, "other.log") + `"}}}`)
+			},
+			"carried-over path moved to another setting": func(cfg *model.Config) {
+				cfg.ExperimentalAuditSettings.AdvancedLoggingJSON = outOfRootTarget
+			},
+		} {
+			t.Run(name, func(t *testing.T) {
+				ps := upgraded(t)
+				before := ps.Config().Clone()
+
+				cfg := ps.Config().Clone()
+				change(cfg)
+				_, _, appErr := ps.SaveConfig(cfg, false)
+				require.NotNil(t, appErr)
+				assert.Equal(t, "app.save_config.log_path_outside_root.app_error", appErr.Id)
+				assert.Equal(t, *before.LogSettings.FileLocation, *ps.Config().LogSettings.FileLocation)
+				assert.Equal(t, *before.ExperimentalAuditSettings.FileName, *ps.Config().ExperimentalAuditSettings.FileName)
+			})
+		}
+	})
+
+	t.Run("flag on rejects turning on a target whose legacy path is outside the root", func(t *testing.T) {
+		ps := setup(t, false)
+		cfg := ps.Config().Clone()
+		*cfg.ExperimentalAuditSettings.FileEnabled = false
+		*cfg.ExperimentalAuditSettings.FileName = filepath.Join(outside, "audit.log")
+		_, _, appErr := ps.SaveConfig(cfg, false)
+		require.Nil(t, appErr)
+		cfg = ps.Config().Clone()
+		cfg.FeatureFlags.EnforceLogPathRoot = true
+		_, _, err := ps.configStore.Set(cfg)
+		require.NoError(t, err)
+
+		cfg = ps.Config().Clone()
+		*cfg.ExperimentalAuditSettings.FileEnabled = true
+		_, _, appErr = ps.SaveConfig(cfg, false)
+		require.NotNil(t, appErr)
+		assert.Equal(t, "app.save_config.log_path_outside_root.app_error", appErr.Id)
+	})
+
 	t.Run("enforcement is read from the active config, not the incoming one", func(t *testing.T) {
 		ps := setup(t, true)
 
