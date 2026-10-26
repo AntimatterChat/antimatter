@@ -184,6 +184,24 @@ type PluginStatus = {
     };
 };
 
+// Antimatter releases its own builds of these apps, under the upstream ids. An upstream build may refuse to start
+// without a licence, which this server never gives to apps, and Antimatter's build has to be uploaded: the server
+// doesn't download it.
+const antimatterBuildReleases: Record<string, string> = {
+    playbooks: 'https://github.com/AntimatterChat/antimatter-plugin-playbooks/releases',
+    focalboard: 'https://github.com/AntimatterChat/antimatter-plugin-boards/releases',
+};
+
+// antimatterBuildReleasesURL returns where to get Antimatter's build of the app when the installed one is another
+// build (an upstream one): Antimatter's builds name their AntimatterChat repository as their homepage.
+export function antimatterBuildReleasesURL(pluginId: string, homepageUrl?: string): string | undefined {
+    const releases = antimatterBuildReleases[pluginId];
+    if (!releases || (/^https:\/\/github\.com\/antimatterchat\//i).test(homepageUrl?.trim() ?? '')) {
+        return undefined;
+    }
+    return releases;
+}
+
 type PluginItemProps = {
     pluginStatus: PluginStatus;
     plugin?: {
@@ -378,6 +396,33 @@ const PluginItem = ({
                 <FormattedMessage
                     id='admin.plugin.multiple_versions_warning'
                     defaultMessage='There are multiple versions of this plugin installed across your cluster. Re-install this plugin to ensure it works consistently.'
+                />
+            </div>,
+        );
+    }
+
+    const releasesURL = plugin ? antimatterBuildReleasesURL(pluginStatus.id, plugin.homepage_url) : undefined;
+    if (releasesURL) {
+        notices.push(
+            <div
+                key='antimatter-build'
+                className='alert alert-warning'
+            >
+                <i className='fa fa-warning'/>
+                <FormattedMessage
+                    id='admin.plugin.antimatter_build_available'
+                    defaultMessage="This isn't Antimatter's build of {name}, and it may not start without a licence. Download Antimatter's build from its <link>releases page</link> and upload it here."
+                    values={{
+                        name: pluginStatus.name,
+                        link: (msg: React.ReactNode) => (
+                            <ExternalLink
+                                href={releasesURL}
+                                location='plugin_management'
+                            >
+                                {msg}
+                            </ExternalLink>
+                        ),
+                    }}
                 />
             </div>,
         );

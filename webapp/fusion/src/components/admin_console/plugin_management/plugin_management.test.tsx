@@ -5,7 +5,7 @@ import React from 'react';
 
 import PluginState from 'mattermost-redux/constants/plugins';
 
-import {PluginManagement} from 'components/admin_console/plugin_management/plugin_management';
+import {PluginManagement, antimatterBuildReleasesURL} from 'components/admin_console/plugin_management/plugin_management';
 
 import {defaultIntl} from 'tests/helpers/intl-test-helper';
 import {act, createEvent, fireEvent, renderWithContext, screen, userEvent, waitFor} from 'tests/react_testing_utils';
@@ -988,6 +988,69 @@ describe('components/PluginManagement', () => {
             const row = screen.getByTestId('plugin_0');
             expect(row).toHaveTextContent('Requires a commercial Mattermost add-on');
             expect(row).not.toHaveTextContent('Enable');
+        });
+    });
+
+    describe('upstream builds of the apps Antimatter builds', () => {
+        const renderWith = (id: string, name: string, homepageUrl?: string) => {
+            const props = {
+                ...defaultProps,
+                pluginStatuses: {
+                    [id]: {
+                        ...defaultProps.pluginStatuses.plugin_0,
+                        id,
+                        name,
+                        state: PluginState.PLUGIN_STATE_FAILED_TO_START,
+                    },
+                },
+                plugins: {
+                    [id]: {
+                        ...defaultProps.plugins.plugin_0,
+                        id,
+                        name,
+                        homepage_url: homepageUrl,
+                    },
+                },
+            };
+            const ref = React.createRef<InstanceType<typeof PluginManagement>>();
+            renderWithContext(
+                <PluginManagement
+                    {...props}
+                    ref={ref}
+                />,
+            );
+            act(() => {
+                ref.current!.setState({loading: false} as any);
+            });
+            return screen.getByTestId(id);
+        };
+
+        test.each([
+            ['playbooks', 'Playbooks', 'https://github.com/mattermost/mattermost-plugin-playbooks/', 'https://github.com/AntimatterChat/antimatter-plugin-playbooks/releases'],
+            ['focalboard', 'Boards', 'https://github.com/mattermost/focalboard', 'https://github.com/AntimatterChat/antimatter-plugin-boards/releases'],
+            ['focalboard', 'Boards', undefined, 'https://github.com/AntimatterChat/antimatter-plugin-boards/releases'],
+        ])('points an upstream %s build to Antimatter\'s release', (id, name, homepageUrl, releases) => {
+            const row = renderWith(id, name, homepageUrl);
+
+            expect(row).toHaveTextContent(`This isn't Antimatter's build of ${name}, and it may not start without a licence.`);
+            expect(screen.getByRole('link', {name: 'releases page'})).toHaveAttribute('href', expect.stringContaining(releases));
+        });
+
+        test.each([
+            ['playbooks', 'Playbooks', 'https://github.com/antimatterchat/antimatter-plugin-playbooks/'],
+            ['focalboard', 'Antimatter Kanban', 'https://github.com/AntimatterChat/antimatter-plugin-boards'],
+            ['com.example.other', 'Other', 'https://github.com/mattermost/other'],
+        ])('says nothing for %s with homepage %s', (id, name, homepageUrl) => {
+            const row = renderWith(id, name, homepageUrl);
+
+            expect(row).not.toHaveTextContent('Antimatter\'s build');
+        });
+
+        test('antimatterBuildReleasesURL', () => {
+            expect(antimatterBuildReleasesURL('playbooks', 'https://github.com/mattermost/mattermost-plugin-playbooks')).toBe('https://github.com/AntimatterChat/antimatter-plugin-playbooks/releases');
+            expect(antimatterBuildReleasesURL('playbooks', ' HTTPS://GitHub.com/AntimatterChat/antimatter-plugin-playbooks/ ')).toBeUndefined();
+            expect(antimatterBuildReleasesURL('playbooks', 'https://github.com/antimatterchat.evil.example/x')).toBe('https://github.com/AntimatterChat/antimatter-plugin-playbooks/releases');
+            expect(antimatterBuildReleasesURL('com.mattermost.calls', 'https://github.com/mattermost/mattermost-plugin-calls')).toBeUndefined();
         });
     });
 });

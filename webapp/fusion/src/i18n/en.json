@@ -11303,6 +11303,10 @@
     "defaultMessage": "This plugin requires a commercial Mattermost add-on that is licensed separately, so it cannot be enabled on this server.",
     "description": "Warning in the plugin's settings page in the System Console explaining why a plugin that needs a separately licensed commercial Mattermost add-on cannot be enabled. \"Mattermost\" is the add-on vendor's name and must stay as-is."
   },
+  "admin.plugin.antimatter_build_available": {
+    "defaultMessage": "This isn't Antimatter's build of {name}, and it may not start without a licence. Download Antimatter's build from its <link>releases page</link> and upload it here.",
+    "description": "Warning on an installed app in System Console > App Management when it is an upstream build of an app Antimatter publishes its own build of (Playbooks, Boards): upstream builds may refuse to start without a licence. {name} is the app's name; <link>...</link> wraps the link text to the GitHub releases page of Antimatter's build; 'here' is this page, which has the upload control."
+  },
   "admin.plugin.backToPlugins": {
     "defaultMessage": "Go back to the Plugins",
     "description": "Link on the plugin-not-found error page in the System Console; navigates back to the Plugin Management page."
