@@ -228,12 +228,26 @@ export function Permalink({data}: {data: PostPreviewMetadata}) {
     );
 }
 
+// imageNameOf names a linked image after the last segment of its address, decoded. A malformed escape (a%E0%A4.png)
+// keeps the segment as written: decodeURIComponent throws on it, and a throw while drawing a message would take the
+// whole conversation down for everyone who opens it.
+export function imageNameOf(link: string): string {
+    const segment = link.split(/[?#]/)[0].split('/').pop() || '';
+    let name = segment;
+    try {
+        name = decodeURIComponent(segment);
+    } catch {
+        // As written.
+    }
+    return name || link;
+}
+
 // InlineImage is an image linked in a message: a .img-att tile that opens the lightbox.
 export function InlineImage({post, link}: {post: Post; link: string}) {
     const {formatMessage} = useIntl();
     const [lightbox, openImage] = useLightbox();
     const meta = post.metadata?.images?.[link];
-    const name = decodeURIComponent(link.split(/[?#]/)[0].split('/').pop() || '') || link;
+    const name = imageNameOf(link);
 
     return (
         <ExternalImage
