@@ -1,7 +1,7 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import {useEffect} from 'react';
+import {useCallback, useEffect, useRef} from 'react';
 import {defineMessage} from 'react-intl';
 import {useDispatch, useSelector, useStore} from 'react-redux';
 
@@ -68,28 +68,52 @@ export function getMuteEnd(state: GlobalState, channelId: string): number {
     return Number(state.entities.preferences.myPreferences[`${CATEGORY_MUTE_UNTIL}--${channelId}`]?.value) || 0;
 }
 
-// useMuteExpiry unmutes the channels whose timed mute is over, at start and then every minute.
+// useMuteExpiry unmutes the channels whose timed mute is over, at start and then every minute. A channel whose
+// membership isn't loaded yet (right after start) waits for it: its end is forgotten only once it's unmuted, or found
+// unmuted already, or the mute would stay on for good with no end left to undo it.
 export function useMuteExpiry() {
     const dispatch = useDispatch();
     const store = useStore<GlobalState>();
     const userId = useSelector(getCurrentUserId);
-    useEffect(() => {
-        const check = () => {
-            const state = store.getState();
-            const prefix = `${CATEGORY_MUTE_UNTIL}--`;
-            for (const [key, pref] of Object.entries(state.entities.preferences.myPreferences)) {
-                if (!key.startsWith(prefix) || Number(pref.value) > Date.now()) {
-                    continue;
-                }
-                const channelId = key.slice(prefix.length);
-                if (isChannelMuted(getMyChannelMembership(state, channelId))) {
-                    dispatch(unmuteChannel(userId, channelId));
-                }
-                dispatch(deletePreferences(userId, [{user_id: userId, category: CATEGORY_MUTE_UNTIL, name: channelId, value: pref.value}]));
+
+    // Checked again as soon as the memberships arrive, not a minute later.
+    const myMembers = useSelector((state: GlobalState) => state.entities.channels.myMembers);
+    const pending = useRef(new Set<string>());
+
+    const check = useCallback(() => {
+        const state = store.getState();
+        const prefix = `${CATEGORY_MUTE_UNTIL}--`;
+        for (const [key, pref] of Object.entries(state.entities.preferences.myPreferences)) {
+            if (!key.startsWith(prefix) || Number(pref.value) > Date.now()) {
+                continue;
             }
-        };
+            const channelId = key.slice(prefix.length);
+            const member = getMyChannelMembership(state, channelId);
+            if (!member || pending.current.has(channelId)) {
+                continue;
+            }
+            const forget = () => dispatch(deletePreferences(userId, [{user_id: userId, category: CATEGORY_MUTE_UNTIL, name: channelId, value: pref.value}]));
+            if (!isChannelMuted(member)) {
+                forget();
+                continue;
+            }
+            pending.current.add(channelId);
+            Promise.resolve(dispatch(unmuteChannel(userId, channelId))).then((result) => {
+                if (!(result && typeof result === 'object' && 'error' in result && result.error)) {
+                    forget();
+                }
+            }).finally(() => {
+                pending.current.delete(channelId);
+            });
+        }
+    }, [dispatch, store, userId]);
+
+    useEffect(() => {
         check();
+    }, [check, myMembers]);
+
+    useEffect(() => {
         const timer = setInterval(check, 60000);
         return () => clearInterval(timer);
-    }, [dispatch, store, userId]);
+    }, [check]);
 }
