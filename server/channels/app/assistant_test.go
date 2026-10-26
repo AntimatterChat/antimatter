@@ -1117,3 +1117,25 @@ func TestAssistantDictionaryFromAnAppListing(t *testing.T) {
 		assert.Equal(t, before+1, listed(), "listed again ten minutes later")
 	})
 }
+
+// A decision counts on the person's and the channel's budgets together: when the channel's runs out, the person's
+// isn't spent for a decision that never ran.
+func TestAssistantSpendDecisionDoesNotLeakUserBudgetWhenChannelExhausted(t *testing.T) {
+	th := Setup(t)
+	userID, channelID := model.NewId(), model.NewId()
+	cfg := &assistantConfig{decisionsPerUser: 2, decisionsPerChannel: 1}
+
+	require.True(t, th.App.assistantSpendDecision(th.Context, userID, channelID, cfg))
+	other := model.NewId()
+	require.False(t, th.App.assistantSpendDecision(th.Context, other, channelID, cfg), "the channel's budget is spent")
+	require.True(t, th.App.assistantTakeBudget(th.Context, "decisions_user", other, 2), "the other person's first decision wasn't counted")
+	require.True(t, th.App.assistantTakeBudget(th.Context, "decisions_user", other, 2), "nor any")
+
+	// Past the cheap check (two windows racing): the budget counted first is given back when the next is spent.
+	user := assistantBudget{"decisions_user", model.NewId(), 1}
+	channel := assistantBudget{"decisions_channel", channelID, 1}
+	require.False(t, th.App.assistantTakeBudgets(th.Context, user, channel))
+	assert.True(t, th.App.assistantBudgetLeft(user.kind, user.id, user.limit), "the person's budget is given back")
+	require.True(t, th.App.assistantTakeBudget(th.Context, user.kind, user.id, user.limit))
+	assert.False(t, th.App.assistantBudgetLeft(user.kind, user.id, user.limit))
+}

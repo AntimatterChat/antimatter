@@ -216,29 +216,56 @@ func (a *App) assistantKVInsert(key string, value []byte, ttl time.Duration) (bo
 // assistantTakeBudget counts one more use of an hourly budget, unless it's spent: it tells whether there was some
 // left. The count is kept for the whole cluster.
 func (a *App) assistantTakeBudget(rctx request.CTX, kind, id string, limit int) bool {
-	if limit <= 0 {
+	return a.assistantTakeBudgets(rctx, assistantBudget{kind, id, limit})
+}
+
+// assistantBudget names one hourly budget and its limit.
+type assistantBudget struct {
+	kind, id string
+	limit    int
+}
+
+// assistantTakeBudgets counts one more use of each budget, in order, only if they all have some left: when one is
+// spent, those already counted are given back, so a use nobody makes never costs anything.
+func (a *App) assistantTakeBudgets(rctx request.CTX, budgets ...assistantBudget) bool {
+	hour := time.Now().UTC().Format("2006010215")
+	for i, b := range budgets {
+		if !a.assistantCountBudget(rctx, b, hour, 1) {
+			for _, taken := range budgets[:i] {
+				a.assistantCountBudget(rctx, taken, hour, -1)
+			}
+			return false
+		}
+	}
+	return true
+}
+
+// assistantCountBudget adds delta (1 to take, -1 to give back) to a budget's count for the hour: it tells whether it
+// changed it (never above the limit, never below zero).
+func (a *App) assistantCountBudget(rctx request.CTX, b assistantBudget, hour string, delta int) bool {
+	if b.limit <= 0 {
 		return false
 	}
-	key := assistantBudgetPrefix + kind + "_" + id + "_" + time.Now().UTC().Format("2006010215")
-	taken := false
+	key := assistantBudgetPrefix + b.kind + "_" + b.id + "_" + hour
+	changed := false
 	_, appErr := a.assistantKVUpdate(rctx, key, 2*time.Hour, func(old []byte) ([]byte, bool) {
 		count := 0
 		if old != nil {
 			_ = json.Unmarshal(old, &count)
 		}
-		if count >= limit {
-			taken = false
+		if (delta > 0 && count >= b.limit) || count+delta < 0 {
+			changed = false
 			return nil, false
 		}
-		taken = true
-		out, _ := json.Marshal(count + 1)
+		changed = true
+		out, _ := json.Marshal(count + delta)
 		return out, true
 	})
 	if appErr != nil {
-		rctx.Logger().Debug("The assistant couldn't count its budget", mlog.String("kind", kind), mlog.Err(appErr))
+		rctx.Logger().Debug("The assistant couldn't count its budget", mlog.String("kind", b.kind), mlog.Err(appErr))
 		return false
 	}
-	return taken
+	return changed
 }
 
 // assistantBudgetLeft tells whether an hourly budget has some left, without using it.
