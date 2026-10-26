@@ -348,7 +348,10 @@ function MessageBox({channelId, rootId = '', placeholder, afterSubmit, extraProp
         dispatch(removeDraft(key, channelId, rootId));
         const result = await dispatch(onSubmit(channelId, rootId, toSend, after ? {afterSubmit: after} : {}, schedulingInfo));
         if (result && 'error' in result && result.error) {
+            // Back in the composer, and stored again at once: the composer may have been left (or the page reloaded)
+            // by the time the error comes, and it would open on the empty stored draft, the message lost.
             setDraft(toSend);
+            dispatch(updateDraft(key, {...toSend, show: true}, rootId, true));
             return {sent: false, error: result.error as {message?: string}};
         }
         return {sent: true};

@@ -84,6 +84,29 @@ describe('fusion/composer/Composer', () => {
         document.getElementById(LAYER_ID)?.remove();
     });
 
+    // sec-fusion #11: a failed send put the message back in the composer without storing it again, and the stored
+    // draft was already gone: leaving the conversation (or reloading) before the error came lost it.
+    test('a message that couldn\'t be sent is back in the composer, and stored again', async () => {
+        jest.mocked(onSubmit).mockImplementationOnce(() => () => Promise.resolve({error: {message: 'Command failed'}}) as never);
+        const {store, unmount} = render();
+
+        await userEvent.type(screen.getByRole('textbox', {name: 'Write to General'}), 'Lost message{Enter}');
+        await waitFor(() => expect(onSubmit).toHaveBeenCalled());
+        await waitFor(() => expect(screen.getByRole('textbox', {name: 'Write to General'})).toHaveValue('Lost message'));
+
+        // Opened again from what's stored, the message is still there.
+        const stored = store.getState();
+        unmount();
+        renderWithContext(
+            <Composer
+                channelId='c1'
+                placeholder='Write to General'
+            />,
+            stored as never,
+        );
+        expect(screen.getByRole('textbox', {name: 'Write to General'})).toHaveValue('Lost message');
+    });
+
     test('has no schedule button in the formatting bar: the send button\'s chevron schedules', () => {
         render();
 
