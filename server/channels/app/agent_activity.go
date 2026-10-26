@@ -16,8 +16,9 @@ import (
 // Agent activity (Antimatter): what an agent is doing now (idle, thinking, working, waiting for someone, blocked,
 // offline), a few words on its task and the thread it works in. The agent sets it (an external agent with its token,
 // the runtime for built-in ones), or its managers do. Everyone who can see the agent gets it live: a server agent's
-// to everyone, a community agent's to its community, and guests only for an agent they can see (as user_updated). The
-// thread is never sent live; it's given only to those who may read it.
+// to everyone, a community agent's to its community, and guests (or anyone whose roles don't let them see everyone)
+// only for an agent they can see (as user_updated). The thread is never sent live; it's given only to those who may
+// read it.
 
 // SetAgentActivity sets an agent's activity from a request and tells everyone who can see the agent.
 func (a *App) SetAgentActivity(rctx request.CTX, agent *model.AIAgent, req *model.AgentActivityRequest) (*model.AgentActivity, *model.AppError) {

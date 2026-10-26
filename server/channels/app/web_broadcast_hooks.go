@@ -42,6 +42,7 @@ func (s *Server) makeBroadcastHooks() map[string]platform.BroadcastHook {
 		broadcastAbacBookmarks:      &abacBookmarksBroadcastHook{},
 		broadcastOnlyChannelAdmins:  &onlyChannelAdminsBroadcastHook{},
 		broadcastProfilePrivacy:     &profilePrivacyBroadcastHook{},
+		broadcastAttributePrivacy:   &attributePrivacyBroadcastHook{},
 	}
 }
 

@@ -8505,6 +8505,45 @@ func TestPublishUserTyping(t *testing.T) {
 	})
 }
 
+// Someone who is offline on purpose (Invisible) doesn't show as typing: the server drops their typing events.
+func TestPublishUserTypingWhileInvisible(t *testing.T) {
+	mainHelper.Parallel(t)
+	th := Setup(t).InitBasic(t)
+	tr := model.TypingRequest{ChannelId: th.BasicChannel.Id}
+
+	webSocketClient := th.CreateConnectedWebSocketClient(t)
+	wsResp := <-webSocketClient.ResponseChannel
+	require.Equal(t, model.StatusOk, wsResp.Status)
+
+	client2 := th.CreateClient()
+	th.LoginBasic2WithClient(t, client2)
+
+	typingSeen := func() bool {
+		t.Helper()
+		deadline := time.After(1500 * time.Millisecond)
+		for {
+			select {
+			case event := <-webSocketClient.EventChannel:
+				if event.EventType() == model.WebsocketEventTyping && event.GetData()["user_id"] == th.BasicUser2.Id {
+					return true
+				}
+			case <-deadline:
+				return false
+			}
+		}
+	}
+
+	th.App.SetStatusOffline(th.BasicUser2.Id, true, true)
+	_, err := client2.PublishUserTyping(context.Background(), th.BasicUser2.Id, tr)
+	require.NoError(t, err, "the request succeeds, quietly")
+	assert.False(t, typingSeen(), "nobody hears an invisible person typing")
+
+	th.App.SetStatusOnline(th.BasicUser2.Id, true)
+	_, err = client2.PublishUserTyping(context.Background(), th.BasicUser2.Id, tr)
+	require.NoError(t, err)
+	assert.True(t, typingSeen(), "once online again, they do")
+}
+
 func TestConvertUserToBot(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)

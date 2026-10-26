@@ -2412,6 +2412,12 @@ func (a *App) SearchPostsInTeam(teamID string, paramsList []*model.SearchParams)
 }
 
 func (a *App) SearchPostsForUser(rctx request.CTX, terms string, userID string, teamID string, isOrSearch bool, includeDeletedChannels bool, timeZoneOffset int, page, perPage int) (*model.PostSearchResults, bool, *model.AppError) {
+	return a.searchPostsForUser(rctx, terms, userID, teamID, isOrSearch, includeDeletedChannels, timeZoneOffset, page, perPage, "")
+}
+
+// searchPostsForUser is SearchPostsForUser, kept to onlyChannelID when it isn't empty (Antimatter: an agent's tools
+// outside the person's own direct message with it), whatever in: the terms name.
+func (a *App) searchPostsForUser(rctx request.CTX, terms string, userID string, teamID string, isOrSearch bool, includeDeletedChannels bool, timeZoneOffset int, page, perPage int, onlyChannelID string) (*model.PostSearchResults, bool, *model.AppError) {
 	var postSearchResults *model.PostSearchResults
 	paramsList := model.ParseSearchParams(strings.TrimSpace(terms), timeZoneOffset)
 
@@ -2432,6 +2438,9 @@ func (a *App) SearchPostsForUser(rctx request.CTX, terms string, userID string, 
 			// Convert channel names to channel IDs
 			params.InChannels = a.convertChannelNamesToChannelIds(rctx, params.InChannels, userID, teamID, includeDeletedChannels)
 			params.ExcludedChannels = a.convertChannelNamesToChannelIds(rctx, params.ExcludedChannels, userID, teamID, includeDeletedChannels)
+			if onlyChannelID != "" {
+				params.InChannels = []string{onlyChannelID}
+			}
 
 			// Convert usernames to user IDs
 			params.FromUsers = a.convertUserNameToUserIds(rctx, params.FromUsers)

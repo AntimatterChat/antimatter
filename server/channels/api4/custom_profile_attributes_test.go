@@ -2720,3 +2720,123 @@ func TestCPALinkedFieldBlocked(t *testing.T) {
 		CheckErrorID(t, err, "api.custom_profile_attributes.linked_field.app_error")
 	})
 }
+
+// Someone who hides their attributes keeps their values out of the websocket events too, as the REST read does.
+func TestCPAValuesEventHonoursProfilePrivacy(t *testing.T) {
+	mainHelper.Parallel(t)
+	th := Setup(t).InitBasic(t)
+
+	field, resp, err := th.SystemAdminClient.CreateCPAField(context.Background(), &model.PropertyField{
+		Name: celSafeName(),
+		Type: model.PropertyFieldTypeText,
+	})
+	CheckCreatedStatus(t, resp)
+	require.NoError(t, err)
+
+	// BasicUser hides their attributes from everyone.
+	privacy, err := json.Marshal(model.ProfilePrivacy{model.ProfilePrivacyDefault: {model.ProfileFieldAttributes}})
+	require.NoError(t, err)
+	user, appErr := th.App.GetUser(th.Context, th.BasicUser.Id)
+	require.Nil(t, appErr)
+	user.Props = model.StringMap{model.UserPropsKeyProfilePrivacy: string(privacy)}
+	_, appErr = th.App.UpdateUser(th.Context, user, false)
+	require.Nil(t, appErr)
+
+	// BasicUser2 shares the basic community with them.
+	client2 := th.CreateClient()
+	th.LoginBasic2WithClient(t, client2)
+	watcher := th.CreateConnectedWebSocketClientWithClient(t, client2)
+	owner := th.CreateConnectedWebSocketClient(t)
+
+	_, resp, err = th.Client.PatchCPAValues(context.Background(), map[string]json.RawMessage{field.ID: json.RawMessage(`"+33 6 12 34 56 78"`)})
+	CheckOKStatus(t, resp)
+	require.NoError(t, err)
+
+	valuesFrom := func(ws *model.WebSocketClient) map[string]json.RawMessage {
+		t.Helper()
+		var values map[string]json.RawMessage
+		require.Eventually(t, func() bool {
+			select {
+			case event := <-ws.EventChannel:
+				if event.EventType() != model.WebsocketEventCPAValuesUpdated {
+					return false
+				}
+				data, err := json.Marshal(event.GetData()["values"])
+				require.NoError(t, err)
+				require.NoError(t, json.Unmarshal(data, &values))
+				return true
+			default:
+				return false
+			}
+		}, 5*time.Second, 50*time.Millisecond)
+		return values
+	}
+
+	seen := valuesFrom(watcher)
+	require.Contains(t, seen, field.ID)
+	assert.JSONEq(t, model.PropertyValueWithheldJSON, string(seen[field.ID]))
+
+	// The REST read the client refetches through gives them nothing either.
+	listed, resp, err := client2.ListCPAValues(context.Background(), th.BasicUser.Id)
+	CheckOKStatus(t, resp)
+	require.NoError(t, err)
+	assert.NotContains(t, listed, field.ID)
+
+	// They themselves get the value.
+	mine := valuesFrom(owner)
+	assert.JSONEq(t, `"+33 6 12 34 56 78"`, string(mine[field.ID]))
+}
+
+// A user attribute whose template is linked to a directory claim after the attribute was made is synced like one
+// linked from the start: its value comes from the sync (and may gate channel access policies), so the person can't
+// set it themselves.
+func TestSyncedAttributeValueNotUserWritable(t *testing.T) {
+	mainHelper.Parallel(t)
+	th := Setup(t).InitBasic(t)
+
+	rctx := request.TestContext(t)
+	group, appErr := th.App.GetPropertyGroup(rctx, model.AccessControlPropertyGroupName)
+	require.Nil(t, appErr)
+
+	tmpl, appErr := th.App.CreatePropertyField(rctx, &model.PropertyField{
+		GroupID:    group.ID,
+		Name:       celSafeName(),
+		Type:       model.PropertyFieldTypeText,
+		ObjectType: model.PropertyFieldObjectTypeTemplate,
+		TargetType: string(model.PropertyFieldTargetLevelSystem),
+	}, false, "")
+	require.Nil(t, appErr)
+	userField, appErr := th.App.CreatePropertyField(rctx, &model.PropertyField{
+		GroupID:       group.ID,
+		Name:          tmpl.Name,
+		Type:          model.PropertyFieldTypeText,
+		ObjectType:    model.PropertyFieldObjectTypeUser,
+		TargetType:    string(model.PropertyFieldTargetLevelSystem),
+		LinkedFieldID: &tmpl.ID,
+	}, false, "")
+	require.Nil(t, appErr)
+
+	// Not synced yet: the person sets their own value.
+	_, resp, err := th.Client.PatchCPAValues(context.Background(), map[string]json.RawMessage{userField.ID: json.RawMessage(`"Sales"`)})
+	CheckOKStatus(t, resp)
+	require.NoError(t, err)
+
+	// The template is linked to the directory's department.
+	tmpl, appErr = th.App.GetPropertyField(rctx, group.ID, tmpl.ID)
+	require.Nil(t, appErr)
+	if tmpl.Attrs == nil {
+		tmpl.Attrs = model.StringInterface{}
+	}
+	tmpl.Attrs[model.PropertyFieldAttrLDAP] = "department"
+	_, _, appErr = th.App.UpdatePropertyField(rctx, group.ID, tmpl, false, "")
+	require.Nil(t, appErr)
+
+	_, resp, err = th.Client.PatchCPAValues(context.Background(), map[string]json.RawMessage{userField.ID: json.RawMessage(`"Engineering"`)})
+	require.Error(t, err)
+	CheckForbiddenStatus(t, resp)
+	CheckErrorID(t, err, "app.property.sync_lock.app_error")
+
+	values, _, err := th.Client.ListCPAValues(context.Background(), th.BasicUser.Id)
+	require.NoError(t, err)
+	assert.JSONEq(t, `"Sales"`, string(values[userField.ID]), "the value stays what it was")
+}

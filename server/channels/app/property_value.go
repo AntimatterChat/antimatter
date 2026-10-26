@@ -365,8 +365,17 @@ func (a *App) UpsertPropertyValues(rctx request.CTX, values []*model.PropertyVal
 				message := model.NewWebSocketEvent(model.WebsocketEventPropertyValuesUpdated, teamID, channelID, "", nil, connectionID)
 				message.Add("object_type", objectType)
 				message.Add("target_id", targetID)
-				message.Add("values", string(valuesJSON))
-				a.Publish(message)
+				if objectType == model.PropertyFieldObjectTypeUser {
+					// The values are withheld from whoever the user hides their attributes from.
+					for i := range broadcastValues {
+						broadcastValues[i].Value = json.RawMessage(model.PropertyValueWithheldJSON)
+					}
+					withheldJSON, _ := json.Marshal(broadcastValues)
+					a.PublishUserAttributeValues(rctx, message, targetID, string(valuesJSON), string(withheldJSON))
+				} else {
+					message.Add("values", string(valuesJSON))
+					a.Publish(message)
+				}
 			}
 		}
 	}

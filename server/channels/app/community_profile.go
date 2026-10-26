@@ -44,6 +44,44 @@ func (a *App) GetCommunityProfiles(rctx request.CTX, teamID string) ([]*model.Co
 	return profiles, nil
 }
 
+// GetCommunityProfilesForUser gives a community's profiles as viewerID may see them: only those of the people they
+// may see (GetViewUsersRestrictions), like the user routes.
+func (a *App) GetCommunityProfilesForUser(rctx request.CTX, viewerID, teamID string) ([]*model.CommunityProfile, *model.AppError) {
+	profiles, appErr := a.GetCommunityProfiles(rctx, teamID)
+	if appErr != nil || len(profiles) == 0 {
+		return profiles, appErr
+	}
+	restrictions, appErr := a.GetViewUsersRestrictions(rctx, viewerID)
+	if appErr != nil {
+		return nil, appErr
+	}
+	if restrictions == nil {
+		return profiles, nil
+	}
+	userIDs := make([]string, 0, len(profiles))
+	for _, profile := range profiles {
+		userIDs = append(userIDs, profile.UserId)
+	}
+	seen := make(map[string]bool, len(userIDs))
+	for chunk := range slices.Chunk(userIDs, 1000) {
+		members, err := a.Srv().Store().Team().GetMembersByIds(teamID, chunk, restrictions)
+		if err != nil {
+			return nil, model.NewAppError("GetCommunityProfilesForUser", "app.team.get_members.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
+		}
+		for _, member := range members {
+			seen[member.UserId] = true
+		}
+	}
+	seen[viewerID] = true
+	visible := make([]*model.CommunityProfile, 0, len(profiles))
+	for _, profile := range profiles {
+		if seen[profile.UserId] {
+			visible = append(visible, profile)
+		}
+	}
+	return visible, nil
+}
+
 // GetCommunityProfile gives someone's profile in a community, an empty one when they have none.
 func (a *App) GetCommunityProfile(teamID, userID string) (*model.CommunityProfile, *model.AppError) {
 	pref, err := a.Srv().Store().Preference().Get(userID, model.PreferenceCategoryCommunityProfile, teamID)

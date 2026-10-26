@@ -1050,6 +1050,13 @@ func (wc *WebConn) ShouldSendEvent(msg *model.WebSocketEvent) bool {
 		return wc.ShouldSendEventToGuest(msg)
 	}
 
+	// Antimatter: an agent's activity only goes to those who can see the agent, guests or not: someone whose roles
+	// don't let them see everyone (view_members) is checked as a guest is.
+	if msg.EventType() == model.WebsocketEventAgentActivityChanged &&
+		!wc.Suite.RolesGrantPermission(strings.Fields(wc.GetSession().Roles), model.PermissionViewMembers.Id) {
+		return wc.ShouldSendEventToGuest(msg)
+	}
+
 	return true
 }
 

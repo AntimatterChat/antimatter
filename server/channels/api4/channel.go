@@ -2219,7 +2219,9 @@ func getChannelMembersTimezones(c *Context, w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	membersTimezones, err := c.App.GetChannelMembersTimezones(c.AppContext, c.Params.ChannelId)
+	// Antimatter: without the time zones the members' profile privacy hides from the caller.
+	session := c.AppContext.Session()
+	membersTimezones, err := c.App.GetChannelMembersTimezonesForUser(c.AppContext, c.Params.ChannelId, session.UserId, c.App.SessionHasPermissionTo(*session, model.PermissionManageSystem))
 	if err != nil {
 		c.Err = err
 		return

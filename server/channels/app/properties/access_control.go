@@ -507,7 +507,7 @@ func (h *AccessControlHook) PreCreatePropertyValue(rctx request.CTX, value *mode
 		return nil, err
 	}
 
-	if err := h.checkValueWriteAccess(field, callerID, h.extractActingAsScope(rctx)); err != nil {
+	if err := h.checkValueWriteAccess(rctx, field, callerID, h.extractActingAsScope(rctx)); err != nil {
 		return nil, err
 	}
 
@@ -533,7 +533,7 @@ func (h *AccessControlHook) PreCreatePropertyValues(rctx request.CTX, values []*
 		if !exists {
 			return nil, fmt.Errorf("field %s: %w", value.FieldID, ErrFieldNotFound)
 		}
-		if err := h.checkValueWriteAccess(field, callerID, h.extractActingAsScope(rctx)); err != nil {
+		if err := h.checkValueWriteAccess(rctx, field, callerID, h.extractActingAsScope(rctx)); err != nil {
 			return nil, fmt.Errorf("field %s: %w", value.FieldID, err)
 		}
 	}
@@ -554,7 +554,7 @@ func (h *AccessControlHook) PreUpdatePropertyValue(rctx request.CTX, groupID str
 		return nil, err
 	}
 
-	if err := h.checkValueWriteAccess(field, callerID, h.extractActingAsScope(rctx)); err != nil {
+	if err := h.checkValueWriteAccess(rctx, field, callerID, h.extractActingAsScope(rctx)); err != nil {
 		return nil, err
 	}
 
@@ -580,7 +580,7 @@ func (h *AccessControlHook) PreUpdatePropertyValues(rctx request.CTX, groupID st
 		if !exists {
 			return nil, fmt.Errorf("field %s: %w", value.FieldID, ErrFieldNotFound)
 		}
-		if err := h.checkValueWriteAccess(field, callerID, h.extractActingAsScope(rctx)); err != nil {
+		if err := h.checkValueWriteAccess(rctx, field, callerID, h.extractActingAsScope(rctx)); err != nil {
 			return nil, fmt.Errorf("field %s: %w", value.FieldID, err)
 		}
 	}
@@ -601,7 +601,7 @@ func (h *AccessControlHook) PreUpsertPropertyValue(rctx request.CTX, value *mode
 		return nil, err
 	}
 
-	if err := h.checkValueWriteAccess(field, callerID, h.extractActingAsScope(rctx)); err != nil {
+	if err := h.checkValueWriteAccess(rctx, field, callerID, h.extractActingAsScope(rctx)); err != nil {
 		return nil, err
 	}
 
@@ -627,7 +627,7 @@ func (h *AccessControlHook) PreUpsertPropertyValues(rctx request.CTX, values []*
 		if !exists {
 			return nil, fmt.Errorf("field %s: %w", value.FieldID, ErrFieldNotFound)
 		}
-		if err := h.checkValueWriteAccess(field, callerID, h.extractActingAsScope(rctx)); err != nil {
+		if err := h.checkValueWriteAccess(rctx, field, callerID, h.extractActingAsScope(rctx)); err != nil {
 			return nil, fmt.Errorf("field %s: %w", value.FieldID, err)
 		}
 	}
@@ -653,7 +653,7 @@ func (h *AccessControlHook) PreDeletePropertyValue(rctx request.CTX, groupID str
 		return err
 	}
 
-	return h.checkValueWriteAccess(field, callerID, h.extractActingAsScope(rctx))
+	return h.checkValueWriteAccess(rctx, field, callerID, h.extractActingAsScope(rctx))
 }
 
 // PreDeletePropertyValuesForTarget enforces write access for all affected fields
@@ -721,7 +721,7 @@ func (h *AccessControlHook) PreDeletePropertyValuesForTarget(rctx request.CTX, g
 	}
 
 	for _, field := range fields {
-		if err := h.checkValueWriteAccess(field, callerID, h.extractActingAsScope(rctx)); err != nil {
+		if err := h.checkValueWriteAccess(rctx, field, callerID, h.extractActingAsScope(rctx)); err != nil {
 			return fmt.Errorf("field %s: %w", field.ID, err)
 		}
 	}
@@ -742,7 +742,7 @@ func (h *AccessControlHook) PreDeletePropertyValuesForField(rctx request.CTX, gr
 		return err
 	}
 
-	return h.checkValueWriteAccess(field, callerID, h.extractActingAsScope(rctx))
+	return h.checkValueWriteAccess(rctx, field, callerID, h.extractActingAsScope(rctx))
 }
 
 // Value Post-Hooks
@@ -1042,8 +1042,24 @@ func (h *AccessControlHook) checkFieldDeleteAccess(field *model.PropertyField, c
 // synced field. Synced fields have an ldap, saml or openid attr set, and only
 // the corresponding sync service (identified by well-known caller IDs) may
 // write their values.
-func (h *AccessControlHook) checkSyncLock(field *model.PropertyField, callerID string) error {
+//
+// Antimatter: a user field linked to a template is synced when the template
+// is, whether or not it carries the template's sync attr: the attr is copied
+// at link time only, so a template linked to a claim later (Attribute
+// Management) would otherwise leave its users free to write the value the
+// sync owns, and that gates access policies.
+func (h *AccessControlHook) checkSyncLock(rctx request.CTX, field *model.PropertyField, callerID string) error {
 	syncSource := model.GetPropertyFieldSyncSource(field)
+	if syncSource == "" && field.ObjectType == model.PropertyFieldObjectTypeUser && field.LinkSourceID() != "" {
+		template, err := h.propertyService.getPropertyField(rctx, field.GroupID, field.LinkSourceID())
+		if err != nil {
+			if !store.IsErrNotFound(err) {
+				return fmt.Errorf("field %s: failed to read the template it links to: %w", field.ID, err)
+			}
+		} else if template.DeleteAt == 0 {
+			syncSource = model.GetPropertyFieldSyncSource(template)
+		}
+	}
 	if syncSource == "" {
 		return nil
 	}
@@ -1064,7 +1080,7 @@ func (h *AccessControlHook) checkSyncLock(field *model.PropertyField, callerID s
 // list, the owner check (with scope matching) supersedes the legacy
 // protected-field and sync-lock checks. Otherwise it falls back to today's
 // behaviour.
-func (h *AccessControlHook) checkValueWriteAccess(field *model.PropertyField, callerID, scope string) error {
+func (h *AccessControlHook) checkValueWriteAccess(rctx request.CTX, field *model.PropertyField, callerID, scope string) error {
 	if model.HasPropertyFieldOwners(field) {
 		return h.checkOwnerValueWriteAccess(field, callerID, scope)
 	}
@@ -1072,7 +1088,7 @@ func (h *AccessControlHook) checkValueWriteAccess(field *model.PropertyField, ca
 	if err := h.checkLegacyFieldWriteAccess(field, callerID); err != nil {
 		return err
 	}
-	return h.checkSyncLock(field, callerID)
+	return h.checkSyncLock(rctx, field, callerID)
 }
 
 // getCallerValuesForField retrieves all property values for the caller on a specific field.

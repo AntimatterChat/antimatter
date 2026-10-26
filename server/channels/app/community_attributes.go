@@ -313,7 +313,7 @@ func canSeeCommunityAttributeValue(field *model.PropertyField, viewerID, userID 
 }
 
 // GetCommunityAttributeValues gives the attribute values of some of a community's members, as the session may see
-// them: by user, then by field. People who aren't in the community have none.
+// them: by user, then by field. People who aren't in the community, or whom the session may not see, have none.
 func (a *App) GetCommunityAttributeValues(rctx request.CTX, session model.Session, teamID string, userIDs []string) (map[string]map[string]json.RawMessage, *model.AppError) {
 	result := map[string]map[string]json.RawMessage{}
 	if len(userIDs) == 0 {
@@ -331,9 +331,21 @@ func (a *App) GetCommunityAttributeValues(rctx request.CTX, session model.Sessio
 		fieldByID[f.ID] = f
 	}
 
-	members, err := a.Srv().Store().Team().GetMembersByIds(teamID, userIDs, nil)
+	// Only the members the session may see (like the user routes); everyone sees their own.
+	restrictions, appErr := a.GetViewUsersRestrictions(rctx, session.UserId)
+	if appErr != nil {
+		return nil, appErr
+	}
+	members, err := a.Srv().Store().Team().GetMembersByIds(teamID, userIDs, restrictions)
 	if err != nil {
 		return nil, model.NewAppError("GetCommunityAttributeValues", "app.team.get_members.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
+	}
+	if restrictions != nil && slices.Contains(userIDs, session.UserId) && !slices.ContainsFunc(members, func(m *model.TeamMember) bool { return m.UserId == session.UserId }) {
+		own, err := a.Srv().Store().Team().GetMembersByIds(teamID, []string{session.UserId}, nil)
+		if err != nil {
+			return nil, model.NewAppError("GetCommunityAttributeValues", "app.team.get_members.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
+		}
+		members = append(members, own...)
 	}
 	memberIDs := make([]string, 0, len(members))
 	for _, m := range members {
