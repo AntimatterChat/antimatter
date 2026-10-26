@@ -12,7 +12,8 @@ import {FooterPagination, GenericModal} from '@mattermost/components';
 
 import {getPluginStatuses} from 'mattermost-redux/actions/admin';
 import {setFirstAdminVisitMarketplaceStatus} from 'mattermost-redux/actions/general';
-import {getFirstAdminVisitMarketplaceStatus} from 'mattermost-redux/selectors/entities/general';
+import {getConfig as getAdminConfig} from 'mattermost-redux/selectors/entities/admin';
+import {getConfig, getFirstAdminVisitMarketplaceStatus} from 'mattermost-redux/selectors/entities/general';
 
 import {fetchListing} from 'actions/marketplace';
 import {closeModal} from 'actions/views/modals';
@@ -47,6 +48,13 @@ const MarketplaceModal = () => {
     // Refetch plugin statuses while the modal is open whenever the server signals a change.
     const pluginStatuses = usePluginStatusesSync();
     const hasFirstAdminVisitedMarketplace = useSelector(getFirstAdminVisitMarketplaceStatus);
+
+    // No remote marketplace (none is set, and a Mattermost one is never used): the list only has the apps this server
+    // already has, so say how others get here.
+    const remoteMarketplaceUnavailable = useSelector((state: GlobalState) =>
+        getConfig(state).IsDefaultMarketplace === 'true' ||
+        getAdminConfig(state)?.PluginSettings?.EnableRemoteMarketplace === false,
+    );
 
     const [page, setPage] = useState(0);
     const [hasLoaded, setHasLoaded] = useState(false);
@@ -149,6 +157,17 @@ const MarketplaceModal = () => {
             onExited={handleOnClose}
             footerContent={getFooterContent()}
         >
+            {remoteMarketplaceUnavailable && (
+                <p className='marketplace-modal__upload-hint'>
+                    {formatMessage(
+                        {
+                            id: 'marketplace_modal.upload_hint',
+                            defaultMessage: 'Apps from other marketplaces are installed by uploading their file in the <linkConsole>System Console</linkConsole>.',
+                        },
+                        {linkConsole},
+                    )}
+                </p>
+            )}
             {loading ? (
                 <LoadingScreen className='loading'/>
             ) : (

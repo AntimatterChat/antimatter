@@ -34635,6 +34635,10 @@
     "defaultMessage": "App Marketplace",
     "description": "Title of the dialog where admins browse and install plugins and apps."
   },
+  "marketplace_modal.upload_hint": {
+    "defaultMessage": "Apps from other marketplaces are installed by uploading their file in the <linkConsole>System Console</linkConsole>.",
+    "description": "One line at the top of the App Marketplace dialog when no remote marketplace is used: apps that are not listed are installed by uploading their file (a .tar.gz bundle) on the System Console's app management page; <linkConsole>...</linkConsole> wraps the link text to that page."
+  },
   "media_gallery.count_label": {
     "defaultMessage": "{count, plural, one {# item} other {# items}}",
     "description": "Plural label showing how many attachments are in a post's media gallery; 'item' refers to an image or video file; compact space."
