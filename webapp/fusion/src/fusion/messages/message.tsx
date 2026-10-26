@@ -46,7 +46,7 @@ import {TeamTag} from 'fusion/teams/team_card';
 import {am} from 'fusion/utils/class_names';
 import Pluggable from 'plugins/pluggable';
 import PluggableErrorBoundary from 'plugins/pluggable/error_boundary';
-import {areConsecutivePostsBySameUser, isFromBot, isFromWebhook, isSystemMessage} from 'utils/post_utils';
+import {areConsecutivePostsBySameUser, getImageSrc, isFromBot, isFromWebhook, isSystemMessage} from 'utils/post_utils';
 
 import type {GlobalState} from 'types/store';
 import type {PostActionComponent} from 'types/store/plugins';
@@ -602,8 +602,9 @@ export default function Message({postId, previousPostId, inThread = false, highl
                 className={am('hook-av')}
                 aria-hidden='true'
             >
+                {/* Through the image proxy when there is one, as classic does: the picture's host doesn't learn who reads. */}
                 <img
-                    src={overrideIcon}
+                    src={getImageSrc(overrideIcon, config.HasImageProxy === 'true')}
                     alt=''
                 />
             </span>
