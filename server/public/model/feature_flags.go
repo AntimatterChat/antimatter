@@ -165,6 +165,11 @@ type FeatureFlags struct {
 	// being unreachable.
 	ClusterGracefulDrain bool
 
+	// Enable verifying plugin signatures against the MFI public key, in addition to the
+	// existing hard-coded Mattermost public key and any admin-configured public keys.
+	// Antimatter: kept as Mattermost has it (on by default), so an admin who turned it off keeps it off.
+	EnableMFIPluginSignaturePublicKey bool
+
 	// FEATURE_FLAG_REMOVAL: RecurringScheduledPosts - Remove this when the feature is GA.
 	RecurringScheduledPosts bool
 
@@ -177,8 +182,9 @@ type FeatureFlags struct {
 	// for a server with a path outside its logging root. Remove this once that escape hatch is
 	// no longer needed (MM-70595).
 	// When on, a log or audit file path resolving outside the logging root
-	// (AM_LOG_PATH, or the default logs dir) aborts server startup and is rejected
-	// on config save. When off, the same paths only produce an error log line.
+	// (AM_LOG_PATH, or the default logs dir) is written in the logging root instead,
+	// and a config save bringing such a path in is rejected. When off, the same paths
+	// are used and only produce an error log line.
 	EnforceLogPathRoot bool
 
 	// HealthDashboard runs the hourly health check and shows its findings on the System Console's
@@ -261,6 +267,8 @@ func (f *FeatureFlags) SetDefaults() {
 	f.ChannelAttributesRequired = false
 
 	f.MmBlocksEnabled = true
+
+	f.EnableMFIPluginSignaturePublicKey = true
 
 	f.RecurringScheduledPosts = false
 

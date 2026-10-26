@@ -94,7 +94,7 @@ func (s pluginSigner) isAntimatter() bool {
 // verified it.
 func (ch *Channels) verifyPluginSigner(logger *mlog.Logger, plugin, signature io.ReadSeeker) (pluginSigner, *model.AppError) {
 	// First try the hard-coded public keys (Antimatter's, then Mattermost's and Mattermost Federal's).
-	if name, ok := verifyPluginWithKeys(logger, builtinPluginPublicKeys, plugin, signature); ok {
+	if name, ok := verifyPluginWithKeys(logger, ch.trustedBuiltinPluginPublicKeys(), plugin, signature); ok {
 		logger.Debug("Plugin signature verified using hard-coded public key", mlog.String("public_key", name))
 		return pluginSigner{name: name, builtin: true}, nil
 	}

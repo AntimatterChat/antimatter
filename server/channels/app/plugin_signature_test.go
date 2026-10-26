@@ -262,6 +262,52 @@ func TestVerifyPluginMFIKey(t *testing.T) {
 	}
 }
 
+// The Mattermost Federal key is trusted only while FeatureFlags.EnableMFIPluginSignaturePublicKey is on (the
+// default), as in Mattermost.
+func TestVerifyPluginMFIFeatureFlag(t *testing.T) {
+	mainHelper.Parallel(t)
+	path, _ := fileutils.FindDir("tests")
+	logger := mlog.CreateConsoleTestLogger(t)
+
+	open := func(t *testing.T, name string) *os.File {
+		t.Helper()
+		f, err := os.Open(filepath.Join(path, name))
+		require.NoError(t, err)
+		t.Cleanup(func() { f.Close() })
+		return f
+	}
+
+	t.Run("on by default", func(t *testing.T) {
+		th := Setup(t)
+		require.True(t, th.App.Config().FeatureFlags.EnableMFIPluginSignaturePublicKey)
+		require.Nil(t, th.App.ch.verifyPlugin(logger, open(t, "testplugin-mfi.tar.gz"), open(t, "testplugin-mfi.tar.gz.asc")))
+	})
+
+	t.Run("off: MFI-signed plugins are refused, the other built-in keys still apply", func(t *testing.T) {
+		th := SetupConfig(t, func(cfg *model.Config) {
+			cfg.FeatureFlags.EnableMFIPluginSignaturePublicKey = false
+		})
+		require.False(t, th.App.Config().FeatureFlags.EnableMFIPluginSignaturePublicKey)
+
+		require.NotNil(t, th.App.ch.verifyPlugin(logger, open(t, "testplugin-mfi.tar.gz"), open(t, "testplugin-mfi.tar.gz.asc")))
+		require.NotNil(t, th.App.ch.verifyPlugin(logger, open(t, "testplugin-mfi.tar.gz"), open(t, "testplugin-mfi.tar.gz.sig")))
+
+		names := []string{}
+		for _, key := range th.App.ch.trustedBuiltinPluginPublicKeys() {
+			names = append(names, key.name)
+		}
+		require.Equal(t, []string{antimatterPluginPublicKeyName, "Mattermost"}, names)
+	})
+
+	t.Run("off, with the key added by the admin as a public key file", func(t *testing.T) {
+		th := SetupConfig(t, func(cfg *model.Config) {
+			cfg.FeatureFlags.EnableMFIPluginSignaturePublicKey = false
+		})
+		require.Nil(t, th.App.AddPublicKey("mfi-public-key.asc", bytes.NewReader(mfiPluginPublicKey)))
+		require.Nil(t, th.App.ch.verifyPlugin(logger, open(t, "testplugin-mfi.tar.gz"), open(t, "testplugin-mfi.tar.gz.asc")))
+	})
+}
+
 func TestPluginSignerIsAntimatter(t *testing.T) {
 	require.True(t, pluginSigner{name: antimatterPluginPublicKeyName, builtin: true}.isAntimatter())
 	require.False(t, pluginSigner{name: "Mattermost", builtin: true}.isAntimatter())

@@ -18,7 +18,26 @@ const (
 var builtinPluginPublicKeys = []pluginPublicKey{
 	{name: antimatterPluginPublicKeyName, key: antimatterPluginPublicKey},
 	{name: "Mattermost", key: mattermostPluginPublicKey},
-	{name: "Mattermost Federal", key: mfiPluginPublicKey},
+	{name: mfiPluginPublicKeyName, key: mfiPluginPublicKey},
+}
+
+// mfiPluginPublicKeyName names mfiPluginPublicKey in builtinPluginPublicKeys.
+const mfiPluginPublicKeyName = "Mattermost Federal"
+
+// trustedBuiltinPluginPublicKeys gives the built-in keys trusted with the current configuration: all of them, but
+// the Mattermost Federal key only while FeatureFlags.EnableMFIPluginSignaturePublicKey is on (the default), as in
+// Mattermost.
+func (ch *Channels) trustedBuiltinPluginPublicKeys() []pluginPublicKey {
+	if ch.srv.Config().FeatureFlags.EnableMFIPluginSignaturePublicKey {
+		return builtinPluginPublicKeys
+	}
+	keys := make([]pluginPublicKey, 0, len(builtinPluginPublicKeys))
+	for _, key := range builtinPluginPublicKeys {
+		if key.name != mfiPluginPublicKeyName {
+			keys = append(keys, key)
+		}
+	}
+	return keys
 }
 
 // pluginPublicKey is a named, armored or binary OpenPGP public key trusted to sign plugins.
@@ -113,8 +132,8 @@ d+eYY64=
 =UePK
 -----END PGP PUBLIC KEY BLOCK-----`)
 
-// mfiPluginPublicKey is the key Mattermost Federal (MFI) signs its plugin builds with. Mattermost trusts it by default
-// (FeatureFlags.EnableMFIPluginSignaturePublicKey, on by default); Antimatter trusts it too, so that MFI-signed plugins
+// mfiPluginPublicKey is the key Mattermost Federal (MFI) signs its plugin builds with. Like Mattermost, Antimatter
+// trusts it while FeatureFlags.EnableMFIPluginSignaturePublicKey is on (the default), so that MFI-signed plugins
 // installed or uploaded with RequirePluginSignature on keep verifying after a move from Mattermost.
 var mfiPluginPublicKey = []byte(`-----BEGIN PGP PUBLIC KEY BLOCK-----
 
