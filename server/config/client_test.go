@@ -592,6 +592,34 @@ func TestGetClientConfig(t *testing.T) {
 			nil,
 		},
 		{
+			"push notifications with a Mattermost push server, which the server refuses to send to",
+			&model.Config{
+				EmailSettings: model.EmailSettings{
+					SendPushNotifications:  new(true),
+					PushNotificationServer: new(model.GenericNotificationServer),
+				},
+			},
+			"",
+			map[string]string{
+				"SendPushNotifications": "false",
+			},
+			nil,
+		},
+		{
+			"push notifications with Mattermost's hosted push server",
+			&model.Config{
+				EmailSettings: model.EmailSettings{
+					SendPushNotifications:  new(true),
+					PushNotificationServer: new("https://push.mattermost.com"),
+				},
+			},
+			"",
+			map[string]string{
+				"SendPushNotifications": "false",
+			},
+			nil,
+		},
+		{
 			"push notifications turned off with a push notification server",
 			&model.Config{
 				EmailSettings: model.EmailSettings{
