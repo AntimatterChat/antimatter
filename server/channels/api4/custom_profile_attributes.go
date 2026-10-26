@@ -445,14 +445,16 @@ func cpaPatchValues(c *Context, w http.ResponseWriter, r *http.Request, userID s
 	// CPA-specific websocket event (backward compat). Broadcast copies, never
 	// results: results is what the caller who just wrote these values gets
 	// back over HTTP, and that caller is allowed to see them.
+	// The values are withheld from whoever userID hides their attributes from.
 	broadcastResults := make(map[string]json.RawMessage, len(upserted))
+	withheldResults := make(map[string]json.RawMessage, len(upserted))
 	for _, value := range upserted {
 		broadcastResults[value.FieldID] = model.BroadcastUserAttributeValue(fieldByID[value.FieldID], value.Value)
+		withheldResults[value.FieldID] = json.RawMessage(model.PropertyValueWithheldJSON)
 	}
 	message := model.NewWebSocketEvent(model.WebsocketEventCPAValuesUpdated, "", "", "", nil, "")
 	message.Add("user_id", userID)
-	message.Add("values", broadcastResults)
-	c.App.Publish(message)
+	c.App.PublishUserAttributeValues(rctx, message, userID, broadcastResults, withheldResults)
 
 	auditRec.Success()
 	auditRec.AddEventObjectType("patchCPAValues")
