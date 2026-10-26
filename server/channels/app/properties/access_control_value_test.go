@@ -2568,3 +2568,68 @@ func TestUpsertPropertyValues(t *testing.T) {
 		assert.Contains(t, err.Error(), "UpsertPropertyValues: mixed group IDs in batch")
 	})
 }
+
+// A user field linked to a synced template is sync-locked even without the sync attr of its own (the attr is copied
+// at link time only, so a template linked to a claim later leaves it out).
+func TestUpsertPropertyValue_SyncLockFollowsLinkedTemplate(t *testing.T) {
+	th := Setup(t)
+
+	group, err := th.service.RegisterPropertyGroup(&model.PropertyGroup{Name: "test_sync_lock_linked", Version: model.PropertyGroupVersionV1})
+	require.NoError(t, err)
+	th.service.AddHook(NewAccessControlHook(th.service, nil, group.ID))
+
+	template := th.CreatePropertyFieldDirect(t, &model.PropertyField{
+		GroupID:    group.ID,
+		Name:       "department_" + model.NewId(),
+		Type:       model.PropertyFieldTypeText,
+		TargetType: "system",
+		ObjectType: model.PropertyFieldObjectTypeTemplate,
+		Attrs:      model.StringInterface{model.PropertyFieldAttrLDAP: "department"},
+	})
+	linked := th.CreatePropertyFieldDirect(t, &model.PropertyField{
+		GroupID:       group.ID,
+		Name:          template.Name,
+		Type:          model.PropertyFieldTypeText,
+		TargetType:    "system",
+		ObjectType:    model.PropertyFieldObjectTypeUser,
+		LinkedFieldID: &template.ID,
+	})
+	require.False(t, model.IsPropertyFieldSynced(linked))
+
+	userID := model.NewId()
+	value := func(v string) *model.PropertyValue {
+		return &model.PropertyValue{GroupID: group.ID, FieldID: linked.ID, TargetID: userID, TargetType: "user", Value: json.RawMessage(`"` + v + `"`)}
+	}
+
+	for _, callerID := range []string{"", userID, model.CallerIDSAMLSync} {
+		_, err := th.service.UpsertPropertyValue(RequestContextWithCallerID(th.Context, callerID), value("Engineering"))
+		require.Error(t, err, "caller %q", callerID)
+		assert.ErrorIs(t, err, ErrSyncLocked, "caller %q", callerID)
+	}
+
+	written, err := th.service.UpsertPropertyValue(RequestContextWithCallerID(th.Context, model.CallerIDLDAPSync), value("Sales"))
+	require.NoError(t, err)
+	assert.Equal(t, `"Sales"`, string(written.Value))
+
+	t.Run("an unsynced template leaves the field writable", func(t *testing.T) {
+		plain := th.CreatePropertyFieldDirect(t, &model.PropertyField{
+			GroupID:    group.ID,
+			Name:       "desk_" + model.NewId(),
+			Type:       model.PropertyFieldTypeText,
+			TargetType: "system",
+			ObjectType: model.PropertyFieldObjectTypeTemplate,
+		})
+		field := th.CreatePropertyFieldDirect(t, &model.PropertyField{
+			GroupID:       group.ID,
+			Name:          plain.Name,
+			Type:          model.PropertyFieldTypeText,
+			TargetType:    "system",
+			ObjectType:    model.PropertyFieldObjectTypeUser,
+			LinkedFieldID: &plain.ID,
+		})
+		_, err := th.service.UpsertPropertyValue(RequestContextWithCallerID(th.Context, userID), &model.PropertyValue{
+			GroupID: group.ID, FieldID: field.ID, TargetID: userID, TargetType: "user", Value: json.RawMessage(`"B-12"`),
+		})
+		require.NoError(t, err)
+	})
+}
