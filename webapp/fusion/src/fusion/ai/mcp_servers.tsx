@@ -16,7 +16,7 @@ import {am} from 'fusion/utils/class_names';
 
 import {AI_CONNECTION_SCOPE_SERVER, errorMessage, newHeaderRow} from './connections';
 import type {HeaderRow} from './connections';
-import {draftFromMCPServer, mcpNamespace, mcpPatchOf, mcpProblemsOf, mcpRequestOf, newMCPDraft, slugFromName} from './mcp';
+import {draftFromMCPServer, mcpNamespace, mcpPatchOf, mcpProblemsOf, mcpRequestOf, mcpURLChanged, newMCPDraft, slugFromName, withMCPSecretsRetyped} from './mcp';
 import type {MCPDraft} from './mcp';
 
 type Props = {
@@ -275,10 +275,13 @@ export function MCPServerForm({scope, server, onSaved, onCancel}: FormProps) {
     const serverWide = scope === AI_CONNECTION_SCOPE_SERVER;
     const communities = Object.values(teams).filter((t) => t.delete_at === 0).sort((a, b) => a.display_name.localeCompare(b.display_name));
 
+    // A new address can't keep the saved headers and client secret (the server refuses it): their fields ask for
+    // them again.
     const set = (patch: Partial<MCPDraft>) => {
-        setDraft((d) => ({...d, ...patch}));
+        setDraft((d) => (server ? withMCPSecretsRetyped({...d, ...patch}, server) : {...d, ...patch}));
         setError('');
     };
+    const moved = server ? mcpURLChanged(draft, server) : false;
     const setHeader = (row: HeaderRow, patch: Partial<HeaderRow>) => set({headers: draft.headers.map((h) => (h.key === row.key ? {...h, ...patch} : h))});
     const toggleIn = (list: string[], id: string) => (list.includes(id) ? list.filter((x) => x !== id) : [...list, id]);
 
@@ -403,6 +406,7 @@ export function MCPServerForm({scope, server, onSaved, onCancel}: FormProps) {
                                 onChange={(e) => set({clientSecret: e.target.value, secretAction: 'replace'})}
                             />
                         )}
+                        {moved && server?.oauth_client_secret_set && draft.secretAction === 'replace' && <small className={am('field-note')}>{formatMessage({id: 'fusion.mcpServers.secretRetype', defaultMessage: 'At a new address, type the client secret again: the saved one is only sent to the address it was saved for. Left empty, there is none.'})}</small>}
                         <small className={am('field-note')}>{formatMessage({id: 'fusion.mcpServers.secretDesc', defaultMessage: 'Stored encrypted and never shown again. People\'s own sign-ins are never shown either, to anyone.'})}</small>
                     </div>
                     <label className={am('field')}>

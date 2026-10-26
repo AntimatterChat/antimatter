@@ -22619,6 +22619,10 @@
     "defaultMessage": "Value of header {n}",
     "description": "Accessible name of a header's value field; {n} is its number."
   },
+  "fusion.aiConnections.headerValueMissing": {
+    "defaultMessage": "Type each header's value, or remove the header.",
+    "description": "Error under a model connection's extra headers: a header has a name but no value (saved values are never shown, so they must be typed again)."
+  },
   "fusion.aiConnections.keyAdd": {
     "defaultMessage": "Add a key",
     "description": "Button to add an API key to a connection that has none."
@@ -22650,6 +22654,10 @@
   "fusion.aiConnections.keyReplace": {
     "defaultMessage": "Replace",
     "description": "Button to type a new API key in place of the saved one."
+  },
+  "fusion.aiConnections.keyRetype": {
+    "defaultMessage": "At a new address, type the key again: the saved one is only sent to the address it was saved for. Left empty, the connection has no key.",
+    "description": "Note under the API key field of a saved model connection whose provider or base URL was changed: the saved key can't be kept, it must be typed again."
   },
   "fusion.aiConnections.keySet": {
     "defaultMessage": "Set",
@@ -27562,6 +27570,10 @@
   "fusion.mcpServers.secretReplace": {
     "defaultMessage": "Replace",
     "description": "AI settings, MCP server form: button to type a new OAuth client secret."
+  },
+  "fusion.mcpServers.secretRetype": {
+    "defaultMessage": "At a new address, type the client secret again: the saved one is only sent to the address it was saved for. Left empty, there is none.",
+    "description": "Note under the OAuth client secret field of a saved MCP server whose address was changed: the saved secret can't be kept, it must be typed again."
   },
   "fusion.mcpServers.secretSet": {
     "defaultMessage": "Set",
