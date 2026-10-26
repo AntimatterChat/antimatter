@@ -471,24 +471,36 @@ func TestInitLoggingLogPathEnforcement(t *testing.T) {
 		}
 	}
 
-	t.Run("flag on aborts with an error and never opens the target", func(t *testing.T) {
+	// A configuration upgraded from an older version or from Mattermost may keep its logs outside the root: the
+	// server starts, writing those targets in the root, and nothing is written outside it.
+	t.Run("flag on moves the target into the root and never opens the out-of-root file", func(t *testing.T) {
 		require.NoError(t, os.RemoveAll(outsideFile))
+		movedFile := path.Join(root, "out.log")
+		require.NoError(t, os.RemoveAll(movedFile))
 
 		ps := newLogPathTestService(t, root, withOutOfRootTarget(true))
 		require.True(t, config.IsLogPathEnforcementEnabled(ps.Config()), "feature flag should have been persisted")
 
-		err := ps.initLogging()
-		require.Error(t, err)
-		assert.Contains(t, err.Error(), "outside logging root")
-		assert.Contains(t, err.Error(), outsideFile)
+		require.NoError(t, ps.initLogging())
+		ps.logger.Error("written in the logging root")
+		ps.logger.Flush()
+
+		contents, readErr := os.ReadFile(movedFile)
+		require.NoError(t, readErr, "the target is written in the logging root")
+		assert.Contains(t, string(contents), "written in the logging root")
 
 		_, statErr := os.Stat(outsideFile)
 		assert.True(t, os.IsNotExist(statErr), "the out-of-root target must not be created")
+
+		// The configuration keeps the admin's path; only the loggers use the moved one.
+		assert.Contains(t, string(ps.Config().LogSettings.AdvancedLoggingJSON), outsideFile)
+		assert.Contains(t, string(ps.LoggingConfig().LogSettings.AdvancedLoggingJSON), movedFile)
 	})
 
-	t.Run("flag on leaves previously configured targets untouched", func(t *testing.T) {
+	t.Run("flag on moves the target into the root on a reload too", func(t *testing.T) {
 		inRootFile := path.Join(root, "good.log")
 		require.NoError(t, os.RemoveAll(inRootFile))
+		require.NoError(t, os.RemoveAll(outsideFile))
 
 		ps := newLogPathTestService(t, root, func(cfg *model.Config) {
 			*cfg.LogSettings.EnableFile = false
@@ -504,14 +516,23 @@ func TestInitLoggingLogPathEnforcement(t *testing.T) {
 		_, _, err := ps.configStore.Set(cfg)
 		require.NoError(t, err)
 
-		require.Error(t, ps.ReconfigureLogger())
+		require.NoError(t, ps.ReconfigureLogger())
 
-		ps.logger.Error("still writing to the original target")
-		ps.logger.Flush()
+		_, statErr := os.Stat(outsideFile)
+		assert.True(t, os.IsNotExist(statErr), "the out-of-root target must not be created")
+	})
 
-		contents, readErr := os.ReadFile(inRootFile)
-		require.NoError(t, readErr, "the original in-root target should still be configured")
-		assert.Contains(t, string(contents), "still writing to the original target")
+	t.Run("flag on aborts when the targets can't be moved into the root", func(t *testing.T) {
+		require.NoError(t, os.RemoveAll(outsideFile))
+		// A logging root that can't be resolved: a dangling symlink.
+		brokenRoot := path.Join(base, "broken-logs")
+		require.NoError(t, os.Symlink(path.Join(base, "nowhere"), brokenRoot))
+
+		ps := newLogPathTestService(t, brokenRoot, withOutOfRootTarget(true))
+
+		err := ps.initLogging()
+		require.Error(t, err)
+		assert.Contains(t, err.Error(), outsideFile)
 
 		_, statErr := os.Stat(outsideFile)
 		assert.True(t, os.IsNotExist(statErr), "the out-of-root target must not be created")
@@ -536,17 +557,22 @@ func TestInitLoggingLogPathEnforcement(t *testing.T) {
 		assert.NoError(t, ps.initLogging())
 	})
 
-	t.Run("flag on rejects an out-of-root audit path", func(t *testing.T) {
+	t.Run("flag on moves an out-of-root audit file and log file into the root", func(t *testing.T) {
 		ps := newLogPathTestService(t, root, func(cfg *model.Config) {
-			*cfg.LogSettings.EnableFile = false
+			*cfg.LogSettings.EnableFile = true
+			*cfg.LogSettings.FileLocation = path.Join(outside, "var-log")
 			*cfg.LogSettings.EnableConsole = false
 			*cfg.ExperimentalAuditSettings.FileEnabled = true
 			*cfg.ExperimentalAuditSettings.FileName = path.Join(outside, "audit.log")
 			cfg.FeatureFlags.EnforceLogPathRoot = true
 		})
 
-		err := ps.initLogging()
-		require.Error(t, err)
-		assert.Contains(t, err.Error(), "ExperimentalAuditSettings.FileName")
+		require.NoError(t, ps.initLogging())
+		loggingCfg := ps.LoggingConfig()
+		assert.Equal(t, root, *loggingCfg.LogSettings.FileLocation)
+		assert.Equal(t, path.Join(root, "audit.log"), *loggingCfg.ExperimentalAuditSettings.FileName)
+		assert.Equal(t, path.Join(outside, "audit.log"), *ps.Config().ExperimentalAuditSettings.FileName, "the configuration is unchanged")
+		_, statErr := os.Stat(path.Join(outside, "var-log"))
+		assert.True(t, os.IsNotExist(statErr), "nothing is written outside the root")
 	})
 }

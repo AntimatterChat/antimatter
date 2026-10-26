@@ -705,3 +705,85 @@ func TestValidateLogFilePathSymlinkResolution(t *testing.T) {
 		assert.Contains(t, err.Error(), "outside logging root")
 	})
 }
+
+// A configuration upgraded from an older version or from Mattermost may keep its logs outside the logging root
+// (LogSettings.FileLocation=/var/log/mattermost): ConfineLogPaths moves those targets into the root.
+func TestConfineLogPaths(t *testing.T) {
+	base := t.TempDir()
+	root := filepath.Join(base, "logs")
+	require.NoError(t, os.MkdirAll(root, 0700))
+	outside := filepath.Join(base, "var-log-mattermost")
+
+	newConfig := func() *model.Config {
+		cfg := &model.Config{}
+		cfg.SetDefaults()
+		return cfg
+	}
+
+	t.Run("a valid configuration is left as it is", func(t *testing.T) {
+		cfg := newConfig()
+		*cfg.LogSettings.EnableFile = true
+		*cfg.LogSettings.FileLocation = root
+		confined, moved := ConfineLogPaths(cfg, root)
+		assert.Empty(t, moved)
+		assert.Equal(t, root, *confined.LogSettings.FileLocation)
+	})
+
+	t.Run("every target outside the root is moved into it", func(t *testing.T) {
+		cfg := newConfig()
+		*cfg.LogSettings.EnableFile = true
+		*cfg.LogSettings.FileLocation = outside
+		*cfg.ExperimentalAuditSettings.FileEnabled = true
+		*cfg.ExperimentalAuditSettings.FileName = filepath.Join(outside, "audit.log")
+		cfg.LogSettings.AdvancedLoggingJSON = json.RawMessage(`{
+			"ldap": {"type": "file", "format": "json", "levels": [{"id": 2, "name": "error"}], "options": {"filename": "` + filepath.Join(outside, "ldap.log") + `", "max_size": 50}},
+			"kept": {"type": "file", "format": "json", "levels": [{"id": 2, "name": "error"}], "options": {"filename": "` + filepath.Join(root, "kept.log") + `"}},
+			"console": {"type": "console", "format": "plain", "levels": [{"id": 2, "name": "error"}], "options": {"out": "stdout"}}
+		}`)
+		cfg.ExperimentalAuditSettings.AdvancedLoggingJSON = json.RawMessage(`{"audit": {"type": "file", "format": "json", "levels": [{"id": 100, "name": "audit-api"}], "options": {"filename": "/"}}}`)
+		require.Error(t, ValidateLogPaths(cfg, root))
+		advancedBefore := string(cfg.LogSettings.AdvancedLoggingJSON)
+
+		confined, moved := ConfineLogPaths(cfg, root)
+		assert.ElementsMatch(t, []string{
+			"LogSettings.FileLocation",
+			`LogSettings.AdvancedLoggingJSON target "ldap"`,
+			"ExperimentalAuditSettings.FileName",
+			`ExperimentalAuditSettings.AdvancedLoggingJSON target "audit"`,
+		}, moved)
+		require.NoError(t, ValidateLogPaths(confined, root))
+
+		assert.Equal(t, root, *confined.LogSettings.FileLocation)
+		assert.Equal(t, filepath.Join(root, "audit.log"), *confined.ExperimentalAuditSettings.FileName)
+
+		logCfg := make(mlog.LoggerConfiguration)
+		require.NoError(t, json.Unmarshal(confined.LogSettings.AdvancedLoggingJSON, &logCfg))
+		require.Len(t, logCfg, 3)
+		var ldapOptions map[string]any
+		require.NoError(t, json.Unmarshal(logCfg["ldap"].Options, &ldapOptions))
+		assert.Equal(t, filepath.Join(root, "ldap.log"), ldapOptions["filename"])
+		assert.EqualValues(t, 50, ldapOptions["max_size"], "the target's other options are kept")
+		var keptOptions map[string]any
+		require.NoError(t, json.Unmarshal(logCfg["kept"].Options, &keptOptions))
+		assert.Equal(t, filepath.Join(root, "kept.log"), keptOptions["filename"])
+		assert.Equal(t, "console", logCfg["console"].Type)
+
+		auditCfg := make(mlog.LoggerConfiguration)
+		require.NoError(t, json.Unmarshal(confined.ExperimentalAuditSettings.AdvancedLoggingJSON, &auditCfg))
+		var auditOptions map[string]any
+		require.NoError(t, json.Unmarshal(auditCfg["audit"].Options, &auditOptions))
+		assert.Equal(t, filepath.Join(root, "audit.log"), auditOptions["filename"], "a path naming no file gets the target's name")
+
+		// The configuration itself is unchanged.
+		assert.Equal(t, outside, *cfg.LogSettings.FileLocation)
+		assert.Equal(t, filepath.Join(outside, "audit.log"), *cfg.ExperimentalAuditSettings.FileName)
+		assert.Equal(t, advancedBefore, string(cfg.LogSettings.AdvancedLoggingJSON))
+		require.Error(t, ValidateLogPaths(cfg, root))
+	})
+
+	t.Run("a nil configuration", func(t *testing.T) {
+		confined, moved := ConfineLogPaths(nil, root)
+		assert.Nil(t, confined)
+		assert.Empty(t, moved)
+	})
+}

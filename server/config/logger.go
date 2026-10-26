@@ -301,6 +301,112 @@ const LogPathOutsideRootWarning = "Log file path in logging config is outside th
 	"which lets the server start with this path for now. " +
 	"To fix, set the AM_LOG_PATH environment variable (or the older MM_LOG_PATH) to a parent directory containing all log paths, or move log files into the logging root."
 
+// LogPathFallbackWarning is the message logged when log path enforcement is on and log or audit file targets of the
+// configuration sit outside the logging root: the server starts, writing those targets in the logging root instead.
+const LogPathFallbackWarning = "Log or audit file paths in the configuration are outside the logging root directory, so those files are written in the logging root instead " +
+	"(a configuration from an older version or from Mattermost may keep its logs elsewhere). " +
+	"To keep them where they are, set the AM_LOG_PATH environment variable (or the older MM_LOG_PATH) to a parent directory containing all log paths; " +
+	"otherwise point the settings named here at the logging root. Configuration changes made with a path outside the logging root are refused."
+
+// ConfineLogPaths returns a copy of cfg in which every log and audit file target that ValidateLogPaths rejects is
+// moved into loggingRoot, and the targets it moved. LogSettings.FileLocation becomes loggingRoot (the log file keeps
+// its name); the audit file and the file targets of advanced logging keep their file name in loggingRoot. cfg itself
+// is left unchanged: the configuration still holds the paths the admin set, the loggers are set up from the copy.
+func ConfineLogPaths(cfg *model.Config, loggingRoot string) (*model.Config, []string) {
+	if cfg == nil {
+		return nil, nil
+	}
+	confined := cfg.Clone()
+	var moved []string
+
+	if model.SafeDereference(cfg.LogSettings.EnableFile) {
+		logFile := GetLogFileLocation(model.SafeDereference(cfg.LogSettings.FileLocation))
+		if ValidateLogFilePath(logFile, loggingRoot) != nil {
+			confined.LogSettings.FileLocation = model.NewPointer(loggingRoot)
+			moved = append(moved, "LogSettings.FileLocation")
+		}
+	}
+
+	if loggingJSON, targets := confineAdvancedLoggingPaths(cfg.LogSettings.AdvancedLoggingJSON, "LogSettings.AdvancedLoggingJSON", loggingRoot); len(targets) > 0 {
+		confined.LogSettings.AdvancedLoggingJSON = loggingJSON
+		moved = append(moved, targets...)
+	}
+
+	if model.SafeDereference(cfg.ExperimentalAuditSettings.FileEnabled) {
+		auditFile := model.SafeDereference(cfg.ExperimentalAuditSettings.FileName)
+		if ValidateLogFilePath(auditFile, loggingRoot) != nil {
+			confined.ExperimentalAuditSettings.FileName = model.NewPointer(filepath.Join(loggingRoot, confinedFileName(auditFile, "audit.log")))
+			moved = append(moved, "ExperimentalAuditSettings.FileName")
+		}
+	}
+
+	if loggingJSON, targets := confineAdvancedLoggingPaths(cfg.ExperimentalAuditSettings.AdvancedLoggingJSON, "ExperimentalAuditSettings.AdvancedLoggingJSON", loggingRoot); len(targets) > 0 {
+		confined.ExperimentalAuditSettings.AdvancedLoggingJSON = loggingJSON
+		moved = append(moved, targets...)
+	}
+
+	return confined, moved
+}
+
+// confinedFileName gives the name a file moved into the logging root keeps: its own, or fallback for a path that
+// names no file.
+func confinedFileName(path, fallback string) string {
+	name := filepath.Base(strings.TrimSpace(path))
+	if name == "." || name == string(filepath.Separator) || name == "" {
+		return fallback
+	}
+	return name
+}
+
+// confineAdvancedLoggingPaths moves the file targets of an advanced logging config that sit outside loggingRoot into
+// it, keeping their file names, and returns the rewritten config and the targets moved (none: loggingJSON as is).
+// Configs validateAdvancedLoggingPaths skips (unparseable, or a file reference) are left as they are.
+func confineAdvancedLoggingPaths(loggingJSON json.RawMessage, configSection string, loggingRoot string) (json.RawMessage, []string) {
+	if utils.IsEmptyJSON(loggingJSON) {
+		return loggingJSON, nil
+	}
+
+	logCfg := make(mlog.LoggerConfiguration)
+	if err := json.Unmarshal(loggingJSON, &logCfg); err != nil {
+		return loggingJSON, nil
+	}
+
+	var moved []string
+	for _, targetName := range slices.Sorted(maps.Keys(logCfg)) {
+		target := logCfg[targetName]
+		if !strings.EqualFold(target.Type, "file") {
+			continue
+		}
+
+		var options map[string]any
+		if err := json.Unmarshal(target.Options, &options); err != nil || options == nil {
+			continue
+		}
+		filename, _ := options["filename"].(string)
+		if ValidateLogFilePath(filename, loggingRoot) == nil {
+			continue
+		}
+
+		options["filename"] = filepath.Join(loggingRoot, confinedFileName(filename, targetName+".log"))
+		rewritten, err := json.Marshal(options)
+		if err != nil {
+			continue
+		}
+		target.Options = rewritten
+		logCfg[targetName] = target
+		moved = append(moved, fmt.Sprintf("%s target %q", configSection, targetName))
+	}
+
+	if len(moved) == 0 {
+		return loggingJSON, nil
+	}
+	rewritten, err := json.Marshal(logCfg)
+	if err != nil {
+		return loggingJSON, nil
+	}
+	return rewritten, moved
+}
+
 // IsLogPathEnforcementEnabled reports whether a log path outside the logging root should be
 // treated as fatal rather than merely logged. Nil-safe: cfg may carry no feature flags at all.
 func IsLogPathEnforcementEnabled(cfg *model.Config) bool {
