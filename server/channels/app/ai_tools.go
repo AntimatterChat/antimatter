@@ -638,7 +638,7 @@ func (a *App) AnswerAIToolCall(rctx request.CTX, userID, callID string, confirm 
 	// The agent goes on with the result, in the thread.
 	modelName := aiToolModelName(rt.tool.Name, map[string]*aiResolvedTool{})
 	call := ai.ToolCall{ID: p.ToolCallId, Name: modelName, Arguments: p.Arguments}
-	a.Srv().Go(func() {
+	a.goRecovered("an agent's turn", func() {
 		a.continueAgentTurnAfterTool(request.EmptyContext(a.Log()), agent, asker, channel, p.PostId, call, result)
 	})
 	return summary, nil

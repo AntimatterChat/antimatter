@@ -233,3 +233,30 @@ func TestAgentTurnFailure(t *testing.T) {
 	assert.NotContains(t, reply.Message, "sk-aitest", "never a key")
 	assert.NotContains(t, reply.Message, "exploded", "nor the endpoint's message")
 }
+
+// A panic in a background turn (or window, offer, app tool...) is logged; the server goes on.
+func TestGoRecoveredLogsPanicInsteadOfStoppingTheServer(t *testing.T) {
+	th := Setup(t)
+	ran := make(chan struct{})
+	th.App.goRecovered("a test turn", func() {
+		defer close(ran)
+		panic("boom")
+	})
+	select {
+	case <-ran:
+	case <-time.After(10 * time.Second):
+		require.Fail(t, "the background function never ran")
+	}
+	require.Eventually(t, func() bool {
+		require.NoError(t, th.TestLogger.Flush())
+		return strings.Contains(th.LogBuffer.String(), "Recovered from a panic in a test turn")
+	}, 10*time.Second, 50*time.Millisecond)
+
+	again := make(chan struct{})
+	th.App.goRecovered("a test turn", func() { close(again) })
+	select {
+	case <-again:
+	case <-time.After(10 * time.Second):
+		require.Fail(t, "the server stopped running background work")
+	}
+}

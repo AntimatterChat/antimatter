@@ -100,7 +100,7 @@ func (a *App) maybeQueueAssistantPost(post *model.Post, channel *model.Channel) 
 	}
 	debounce := time.Duration(model.SafeDereference(s.DebounceSeconds)) * time.Second
 	a.assistant().queue(channel.Id, post.Id, debounce, func(channelID string, postIDs []string) {
-		a.Srv().Go(func() {
+		a.goRecovered("an assistant window", func() {
 			a.runAssistantWindow(request.EmptyContext(a.Log()), channelID, postIDs)
 		})
 	})

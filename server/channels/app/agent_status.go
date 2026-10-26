@@ -123,7 +123,7 @@ func (a *App) refreshAIAgentStatus(rctx request.CTX, agent *model.AIAgent, answe
 // refreshAIAgentStatusesLater refreshes the agents' statuses in the background (a connection's test may take a
 // while): those on connectionID, or the one agent given.
 func (a *App) refreshAIAgentStatusesLater(connectionID string, agent *model.AIAgent) {
-	a.Srv().Go(func() {
+	a.goRecovered("refreshing the agents' statuses", func() {
 		rctx := request.EmptyContext(a.Log())
 		if agent != nil {
 			a.refreshAIAgentStatus(rctx, agent, map[string]bool{})

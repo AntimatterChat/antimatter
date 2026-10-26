@@ -321,7 +321,7 @@ func (a *App) scheduleAssistantOffer(o *assistantOffer) {
 		stopped := st.stopped
 		st.mu.Unlock()
 		if !stopped {
-			a.Srv().Go(func() { a.assignAssistantOffer(request.EmptyContext(a.Log()), id) })
+			a.goRecovered("an assistant offer", func() { a.assignAssistantOffer(request.EmptyContext(a.Log()), id) })
 		}
 	})
 }
