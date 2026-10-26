@@ -67,6 +67,7 @@ export function OpenGraph({post, link}: {post: Post; link: string}) {
                     className={am('title')}
                     href={makeUrlSafe(og.url || link)}
                     location='fusion_opengraph'
+                    userContent={true}
                 >
                     {title}
                 </ExternalLink>
@@ -127,6 +128,7 @@ export function YouTube({post, link}: {post: Post; link: string}) {
                 className={am('e-title')}
                 href={link}
                 location='fusion_youtube'
+                userContent={true}
             >
                 {title}
             </ExternalLink>
