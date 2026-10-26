@@ -2806,13 +2806,15 @@ func TestSyncedAttributeValueNotUserWritable(t *testing.T) {
 		TargetType: string(model.PropertyFieldTargetLevelSystem),
 	}, false, "")
 	require.Nil(t, appErr)
+	// Member-writable, as a user attribute is: a linked field otherwise inherits the template's sysadmin level.
 	userField, appErr := th.App.CreatePropertyField(rctx, &model.PropertyField{
-		GroupID:       group.ID,
-		Name:          tmpl.Name,
-		Type:          model.PropertyFieldTypeText,
-		ObjectType:    model.PropertyFieldObjectTypeUser,
-		TargetType:    string(model.PropertyFieldTargetLevelSystem),
-		LinkedFieldID: &tmpl.ID,
+		GroupID:          group.ID,
+		Name:             tmpl.Name,
+		Type:             model.PropertyFieldTypeText,
+		ObjectType:       model.PropertyFieldObjectTypeUser,
+		TargetType:       string(model.PropertyFieldTargetLevelSystem),
+		LinkedFieldID:    &tmpl.ID,
+		PermissionValues: model.NewPointer(model.PermissionLevelMember),
 	}, false, "")
 	require.Nil(t, appErr)
 
