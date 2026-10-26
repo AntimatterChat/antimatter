@@ -1,6 +1,9 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
+import fs from 'fs';
+import nodePath from 'path';
+
 import nock from 'nock';
 
 import Client4, {ClientError, HEADER_X_VERSION_ID} from './client4';
@@ -698,6 +701,7 @@ describe('Client4', () => {
             ['patchAIConnection', '/ai/connections/c1', (c: Client4) => c.patchAIConnection('c1', {name: 'Local'})],
             ['patchAIAgent', '/ai/agents/a1', (c: Client4) => c.patchAIAgent('a1', {})],
             ['patchAIMCPServer', '/ai/mcp_servers/s1', (c: Client4) => c.patchAIMCPServer('s1', {})],
+            ['patchForumTopic', '/posts/p1/topic', (c: Client4) => c.patchForumTopic('p1', {accepted_answer_id: 'r1'})],
         ])('%s sends PATCH to %s', async (_name, path, call) => {
             const scope = nock(client.getBaseRoute()).patch(path).reply(200, {}, {'Content-Type': 'application/json'});
 
@@ -707,6 +711,12 @@ describe('Client4', () => {
             expect(fetchSpy).toHaveBeenCalledTimes(1);
             expect(fetchSpy.mock.calls[0][0]).toBe(client.getBaseRoute() + path);
             expect(fetchSpy.mock.calls[0][1].method).toBe('PATCH');
+        });
+
+        test('no Client4 call writes PATCH in lower case', () => {
+            const source = fs.readFileSync(nodePath.join(__dirname, 'client4.ts'), 'utf8');
+
+            expect(source).not.toMatch(/method:\s*['"`]patch['"`]/);
         });
     });
 
