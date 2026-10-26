@@ -532,7 +532,9 @@ func TestInitLoggingLogPathEnforcement(t *testing.T) {
 
 		err := ps.initLogging()
 		require.Error(t, err)
-		assert.Contains(t, err.Error(), outsideFile)
+		// The unresolvable root is reported before the target's path is compared with it.
+		assert.Contains(t, err.Error(), `LogSettings.AdvancedLoggingJSON target "evil"`)
+		assert.Contains(t, err.Error(), "cannot resolve symlinks for logging root")
 
 		_, statErr := os.Stat(outsideFile)
 		assert.True(t, os.IsNotExist(statErr), "the out-of-root target must not be created")

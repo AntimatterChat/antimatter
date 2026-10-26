@@ -401,6 +401,9 @@ func TestUpdateCommand(t *testing.T) {
 	})
 
 	t.Run("CannotCreateCommandWithBuiltInTriggerExplainsWhy", func(t *testing.T) {
+		// An earlier part of the test logs the system admin client out.
+		th.LoginSystemAdmin(t)
+
 		_, resp, err := th.SystemAdminClient.CreateCommand(context.Background(), &model.Command{
 			TeamId:  team.Id,
 			URL:     "http://nowhere.com/tableflip",
@@ -633,6 +636,9 @@ func TestMoveCommand(t *testing.T) {
 	})
 
 	t.Run("CanMoveCommandThatKeepsANewerBuiltInTrigger", func(t *testing.T) {
+		// An earlier part of the test logs the system admin client out.
+		th.LoginSystemAdmin(t)
+
 		migrated, err := th.App.Srv().Store().Command().Save(&model.Command{
 			CreatorId: th.SystemAdminUser.Id,
 			TeamId:    team.Id,
