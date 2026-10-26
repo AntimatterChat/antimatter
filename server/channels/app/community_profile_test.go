@@ -64,6 +64,37 @@ func TestCommunityNotificationNames(t *testing.T) {
 	})
 }
 
+// A notification's sender's community nickname is looked up once for all its recipients, not once each.
+func TestSendNotifications_CommunityProfileLookupNotRepeatedPerRecipient(t *testing.T) {
+	mainHelper.Parallel(t)
+	th := Setup(t).InitBasic(t)
+	th.App.UpdateConfig(func(cfg *model.Config) { *cfg.PrivacySettings.ShowFullName = true })
+	team := th.BasicTeam
+	sender := th.BasicUser2.DeepCopy()
+	_, appErr := th.App.PatchTeam(team.Id, &model.TeamPatch{NameDisplay: model.NewPointer(model.ShowNicknameFullName)})
+	require.Nil(t, appErr)
+	_, appErr = th.App.PatchCommunityProfile(th.Context, team.Id, sender.Id, &model.CommunityProfilePatch{Nickname: model.NewPointer("Captain")})
+	require.Nil(t, appErr)
+
+	notification := &PostNotification{Channel: th.BasicChannel, Post: th.BasicPost, Sender: sender, senderNickname: &communityNicknameMemo{}}
+	format, n := th.App.communityNotificationNames(notification.seenBy(th.App, th.BasicUser), model.ShowUsername)
+	assert.Equal(t, "Captain", n.GetSenderName(format, false))
+
+	// The profile changes in the store: the recipients of the same notification still get the nickname looked up for
+	// the first, so the store wasn't asked again.
+	_, appErr = th.App.PatchCommunityProfile(th.Context, team.Id, sender.Id, &model.CommunityProfilePatch{Nickname: model.NewPointer("Admiral")})
+	require.Nil(t, appErr)
+	for _, recipient := range []*model.User{th.BasicUser, th.SystemAdminUser} {
+		format, n = th.App.communityNotificationNames(notification.seenBy(th.App, recipient), model.ShowUsername)
+		assert.Equal(t, "Captain", n.GetSenderName(format, false))
+	}
+
+	// A new notification looks it up again.
+	next := &PostNotification{Channel: th.BasicChannel, Post: th.BasicPost, Sender: sender, senderNickname: &communityNicknameMemo{}}
+	format, n = th.App.communityNotificationNames(next, model.ShowUsername)
+	assert.Equal(t, "Admiral", n.GetSenderName(format, false))
+}
+
 func TestCommunityNicknameMatches(t *testing.T) {
 	assert.True(t, nicknameMatches("Zephyr Quill", "quil"))
 	assert.True(t, nicknameMatches("Zephyr Quill", "@zeph"))

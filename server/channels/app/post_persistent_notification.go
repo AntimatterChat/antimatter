@@ -345,10 +345,11 @@ func (a *App) sendPersistentNotifications(post *model.Post, channel *model.Chann
 
 	sender := profileMap[post.UserId]
 	notification := &PostNotification{
-		Post:       post,
-		Channel:    channel,
-		ProfileMap: profileMap,
-		Sender:     sender,
+		Post:           post,
+		Channel:        channel,
+		ProfileMap:     profileMap,
+		Sender:         sender,
+		senderNickname: &communityNicknameMemo{},
 	}
 
 	if int64(len(mentionedUsersList)) > *a.Config().TeamSettings.MaxNotificationsPerChannel {

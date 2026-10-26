@@ -446,6 +446,8 @@ func (a *App) SendNotifications(rctx request.CTX, post *model.Post, team *model.
 		Channel:    channel,
 		ProfileMap: profileMap,
 		Sender:     sender,
+		// Antimatter: the sender's community nickname, looked up once for all the recipients.
+		senderNickname: &communityNicknameMemo{},
 	}
 
 	if !suppressNotifications {
@@ -1694,6 +1696,8 @@ type PostNotification struct {
 	Post       *model.Post
 	ProfileMap map[string]*model.User
 	Sender     *model.User
+
+	senderNickname *communityNicknameMemo
 }
 
 // Returns the name of the channel for this notification. For direct messages, this is the sender's name
