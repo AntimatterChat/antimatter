@@ -3720,8 +3720,8 @@
     "description": "Admin console field label on the Posts page limiting Markdown elements per text block."
   },
   "admin.customization.minimumDesktopAppVersionDesc": {
-    "defaultMessage": "Specify the minimum version of the Antimatter desktop app required to connect to this server (e.g., 5.10.0). Users connecting with a Desktop App version below this minimum will be shown an update required page and will not be able to use the application until they update. Leave this field blank to allow all Desktop App versions to connect without restriction.",
-    "description": "Admin console help text for the minimum desktop app version field on the Customization page; '5.10.0' is an example version number."
+    "defaultMessage": "Specify the minimum desktop app version required to connect to this server (e.g., 5.10.0). The server compares it with the version after \"Mattermost/\" in the desktop app's user agent: the official Mattermost desktop app sends its own version there, and the Antimatter desktop app sends the Mattermost version it is compatible with (6.4.0), not its own version number. Users connecting with a lower version will be shown an update required page and will not be able to use the application until they update. Leave this field blank to allow all desktop app versions to connect without restriction.",
+    "description": "Admin console help text for the minimum desktop app version field on the Customization page; '5.10.0' is an example version number. Keep \"Mattermost/\" as is: it is the literal user-agent token the server reads."
   },
   "admin.customization.minimumDesktopAppVersionError": {
     "defaultMessage": "Invalid version number. Must be a valid semantic version (e.g. 5.0.0).",

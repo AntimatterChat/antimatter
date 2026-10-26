@@ -2587,7 +2587,7 @@ const AdminDefinition: AdminDefinitionType = {
                             }),
                             help_text: defineMessage({
                                 id: 'admin.customization.minimumDesktopAppVersionDesc',
-                                defaultMessage: 'Specify the minimum version of the Antimatter desktop app required to connect to this server (e.g., 5.10.0). Users connecting with a Desktop App version below this minimum will be shown an update required page and will not be able to use the application until they update. Leave this field blank to allow all Desktop App versions to connect without restriction.',
+                                defaultMessage: 'Specify the minimum desktop app version required to connect to this server (e.g., 5.10.0). The server compares it with the version after "Mattermost/" in the desktop app\'s user agent: the official Mattermost desktop app sends its own version there, and the Antimatter desktop app sends the Mattermost version it is compatible with (6.4.0), not its own version number. Users connecting with a lower version will be shown an update required page and will not be able to use the application until they update. Leave this field blank to allow all desktop app versions to connect without restriction.',
                             }),
                             isDisabled: it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.SITE.CUSTOMIZATION)),
                             validate: (value) => {
