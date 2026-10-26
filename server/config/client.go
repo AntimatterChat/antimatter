@@ -73,8 +73,11 @@ func GenerateClientConfig(c *model.Config, telemetryID string) map[string]string
 	props["ExperimentalTimezone"] = "true"
 
 	props["SendEmailNotifications"] = strconv.FormatBool(*c.EmailSettings.SendEmailNotifications)
-	// Without a push notification server nothing is sent, so clients see push notifications as off.
-	props["SendPushNotifications"] = strconv.FormatBool(*c.EmailSettings.SendPushNotifications && strings.TrimSpace(*c.EmailSettings.PushNotificationServer) != "")
+	// Without a push notification server nothing is sent, so clients see push notifications as off. Same with one run
+	// by Mattermost, Inc. (an old configuration's push.mattermost.com), which the server refuses to send to.
+	props["SendPushNotifications"] = strconv.FormatBool(*c.EmailSettings.SendPushNotifications &&
+		strings.TrimSpace(*c.EmailSettings.PushNotificationServer) != "" &&
+		!model.IsMattermostPushServer(*c.EmailSettings.PushNotificationServer))
 	props["RequireEmailVerification"] = strconv.FormatBool(*c.EmailSettings.RequireEmailVerification)
 	props["EnableEmailBatching"] = strconv.FormatBool(*c.EmailSettings.EnableEmailBatching)
 	props["EnablePreviewModeBanner"] = strconv.FormatBool(*c.EmailSettings.EnablePreviewModeBanner)
@@ -240,6 +243,12 @@ func GenerateLimitedClientConfig(c *model.Config, telemetryID string) map[string
 	props["BuildNumber"] = model.BuildNumber
 	props["BuildDate"] = model.BuildDate
 	props["BuildHash"] = model.BuildHash
+	// Mattermost's mobile and web apps turn their Enterprise features on (burn-on-read, highlights without
+	// notification, channel and session attributes...) only for a build that reports itself enterprise-ready.
+	// Antimatter builds have every feature in one repository: they report an enterprise-ready build whose enterprise
+	// hash is the build's own. Apps on the server are still never told so (PluginAPI.IsEnterpriseReady).
+	props["BuildHashEnterprise"] = buildHashEnterprise()
+	props["BuildEnterpriseReady"] = "true"
 	props["ServiceEnvironment"] = model.GetServiceEnvironment()
 	props["IsFipsEnabled"] = strconv.FormatBool(fips.IsEnabled)
 
@@ -377,4 +386,13 @@ func getGiphySdkKey(ss model.ServiceSettings) string {
 	}
 
 	return ""
+}
+
+// buildHashEnterprise gives the BuildHashEnterprise the client configuration reports: the one set at build time, else
+// the build's hash, as there is no separate enterprise repository.
+func buildHashEnterprise() string {
+	if model.BuildHashEnterprise != "" {
+		return model.BuildHashEnterprise
+	}
+	return model.BuildHash
 }

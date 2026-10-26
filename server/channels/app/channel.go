@@ -2502,10 +2502,26 @@ func (a *App) GetChannelByName(rctx request.CTX, channelName, teamID string, inc
 	return channel, nil
 }
 
+// GetChannelsByNames gives a community's channels by name. Antimatter: when town-square is asked for and no channel
+// has that name, the list holds a copy of the community's default channel named town-square, so that a ~town-square
+// mention (from a bot, an app or someone used to Mattermost) links to General like the other names asked for.
 func (a *App) GetChannelsByNames(rctx request.CTX, channelNames []string, teamID string) ([]*model.Channel, *model.AppError) {
 	channels, err := a.Srv().Store().Channel().GetByNames(teamID, channelNames, true)
 	if err != nil {
 		return nil, model.NewAppError("GetChannelsByNames", "app.channel.get_by_name.existing.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
+	}
+	if teamID == "" || !slices.Contains(channelNames, model.LegacyDefaultChannelName) {
+		return channels, nil
+	}
+	for _, channel := range channels {
+		if channel.Name == model.LegacyDefaultChannelName {
+			return channels, nil
+		}
+	}
+	if legacy := a.legacyDefaultChannel(rctx, teamID, model.LegacyDefaultChannelName); legacy != nil {
+		alias := legacy.DeepCopy()
+		alias.Name = model.LegacyDefaultChannelName
+		channels = append(channels, alias)
 	}
 	return channels, nil
 }

@@ -373,6 +373,46 @@ func TestUpdateCommand(t *testing.T) {
 		CheckBadRequestStatus(t, resp)
 		CheckErrorID(t, err, "api.command.duplicate_trigger.app_error")
 	})
+
+	// /export is a built-in Antimatter added after Mattermost: a custom /export made on Mattermost (or before the
+	// built-in existed) comes through the upgrade, keeps running (custom commands run before built-ins) and must
+	// stay editable.
+	t.Run("CanUpdateCommandThatKeepsANewerBuiltInTrigger", func(t *testing.T) {
+		migrated, err := th.App.Srv().Store().Command().Save(&model.Command{
+			CreatorId: th.BasicUser.Id,
+			TeamId:    team.Id,
+			URL:       "http://nowhere.com/export",
+			Method:    model.CommandMethodPost,
+			Trigger:   "export",
+		})
+		require.NoError(t, err)
+
+		migrated.URL = "http://nowhere.com/export-v2"
+		updatedCmd, _, err := th.Client.UpdateCommand(context.Background(), migrated)
+		require.NoError(t, err)
+		require.Equal(t, "http://nowhere.com/export-v2", updatedCmd.URL)
+		require.Equal(t, "export", updatedCmd.Trigger)
+
+		// Renaming it to another built-in is still refused.
+		updatedCmd.Trigger = "rules"
+		_, resp, err := th.Client.UpdateCommand(context.Background(), updatedCmd)
+		CheckBadRequestStatus(t, resp)
+		CheckErrorID(t, err, "api.command.duplicate_trigger.app_error")
+	})
+
+	t.Run("CannotCreateCommandWithBuiltInTriggerExplainsWhy", func(t *testing.T) {
+		_, resp, err := th.SystemAdminClient.CreateCommand(context.Background(), &model.Command{
+			TeamId:  team.Id,
+			URL:     "http://nowhere.com/tableflip",
+			Method:  model.CommandMethodPost,
+			Trigger: "tableflip",
+		})
+		CheckBadRequestStatus(t, resp)
+		CheckErrorID(t, err, "api.command.duplicate_trigger.app_error")
+		var appErr *model.AppError
+		require.ErrorAs(t, err, &appErr)
+		require.Contains(t, appErr.Message, "/tableflip is a built-in command")
+	})
 }
 
 func TestMoveCommand(t *testing.T) {
@@ -590,6 +630,24 @@ func TestMoveCommand(t *testing.T) {
 
 		notMovedCmd, _ := th.App.GetCommand(sourceCreatedCmd.Id)
 		require.Equal(t, team.Id, notMovedCmd.TeamId)
+	})
+
+	t.Run("CanMoveCommandThatKeepsANewerBuiltInTrigger", func(t *testing.T) {
+		migrated, err := th.App.Srv().Store().Command().Save(&model.Command{
+			CreatorId: th.SystemAdminUser.Id,
+			TeamId:    team.Id,
+			URL:       "http://nowhere.com/unflip",
+			Method:    model.CommandMethodPost,
+			Trigger:   "unflip",
+		})
+		require.NoError(t, err)
+
+		_, err = th.SystemAdminClient.MoveCommand(context.Background(), newTeam.Id, migrated.Id)
+		require.NoError(t, err)
+
+		movedCmd, appErr := th.App.GetCommand(migrated.Id)
+		require.Nil(t, appErr)
+		require.Equal(t, newTeam.Id, movedCmd.TeamId)
 	})
 }
 

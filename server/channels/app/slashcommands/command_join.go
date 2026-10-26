@@ -45,12 +45,13 @@ func (*JoinProvider) DoCommand(a *app.App, rctx request.CTX, args *model.Command
 		channelName = message[1:]
 	}
 
-	channel, err := a.Srv().Store().Channel().GetByName(args.TeamId, channelName, true)
-	if err != nil {
+	// GetChannelByName: ~town-square, the default channel's Mattermost name, joins General when no channel has it.
+	channel, appErr := a.GetChannelByName(rctx, channelName, args.TeamId, false)
+	if appErr != nil {
 		return &model.CommandResponse{Text: args.T("api.command_join.list.app_error"), ResponseType: model.CommandResponseTypeEphemeral}
 	}
 
-	if channel.Name != channelName {
+	if channel.Name != channelName && channelName != model.LegacyDefaultChannelName {
 		return &model.CommandResponse{ResponseType: model.CommandResponseTypeEphemeral, Text: args.T("api.command_join.missing.app_error")}
 	}
 

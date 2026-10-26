@@ -2954,7 +2954,7 @@ export default class Client4 {
     patchForumTopic = (postId: string, patch: ForumTopicPatch) => {
         return this.doFetch<Post>(
             `${this.getPostRoute(postId)}/topic`,
-            {method: 'patch', body: JSON.stringify(patch)},
+            {method: 'PATCH', body: JSON.stringify(patch)},
         );
     };
 

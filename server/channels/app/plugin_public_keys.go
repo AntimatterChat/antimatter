@@ -10,6 +10,7 @@ const antimatterPluginPublicKeyName = "Antimatter"
 const (
 	antimatterPluginPublicKeyFingerprint = "06C8103246770F08BBA778B9E69B05C392A69A45"
 	mattermostPluginPublicKeyFingerprint = "C55881B80F69E863B85AD5D1D1B54B47A5CEFEC4"
+	mfiPluginPublicKeyFingerprint        = "FADB2BC61DD99D3ABC87E80648C2D950DD821A4E"
 )
 
 // builtinPluginPublicKeys are the plugin signing keys trusted without any configuration, tried in
@@ -17,6 +18,26 @@ const (
 var builtinPluginPublicKeys = []pluginPublicKey{
 	{name: antimatterPluginPublicKeyName, key: antimatterPluginPublicKey},
 	{name: "Mattermost", key: mattermostPluginPublicKey},
+	{name: mfiPluginPublicKeyName, key: mfiPluginPublicKey},
+}
+
+// mfiPluginPublicKeyName names mfiPluginPublicKey in builtinPluginPublicKeys.
+const mfiPluginPublicKeyName = "Mattermost Federal"
+
+// trustedBuiltinPluginPublicKeys gives the built-in keys trusted with the current configuration: all of them, but
+// the Mattermost Federal key only while FeatureFlags.EnableMFIPluginSignaturePublicKey is on (the default), as in
+// Mattermost.
+func (ch *Channels) trustedBuiltinPluginPublicKeys() []pluginPublicKey {
+	if ch.srv.Config().FeatureFlags.EnableMFIPluginSignaturePublicKey {
+		return builtinPluginPublicKeys
+	}
+	keys := make([]pluginPublicKey, 0, len(builtinPluginPublicKeys))
+	for _, key := range builtinPluginPublicKeys {
+		if key.name != mfiPluginPublicKeyName {
+			keys = append(keys, key)
+		}
+	}
+	return keys
 }
 
 // pluginPublicKey is a named, armored or binary OpenPGP public key trusted to sign plugins.
@@ -109,4 +130,33 @@ VbpFWCb4naPYMMhl/2afOKtmASJnw3MQkMXlTyf59+NoYRtAEh7mQ2AzBqYcsYbs
 ue8bSAG/lgJ7XKl4JyfhvC/63CTi/xMklsW5BGQn77vGjKo0bv5Oi1XfqhEujFqY
 d+eYY64=
 =UePK
+-----END PGP PUBLIC KEY BLOCK-----`)
+
+// mfiPluginPublicKey is the key Mattermost Federal (MFI) signs its plugin builds with. Like Mattermost, Antimatter
+// trusts it while FeatureFlags.EnableMFIPluginSignaturePublicKey is on (the default), so that MFI-signed plugins
+// installed or uploaded with RequirePluginSignature on keep verifying after a move from Mattermost.
+var mfiPluginPublicKey = []byte(`-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+mQGNBGpk9iEBDADOe0bMj5o+PAJv2eTWHyhF9rZVVvKDdKCc58Fd7StCPiZ0i9Uf
+TsXzMQ+hz9+g2op1J5JFJJcQBbij1C9h6aWcIh0BDj3TYHP3L0jRSBtPiTfgwmiG
+pq0O/WU2fbA6a/avH2m+9hn4PPJe0q73C2Wh1+OSX8U56WPT6yDfC8/2feOy9lsm
+qVZTQw3+Gl/4mkCokKiFMUPhrgQd+bYEaMi1O4cAIixzSNNv54hz6RHgUoBBkngF
+nNcU8iHvz/PnebYRRxHWU403TdTwsmMP1gvOT7lyJExtc2mOpqN+Egr49Bdi0b+v
+Liez3cCw9JpKDT6UXYpd5qB+Qw0mfx8uVS1M9FmiwyBoA3Sim1nYgeP8gVpQCsS8
+iKTGgDnAFxkiVlIHnLGW9sSTEcm3Xl60LpzfCwGBX+qRKiCCu1FRS450qFCHk7cy
+9aJ09K84vqMvf0yCqDdkbDIYXLwcsQJpIufKhnKf7LgP4IqCBmuF8r/T8CMHkcaE
+KVTwJFY4NPrEGDEAEQEAAbRETWF0dGVybW9zdEZlZGVyYWwgUGx1Z2luIFNpZ25p
+bmcgPHBsdWdpbnNAbWF0dGVybW9zdGZlZGVyYWwuZXhhbXBsZT6JAe4EEwEIAFgW
+IQT62yvGHdmdOryH6AZIwtlQ3YIaTgUCamT2IRsUgAAAAAAEAA5tYW51MiwyLjUr
+MS4xMiwwLDMDGy8EBQsJCAcCAiICBhUKCQgLAgQWAgMBAh4HAheAAAoJEEjC2VDd
+ghpOwXoMAKUnIDfCq8IE+fW0uKvO6nZ29kAMbIawJ2owpzsTXL6881H4DkbEYvJR
+czQdRwahYHbq1ddcI9qA7v/ej/8CFF8Xfk4c8omVCVVyHffA0nfZ2B+sXxwVjTgS
+O1HlnGWdLCs1IlA4Mul191E7y+TtAH8aEu0I4+8y8BlH1rugsc1UX736imYn1HrL
+By319qDPTsdvMQD3Xv3EzLoSGd/LZ694ddpANvUM9HkiQb1hEcSncxWCTmUCj5de
+awZxZLiHmm2f1hvdPVZg0xUOP6GSnNmmkuY6w/PvTnHAy+1PXIIgd7hhTMN5TilQ
+2vRwNZYRo2TMjf6Ufkiy6V9GZqj3BwH/BVrdT/qag4KjlzGJxWgMG6h3UljhGDqi
+oy7E8mf0Jlv59GiWCjB4FJtzZwDpJ4L/OF64TK7bNhjPEBDOv6QCehD4f1axGLQr
+Mt+BdiS9o9Dj0eI5RqvrfYSpuXOhTJnsJuryb0lrjZWhjW+VCzYhmQs9xad7PNwI
+jC4gK9hEYA==
+=TibB
 -----END PGP PUBLIC KEY BLOCK-----`)

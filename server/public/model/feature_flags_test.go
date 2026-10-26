@@ -41,6 +41,11 @@ func TestFeatureFlagsSetDefaults(t *testing.T) {
 		require.True(t, f.HealthDashboard)
 		require.Equal(t, "true", f.ToMap()["HealthDashboard"])
 	})
+
+	t.Run("EnableMFIPluginSignaturePublicKey defaults to true, as in Mattermost", func(t *testing.T) {
+		require.True(t, f.EnableMFIPluginSignaturePublicKey)
+		require.Equal(t, "true", f.ToMap()["EnableMFIPluginSignaturePublicKey"])
+	})
 }
 
 func TestFeatureFlagsToMap(t *testing.T) {

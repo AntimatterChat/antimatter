@@ -129,8 +129,11 @@ func (s *Server) configureAudit(adt *audit.Audit) error {
 	adt.OnQueueFull = s.onAuditTargetQueueFull
 	adt.OnError = s.onAuditError
 
+	// The audit targets outside the logging root, if any, are moved into it, as the log targets are.
+	auditSettings := s.platform.LoggingConfig().ExperimentalAuditSettings
+
 	var logConfigSrc config.LogConfigSrc
-	dsn := s.platform.Config().ExperimentalAuditSettings.GetAdvancedLoggingConfig()
+	dsn := auditSettings.GetAdvancedLoggingConfig()
 	if !utils.IsEmptyJSON(dsn) {
 		var err error
 		logConfigSrc, err = config.NewLogConfigSrc(dsn, s.platform.GetConfigStore())
@@ -143,7 +146,7 @@ func (s *Server) configureAudit(adt *audit.Audit) error {
 	}
 
 	// ExperimentalAuditSettings provides basic file audit; logConfigSrc provides advanced config.
-	cfg, err := config.MloggerConfigFromAuditConfig(s.platform.Config().ExperimentalAuditSettings, logConfigSrc)
+	cfg, err := config.MloggerConfigFromAuditConfig(auditSettings, logConfigSrc)
 	if err != nil {
 		return fmt.Errorf("invalid config for audit, %w", err)
 	}

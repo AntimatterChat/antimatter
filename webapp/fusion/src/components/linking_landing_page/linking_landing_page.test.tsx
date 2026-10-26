@@ -18,7 +18,7 @@ jest.mock('utils/browser_utils', () => ({
 const siteUrl = 'http://localhost:8065';
 const landingPath = '/landing#/team-name/channels/general';
 const redirectUrl = `${siteUrl}/team-name/channels/general`;
-const nativeUrl = 'antimatter://localhost:8065/team-name/channels/general';
+const nativeUrl = 'mattermost://localhost:8065/team-name/channels/general';
 
 describe('components/LinkingLandingPage', () => {
     const baseProps = {
@@ -49,6 +49,13 @@ describe('components/LinkingLandingPage', () => {
             expect(screen.getByRole('link', {name: 'View in Desktop App'})).toBeVisible();
             expect(screen.getByRole('link', {name: 'View in Browser'})).toBeVisible();
             expect(navigateTo).not.toHaveBeenCalled();
+        });
+
+        test('should link the desktop app with a mattermost:// URL that the official and Antimatter apps both open', () => {
+            renderWithContext(<LinkingLandingPage {...baseProps}/>);
+
+            expect(screen.getByRole('link', {name: 'View in Desktop App'})).toHaveAttribute('href', nativeUrl);
+            expect(nativeUrl.startsWith('mattermost://')).toBe(true);
         });
 
         test('should redirect to the browser when the browser preference is stored', () => {

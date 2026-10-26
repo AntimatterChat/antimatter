@@ -546,7 +546,7 @@ func (a *App) GetPlugins() (*model.PluginsResponse, *model.AppError) {
 func (a *App) GetMarketplacePlugins(rctx request.CTX, filter *model.MarketplacePluginFilter) ([]*model.MarketplacePlugin, *model.AppError) {
 	plugins := map[string]*model.MarketplacePlugin{}
 
-	if *a.Config().PluginSettings.EnableRemoteMarketplace && !filter.LocalOnly {
+	if a.Config().PluginSettings.RemoteMarketplaceEnabled() && !filter.LocalOnly {
 		p, appErr := a.getRemotePlugins()
 		if appErr != nil {
 			return nil, appErr
@@ -758,7 +758,7 @@ func (a *App) mergeLocalPlugins(rctx request.CTX, remoteMarketplacePlugins map[s
 		}
 
 		var labels []model.MarketplaceLabel
-		if *a.Config().PluginSettings.EnableRemoteMarketplace {
+		if a.Config().PluginSettings.RemoteMarketplaceEnabled() {
 			// Labels should not (yet) be localized as the labels sent by the Marketplace are not (yet) localizable.
 			labels = append(labels, model.MarketplaceLabel{
 				Name:        "Local",
@@ -1035,7 +1035,7 @@ func (ch *Channels) processPrepackagedPlugin(pluginPath *pluginSignaturePath) (*
 		return plugin, nil
 	}
 
-	if _, err := ch.installExtractedPlugin(plugin.Manifest, pluginDir, installPluginLocallyOnlyIfNewOrUpgrade); err != nil && err.Id != "app.plugin.skip_installation.app_error" {
+	if err := ch.installPrepackagedPlugin(logger, plugin.Manifest, pluginDir); err != nil && err.Id != "app.plugin.skip_installation.app_error" {
 		return nil, errors.Wrapf(err, "Failed to install extracted prepackaged plugin %s", pluginPath.bundlePath)
 	}
 

@@ -241,6 +241,9 @@ func New(settings model.SqlSettings, logger mlog.LoggerIFace, metrics einterface
 		return nil, errors.Wrap(err, "error while checking DB version")
 	}
 
+	// Antimatter: a database from a newer Mattermost has migrations this server doesn't know; say so.
+	store.warnAboutUnknownUpstreamMigrations()
+
 	if !store.skipMigrations {
 		err = store.preMigration()
 		if err != nil {

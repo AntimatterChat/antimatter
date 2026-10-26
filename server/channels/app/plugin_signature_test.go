@@ -127,8 +127,9 @@ func TestVerifySignature(t *testing.T) {
 
 func TestBuiltinPluginPublicKeys(t *testing.T) {
 	fingerprints := map[string]string{
-		"Antimatter": antimatterPluginPublicKeyFingerprint,
-		"Mattermost": mattermostPluginPublicKeyFingerprint,
+		"Antimatter":         antimatterPluginPublicKeyFingerprint,
+		"Mattermost":         mattermostPluginPublicKeyFingerprint,
+		"Mattermost Federal": mfiPluginPublicKeyFingerprint,
 	}
 	require.Len(t, builtinPluginPublicKeys, len(fingerprints))
 
@@ -227,6 +228,83 @@ func TestVerifyPlugin(t *testing.T) {
 
 		pluginFile, signatureFile := openPluginAndSignature(t)
 		require.Nil(t, th.App.ch.verifyPlugin(logger, pluginFile, signatureFile))
+	})
+}
+
+// TestVerifyPluginMFIKey checks that plugins signed by Mattermost Federal (MFI), whose key Mattermost trusts by
+// default, verify without any admin-configured key, and aren't taken for Antimatter builds.
+func TestVerifyPluginMFIKey(t *testing.T) {
+	mainHelper.Parallel(t)
+	path, _ := fileutils.FindDir("tests")
+	logger := mlog.CreateConsoleTestLogger(t)
+	th := Setup(t)
+
+	for _, signatureFilename := range []string{"testplugin-mfi.tar.gz.asc", "testplugin-mfi.tar.gz.sig"} {
+		t.Run(signatureFilename, func(t *testing.T) {
+			open := func(name string) *os.File {
+				f, err := os.Open(filepath.Join(path, name))
+				require.NoError(t, err)
+				t.Cleanup(func() { f.Close() })
+				return f
+			}
+
+			require.Nil(t, th.App.ch.verifyPlugin(logger, open("testplugin-mfi.tar.gz"), open(signatureFilename)))
+
+			signer, appErr := th.App.ch.verifyPluginSigner(logger, open("testplugin-mfi.tar.gz"), open(signatureFilename))
+			require.Nil(t, appErr)
+			require.Equal(t, pluginSigner{name: "Mattermost Federal", builtin: true}, signer)
+			require.False(t, signer.isAntimatter())
+
+			// The MFI key doesn't verify a plugin it didn't sign.
+			_, verified := verifyPluginWithKeys(logger, []pluginPublicKey{{name: "Mattermost Federal", key: mfiPluginPublicKey}}, open("testplugin.tar.gz"), open("testplugin.tar.gz.asc"))
+			require.False(t, verified)
+		})
+	}
+}
+
+// The Mattermost Federal key is trusted only while FeatureFlags.EnableMFIPluginSignaturePublicKey is on (the
+// default), as in Mattermost.
+func TestVerifyPluginMFIFeatureFlag(t *testing.T) {
+	mainHelper.Parallel(t)
+	path, _ := fileutils.FindDir("tests")
+	logger := mlog.CreateConsoleTestLogger(t)
+
+	open := func(t *testing.T, name string) *os.File {
+		t.Helper()
+		f, err := os.Open(filepath.Join(path, name))
+		require.NoError(t, err)
+		t.Cleanup(func() { f.Close() })
+		return f
+	}
+
+	t.Run("on by default", func(t *testing.T) {
+		th := Setup(t)
+		require.True(t, th.App.Config().FeatureFlags.EnableMFIPluginSignaturePublicKey)
+		require.Nil(t, th.App.ch.verifyPlugin(logger, open(t, "testplugin-mfi.tar.gz"), open(t, "testplugin-mfi.tar.gz.asc")))
+	})
+
+	t.Run("off: MFI-signed plugins are refused, the other built-in keys still apply", func(t *testing.T) {
+		th := SetupConfig(t, func(cfg *model.Config) {
+			cfg.FeatureFlags.EnableMFIPluginSignaturePublicKey = false
+		})
+		require.False(t, th.App.Config().FeatureFlags.EnableMFIPluginSignaturePublicKey)
+
+		require.NotNil(t, th.App.ch.verifyPlugin(logger, open(t, "testplugin-mfi.tar.gz"), open(t, "testplugin-mfi.tar.gz.asc")))
+		require.NotNil(t, th.App.ch.verifyPlugin(logger, open(t, "testplugin-mfi.tar.gz"), open(t, "testplugin-mfi.tar.gz.sig")))
+
+		names := []string{}
+		for _, key := range th.App.ch.trustedBuiltinPluginPublicKeys() {
+			names = append(names, key.name)
+		}
+		require.Equal(t, []string{antimatterPluginPublicKeyName, "Mattermost"}, names)
+	})
+
+	t.Run("off, with the key added by the admin as a public key file", func(t *testing.T) {
+		th := SetupConfig(t, func(cfg *model.Config) {
+			cfg.FeatureFlags.EnableMFIPluginSignaturePublicKey = false
+		})
+		require.Nil(t, th.App.AddPublicKey("mfi-public-key.asc", bytes.NewReader(mfiPluginPublicKey)))
+		require.Nil(t, th.App.ch.verifyPlugin(logger, open(t, "testplugin-mfi.tar.gz"), open(t, "testplugin-mfi.tar.gz.asc")))
 	})
 }
 
