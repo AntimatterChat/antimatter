@@ -289,7 +289,10 @@ func hostWithPort(u *url.URL) string {
 //
 // When validating an edited connection, the client doesn't know the stored
 // secrets (they are sanitized), so missing secrets are taken from the stored
-// connection with the same id.
+// connection with the same id. They are only reused when the request goes to
+// the stored token URL (and, for the password, with the stored grant type and
+// username): otherwise someone who may edit connections but not read their
+// secrets could have the server send them to a token URL of their choosing.
 func (s *Service) RetrieveTokenForConnection(rctx request.CTX, conn *model.OutgoingOAuthConnection) (*model.OutgoingOAuthConnectionToken, *model.AppError) {
 	if conn == nil {
 		return nil, authError(http.StatusBadRequest, errors.New("missing connection"))
@@ -298,15 +301,7 @@ func (s *Service) RetrieveTokenForConnection(rctx request.CTX, conn *model.Outgo
 	c := *conn
 	if c.Id != "" && (c.ClientSecret == "" || (c.GrantType == model.OutgoingOAuthConnectionGrantTypePassword && model.SafeDereference(c.CredentialsPassword) == "")) {
 		if stored, err := s.store().GetConnection(rctx, c.Id); err == nil {
-			if c.ClientSecret == "" {
-				c.ClientSecret = stored.ClientSecret
-			}
-			if model.SafeDereference(c.CredentialsPassword) == "" {
-				c.CredentialsPassword = stored.CredentialsPassword
-			}
-			if model.SafeDereference(c.CredentialsUsername) == "" {
-				c.CredentialsUsername = stored.CredentialsUsername
-			}
+			fillStoredSecrets(&c, stored)
 		}
 	}
 
@@ -324,6 +319,29 @@ func (s *Service) RetrieveTokenForConnection(rctx request.CTX, conn *model.Outgo
 		return nil, authError(status, err)
 	}
 	return token, nil
+}
+
+// fillStoredSecrets copies the stored client secret and password into c where
+// c leaves them blank, but only while c still points at the stored token URL.
+// The password is reused only for the stored grant type and username.
+func fillStoredSecrets(c, stored *model.OutgoingOAuthConnection) {
+	if stored == nil || c.OAuthTokenURL != stored.OAuthTokenURL {
+		return
+	}
+	if c.ClientSecret == "" {
+		c.ClientSecret = stored.ClientSecret
+	}
+	if model.SafeDereference(c.CredentialsPassword) != "" || c.GrantType != stored.GrantType {
+		return
+	}
+	username := model.SafeDereference(c.CredentialsUsername)
+	if username != "" && username != model.SafeDereference(stored.CredentialsUsername) {
+		return
+	}
+	c.CredentialsPassword = stored.CredentialsPassword
+	if username == "" {
+		c.CredentialsUsername = stored.CredentialsUsername
+	}
 }
 
 func validateForToken(c *model.OutgoingOAuthConnection) error {

@@ -431,3 +431,115 @@ func TestRetrieveToken(t *testing.T) {
 		assert.Equal(t, "Bearer abc", token.AsHeaderValue())
 	})
 }
+
+// A caller who may edit connections but not read their secrets must not get
+// the server to send a stored secret to a token URL of their choosing.
+func TestRetrieveTokenForConnectionDoesNotReuseSecretForOtherTokenURL(t *testing.T) {
+	rctx := request.TestContext(t)
+
+	var leaked atomic.Int32
+	attacker := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		_ = r.ParseForm()
+		if _, pass, ok := r.BasicAuth(); ok && pass != "" {
+			leaked.Add(1)
+		}
+		if r.PostForm.Get("client_secret") != "" || r.PostForm.Get("password") != "" {
+			leaked.Add(1)
+		}
+		w.Header().Set("Content-Type", "application/json")
+		_ = json.NewEncoder(w).Encode(map[string]any{"access_token": "x", "token_type": "bearer", "expires_in": 60})
+	}))
+	defer attacker.Close()
+
+	save := func(t *testing.T, s *Service, c *model.OutgoingOAuthConnection) *model.OutgoingOAuthConnection {
+		t.Helper()
+		c.Id = ""
+		saved, appErr := s.SaveConnection(rctx, c)
+		require.Nil(t, appErr)
+		sanitized := *saved
+		sanitized.Sanitize()
+		return &sanitized
+	}
+
+	t.Run("client secret is not sent to another token URL", func(t *testing.T) {
+		ts := newTokenServer(t)
+		s := newService(newFakeStore())
+		input := save(t, s, ts.conn())
+		input.OAuthTokenURL = attacker.URL + "/token"
+
+		_, appErr := s.RetrieveTokenForConnection(rctx, input)
+		require.NotNil(t, appErr)
+		assert.Equal(t, http.StatusBadRequest, appErr.StatusCode)
+		assert.Contains(t, appErr.Error(), "client secret is required")
+		assert.Zero(t, leaked.Load())
+	})
+
+	t.Run("password is not sent to another token URL", func(t *testing.T) {
+		ts := newTokenServer(t)
+		s := newService(newFakeStore())
+		c := ts.conn()
+		c.GrantType = model.OutgoingOAuthConnectionGrantTypePassword
+		c.CredentialsUsername = model.NewPointer("alice")
+		c.CredentialsPassword = model.NewPointer("pw")
+		input := save(t, s, c)
+		input.OAuthTokenURL = attacker.URL + "/token"
+		input.ClientSecret = "attacker-known"
+
+		_, appErr := s.RetrieveTokenForConnection(rctx, input)
+		require.NotNil(t, appErr)
+		assert.Contains(t, appErr.Error(), "requires a username and a password")
+		assert.Zero(t, leaked.Load())
+	})
+
+	t.Run("password is not reused for another username", func(t *testing.T) {
+		ts := newTokenServer(t)
+		s := newService(newFakeStore())
+		c := ts.conn()
+		c.GrantType = model.OutgoingOAuthConnectionGrantTypePassword
+		c.CredentialsUsername = model.NewPointer("alice")
+		c.CredentialsPassword = model.NewPointer("pw")
+		input := save(t, s, c)
+		input.CredentialsUsername = model.NewPointer("bob")
+
+		_, appErr := s.RetrieveTokenForConnection(rctx, input)
+		require.NotNil(t, appErr)
+		assert.Contains(t, appErr.Error(), "requires a username and a password")
+		assert.Zero(t, ts.requests.Load())
+	})
+
+	t.Run("password is not reused after a grant type change", func(t *testing.T) {
+		ts := newTokenServer(t)
+		s := newService(newFakeStore())
+		st := s.store().(*fakeStore)
+		c := ts.conn()
+		c.CredentialsUsername = model.NewPointer("alice")
+		c.CredentialsPassword = model.NewPointer("pw")
+		input := save(t, s, c)
+		// Stored as client credentials with a leftover password.
+		stored, err := st.GetConnection(rctx, input.Id)
+		require.NoError(t, err)
+		require.Equal(t, "pw", model.SafeDereference(stored.CredentialsPassword))
+		input.GrantType = model.OutgoingOAuthConnectionGrantTypePassword
+		input.CredentialsUsername = nil
+		input.CredentialsPassword = nil
+
+		_, appErr := s.RetrieveTokenForConnection(rctx, input)
+		require.NotNil(t, appErr)
+		assert.Contains(t, appErr.Error(), "requires a username and a password")
+	})
+
+	t.Run("same token URL still reuses the stored secrets", func(t *testing.T) {
+		ts := newTokenServer(t)
+		s := newService(newFakeStore())
+		c := ts.conn()
+		c.GrantType = model.OutgoingOAuthConnectionGrantTypePassword
+		c.CredentialsUsername = model.NewPointer("alice")
+		c.CredentialsPassword = model.NewPointer("pw")
+		input := save(t, s, c)
+		input.CredentialsUsername = nil
+
+		token, appErr := s.RetrieveTokenForConnection(rctx, input)
+		require.Nil(t, appErr)
+		assert.Equal(t, "token-password", token.AccessToken)
+	})
+}
