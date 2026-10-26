@@ -1035,7 +1035,7 @@ func (ch *Channels) processPrepackagedPlugin(pluginPath *pluginSignaturePath) (*
 		return plugin, nil
 	}
 
-	if _, err := ch.installExtractedPlugin(plugin.Manifest, pluginDir, installPluginLocallyOnlyIfNewOrUpgrade); err != nil && err.Id != "app.plugin.skip_installation.app_error" {
+	if err := ch.installPrepackagedPlugin(logger, plugin.Manifest, pluginDir); err != nil && err.Id != "app.plugin.skip_installation.app_error" {
 		return nil, errors.Wrapf(err, "Failed to install extracted prepackaged plugin %s", pluginPath.bundlePath)
 	}
 
