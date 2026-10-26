@@ -24,6 +24,7 @@ import PostMessageView from 'components/post_view/post_message_view';
 import Avatar from 'fusion/components/avatar';
 import Icon from 'fusion/components/icon';
 import {useDisplayName} from 'fusion/hooks/users';
+import {useSnippetCover} from 'fusion/messages/snippet';
 import {am} from 'fusion/utils/class_names';
 import {getHistory} from 'utils/browser_history';
 import {PostTypes, Preferences} from 'utils/constants';
@@ -175,6 +176,9 @@ export function Permalink({data}: {data: PostPreviewMetadata}) {
     const preview = data.post;
     const user = useSelector((state: GlobalState) => (preview ? getUser(state, preview.user_id) : undefined));
     const name = useDisplayName(user);
+
+    // A linked spoiler, or a message from someone you ignore or block, keeps its text hidden here too: Jump opens it.
+    const cover = useSnippetCover()(preview);
     if (!preview) {
         return null;
     }
@@ -214,16 +218,18 @@ export function Permalink({data}: {data: PostPreviewMetadata}) {
                     {intl.formatMessage({id: 'fusion.embed.jump', defaultMessage: 'Jump'})}
                 </button>
             </span>
-            <span className={am('ptext')}>
-                <PostMessageView
-                    post={preview}
-                    isRHS={false}
-                    isChannelAutotranslated={false}
-                    userLanguage={intl.locale}
-                    disableInteractions={true}
-                    showPostEditedIndicator={false}
-                />
-            </span>
+            {cover ? <span className={am('ptext', 'snip-cover')}>{cover}</span> : (
+                <span className={am('ptext')}>
+                    <PostMessageView
+                        post={preview}
+                        isRHS={false}
+                        isChannelAutotranslated={false}
+                        userLanguage={intl.locale}
+                        disableInteractions={true}
+                        showPostEditedIndicator={false}
+                    />
+                </span>
+            )}
         </div>
     );
 }

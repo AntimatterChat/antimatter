@@ -21,7 +21,10 @@ import {showSearchResults, updateSearchTeam, updateSearchTerms} from 'actions/vi
 import Avatar from 'fusion/components/avatar';
 import Icon from 'fusion/components/icon';
 import {Dialog} from 'fusion/components/layer';
+import {useDisplayName} from 'fusion/hooks/users';
+import {useSnippetCover} from 'fusion/messages/snippet';
 import {useWhen} from 'fusion/messages/time';
+import {scopeOfChannel} from 'fusion/profiles/community_profiles';
 import {useGlobalSearch} from 'fusion/shell/global_search_context';
 import ChannelIcon from 'fusion/sidebar/channel_icon';
 import {useConversationName} from 'fusion/sidebar/group_dm';
@@ -76,6 +79,24 @@ function Mark({text, q}: {text: string; q: string}) {
 // GlobalSearch is the Ctrl/⌘+K overlay: jump to a channel, a conversation or a person, or search every message.
 // ChannelTitle names a channel of the results: direct and group messages after their members (or the name given to
 // a group), which the raw channel doesn't have.
+// PersonName is someone's name as the community searched shows people (with their nickname there, as its admins chose
+// to show people), or as you show people when searching every community.
+function PersonName({user, teamId, q}: {user: UserProfile; teamId: string; q: string}) {
+    const name = useDisplayName(user, teamId);
+    return (
+        <Mark
+            text={name}
+            q={q}
+        />
+    );
+}
+
+// AuthorName is a message's author as the message's conversation shows them: its community's way, or yours in direct
+// and group messages.
+function AuthorName({user, channel}: {user: UserProfile; channel?: Channel}) {
+    return <>{useDisplayName(user, scopeOfChannel(channel) ?? '')}</>;
+}
+
 function ChannelTitle({channel, q}: {channel: Channel; q: string}) {
     const getChannel = useMemo(() => makeGetChannel(), []);
     const full = useSelector((state: GlobalState) => getChannel(state, channel.id)) || channel;
@@ -93,6 +114,7 @@ export default function GlobalSearch() {
     const dispatch = useDispatch();
     const search = useGlobalSearch();
     const when = useWhen();
+    const coverSnippet = useSnippetCover();
     const team = useSelector(getCurrentTeam);
     const me = useSelector(getCurrentUserId);
     const channels = useSelector(getAllChannels);
@@ -230,7 +252,6 @@ export default function GlobalSearch() {
         }
         if (r.kind === 'user') {
             const u = users[r.user.id] || r.user;
-            const name = [u.first_name, u.last_name].filter(Boolean).join(' ') || u.username;
             return (
                 <>
                     <Avatar
@@ -239,8 +260,9 @@ export default function GlobalSearch() {
                     />
                     <span style={{minWidth: 0}}>
                         <b>
-                            <Mark
-                                text={name}
+                            <PersonName
+                                user={u}
+                                teamId={searchTeamId}
                                 q={q}
                             />
                         </b>
@@ -263,7 +285,9 @@ export default function GlobalSearch() {
             const direct = channel && (channel.type === 'D' || channel.type === 'G');
             const where = channel ? (direct ? '' : '#') + channel.display_name : '';
 
-            // The snippet starts near the match, as the mockup's.
+            // The snippet starts near the match, as the mockup's; a spoiler's text, or the text of someone you ignore or
+            // block, stays hidden.
+            const cover = coverSnippet(r.post);
             const text = plainText(r.post.message, 2000);
             const at = text.toLowerCase().indexOf(q.toLowerCase());
             const snippet = at > 40 ? '…' + text.slice(at - 30, at + 130) : text.slice(0, 160);
@@ -272,7 +296,12 @@ export default function GlobalSearch() {
                     <Avatar userId={r.post.user_id}/>
                     <span style={{minWidth: 0}}>
                         <b>
-                            {author ? ([author.first_name, author.last_name].filter(Boolean).join(' ') || author.username) : ''}
+                            {author ? (
+                                <AuthorName
+                                    user={author}
+                                    channel={channel}
+                                />
+                            ) : ''}
                             <span
                                 className={am('sub')}
                                 style={{display: 'inline'}}
@@ -280,11 +309,13 @@ export default function GlobalSearch() {
                                 {' ' + formatMessage({id: 'fusion.gs.messageWhere', defaultMessage: 'in {where}'}, {where}) + (r.post.root_id ? ' · ' + formatMessage({id: 'fusion.gs.thread', defaultMessage: 'thread'}) : '') + ` · ${when(r.post.create_at)}`}
                             </span>
                         </b>
-                        <span className={am('sub')}>
-                            <Mark
-                                text={snippet}
-                                q={q}
-                            />
+                        <span className={am('sub', {'snip-cover': Boolean(cover)})}>
+                            {cover || (
+                                <Mark
+                                    text={snippet}
+                                    q={q}
+                                />
+                            )}
                         </span>
                     </span>
                     <span className={am('kind')}>{formatMessage({id: 'fusion.gs.kindMessage', defaultMessage: 'Message'})}</span>

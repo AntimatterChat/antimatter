@@ -15,3 +15,7 @@
 
 // The people you block or ignore, in the Privacy & safety settings.
 :is(.am-app, .am-layer) .am-person-row .am-av { flex: none; }
+
+// A message shown as a snippet (search results, the Unreads inbox, saved and pinned lists, link previews) whose text
+// stays hidden: a spoiler, or from someone you ignore or block (fusion/messages/snippet).
+:is(.am-app, .am-layer) .am-snip-cover { color: var(--am-muted); font-style: italic; }

@@ -29,6 +29,7 @@ import type {SearchFilterType} from 'components/search/types';
 import Icon from 'fusion/components/icon';
 import {useDisplayName, useUser} from 'fusion/hooks/users';
 import FileMenu from 'fusion/messages/content/file_menu';
+import {useSnippetCover} from 'fusion/messages/snippet';
 import {getThreadTitle} from 'fusion/messages/thread_title';
 import {useWhen} from 'fusion/messages/time';
 import {scopeOfChannel} from 'fusion/profiles/community_profiles';
@@ -58,6 +59,7 @@ function highlight(text: string, terms: string) {
 
 function Result({post, terms}: {post: Post; terms: string}) {
     const {formatMessage} = useIntl();
+    const cover = useSnippetCover()(post);
     const dispatch = useDispatch();
     const toast = useToast();
     const when = useWhen();
@@ -124,7 +126,7 @@ function Result({post, terms}: {post: Post; terms: string}) {
                     {[channel?.display_name, post.root_id && formatMessage({id: 'fusion.results.inThread', defaultMessage: 'thread'}), when(post.create_at)].filter(Boolean).join(' · ')}
                 </span>
                 <b>{name}</b>
-                <div>{highlight(plainText(post.message), terms)}</div>
+                <div>{cover ? <i className={am('snip-cover')}>{cover}</i> : highlight(plainText(post.message), terms)}</div>
             </button>
             <div className={am('result-tools')}>
                 {action(formatMessage({id: 'fusion.results.openThread', defaultMessage: 'Open the thread'}), 'thread', () => dispatch(selectPostFromRightHandSideSearch(post)))}
