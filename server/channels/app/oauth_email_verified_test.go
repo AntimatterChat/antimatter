@@ -67,6 +67,15 @@ func TestCreateOAuthUserUnverifiedEmailCannotJoinDomainRestrictedTeam(t *testing
 	einterfaces.RegisterOAuthProvider(model.ServiceOffice365, provider)
 	defer einterfaces.RegisterOAuthProvider(model.ServiceOffice365, previous)
 
+	// stored reads a user as the database has it: the store's cache doesn't follow UpdateAuthData.
+	stored := func(t *testing.T, userID string) *model.User {
+		t.Helper()
+		th.App.Srv().Store().User().InvalidateProfileCacheForUser(userID)
+		user, err := th.App.Srv().Store().User().Get(th.Context, userID)
+		require.NoError(t, err)
+		return user
+	}
+
 	signUp := func() (*model.User, bool, *model.AppError) {
 		return th.App.CreateOAuthUser(th.Context, model.ServiceOffice365, strings.NewReader("{}"), "", "", nil)
 	}
@@ -90,9 +99,7 @@ func TestCreateOAuthUserUnverifiedEmailCannotJoinDomainRestrictedTeam(t *testing
 		_, _, appErr := signUp()
 		require.NotNil(t, appErr)
 		assert.Equal(t, "api.user.oauth.email_unverified.app_error", appErr.Id)
-		stored, err := th.App.Srv().Store().User().Get(th.Context, victim.Id)
-		require.NoError(t, err)
-		assert.NotEqual(t, provider.authData, *stored.AuthData, "the account isn't linked to the other identity")
+		assert.NotEqual(t, provider.authData, model.SafeDereference(stored(t, victim.Id).AuthData), "the account isn't linked to the other identity")
 	})
 
 	t.Run("an existing account still signs in and keeps its address", func(t *testing.T) {
@@ -112,10 +119,9 @@ func TestCreateOAuthUserUnverifiedEmailCannotJoinDomainRestrictedTeam(t *testing
 		assert.Equal(t, user.Id, again.Id)
 
 		require.Nil(t, th.App.UpdateOAuthUserAttrs(th.Context, strings.NewReader("{}"), again, provider, model.ServiceOffice365, nil))
-		stored, err := th.App.Srv().Store().User().Get(th.Context, user.Id)
-		require.NoError(t, err)
-		assert.Equal(t, user.Email, stored.Email, "the unverified address doesn't replace the account's")
-		assert.NotContains(t, stored.Props, einterfaces.OAuthEmailUnverifiedProp)
+		after := stored(t, user.Id)
+		assert.Equal(t, user.Email, after.Email, "the unverified address doesn't replace the account's")
+		assert.NotContains(t, after.Props, einterfaces.OAuthEmailUnverifiedProp)
 	})
 
 	t.Run("switching to single sign-on doesn't take an unverified address", func(t *testing.T) {
@@ -124,9 +130,8 @@ func TestCreateOAuthUserUnverifiedEmailCannotJoinDomainRestrictedTeam(t *testing
 		_, appErr := th.App.CompleteSwitchWithOAuth(th.Context, model.ServiceOffice365, strings.NewReader("{}"), user.Email, nil)
 		require.NotNil(t, appErr)
 		assert.Equal(t, "api.user.oauth.email_unverified.app_error", appErr.Id)
-		stored, err := th.App.Srv().Store().User().Get(th.Context, user.Id)
-		require.NoError(t, err)
-		assert.Equal(t, user.Email, stored.Email)
-		assert.Empty(t, stored.AuthService)
+		after := stored(t, user.Id)
+		assert.Equal(t, user.Email, after.Email)
+		assert.Empty(t, after.AuthService)
 	})
 }
