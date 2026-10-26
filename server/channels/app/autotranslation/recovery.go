@@ -145,8 +145,13 @@ func (s *Service) recoverObject(rctx request.CTX, objectType, objectID string, r
 	}
 
 	channelID := ""
+	var locales map[string][]string
 	if post != nil {
 		channelID = post.ChannelId
+		// The events are keyed by the base language and the locales behind it, as every client looks them up.
+		if _, byLang, err := s.destinationLanguages(channelID); err == nil {
+			locales = byLang
+		}
 	}
 
 	if content == nil {
@@ -169,7 +174,7 @@ func (s *Service) recoverObject(rctx request.CTX, objectType, objectID string, r
 				mlog.String("object_id", objectID), mlog.String("lang", row.Lang), mlog.Err(err))
 			continue
 		}
-		s.publish(&task{objectType: objectType, objectID: objectID, channelID: channelID, content: &sourceContent{}}, row)
+		s.publish(&task{objectType: objectType, objectID: objectID, channelID: channelID, content: &sourceContent{}, locales: locales}, row)
 	}
 
 	if len(retry) == 0 {
@@ -200,10 +205,6 @@ func (s *Service) recoverObject(rctx request.CTX, objectType, objectID string, r
 	}
 	slices.Sort(langs)
 
-	_, locales, err := s.destinationLanguages(channelID)
-	if err != nil {
-		locales = nil
-	}
 	if err := s.pool.enqueue(&task{
 		objectType: objectType,
 		objectID:   objectID,
