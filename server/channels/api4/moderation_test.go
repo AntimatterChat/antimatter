@@ -297,3 +297,48 @@ func TestModeration(t *testing.T) {
 		}
 	})
 }
+
+// Every member sees who's timed out (their clients show it), but why and by whom only those who moderate the team.
+func TestGetTeamTimeoutsHidesReasonFromMembers(t *testing.T) {
+	mainHelper.Parallel(t)
+	th := Setup(t).InitBasic(t)
+	team := th.BasicTeam
+	target := th.CreateUser(t)
+	th.LinkUserToTeam(t, target, team)
+
+	data, err := json.Marshal(model.MemberTimeoutRequest{Until: model.GetMillis() + time.Hour.Milliseconds(), Reason: "private note about flooding"})
+	require.NoError(t, err)
+	resp, err := th.SystemAdminClient.DoAPIPut(context.Background(), "/teams/"+team.Id+"/members/"+target.Id+"/timeout", string(data))
+	require.NoError(t, err)
+	resp.Body.Close()
+
+	list := func(t *testing.T, client *model.Client4) []*model.MemberTimeout {
+		t.Helper()
+		resp, err := client.DoAPIGet(context.Background(), "/teams/"+team.Id+"/timeouts", "")
+		require.NoError(t, err)
+		defer resp.Body.Close()
+		var timeouts []*model.MemberTimeout
+		require.NoError(t, json.NewDecoder(resp.Body).Decode(&timeouts))
+		require.Len(t, timeouts, 1)
+		assert.Equal(t, target.Id, timeouts[0].UserId)
+		assert.NotZero(t, timeouts[0].Until)
+		return timeouts
+	}
+
+	t.Run("a member", func(t *testing.T) {
+		timeouts := list(t, th.Client)
+		assert.Empty(t, timeouts[0].Reason)
+		assert.Empty(t, timeouts[0].CreatedBy)
+	})
+
+	t.Run("a moderator", func(t *testing.T) {
+		timeouts := list(t, th.SystemAdminClient)
+		assert.Equal(t, "private note about flooding", timeouts[0].Reason)
+		assert.Equal(t, th.SystemAdminUser.Id, timeouts[0].CreatedBy)
+	})
+
+	t.Run("the member again: the cache isn't changed by the blanking", func(t *testing.T) {
+		assert.Empty(t, list(t, th.Client)[0].Reason)
+		assert.Equal(t, "private note about flooding", list(t, th.SystemAdminClient)[0].Reason)
+	})
+}
