@@ -105,14 +105,18 @@ export function resetCommunityAttributes() {
     changed();
 }
 
-// The cache is the signed-in user's: someone else's is dropped before it's read.
-function useOwner() {
-    const me = useSelector(getCurrentUserId);
+// adoptOwner makes the cache the signed-in user's: someone else's is dropped before it's read. Idempotent, so it can
+// run while drawing: it only changes anything the first time a new user is seen.
+function adoptOwner(me: string) {
     if (me !== owner) {
         communities.clear();
         owner = me;
         version++;
     }
+}
+
+function useOwner() {
+    adoptOwner(useSelector(getCurrentUserId));
 }
 
 function useVersion() {

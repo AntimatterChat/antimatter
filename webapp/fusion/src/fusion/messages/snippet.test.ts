@@ -21,7 +21,7 @@ describe('fusion/messages/snippet: coverOf', () => {
     test('leaves other messages, your own and deleted ones alone', () => {
         expect(coverOf({user_id: 'bob'}, 'me', lists, true)).toBe('');
         expect(coverOf({user_id: 'meh'}, 'meh', lists, true)).toBe('');
-        expect(coverOf({user_id: 'bob', props: {spoiler: true}, state: Posts.POST_DELETED}, 'me', lists, true)).toBe('');
+        expect(coverOf({user_id: 'bob', props: {spoiler: true}, state: Posts.POST_DELETED as 'DELETED'}, 'me', lists, true)).toBe('');
     });
 
     test('blocking turned off by the admin hides nothing for it', () => {

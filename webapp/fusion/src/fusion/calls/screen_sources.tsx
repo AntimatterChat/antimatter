@@ -103,6 +103,7 @@ export function ScreenSourceDialog({quality, onClose}: {quality?: CallsScreenQua
 
     useEffect(() => {
         let live = true;
+
         // On macOS, the sources can't be listed (or none come back) until the app may record the screen: say where
         // to allow it.
         const failed = () => {

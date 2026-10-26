@@ -88,7 +88,7 @@ describe('useMuteExpiry', () => {
     const start = () => {
         const store = configureStore<GlobalState>([])(() => current);
         const view = renderHook(() => useMuteExpiry(), {
-            wrapper: ({children}: {children: React.ReactNode}) => React.createElement(Provider, {store}, children),
+            wrapper: ({children}: {children: React.ReactNode}) => React.createElement(Provider, {store, children}),
         });
         return {store, view};
     };

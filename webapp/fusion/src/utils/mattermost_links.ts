@@ -37,7 +37,7 @@ function drawnByApp(el: Element): boolean {
         if (type && (typeof type === 'function' || typeof type === 'object') && type.amAppContent) {
             return true;
         }
-        fiber = fiber.return;
+        fiber = fiber.return ?? null;
     }
     return false;
 }

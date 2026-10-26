@@ -28,8 +28,7 @@ describe('utils/browser_info', () => {
     describe('getBrowserInfo', () => {
         const browserTestCases = [
             {
-                // compat-desktop #5: the upstream desktop app was labelled Antimatter's in problem reports.
-                name: 'Another desktop app (no Antimatter/ token)',
+                name: 'Another desktop app (no Antimatter/ token), not named Antimatter\'s (compat-desktop #5)',
                 userAgent: 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.6834.83 Electron/34.0.1 Safari/537.36 Mattermost/6.1.0',
                 expectedBrowser: 'Desktop App (other)',
                 expectedVersion: '6.1.0',

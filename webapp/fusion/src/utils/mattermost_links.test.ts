@@ -78,12 +78,15 @@ describe('mattermost links', () => {
     });
 
     test('an app\'s links and windows to mattermost.com work', () => {
+        // Apps' components are drawn inside one, as Pluggable does.
         const {unmount} = render(
-            // Apps' components are drawn inside one, as Pluggable does.
-            React.createElement(PluggableErrorBoundary, {pluginId: 'calls'},
-                React.createElement('a', {href: 'https://mattermost.com/pl/calls', id: 'app-link'}, 'Learn more'),
-                React.createElement('button', {id: 'app-button', onClick: () => window.open('https://docs.mattermost.com/calls')}, 'Help'),
-            ),
+            React.createElement(PluggableErrorBoundary, {
+                pluginId: 'calls',
+                children: React.createElement(React.Fragment, null,
+                    React.createElement('a', {href: 'https://mattermost.com/pl/calls', id: 'app-link'}, 'Learn more'),
+                    React.createElement('button', {id: 'app-button', onClick: () => window.open('https://docs.mattermost.com/calls')}, 'Help'),
+                ),
+            }),
         );
 
         expect(click(document.getElementById('app-link')!).defaultPrevented).toBe(false);

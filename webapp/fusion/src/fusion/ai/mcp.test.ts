@@ -95,6 +95,7 @@ describe('fusion/ai/mcp', () => {
         expect(draftFromMCPServer(saved({oauth_registered: true, oauth_client_id: 'registered'})).clientId).toBe('');
         expect(mcpPatchOf(draftFromMCPServer(saved({oauth_registered: true, oauth_client_id: 'registered'})), saved({oauth_registered: true, oauth_client_id: 'registered'}))).not.toHaveProperty('oauth_client_id');
     });
+
     // The server refuses a patch that moves a server without giving its saved headers and client secret again
     // (PatchAIMCPServer): the form asks for them, and never sends such a patch.
     describe('a new address asks for the saved headers and client secret again', () => {
