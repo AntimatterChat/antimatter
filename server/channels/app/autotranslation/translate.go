@@ -109,7 +109,7 @@ func (s *Service) Translate(ctx context.Context, objectType, objectID, channelID
 		if err := s.h.Store().AutoTranslation().Save(t); err != nil {
 			return nil, model.NewAppError("Translate", "ent.autotranslation.create_translation_failed", nil, "", http.StatusInternalServerError).Wrap(err)
 		}
-		t.UpdateAt = model.GetMillis()
+		// Save stamped t with the stored row's UpdateAt.
 		translations[lang] = t
 		if t.State == model.TranslationStateProcessing {
 			pending = append(pending, lang)
@@ -312,8 +312,7 @@ func (s *Service) translateOne(t *task, prov provider, provErr error, lang, srcL
 			mlog.String("object_id", t.objectID), mlog.String("lang", lang), mlog.Err(err))
 		return srcLang, srcConf
 	}
-	tr.UpdateAt = model.GetMillis()
-	s.publish(t, tr)
+	s.publish(t, tr) // with the stored row's UpdateAt, which Save stamped
 	return srcLang, srcConf
 }
 

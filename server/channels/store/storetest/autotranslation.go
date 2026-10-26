@@ -426,6 +426,24 @@ func testAutoTranslationGetAllForObject(t *testing.T, ss store.Store) {
 		assert.Equal(t, "bonjour", langToText["fr"])
 	})
 
+	t.Run("save stamps the stored row's time on the translation", func(t *testing.T) {
+		tr := &model.Translation{
+			ObjectID:   model.NewId(),
+			ObjectType: objectType,
+			Lang:       "it",
+			Provider:   "test",
+			Type:       model.TranslationTypeString,
+			Text:       "ciao",
+			State:      model.TranslationStateReady,
+		}
+		require.NoError(t, ss.AutoTranslation().Save(tr))
+		require.NotZero(t, tr.UpdateAt)
+		results, err := ss.AutoTranslation().GetAllForObject(objectType, tr.ObjectID)
+		require.NoError(t, err)
+		require.Len(t, results, 1)
+		assert.Equal(t, results[0].UpdateAt, tr.UpdateAt)
+	})
+
 	t.Run("does not return translations for other objects", func(t *testing.T) {
 		otherID := model.NewId()
 		err := ss.AutoTranslation().Save(&model.Translation{

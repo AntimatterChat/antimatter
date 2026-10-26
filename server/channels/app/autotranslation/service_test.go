@@ -443,3 +443,21 @@ func TestRecoverObject_ExpiredPublishIncludesUserLocales(t *testing.T) {
 	require.Contains(t, translations, "pt-BR", "the pt-BR clients see it too")
 	assert.Equal(t, "unavailable", translations["pt-BR"].(map[string]any)["state"])
 }
+
+// The translation Translate gives back carries the time of the row it saved, not a later one.
+func TestTranslateOne_ReturnedUpdateAtMatchesStoredRow(t *testing.T) {
+	lt := newFakeLibreTranslate(t, "")
+	env := newTestEnv(t, providerLibreTranslate, lt.URL)
+	require.NoError(t, env.svc.Start())
+	ch := setupChannel(env, model.ChannelTypeOpen, true)
+	author := model.NewId()
+	env.at.addMember(ch.Id, author, "en")
+
+	post := &model.Post{Id: model.NewId(), ChannelId: ch.Id, UserId: author, Message: englishMessage}
+	tr, appErr := env.svc.Translate(context.Background(), model.TranslationObjectTypePost, post.Id, ch.Id, author, post)
+	require.Nil(t, appErr)
+	require.NotNil(t, tr)
+	stored := env.at.get(model.TranslationObjectTypePost, post.Id, tr.Lang)
+	require.NotNil(t, stored)
+	assert.Equal(t, stored.UpdateAt, tr.UpdateAt)
+}
