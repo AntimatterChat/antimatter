@@ -291,7 +291,9 @@ function AudienceControls({my, withPopout}: Props) {
                     </button>
                 </>
             )}
-            {withPopout && !callPopout && (
+            {/* The pop-out shows the call this window runs: a call whose media is in the desktop app's own window
+                has its own expanded view there. */}
+            {withPopout && !callPopout && my.call.mediaInThisWindow && (
                 <button
                     className={am('round')}
                     title={labels.popout}
@@ -487,7 +489,9 @@ function SpeakerControls({my, withPopout = false}: Props) {
                     onClose={() => setMenu(null)}
                 />
             )}
-            {withPopout && !callPopout && (
+            {/* The pop-out shows the call this window runs: a call whose media is in the desktop app's own window
+                has its own expanded view there. */}
+            {withPopout && !callPopout && my.call.mediaInThisWindow && (
                 <button
                     className={am('round')}
                     title={labels.popout}

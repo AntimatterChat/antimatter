@@ -149,4 +149,37 @@ describe('components/external_link', () => {
         }
         expect(screen.queryByRole('link')).toBeNull();
     });
+
+    // compat-plugins #6: a message's card or link preview pointing at mattermost.com is what someone wrote, not
+    // Antimatter's UI: it stays a link, as given.
+    it('keeps a link to mattermost.com that is part of a message, without tracking parameters', () => {
+        renderWithContext(
+            <ExternalLink
+                location='fusion_card'
+                href='https://docs.mattermost.com/guide'
+                userContent={true}
+            >
+                {'Upstream docs'}
+            </ExternalLink>,
+            initialState,
+        );
+        const link = screen.getByRole('link', {name: 'Upstream docs'});
+        expect(link).toHaveAttribute('href', 'https://docs.mattermost.com/guide');
+        expect(link).not.toHaveAttribute('userContent');
+    });
+
+    it('still shows a link to mattermost.com in Antimatter\'s own UI as text', () => {
+        renderWithContext(
+            <ExternalLink
+                location='test'
+                href='https://docs.mattermost.com/guide'
+            >
+                {'Upstream docs'}
+            </ExternalLink>,
+            initialState,
+        );
+        expect(screen.queryByRole('link', {name: 'Upstream docs'})).not.toBeInTheDocument();
+        expect(screen.getByText('Upstream docs')).toBeInTheDocument();
+    });
 });
+

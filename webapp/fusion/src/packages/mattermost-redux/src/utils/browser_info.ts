@@ -7,9 +7,15 @@ export function getBrowserInfo() {
     let browser = 'Unknown';
     let browserVersion = 'Unknown';
 
-    // The desktop app first (its user agent ends with Antimatter/<version> Mattermost/<version>)
-    if (userAgent.includes('mattermost')) {
-        browser = 'Antimatter Desktop App';
+    // The desktop apps first. Antimatter's ends its user agent with Antimatter/<version> Mattermost/<version>; another
+    // desktop app for this server (the upstream one, say) has only the second: it's named as another desktop app,
+    // with its own version, so that a problem report doesn't send its reader looking at the wrong app.
+    const antimatter = userAgent.match(/antimatter\/(\d+(\.\d+)*)/i);
+    if (antimatter) {
+        return {browser: 'Antimatter Desktop App', browserVersion: antimatter[1]};
+    }
+    if (userAgent.includes('mattermost/')) {
+        browser = 'Desktop App (other)';
         const match = userAgent.match(/mattermost\/(\d+(\.\d+)*)/i);
 
         if (match && match[1]) {

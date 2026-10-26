@@ -489,10 +489,12 @@ export function autolinkAtMentions(text: string, tokens: Tokens): string {
 
 // Antimatter: dynamic timestamps, as Discord's <t:1700000000:R>, are shown in each reader's own time zone and
 // format: t short time, T long time, d short date, D long date, f date and time (the default), F with the
-// weekday, R relative ("3 hours ago"). Markdown has escaped their angle brackets by now.
+// weekday, R relative ("3 hours ago"). Markdown has escaped their angle brackets by now. They become spans that
+// messageHtmlToComponent turns into TimestampText, which knows the reader's language and time zone and keeps a
+// relative one up to date; the span's own text is only the fallback (the browser's language and zone).
 const TIMESTAMP_PATTERN = /&lt;t:(-?\d{1,13})(?::([tTdDfFR]))?&gt;/g;
 
-export function formatTimestamp(seconds: number, style = 'f', now = Date.now(), locale?: string): string {
+export function formatTimestamp(seconds: number, style = 'f', now = Date.now(), locale?: string, timeZone?: string): string {
     const date = new Date(seconds * 1000);
     if (isNaN(date.getTime())) {
         return '';
@@ -511,7 +513,13 @@ export function formatTimestamp(seconds: number, style = 'f', now = Date.now(), 
         f: {dateStyle: 'long', timeStyle: 'short'},
         F: {dateStyle: 'full', timeStyle: 'short'},
     };
-    return new Intl.DateTimeFormat(locale, formats[style] || formats.f).format(date);
+    const options = formats[style] || formats.f;
+    try {
+        return new Intl.DateTimeFormat(locale, timeZone ? {...options, timeZone} : options).format(date);
+    } catch {
+        // A time zone (or language) the browser doesn't know: its own.
+        return new Intl.DateTimeFormat(undefined, options).format(date);
+    }
 }
 
 function formatTimestamps(text: string, tokens: Tokens): string {
@@ -522,7 +530,7 @@ function formatTimestamps(text: string, tokens: Tokens): string {
         }
         const alias = `$MM_TIMESTAMP${tokens.size}$`;
         tokens.set(alias, {
-            value: `<span class="markdown__timestamp" title="${escapeHtml(formatTimestamp(Number(seconds), 'F'))}">${escapeHtml(shown)}</span>`,
+            value: `<span class="markdown__timestamp" data-timestamp="${Number(seconds)}" data-timestamp-style="${style || 'f'}" title="${escapeHtml(formatTimestamp(Number(seconds), 'F'))}">${escapeHtml(shown)}</span>`,
             originalText: match,
         });
         return alias;

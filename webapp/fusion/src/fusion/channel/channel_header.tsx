@@ -42,6 +42,7 @@ import type {PluginComponent, SearchButtonsComponent, SearchSuggestionsComponent
 
 import CallButton, {OtherCallProviders} from './call_button';
 import ChannelNameMenu from './channel_name_menu';
+import HeaderAppButtons from './header_app_buttons';
 import HeaderAppChips from './header_app_chips';
 import HeaderTopic from './header_topic';
 
@@ -446,6 +447,7 @@ export default function ChannelHeader({channel}: {channel: Channel}) {
             <div className={am('head-actions')}>
                 <CallButton channel={channel}/>
                 <OtherCallProviders channel={channel}/>
+                {!phone && <HeaderAppButtons/>}
                 {member && headerIcons.length > 0 && !phone && (
                     <span className={am('head-plugins')}>
                         {headerIcons.map((c) => {
@@ -530,6 +532,7 @@ export default function ChannelHeader({channel}: {channel: Channel}) {
                     label={formatMessage({id: 'fusion.header.more', defaultMessage: 'More'})}
                     onClose={() => setMore(false)}
                 >
+                    <HeaderAppButtons/>
                     {member && headerIcons.length > 0 && (
                         <span className={am('head-plugins')}>
                             {headerIcons.map((c) => {

@@ -321,6 +321,7 @@ function Card({post, attachment, hideActions}: {post?: Post; attachment: Message
                 className={am('card-title')}
                 href={attachment.title_link}
                 location='fusion_card'
+                userContent={true}
             >
                 {decodeHtmlEntities(attachment.title)}
             </ExternalLink>
@@ -371,6 +372,7 @@ function Card({post, attachment, hideActions}: {post?: Post; attachment: Message
                             className={am('card-author')}
                             href={attachment.author_link}
                             location='fusion_card'
+                            userContent={true}
                         >
                             {author}
                         </ExternalLink>

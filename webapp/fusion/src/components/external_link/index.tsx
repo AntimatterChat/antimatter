@@ -19,15 +19,21 @@ type Props = React.AnchorHTMLAttributes<HTMLAnchorElement> & {
     queryParams?: ExternalLinkQueryParams;
     location: string;
     children: React.ReactNode;
+
+    // Antimatter: the link is part of what someone wrote (a message's card or link preview), not of Antimatter's
+    // UI: it's kept as given, also to mattermost.com, without the tracking parameters added to those.
+    userContent?: boolean;
 };
 
 const linkOnlyProps = [
     'href', 'target', 'rel', 'onClick', 'queryParams', 'location', 'download', 'hrefLang', 'ping', 'referrerPolicy',
-    'type', 'media',
+    'type', 'media', 'userContent',
 ] as const;
 
 const ExternalLink = forwardRef<HTMLAnchorElement, Props>((props, ref) => {
-    const [href] = useExternalLink(props.href, props.location, props.queryParams);
+    const {userContent, ...anchorProps} = props;
+    const [rewritten] = useExternalLink(props.href, props.location, props.queryParams);
+    const href = userContent ? props.href : rewritten;
 
     const handleClick = (e: React.MouseEvent<HTMLElement>) => {
         if (typeof props.onClick === 'function') {
@@ -37,7 +43,7 @@ const ExternalLink = forwardRef<HTMLAnchorElement, Props>((props, ref) => {
 
     // Antimatter: no links to mattermost.com; their text stays, with the look the link had (class, style, title,
     // test id), so that a link preview card keeps its layout. What only makes sense on a link is left out.
-    if (isMattermostURL(href)) {
+    if (!userContent && isMattermostURL(href)) {
         const textProps = omit(props, linkOnlyProps);
         return (
             <span
@@ -51,7 +57,7 @@ const ExternalLink = forwardRef<HTMLAnchorElement, Props>((props, ref) => {
 
     return (
         <a
-            {...props}
+            {...anchorProps}
             ref={ref}
             target={props.target || '_blank'}
             rel={props.rel || 'noopener noreferrer'}

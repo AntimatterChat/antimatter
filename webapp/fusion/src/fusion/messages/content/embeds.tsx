@@ -24,6 +24,7 @@ import PostMessageView from 'components/post_view/post_message_view';
 import Avatar from 'fusion/components/avatar';
 import Icon from 'fusion/components/icon';
 import {useDisplayName} from 'fusion/hooks/users';
+import {useSnippetCover} from 'fusion/messages/snippet';
 import {am} from 'fusion/utils/class_names';
 import {getHistory} from 'utils/browser_history';
 import {PostTypes, Preferences} from 'utils/constants';
@@ -66,6 +67,7 @@ export function OpenGraph({post, link}: {post: Post; link: string}) {
                     className={am('title')}
                     href={makeUrlSafe(og.url || link)}
                     location='fusion_opengraph'
+                    userContent={true}
                 >
                     {title}
                 </ExternalLink>
@@ -126,6 +128,7 @@ export function YouTube({post, link}: {post: Post; link: string}) {
                 className={am('e-title')}
                 href={link}
                 location='fusion_youtube'
+                userContent={true}
             >
                 {title}
             </ExternalLink>
@@ -175,6 +178,9 @@ export function Permalink({data}: {data: PostPreviewMetadata}) {
     const preview = data.post;
     const user = useSelector((state: GlobalState) => (preview ? getUser(state, preview.user_id) : undefined));
     const name = useDisplayName(user);
+
+    // A linked spoiler, or a message from someone you ignore or block, keeps its text hidden here too: Jump opens it.
+    const cover = useSnippetCover()(preview);
     if (!preview) {
         return null;
     }
@@ -214,18 +220,34 @@ export function Permalink({data}: {data: PostPreviewMetadata}) {
                     {intl.formatMessage({id: 'fusion.embed.jump', defaultMessage: 'Jump'})}
                 </button>
             </span>
-            <span className={am('ptext')}>
-                <PostMessageView
-                    post={preview}
-                    isRHS={false}
-                    isChannelAutotranslated={false}
-                    userLanguage={intl.locale}
-                    disableInteractions={true}
-                    showPostEditedIndicator={false}
-                />
-            </span>
+            {cover ? <span className={am('ptext', 'snip-cover')}>{cover}</span> : (
+                <span className={am('ptext')}>
+                    <PostMessageView
+                        post={preview}
+                        isRHS={false}
+                        isChannelAutotranslated={false}
+                        userLanguage={intl.locale}
+                        disableInteractions={true}
+                        showPostEditedIndicator={false}
+                    />
+                </span>
+            )}
         </div>
     );
+}
+
+// imageNameOf names a linked image after the last segment of its address, decoded. A malformed escape (a%E0%A4.png)
+// keeps the segment as written: decodeURIComponent throws on it, and a throw while drawing a message would take the
+// whole conversation down for everyone who opens it.
+export function imageNameOf(link: string): string {
+    const segment = link.split(/[?#]/)[0].split('/').pop() || '';
+    let name = segment;
+    try {
+        name = decodeURIComponent(segment);
+    } catch {
+        // As written.
+    }
+    return name || link;
 }
 
 // InlineImage is an image linked in a message: a .img-att tile that opens the lightbox.
@@ -233,7 +255,7 @@ export function InlineImage({post, link}: {post: Post; link: string}) {
     const {formatMessage} = useIntl();
     const [lightbox, openImage] = useLightbox();
     const meta = post.metadata?.images?.[link];
-    const name = decodeURIComponent(link.split(/[?#]/)[0].split('/').pop() || '') || link;
+    const name = imageNameOf(link);
 
     return (
         <ExternalImage

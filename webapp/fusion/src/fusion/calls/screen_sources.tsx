@@ -5,6 +5,7 @@ import React, {useEffect, useState, useSyncExternalStore} from 'react';
 import {useIntl} from 'react-intl';
 
 import type {DesktopCaptureSource} from '@mattermost/desktop-api';
+import {isMac} from '@mattermost/shared/utils/user_agent';
 
 import Icon from 'fusion/components/icon';
 import {Dialog} from 'fusion/components/layer';
@@ -102,9 +103,11 @@ export function ScreenSourceDialog({quality, onClose}: {quality?: CallsScreenQua
 
     useEffect(() => {
         let live = true;
+        // On macOS, the sources can't be listed (or none come back) until the app may record the screen: say where
+        // to allow it.
         const failed = () => {
             if (live) {
-                showToast(formatMessage({id: 'fusion.calls.sources.failed', defaultMessage: 'The screens and windows to share couldn\'t be listed'}));
+                showToast(isMac() ? formatMessage({id: 'fusion.calls.sources.macPermission', defaultMessage: 'Allow screen recording for the app in System Settings › Privacy & Security › Screen & System Audio Recording, then try again.'}) : formatMessage({id: 'fusion.calls.sources.failed', defaultMessage: 'The screens and windows to share couldn\'t be listed'}));
                 onClose();
             }
         };

@@ -28,16 +28,23 @@ describe('utils/browser_info', () => {
     describe('getBrowserInfo', () => {
         const browserTestCases = [
             {
-                name: 'Desktop app (Mattermost user agent)',
-                userAgent: 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.6834.83 Electron/34.0.1 Safari/537.36 Mattermost/34.0.1',
-                expectedBrowser: 'Antimatter Desktop App',
-                expectedVersion: '34.0.1',
+                // compat-desktop #5: the upstream desktop app was labelled Antimatter's in problem reports.
+                name: 'Another desktop app (no Antimatter/ token)',
+                userAgent: 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.6834.83 Electron/34.0.1 Safari/537.36 Mattermost/6.1.0',
+                expectedBrowser: 'Desktop App (other)',
+                expectedVersion: '6.1.0',
             },
             {
                 name: 'Antimatter desktop app',
                 userAgent: 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.6834.83 Electron/34.0.1 Safari/537.36 Antimatter/0.9.2 Mattermost/0.9.2',
                 expectedBrowser: 'Antimatter Desktop App',
                 expectedVersion: '0.9.2',
+            },
+            {
+                name: 'Antimatter desktop app, its own version when the two differ',
+                userAgent: 'Mozilla/5.0 (Windows NT 10.0) Chrome/132.0.6834.83 Electron/34.0.1 Safari/537.36 Antimatter/0.9.3 Mattermost/6.1.0',
+                expectedBrowser: 'Antimatter Desktop App',
+                expectedVersion: '0.9.3',
             },
             {
                 name: 'Edge (Legacy)',

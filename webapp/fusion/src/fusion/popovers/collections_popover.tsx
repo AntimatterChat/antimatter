@@ -26,6 +26,7 @@ import Icon from 'fusion/components/icon';
 import type {IconName} from 'fusion/components/icon';
 import {Popover} from 'fusion/components/layer';
 import {useDisplayName, useUser} from 'fusion/hooks/users';
+import {useSnippetCover} from 'fusion/messages/snippet';
 import {useWhen} from 'fusion/messages/time';
 import {useDialogs} from 'fusion/shell/dialogs_context';
 import {useToast} from 'fusion/shell/toast_context';
@@ -104,6 +105,7 @@ function Row({item, channels, thread, onOpen}: {item: Item; channels: Record<str
     const when = useWhen();
     const user = useUser(item.post.user_id);
     const name = useDisplayName(user);
+    const cover = useSnippetCover()(item.post);
     const channel = channels[item.post.channel_id];
     const where = channel ? (channel.type === 'O' || channel.type === 'P' ? '#' : '') + channel.display_name : '';
     return (
@@ -117,7 +119,7 @@ function Row({item, channels, thread, onOpen}: {item: Item; channels: Record<str
                     {thread ? <Icon name='thread'/> : <span className={am('who')}>{name}</span>}
                     {thread ? formatMessage({id: 'fusion.collections.threadIn', defaultMessage: 'Thread · {where}'}, {where}) : `${where} · ${when(item.post.create_at)}`}
                 </span>
-                <span className={am('snip')}>{item.post.message}</span>
+                <span className={am('snip', {'snip-cover': Boolean(cover)})}>{cover || item.post.message}</span>
                 {thread && (
                     <span className={am('where')}>
                         {formatMessage({id: 'fusion.collections.replies', defaultMessage: '{count, plural, one {# reply} other {# replies}}'}, {count: item.replies || 0})}

@@ -83,3 +83,34 @@ describe('fusion/rhs/ResultsPanel: forum hits', () => {
         expect(screen.getByText('Hold the reset switch for 5 seconds.')).toBeInTheDocument();
     });
 });
+
+// sec-fusion #5: search results showed a spoiler's text, and the text of someone you ignore or block.
+describe('fusion/rhs/ResultsPanel: hidden text', () => {
+    const channel = {id: 'c1', team_id: 'team', type: 'O', name: 'town', display_name: 'Town', delete_at: 0};
+    const spoiler = {id: 's1', channel_id: 'c1', root_id: '', user_id: 'ada', message: 'The ending: everyone was a ghost', create_at: 0, props: {spoiler: true}, metadata: {}};
+    const fromBlocked = {id: 'b1', channel_id: 'c1', root_id: '', user_id: 'eve', message: 'eve says hi', create_at: 1, props: {}, metadata: {}};
+    const plain = {id: 'p1', channel_id: 'c1', root_id: '', user_id: 'ada', message: 'plain words', create_at: 2, props: {}, metadata: {}};
+
+    test('shows placeholders instead of their text', () => {
+        renderWithContext(
+            <ResultsPanel rhsState={RHSStates.SEARCH}/>,
+            {
+                views: {rhs: {rhsState: RHSStates.SEARCH, searchType: 'messages'}},
+                entities: {
+                    general: {config: {}},
+                    users: {currentUserId: 'me', profiles: {ada: {id: 'ada', username: 'ada'}, eve: {id: 'eve', username: 'eve'}}},
+                    teams: {currentTeamId: 'team', teams: {team: {id: 'team', name: 'lumen-labs', display_name: 'Lumen Labs', delete_at: 0}}},
+                    channels: {channels: {c1: channel}},
+                    posts: {posts: {s1: spoiler, b1: fromBlocked, p1: plain}},
+                    search: {results: ['p1', 'b1', 's1']},
+                    preferences: {myPreferences: {'user_block--eve': {category: 'user_block', name: 'eve', value: 'block', user_id: 'me'}}},
+                },
+            } as never,
+        );
+        expect(screen.getByText('plain words')).toBeInTheDocument();
+        expect(screen.getByText('Spoiler')).toBeInTheDocument();
+        expect(screen.getByText('Message from someone you blocked')).toBeInTheDocument();
+        expect(document.body.textContent).not.toContain('everyone was a ghost');
+        expect(document.body.textContent).not.toContain('eve says hi');
+    });
+});

@@ -3,6 +3,8 @@
 
 import React from 'react';
 
+import {isMac} from '@mattermost/shared/utils/user_agent';
+
 import {LAYER_ID} from 'fusion/components/layer/layer';
 import {act, renderWithContext, screen, userEvent, waitFor} from 'tests/react_testing_utils';
 
@@ -11,6 +13,15 @@ import {screenPicker} from './screen_picker';
 import {groupSources, ScreenSourcePicker, startScreenShare} from './screen_sources';
 
 jest.mock('./screen_picker', () => ({screenPicker: jest.fn()}));
+jest.mock('@mattermost/shared/utils/user_agent', () => ({
+    ...jest.requireActual('@mattermost/shared/utils/user_agent'),
+    isMac: jest.fn(() => false),
+}));
+const mockShowToast = jest.fn();
+jest.mock('fusion/components/toast', () => ({
+    ...jest.requireActual('fusion/components/toast'),
+    showToast: (text: string) => mockShowToast(text),
+}));
 
 const SOURCES = [
     {id: 'window:7:0', name: 'Notes — a window with a very long title that does not fit under its thumbnail', thumbnailURL: 'data:image/png;base64,AA'},
@@ -36,6 +47,8 @@ describe('fusion/calls/screen_sources', () => {
         layer.id = LAYER_ID;
         document.body.append(layer);
         getDesktopSources = jest.fn(() => Promise.resolve(SOURCES));
+        jest.mocked(isMac).mockReturnValue(false);
+        mockShowToast.mockClear();
         window.desktopAPI = {getDesktopSources};
     });
     afterEach(() => {
@@ -113,4 +126,31 @@ describe('fusion/calls/screen_sources', () => {
 
         await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
     });
+
+    test('elsewhere than macOS, a failure says so plainly', async () => {
+        jest.mocked(screenPicker).mockReturnValue('desktop');
+        mockCalls();
+        getDesktopSources.mockReturnValue(Promise.reject(new Error('failed')));
+        renderWithContext(<ScreenSourcePicker/>);
+        act(() => startScreenShare());
+
+        await waitFor(() => expect(mockShowToast).toHaveBeenCalledWith('The screens and windows to share couldn\'t be listed'));
+    });
+
+    // On macOS the desktop app can't list screens until it's allowed to record them: say where to allow it.
+    test.each([
+        ['the listing fails', () => Promise.reject(new Error('permissions denied'))],
+        ['nothing is listed', () => Promise.resolve([])],
+    ])('on macOS, when %s, the hint says how to allow screen recording', async (_, answer) => {
+        jest.mocked(isMac).mockReturnValue(true);
+        jest.mocked(screenPicker).mockReturnValue('desktop');
+        mockCalls();
+        getDesktopSources.mockImplementation(answer);
+        renderWithContext(<ScreenSourcePicker/>);
+        act(() => startScreenShare());
+
+        await waitFor(() => expect(mockShowToast).toHaveBeenCalledWith('Allow screen recording for the app in System Settings › Privacy & Security › Screen & System Audio Recording, then try again.'));
+        expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    });
 });
+

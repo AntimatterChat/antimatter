@@ -24215,6 +24215,10 @@
     "defaultMessage": "Looking for screens and windows…",
     "description": ""
   },
+  "fusion.calls.sources.macPermission": {
+    "defaultMessage": "Allow screen recording for the app in System Settings › Privacy & Security › Screen & System Audio Recording, then try again.",
+    "description": "Notice shown on macOS when the desktop app can't list the screens and windows to share in a call (screen recording not allowed yet). 'System Settings › Privacy & Security › Screen & System Audio Recording' is the macOS settings path: use the names macOS shows in the target language."
+  },
   "fusion.calls.sources.screens": {
     "defaultMessage": "Screens",
     "description": ""
@@ -26254,6 +26258,22 @@
   "fusion.embed.show": {
     "defaultMessage": "Show preview",
     "description": ""
+  },
+  "fusion.error.message": {
+    "defaultMessage": "This message can't be shown.",
+    "description": "Shown in place of a message that failed to display (for example because of a malformed link); the rest of the conversation keeps working."
+  },
+  "fusion.error.page": {
+    "defaultMessage": "Something went wrong.",
+    "description": "Heading of the full-window page shown when the app's interface failed to display."
+  },
+  "fusion.error.pageHint": {
+    "defaultMessage": "This page couldn't be shown. Reloading usually fixes it.",
+    "description": "Text under 'Something went wrong.' on the full-window error page, above the Reload button."
+  },
+  "fusion.error.reload": {
+    "defaultMessage": "Reload",
+    "description": "Button on the full-window error page: reloads the page."
   },
   "fusion.files.archived": {
     "defaultMessage": "This file is archived",
@@ -31862,6 +31882,14 @@
   "fusion.unreads.markReadLabel": {
     "defaultMessage": "Mark {name} as read",
     "description": "Accessible label of the Unreads view's per-conversation \"Mark read\" button; {name} is the conversation."
+  },
+  "fusion.unreads.more": {
+    "defaultMessage": "{count, plural, one {# earlier message} other {# earlier messages}}",
+    "description": "Unreads inbox: above the newest messages of a conversation, counts its new messages not shown there."
+  },
+  "fusion.unreads.read": {
+    "defaultMessage": "Read",
+    "description": "Unreads inbox: shown in place of the 'Mark read' button on a conversation read during this visit (it stays in the list until the page is left)."
   },
   "fusion.unreads.title": {
     "defaultMessage": "Unreads",

@@ -2,17 +2,23 @@
 // See LICENSE.txt for license information.
 
 import {useEffect, useSyncExternalStore} from 'react';
+import {useSelector} from 'react-redux';
 
 import type {WebSocketMessage} from '@mattermost/client';
 import type {CommunityAttributeField, CommunityAttributeFieldPatch, UserAttributeValue} from '@mattermost/types/properties_user';
 
 import {Client4} from 'mattermost-redux/client';
+import {getCurrentUserId} from 'mattermost-redux/selectors/entities/users';
 
 import webSocketClient from 'client/web_websocket_client';
 
 // A community's attributes (the user attributes its admins define, as "Subcontractor" or "Site") and the values of
 // the members the UI showed, as the server lets this person see them. They're kept here rather than in Redux; when the
 // server says they changed, they're marked stale (and still shown) until whoever shows them has asked again.
+//
+// What a person may see differs (the admin-only attributes): the cache belongs to the user signed in, and is dropped
+// when another one is (signing out doesn't reload the page). After the connection comes back, everything is stale:
+// the events missed meanwhile are lost.
 
 export type AttributeValues = Record<string, UserAttributeValue>;
 
@@ -31,6 +37,7 @@ const communities = new Map<string, Community>();
 const listeners = new Set<() => void>();
 let version = 0;
 let listening = false;
+let owner: string | undefined;
 
 const EVENT = 'community_attributes_updated';
 const BATCH = 200;
@@ -74,10 +81,16 @@ function markStale(c: Community) {
     c.values.forEach((_, id) => c.stale.add(id));
 }
 
+function onReconnect() {
+    communities.forEach(markStale);
+    changed();
+}
+
 function subscribe(listener: () => void) {
     if (!listening) {
         listening = true;
         webSocketClient.addMessageListener(onMessage);
+        webSocketClient.addReconnectListener(onReconnect);
     }
     listeners.add(listener);
     return () => {
@@ -85,7 +98,25 @@ function subscribe(listener: () => void) {
     };
 }
 
+// resetCommunityAttributes forgets everything loaded (sign-out, another user signed in).
+export function resetCommunityAttributes() {
+    communities.clear();
+    owner = undefined;
+    changed();
+}
+
+// The cache is the signed-in user's: someone else's is dropped before it's read.
+function useOwner() {
+    const me = useSelector(getCurrentUserId);
+    if (me !== owner) {
+        communities.clear();
+        owner = me;
+        version++;
+    }
+}
+
 function useVersion() {
+    useOwner();
     return useSyncExternalStore(subscribe, () => version);
 }
 

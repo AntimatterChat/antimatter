@@ -34,6 +34,10 @@ const WrapperDiv = styled.div`
 `;
 
 export default class PluggableErrorBoundary extends React.PureComponent<Props, State> {
+    // Antimatter: what's drawn inside is an app's, which Antimatter's own rules for its UI leave alone (see
+    // utils/mattermost_links).
+    static amAppContent = true;
+
     state = {
         hasError: false,
     };

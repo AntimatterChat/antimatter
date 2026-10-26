@@ -15,13 +15,15 @@ import {isCollapsedThreadsEnabled} from 'mattermost-redux/selectors/entities/pre
 import {getCurrentUserId} from 'mattermost-redux/selectors/entities/users';
 
 import {useDisplayPrefs} from 'fusion/hooks/display';
+import {coverOf} from 'fusion/messages/snippet';
 import {isSpoiler} from 'fusion/messages/spoiler';
+import {getBlockLists, isUserBlockingEnabled} from 'fusion/privacy/blocking';
 import {plainText} from 'fusion/utils/plain_text';
 import {isSystemMessage} from 'utils/post_utils';
 
 import type {GlobalState} from 'types/store';
 
-type Last = {at: number; text: string; mine: boolean; spoiler?: boolean};
+type Last = {at: number; text: string; mine: boolean; spoiler?: boolean; userId?: string};
 
 // The last message of conversations whose messages aren't loaded, fetched once per new message. Mattermost has no
 // bulk API for it, so the home list asks a few at a time, newest conversations first.
@@ -49,10 +51,10 @@ function describe(post: Post | undefined, me: string, at: number): Last | null {
     }
     const files = post.file_ids?.length || post.metadata?.files?.length || 0;
     if (isSpoiler(post)) {
-        return {at, text: '', mine: post.user_id === me, spoiler: true};
+        return {at, text: '', mine: post.user_id === me, spoiler: true, userId: post.user_id};
     }
     const text = plainText(post.message, 120) || (files ? '📎' : '');
-    return {at, text, mine: post.user_id === me};
+    return {at, text, mine: post.user_id === me, userId: post.user_id};
 }
 
 // useLastMessage gives the second line of a conversation in the home list: its last message, as in the mockup.
@@ -61,6 +63,10 @@ export function useLastMessage(channel: Channel): string {
     const me = useSelector(getCurrentUserId);
     const crt = useSelector(isCollapsedThreadsEnabled);
     const {streamer} = useDisplayPrefs();
+
+    // The messages of someone you ignore or block fold in the conversation: their text stays out of the list too.
+    const blocked = useSelector(getBlockLists);
+    const blockingEnabled = useSelector(isUserBlockingEnabled);
 
     // From the store when the conversation's messages are loaded.
     const loaded = useSelector((state: GlobalState) => {
@@ -114,6 +120,9 @@ export function useLastMessage(channel: Channel): string {
 
     // Streamer mode keeps conversations' messages off the screen.
     if (streamer) {
+        return '';
+    }
+    if (last?.userId && coverOf({user_id: last.userId}, me, blocked, blockingEnabled)) {
         return '';
     }
     const text = last?.spoiler ? formatMessage({id: 'fusion.home.spoiler', defaultMessage: 'Spoiler'}) : last?.text;

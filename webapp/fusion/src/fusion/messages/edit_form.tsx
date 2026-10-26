@@ -7,6 +7,7 @@ import {useDispatch} from 'react-redux';
 
 import type {Post} from '@mattermost/types/posts';
 
+import {runMessageWillBeUpdatedHooks} from 'actions/hooks';
 import {unsetEditingPost} from 'actions/post_actions';
 import {editPost} from 'actions/views/posts';
 
@@ -58,7 +59,17 @@ export default function EditForm({post}: Props) {
             return;
         }
         setSaving(true);
-        const result = await dispatch(editPost({...post, message}));
+
+        // Apps see the edit first, as in the classic web app (registerMessageWillBeUpdatedHook): they can change it
+        // (an encrypting app, say) or refuse it.
+        const hooked = await dispatch(runMessageWillBeUpdatedHooks({message, id: post.id, channel_id: post.channel_id}, post));
+        if (!hooked || 'error' in hooked || !hooked.data) {
+            setSaving(false);
+            const hookError = hooked && 'error' in hooked ? (hooked.error as {message?: string} | undefined) : undefined;
+            setError(hookError?.message || formatMessage({id: 'fusion.edit.failed', defaultMessage: 'The message could not be saved.'}));
+            return;
+        }
+        const result = await dispatch(editPost({...post, ...hooked.data} as Post));
         setSaving(false);
         if (result && 'error' in result && result.error) {
             setError(result.error.message || formatMessage({id: 'fusion.edit.failed', defaultMessage: 'The message could not be saved.'}));

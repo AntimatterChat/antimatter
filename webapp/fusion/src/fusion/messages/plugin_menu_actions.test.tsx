@@ -227,4 +227,37 @@ describe('fusion/messages/PluginMenuActions', () => {
             expect(fetchMock).not.toHaveBeenCalled();
         });
     });
+
+    // compat-plugins #7: registerPostDropdownMenuComponent (deprecated, still in the API) stores its entry as a
+    // PostDropdownMenuItem component, which the Fusion menu didn't draw: older apps lost their message-menu entry.
+    test('draws the entries older apps draw themselves, given the message, and closes the menu once chosen', async () => {
+        const clicked = jest.fn();
+        function OldEntry({postId}: {postId: string}) {
+            return (
+                <li role='none'>
+                    <button
+                        type='button'
+                        role='menuitem'
+                        onClick={() => clicked(postId)}
+                    >
+                        {'Copy to Jira'}
+                    </button>
+                </li>
+            );
+        }
+        const onDone = render([], {plugins: {components: {PostDropdownMenuItem: [{id: 'c1', pluginId: 'jira', text: 'Copy to Jira', component: OldEntry}]}}});
+
+        const menu = screen.getByRole('menu', {name: 'More message actions'});
+        await userEvent.click(within(menu).getByRole('menuitem', {name: 'Copy to Jira'}));
+        expect(clicked).toHaveBeenCalledWith('post1');
+        expect(onDone).toHaveBeenCalled();
+    });
+
+    test('with only such an entry, the More actions flyout still shows', () => {
+        const Entry = () => <button type='button'>{'Old entry'}</button>;
+        render([], {plugins: {components: {PostDropdownMenuItem: [{id: 'c1', pluginId: 'old', text: 'Old entry', component: Entry}]}}});
+        expect(screen.getByRole('menuitem', {name: 'More actions'})).toBeInTheDocument();
+        expect(screen.getByText('Old entry')).toBeInTheDocument();
+    });
 });
+

@@ -284,4 +284,31 @@ describe('fusion/calls/controls CallControls', () => {
         expect(screen.getByRole('button', {name: 'Camera'})).toBeInTheDocument();
         expect(screen.getByRole('button', {name: 'Raise hand'})).toBeInTheDocument();
     });
+
+    // The pop-out shows the call this window runs: a call whose media is in the desktop app's call widget has its own
+    // expanded view there, and a pop-out of it here would show nothing to talk with.
+    test.each([
+        ['speaker', {}],
+        ['stage audience', {audience: true}],
+    ])('as a %s, the pop-out is offered only for a call run in this window', (_, extra) => {
+        mockCalls();
+        const here = renderWithContext(
+            <CallControls
+                my={myCall(extra as Partial<MyCallState>)}
+                withPopout={true}
+            />,
+        );
+        expect(screen.getByRole('button', {name: 'Open the call in a new window'})).toBeInTheDocument();
+        here.unmount();
+
+        renderWithContext(
+            <CallControls
+                my={myCall({...(extra as Partial<MyCallState>), call: {channelId: 'channel1', mediaInThisWindow: false} as MyCallState['call']})}
+                withPopout={true}
+            />,
+        );
+        expect(screen.queryByRole('button', {name: 'Open the call in a new window'})).not.toBeInTheDocument();
+        expect(screen.getByRole('button', {name: 'Disconnect'})).toBeInTheDocument();
+    });
 });
+

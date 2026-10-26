@@ -14,15 +14,17 @@ import Icon from 'fusion/components/icon';
 import {Flyout, MenuHeading, MenuSeparator} from 'fusion/components/menu';
 import {useToast} from 'fusion/shell/toast_context';
 import {am} from 'fusion/utils/class_names';
+import Pluggable from 'plugins/pluggable';
 import {getImageSrc, isSystemMessage} from 'utils/post_utils';
 
 import type {GlobalState} from 'types/store';
-import type {PostDropdownMenuAction} from 'types/store/plugins';
+import type {PostDropdownMenuAction, PostDropdownMenuItemComponent} from 'types/store/plugins';
 
 import {messageActionIconSrc, MessageActionError, runMessageAction, useMessageActions} from './message_actions';
 import type {MessageAction} from './message_actions';
 
 const NO_ACTIONS: PostDropdownMenuAction[] = [];
+const NO_COMPONENTS: PostDropdownMenuItemComponent[] = [];
 
 type Props = {
     post: Post;
@@ -41,9 +43,11 @@ function canSendToIntegrations(post: Post): boolean {
 }
 
 // usePluginMenuActions are the actions apps and integrations add to the message: the apps' single actions, their
-// submenus (with their entries), and the integrations' message actions.
+// submenus (with their entries), the integrations' message actions, and the entries older apps draw themselves
+// (registerPostDropdownMenuComponent, deprecated but still in the API).
 export function usePluginMenuActions(post: Post) {
     const all = useSelector((state: GlobalState) => state.plugins.components.PostDropdownMenu) || NO_ACTIONS;
+    const components = useSelector((state: GlobalState) => state.plugins.components.PostDropdownMenuItem) || NO_COMPONENTS;
     const outgoingWebhooks = useSelector((state: GlobalState) => getConfig(state).EnableOutgoingWebhooks === 'true');
     const integrations = useMessageActions(post.channel_id, outgoingWebhooks && canSendToIntegrations(post));
     const shown = (a: PostDropdownMenuAction) => !a.filter || a.filter(post.id);
@@ -53,7 +57,8 @@ export function usePluginMenuActions(post: Post) {
         filter((a) => a.subMenu?.length).
         map((group) => ({group, items: (group.subMenu || []).filter(shown)})).
         filter(({items}) => items.length > 0);
-    return {single, groups, integrations, any: single.length > 0 || groups.length > 0 || integrations.length > 0};
+    const drawn = canSendToIntegrations(post) ? components : NO_COMPONENTS;
+    return {single, groups, integrations, components: drawn, any: single.length > 0 || groups.length > 0 || integrations.length > 0 || drawn.length > 0};
 }
 
 // ActionLabel is an app's text for its action. Apps that draw their own icon in it (Playbooks, GitHub, the AI chat)
@@ -107,7 +112,7 @@ function IntegrationIcon({action}: {action: MessageAction}) {
 export default function PluginMenuActions({post, label, menuLabel, run}: Props) {
     const {formatMessage} = useIntl();
     const toast = useToast();
-    const {single, groups, integrations, any} = usePluginMenuActions(post);
+    const {single, groups, integrations, components, any} = usePluginMenuActions(post);
 
     if (!any) {
         return null;
@@ -168,6 +173,24 @@ export default function PluginMenuActions({post, label, menuLabel, run}: Props) 
                             <span className={am('mi-label')}>{action.display_name}</span>
                         </button>
                     ))}
+                </>
+            )}
+
+            {/* Entries older apps draw themselves (registerPostDropdownMenuComponent), last, as in the classic menu:
+                choosing one closes the menu once the app has handled it. */}
+            {components.length > 0 && (
+                <>
+                    {(single.length > 0 || groups.length > 0 || integrations.length > 0) && <MenuSeparator/>}
+                    <div
+                        className={am('mi-components')}
+                        role='none'
+                        onClick={run(() => {})}
+                    >
+                        <Pluggable
+                            pluggableName='PostDropdownMenuItem'
+                            postId={post.id}
+                        />
+                    </div>
                 </>
             )}
         </Flyout>

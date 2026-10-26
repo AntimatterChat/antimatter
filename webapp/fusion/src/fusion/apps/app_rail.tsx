@@ -42,7 +42,9 @@ export function PanelAppIcon({pluginId}: {pluginId: string}) {
     );
 }
 
-function AppIcon({component}: {component: AppComponent}) {
+// AppIcon is an app's button: in the app rail, or in the chat header when the app bar is turned off (Antimatter keeps
+// the upstream DisableAppBar setting), where apps' header buttons then go, as in the classic web app.
+export function AppIcon({component, inHeader = false}: {component: AppComponent; inHeader?: boolean}) {
     const channel = useSelector(getCurrentChannel);
     const member = useSelector(getMyCurrentChannelMembership);
     const active = useSelector(getActiveRhsComponent);
@@ -57,7 +59,7 @@ function AppIcon({component}: {component: AppComponent}) {
 
     return (
         <button
-            className={am('app-ic', known?.tone, {on})}
+            className={am(inHeader ? 'icon-btn' : 'app-ic', known?.tone, {on})}
             title={label}
             aria-label={label}
             aria-pressed={on}
