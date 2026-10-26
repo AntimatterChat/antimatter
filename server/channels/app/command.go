@@ -769,7 +769,7 @@ func (a *App) CreateCommand(cmd *model.Command) (*model.Command, *model.AppError
 func (a *App) createCommand(cmd *model.Command) (*model.Command, *model.AppError) {
 	cmd.Trigger = strings.ToLower(cmd.Trigger)
 
-	if appErr := a.validateCommandTriggerUniqueness(cmd.TeamId, cmd.Trigger, ""); appErr != nil {
+	if appErr := a.validateCommandTriggerUniqueness(cmd.TeamId, cmd.Trigger, "", true); appErr != nil {
 		return nil, appErr
 	}
 
@@ -787,13 +787,21 @@ func (a *App) createCommand(cmd *model.Command) (*model.Command, *model.AppError
 	return command, nil
 }
 
-func (a *App) validateCommandTriggerUniqueness(teamID, trigger, excludeCommandID string) *model.AppError {
+// validateCommandTriggerUniqueness refuses a trigger another custom command of the community already uses. With
+// checkBuiltIns, it also refuses the trigger of a built-in command. Callers skip that check when an existing
+// command keeps its trigger: custom commands run before built-ins, and a custom command created before the server
+// gained a built-in of the same name (/export, /rules, /tableflip and /unflip are newer than Mattermost's) must stay
+// editable and movable.
+func (a *App) validateCommandTriggerUniqueness(teamID, trigger, excludeCommandID string, checkBuiltIns bool) *model.AppError {
 	trigger = strings.ToLower(trigger)
 
-	for _, builtInProvider := range commandProviders {
-		builtInCommand := builtInProvider.GetCommand(a, i18n.T)
-		if builtInCommand != nil && trigger == strings.ToLower(builtInCommand.Trigger) {
-			return model.NewAppError("validateCommandTriggerUniqueness", "api.command.duplicate_trigger.app_error", nil, "", http.StatusBadRequest)
+	if checkBuiltIns {
+		for _, builtInProvider := range commandProviders {
+			builtInCommand := builtInProvider.GetCommand(a, i18n.T)
+			if builtInCommand != nil && trigger == strings.ToLower(builtInCommand.Trigger) {
+				// The error id stays the one Mattermost returns; the message says why the word is taken.
+				return model.NewAppError("validateCommandTriggerUniqueness", "api.command.duplicate_trigger.app_error", map[string]any{"Trigger": trigger, "BuiltIn": true}, "built-in command", http.StatusBadRequest)
+			}
 		}
 	}
 
@@ -844,7 +852,8 @@ func (a *App) UpdateCommand(oldCmd, updatedCmd *model.Command) (*model.Command, 
 	updatedCmd.PluginId = oldCmd.PluginId
 	updatedCmd.TeamId = oldCmd.TeamId
 
-	if appErr := a.validateCommandTriggerUniqueness(updatedCmd.TeamId, updatedCmd.Trigger, updatedCmd.Id); appErr != nil {
+	triggerChanged := updatedCmd.Trigger != strings.ToLower(oldCmd.Trigger)
+	if appErr := a.validateCommandTriggerUniqueness(updatedCmd.TeamId, updatedCmd.Trigger, updatedCmd.Id, triggerChanged); appErr != nil {
 		return nil, appErr
 	}
 
@@ -866,7 +875,8 @@ func (a *App) UpdateCommand(oldCmd, updatedCmd *model.Command) (*model.Command, 
 }
 
 func (a *App) MoveCommand(team *model.Team, command *model.Command) *model.AppError {
-	if appErr := a.validateCommandTriggerUniqueness(team.Id, command.Trigger, command.Id); appErr != nil {
+	// A move keeps the trigger: only another command of the target community can clash with it.
+	if appErr := a.validateCommandTriggerUniqueness(team.Id, command.Trigger, command.Id, false); appErr != nil {
 		return appErr
 	}
 

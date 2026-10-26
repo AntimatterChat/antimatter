@@ -1076,8 +1076,8 @@
   },
   {
     "id": "api.command.duplicate_trigger.app_error",
-    "translation": "This trigger word is already in use. Please choose another word.",
-    "description": "API error shown when creating a slash command whose trigger word is already taken; the 'trigger' is the word typed after '/'."
+    "translation": "{{if .BuiltIn}}/{{.Trigger}} is a built-in command on this server, so a new custom command can't use it. Please choose another word. Custom commands that already use it keep working and can still be edited.{{else}}This trigger word is already in use. Please choose another word.{{end}}",
+    "description": "API error shown when creating or renaming a slash command whose trigger word is already taken; the 'trigger' is the word typed after '/'. {{if .BuiltIn}} picks the message for a word that a built-in command uses, {{.Trigger}} is that word; keep the template syntax exactly."
   },
   {
     "id": "api.command.execute_command.create_post_failed.app_error",
