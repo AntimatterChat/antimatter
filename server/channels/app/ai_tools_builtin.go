@@ -324,6 +324,10 @@ func (a *App) aiToolLookupUser(rctx request.CTX, call *aiToolCall) (string, erro
 	if ok, _ := a.UserCanSeeOtherUser(rctx, call.user.Id, other.Id); !ok {
 		return "", errAIToolNotFound
 	}
+	// The profile as the asker sees it: what the communities they share with the user hide stays hidden (profile
+	// privacy). Never as a system admin: the answer may be posted where others read it.
+	other = other.DeepCopy()
+	a.HideProfileDetails(call.user.Id, false, other)
 	lines := []string{"@" + other.Username}
 	if model.SafeDereference(a.Config().PrivacySettings.ShowFullName) || other.Id == call.user.Id {
 		if full := strings.TrimSpace(other.GetFullName()); full != "" {

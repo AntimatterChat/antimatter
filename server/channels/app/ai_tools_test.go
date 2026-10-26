@@ -751,3 +751,48 @@ func (s *scriptedLLM) bodies() []map[string]any {
 	defer s.mu.Unlock()
 	return append([]map[string]any(nil), s.received...)
 }
+
+// lookup_user gives the profile as the asker sees it: what someone hides from the communities they share stays
+// hidden (profile privacy), whatever the server-wide ShowFullName says.
+func TestAIToolLookupUserHonoursProfilePrivacy(t *testing.T) {
+	th, _, c := setupAgentTest(t, "ok")
+	th.App.UpdateConfig(func(cfg *model.Config) { cfg.PrivacySettings.ShowFullName = model.NewPointer(true) })
+	agent := toolTestAgent(t, th, c.Id, model.AIAgentToolPolicy{Enabled: true, Allowed: []string{"antimatter.lookup_user"}, AutoRun: []string{"*"}})
+
+	bob := th.CreateUser(t)
+	th.LinkUserToTeam(t, bob, th.BasicTeam)
+	bob.FirstName, bob.LastName, bob.Nickname, bob.Position = "Robert", "Quill", "Bobby", "Head of Security"
+	privacy, err := json.Marshal(model.ProfilePrivacy{
+		th.BasicTeam.Id: {model.ProfileFieldFullName, model.ProfileFieldNickname, model.ProfileFieldPosition},
+	})
+	require.NoError(t, err)
+	bob.Props = model.StringMap{model.UserPropsKeyProfilePrivacy: string(privacy)}
+	_, appErr := th.App.UpdateUser(th.Context, bob, false)
+	require.Nil(t, appErr)
+
+	turn := toolTestTurn(t, th, agent, th.BasicUser, th.BasicChannel)
+	th.App.agentToolRunner().Tools(th.Context, turn)
+	outcome := runTestTool(th, turn, "antimatter__lookup_user", map[string]any{"username": bob.Username})
+	assert.Contains(t, outcome.Result, "@"+bob.Username)
+	assert.NotContains(t, outcome.Result, "Robert")
+	assert.NotContains(t, outcome.Result, "Bobby")
+	assert.NotContains(t, outcome.Result, "Head of Security")
+
+	t.Run("someone who hides nothing shows their details", func(t *testing.T) {
+		carol := th.CreateUser(t)
+		th.LinkUserToTeam(t, carol, th.BasicTeam)
+		carol.FirstName, carol.LastName, carol.Position = "Carol", "Danvers", "Pilot"
+		_, appErr := th.App.UpdateUser(th.Context, carol, false)
+		require.Nil(t, appErr)
+		outcome := runTestTool(th, turn, "antimatter__lookup_user", map[string]any{"username": carol.Username})
+		assert.Contains(t, outcome.Result, "Name: Carol Danvers")
+		assert.Contains(t, outcome.Result, "Position: Pilot")
+		assert.Contains(t, outcome.Result, "Nickname: "+carol.Nickname)
+	})
+
+	t.Run("the cached profile keeps its details", func(t *testing.T) {
+		cached, appErr := th.App.GetUserByUsername(bob.Username)
+		require.Nil(t, appErr)
+		assert.Equal(t, "Robert", cached.FirstName)
+	})
+}
