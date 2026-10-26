@@ -1197,7 +1197,59 @@ func (s *Server) startLocalModeServer() error {
 			mlog.Fatal("Error starting unix socket server", mlog.Err(err))
 		}
 	}()
+
+	// Mattermost's mmctl --local, and the scripts, healthchecks and Ansible roles written for it, connect to
+	// Mattermost's default socket. With the default location, the server answers there too.
+	if socket == model.LocalModeSocketPath {
+		if legacyListener := listenLegacyLocalModeSocket(s.Log(), model.LegacyLocalModeSocketPath); legacyListener != nil {
+			go func() {
+				if serveErr := s.localModeServer.Serve(legacyListener); serveErr != nil && serveErr != http.ErrServerClosed {
+					mlog.Warn("Stopped answering on the legacy local mode socket", mlog.String("socket", model.LegacyLocalModeSocketPath), mlog.Err(serveErr))
+				}
+			}()
+		}
+	}
 	return nil
+}
+
+// listenLegacyLocalModeSocket listens on path, Mattermost's default local mode socket, for a server that uses the
+// Antimatter default. It never takes the path over from something else: it leaves alone a file that isn't a socket
+// and a socket another process (a Mattermost server on the same machine, say) answers on, and only replaces a
+// stale socket, left behind by a server that stopped. Not being able to listen there is not an error: the server
+// then answers on its own socket only. The socket is readable by the server's user only, like the main one.
+func listenLegacyLocalModeSocket(logger *mlog.Logger, path string) net.Listener {
+	logger = logger.With(mlog.String("socket", path))
+	if info, err := os.Lstat(path); err == nil {
+		if info.Mode()&os.ModeSocket == 0 {
+			logger.Warn("Not answering on the legacy local mode socket: the path is taken by a file that isn't a socket")
+			return nil
+		}
+		if conn, dialErr := net.DialTimeout("unix", path, time.Second); dialErr == nil {
+			conn.Close()
+			logger.Info("Not answering on the legacy local mode socket: another process listens on it")
+			return nil
+		}
+		if err = os.Remove(path); err != nil {
+			logger.Warn("Not answering on the legacy local mode socket: can't remove the stale socket", mlog.Err(err))
+			return nil
+		}
+	} else if !os.IsNotExist(err) {
+		logger.Warn("Not answering on the legacy local mode socket", mlog.Err(err))
+		return nil
+	}
+
+	listener, err := net.Listen("unix", path)
+	if err != nil {
+		logger.Warn("Not answering on the legacy local mode socket", mlog.Err(err))
+		return nil
+	}
+	if err = os.Chmod(path, 0600); err != nil {
+		listener.Close()
+		logger.Warn("Not answering on the legacy local mode socket: can't restrict its permissions", mlog.Err(err))
+		return nil
+	}
+	logger.Info("Also answering on the legacy local mode socket, for Mattermost's mmctl --local")
+	return listener
 }
 
 func (s *Server) stopLocalModeServer() {

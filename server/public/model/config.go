@@ -322,7 +322,8 @@ const (
 
 	LocalModeSocketPath = "/var/tmp/antimatter_local.socket"
 	// LegacyLocalModeSocketPath is the default LocalModeSocketLocation of Mattermost servers and
-	// of Antimatter before it was renamed; amctl falls back to it.
+	// of Antimatter before it was renamed; amctl falls back to it, and a server using the default
+	// LocalModeSocketPath answers on it too when no other process does (for Mattermost's mmctl).
 	LegacyLocalModeSocketPath = "/var/tmp/mattermost_local.socket"
 
 	ConnectedWorkspacesSettingsDefaultMaxPostsPerSync     = 50 // a bit more than 4 typical screenfulls of posts
