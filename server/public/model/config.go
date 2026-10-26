@@ -3149,15 +3149,16 @@ func (s *TextToSpeechSettings) SetDefaults() {
 }
 
 // isValid checks the settings; usesConnection says AISettings.TextToSpeech names a model connection, which gives the
-// address and key instead of URL and APIKey (Antimatter).
-func (s *TextToSpeechSettings) isValid(usesConnection bool) *AppError {
+// address and key instead of URL and APIKey (Antimatter), and connectionModel is the model it names there, which
+// wins over Model (connections have no default speech model: one of the two is needed).
+func (s *TextToSpeechSettings) isValid(usesConnection bool, connectionModel string) *AppError {
 	if !*s.Enable {
 		return nil
 	}
 	if !usesConnection && !IsValidHTTPURL(*s.URL) {
 		return NewAppError("Config.IsValid", "model.config.is_valid.text_to_speech.url.app_error", nil, "", http.StatusBadRequest)
 	}
-	if strings.TrimSpace(*s.Model) == "" {
+	if strings.TrimSpace(*s.Model) == "" && (!usesConnection || strings.TrimSpace(connectionModel) == "") {
 		return NewAppError("Config.IsValid", "model.config.is_valid.text_to_speech.model.app_error", nil, "", http.StatusBadRequest)
 	}
 	return nil
@@ -4818,7 +4819,11 @@ func (o *Config) IsValid() *AppError {
 		return appErr
 	}
 
-	if appErr := o.TextToSpeechSettings.isValid(o.TextToSpeechUsesConnection()); appErr != nil {
+	ttsConnectionModel := ""
+	if o.TextToSpeechUsesConnection() {
+		ttsConnectionModel = SafeDereference(o.AISettings.TextToSpeech.Model)
+	}
+	if appErr := o.TextToSpeechSettings.isValid(o.TextToSpeechUsesConnection(), ttsConnectionModel); appErr != nil {
 		return appErr
 	}
 
