@@ -9,6 +9,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/mattermost/mattermost/server/public/model"
 )
@@ -767,4 +768,30 @@ func TestGetLimitedClientConfig(t *testing.T) {
 			}
 		})
 	}
+}
+
+// Mattermost's apps read BuildEnterpriseReady and BuildHashEnterprise from the configuration, logged out and logged
+// in, as Mattermost servers send them.
+func TestClientConfigBuildEnterpriseFields(t *testing.T) {
+	config := &model.Config{}
+	config.SetDefaults()
+
+	for name, props := range map[string]map[string]string{
+		"limited": GenerateLimitedClientConfig(config, ""),
+		"full":    GenerateClientConfig(config, ""),
+	} {
+		t.Run(name, func(t *testing.T) {
+			assert.Equal(t, "true", props["BuildEnterpriseReady"])
+			require.Contains(t, props, "BuildHashEnterprise")
+			assert.Equal(t, buildHashEnterprise(), props["BuildHashEnterprise"])
+			assert.NotContains(t, props, "SkuShortName")
+		})
+	}
+
+	oldHash, oldEnterpriseHash := model.BuildHash, model.BuildHashEnterprise
+	t.Cleanup(func() { model.BuildHash, model.BuildHashEnterprise = oldHash, oldEnterpriseHash })
+	model.BuildHash, model.BuildHashEnterprise = "abc123", ""
+	assert.Equal(t, "abc123", GenerateLimitedClientConfig(config, "")["BuildHashEnterprise"], "the build's hash")
+	model.BuildHashEnterprise = "def456"
+	assert.Equal(t, "def456", GenerateLimitedClientConfig(config, "")["BuildHashEnterprise"], "the one set at build time")
 }
