@@ -21,6 +21,7 @@ import PostEmoji from 'components/post_emoji';
 import PostEditedIndicator from 'components/post_view/post_edited_indicator';
 
 import {MessageLink, parseMessageLink} from 'fusion/messages/content/message_link';
+import TimestampText from 'fusion/messages/timestamp_text';
 import WalltimeText from 'fusion/messages/walltime/walltime_text';
 
 export type Options = Partial<{
@@ -304,6 +305,21 @@ export default function messageHtmlToComponent(html: string, options: Options = 
             },
         });
     }
+
+    // Antimatter: dynamic timestamps (utils/text_formatting), in the reader's language and time zone.
+    processingInstructions.push({
+        replaceChildren: false,
+        shouldProcessNode: (node: any) => node.attribs && node.attribs['data-timestamp'],
+        processNode: (node: any, children: any, index?: number) => (
+            <TimestampText
+                key={index}
+                seconds={Number(node.attribs['data-timestamp'])}
+                format={node.attribs['data-timestamp-style']}
+            >
+                {children}
+            </TimestampText>
+        ),
+    });
 
     // Antimatter: walltimes (utils/text_formatting).
     processingInstructions.push({
