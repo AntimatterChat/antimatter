@@ -18,8 +18,10 @@ import (
 // socket also answers there, but never takes the path from another process.
 func TestListenLegacyLocalModeSocket(t *testing.T) {
 	logger := mlog.CreateConsoleTestLogger(t)
-	// Kept short: a Unix socket path has at most 107 bytes.
-	dir := t.TempDir()
+	// Kept short: a Unix socket path has at most 107 bytes, which t.TempDir() can exceed under a long TMPDIR.
+	dir, err := os.MkdirTemp("/tmp", "amsock")
+	require.NoError(t, err)
+	t.Cleanup(func() { os.RemoveAll(dir) })
 
 	accepts := func(t *testing.T, path string) {
 		t.Helper()
