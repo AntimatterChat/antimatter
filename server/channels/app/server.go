@@ -1254,8 +1254,13 @@ func (s *Server) checkPushNotificationServerURL() {
 		mlog.Warn("Your push notification server is configured with HTTP. For improved security, update to HTTPS in your configuration.")
 	}
 	if *emailSettings.SendPushNotifications && model.IsMattermostPushServer(notificationServer) {
-		mlog.Warn("The push notification server is a service run by Mattermost, Inc. It only delivers notifications to Mattermost's own mobile apps, not to the Antimatter app. Run your own push proxy and set it in System Console > Environment > Push Notification Server.",
-			mlog.String("push_notification_server", notificationServer))
+		if emailSettings.IsPushServerRefused() {
+			mlog.Warn("The push notification server is a service run by Mattermost, Inc., so no push notification is sent: Antimatter only uses it when EmailSettings.AllowMattermostPushService is on. Run your own push proxy and set it in System Console > Environment > Push Notification Server, or allow that service there.",
+				mlog.String("push_notification_server", notificationServer))
+		} else {
+			mlog.Info("Push notifications go to a service run by Mattermost, Inc. (EmailSettings.AllowMattermostPushService is on). It only delivers notifications to Mattermost's own mobile apps, not to the Antimatter app.",
+				mlog.String("push_notification_server", notificationServer))
+		}
 	}
 }
 

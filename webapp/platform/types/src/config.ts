@@ -667,6 +667,7 @@ export type EmailSettings = {
     ConnectionSecurity: string;
     SendPushNotifications: boolean;
     PushNotificationServer: string;
+    AllowMattermostPushService: boolean;
     PushNotificationServerType: 'off' | 'mhpns' | 'mtpns' | 'custom';
     PushNotificationServerLocation: 'global' | 'us' | 'de' | 'jp';
     PushNotificationContents: string;

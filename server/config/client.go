@@ -74,7 +74,7 @@ func GenerateClientConfig(c *model.Config, telemetryID string) map[string]string
 
 	props["SendEmailNotifications"] = strconv.FormatBool(*c.EmailSettings.SendEmailNotifications)
 	// Without a push notification server nothing is sent, so clients see push notifications as off.
-	props["SendPushNotifications"] = strconv.FormatBool(*c.EmailSettings.SendPushNotifications && strings.TrimSpace(*c.EmailSettings.PushNotificationServer) != "")
+	props["SendPushNotifications"] = strconv.FormatBool(*c.EmailSettings.SendPushNotifications && strings.TrimSpace(*c.EmailSettings.PushNotificationServer) != "" && !c.EmailSettings.IsPushServerRefused())
 	props["RequireEmailVerification"] = strconv.FormatBool(*c.EmailSettings.RequireEmailVerification)
 	props["EnableEmailBatching"] = strconv.FormatBool(*c.EmailSettings.EnableEmailBatching)
 	props["EnablePreviewModeBanner"] = strconv.FormatBool(*c.EmailSettings.EnablePreviewModeBanner)

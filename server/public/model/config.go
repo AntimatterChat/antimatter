@@ -2305,6 +2305,11 @@ type EmailSettings struct {
 	EnablePreviewModeBanner           *bool   `access:"site_notifications"`
 	SkipServerCertificateVerification *bool   `access:"environment_smtp,write_restrictable,cloud_restrictable"`
 	EmailNotificationContentsType     *string `access:"site_notifications"`
+
+	// AllowMattermostPushService lets PushNotificationServer be a push service run by Mattermost, Inc. (their hosted
+	// or test service), the only ones that deliver to the official upstream mobile apps. Off by default: nothing is
+	// sent to such a server unless the administrator turns this on (see IsPushServerRefused).
+	AllowMattermostPushService *bool `access:"environment_push_notification_server"`
 }
 
 func (s *EmailSettings) SetDefaults(isUpdate bool) {
@@ -2388,6 +2393,11 @@ func (s *EmailSettings) SetDefaults(isUpdate bool) {
 	// administrator runs: none is set by default, and nothing is sent until one is.
 	if s.PushNotificationServer == nil {
 		s.PushNotificationServer = new(DefaultPushNotificationServer)
+	}
+
+	// Config.SetDefaults sets it first for a configuration upgraded from Mattermost (setLegacyMattermostPushOptIn).
+	if s.AllowMattermostPushService == nil {
+		s.AllowMattermostPushService = new(false)
 	}
 
 	if s.PushNotificationContents == nil {
@@ -4623,6 +4633,21 @@ func (o *Config) isUpdate() bool {
 	return o.ServiceSettings.SiteURL != nil
 }
 
+// setLegacyMattermostPushOptIn sets EmailSettings.AllowMattermostPushService on a configuration saved before that
+// setting existed, so that upgrading keeps push notifications working as they did: a configuration that comes from a
+// Mattermost server and sends push notifications to a Mattermost push service (how the official mobile apps got
+// them) keeps doing so. Any other configuration gets false, including one an earlier Antimatter version already ran:
+// those versions never sent anything to a Mattermost push service. ServiceSettings.DefaultWebUI tells them apart: only
+// Antimatter has it, and it writes it into every configuration it loads.
+func (o *Config) setLegacyMattermostPushOptIn() {
+	if o.EmailSettings.AllowMattermostPushService != nil {
+		return
+	}
+	fromMattermost := o.ServiceSettings.DefaultWebUI == nil
+	pushServer := o.EmailSettings.PushNotificationServer
+	o.EmailSettings.AllowMattermostPushService = new(fromMattermost && pushServer != nil && IsMattermostPushServer(*pushServer))
+}
+
 func (o *Config) SetDefaults() {
 	isUpdate := o.isUpdate()
 
@@ -4639,6 +4664,7 @@ func (o *Config) SetDefaults() {
 
 	o.SqlSettings.SetDefaults(isUpdate)
 	o.FileSettings.SetDefaults(isUpdate)
+	o.setLegacyMattermostPushOptIn() // before the defaults of EmailSettings and ServiceSettings
 	o.EmailSettings.SetDefaults(isUpdate)
 	o.PrivacySettings.setDefaults()
 	o.Office365Settings.setDefaults()
