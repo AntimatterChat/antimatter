@@ -55,6 +55,9 @@ type workerPool struct {
 	inflight map[string]map[string]bool // object key -> languages queued or in progress
 	stops    []chan struct{}
 	wg       sync.WaitGroup
+	// want is the number of workers last asked for; resizeMu runs one resize at a time.
+	want     int
+	resizeMu sync.Mutex
 }
 
 func newWorkerPool(process func(*task), onDepth func(int)) *workerPool {
@@ -74,6 +77,7 @@ func (p *workerPool) start(n int) {
 		return
 	}
 	p.running = true
+	p.want = n
 	p.spawnLocked(n)
 }
 
@@ -89,10 +93,27 @@ func (p *workerPool) spawnLocked(n int) {
 	}
 }
 
-// resize changes the number of running workers.
+// resize changes the number of running workers, waiting for those it stops to finish their current task.
 func (p *workerPool) resize(n int) {
+	p.setSize(n)
+	p.applySize()
+}
+
+// setSize records how many workers to run; applySize then runs that many. Recording it first, in the order the
+// changes came, and applying it later (at most one at a time, each applying the latest count) means overlapping
+// resizes always end with the last count asked for.
+func (p *workerPool) setSize(n int) {
 	p.mu.Lock()
-	if !p.running {
+	defer p.mu.Unlock()
+	p.want = n
+}
+
+func (p *workerPool) applySize() {
+	p.resizeMu.Lock()
+	defer p.resizeMu.Unlock()
+
+	p.mu.Lock()
+	if !p.running || len(p.stops) == max(p.want, 1) {
 		p.mu.Unlock()
 		return
 	}
@@ -108,7 +129,7 @@ func (p *workerPool) resize(n int) {
 	p.mu.Lock()
 	defer p.mu.Unlock()
 	if p.running {
-		p.spawnLocked(n)
+		p.spawnLocked(p.want)
 	}
 }
 
