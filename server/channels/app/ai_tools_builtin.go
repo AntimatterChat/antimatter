@@ -109,6 +109,30 @@ func findAIBuiltinTool(name string) *aiBuiltinTool {
 
 var errAIToolNotFound = errors.New("not found, or the person may not read it")
 
+// errAIToolOutsideChannel is what a confined call (see confined) gets for anything outside its channel.
+var errAIToolOutsideChannel = errors.New("here, only this channel can be read: the answer is posted where others read it")
+
+// confined tells whether the call's reads stay in its own channel: an agent's turn anywhere but the asker's own
+// direct message with it. There the answer is posted where others read it, and their messages are part of the
+// model's input (and may tell it what to look for), so a read with the asker's rights mustn't reach what only the
+// asker may see: their direct messages, private channels and the rest of their communities. In their own direct
+// message with the agent, the tools read whatever the asker may read. The assistant's reads (no agent) go to the
+// person's own feed.
+func (call *aiToolCall) confined() bool {
+	if call.agent == nil {
+		return false
+	}
+	if call.channel == nil || call.user == nil {
+		return true
+	}
+	return call.channel.Type != model.ChannelTypeDirect || call.channel.Name != model.GetDMNameFromIds(call.user.Id, call.agent.UserId)
+}
+
+// mayRead tells whether a confined call may read in channelID (see confined).
+func (call *aiToolCall) mayRead(channelID string) bool {
+	return !call.confined() || (call.channel != nil && channelID == call.channel.Id)
+}
+
 func aiToolArguments(raw json.RawMessage, out any) error {
 	if len(raw) == 0 {
 		raw = json.RawMessage(`{}`)
@@ -133,14 +157,18 @@ func shortenForAITool(text string, runes int) string {
 	return string([]rune(text)[:runes]) + "…"
 }
 
-// aiToolReadablePosts keeps the posts of channels the person may read, as an agent may read them.
-func (a *App) aiToolReadablePosts(rctx request.CTX, user *model.User, posts []*model.Post) []*model.Post {
+// aiToolReadablePosts keeps the posts of channels the person may read, as an agent may read them, and only those of
+// the call's channel when it's confined.
+func (a *App) aiToolReadablePosts(rctx request.CTX, call *aiToolCall, posts []*model.Post) []*model.Post {
 	readable := map[string]bool{}
 	out := make([]*model.Post, 0, len(posts))
 	for _, p := range posts {
 		ok, seen := readable[p.ChannelId]
 		if !seen {
-			ok, _ = a.HasPermissionToChannel(rctx, user.Id, p.ChannelId, model.PermissionReadChannelContent)
+			ok = call.mayRead(p.ChannelId)
+			if ok {
+				ok, _ = a.HasPermissionToChannel(rctx, call.user.Id, p.ChannelId, model.PermissionReadChannelContent)
+			}
 			readable[p.ChannelId] = ok
 		}
 		if ok && postForAgentMaterial(p) {
@@ -165,7 +193,14 @@ func (a *App) aiToolSearchMessages(rctx request.CTX, call *aiToolCall) (string, 
 		return "", errors.New("terms are needed")
 	}
 	limit := clampAIToolLimit(args.Limit, 10, aiBuiltinSearchMax)
-	results, _, appErr := a.SearchPostsForUser(rctx, terms, call.user.Id, call.teamID, false, false, 0, 0, limit)
+	onlyChannelID := ""
+	if call.confined() {
+		if call.channel == nil {
+			return "", errAIToolOutsideChannel
+		}
+		onlyChannelID = call.channel.Id
+	}
+	results, _, appErr := a.searchPostsForUser(rctx, terms, call.user.Id, call.teamID, false, false, 0, 0, limit, onlyChannelID)
 	if appErr != nil {
 		return "", errors.New("the search failed")
 	}
@@ -177,7 +212,7 @@ func (a *App) aiToolSearchMessages(rctx request.CTX, call *aiToolCall) (string, 
 			}
 		}
 	}
-	posts = a.aiToolReadablePosts(rctx, call.user, posts)
+	posts = a.aiToolReadablePosts(rctx, call, posts)
 	if len(posts) == 0 {
 		return "No messages found.", nil
 	}
@@ -203,12 +238,17 @@ func (a *App) aiToolReadThread(rctx request.CTX, call *aiToolCall) (string, erro
 	if err := aiToolArguments(call.arguments, &args); err != nil {
 		return "", err
 	}
+	// A confined call gets the same answer for every message outside its channel, readable or not.
+	notFound := errAIToolNotFound
+	if call.confined() {
+		notFound = errAIToolOutsideChannel
+	}
 	if !model.IsValidId(args.PostID) || !a.HasPermissionToChannelByPost(rctx, call.user.Id, args.PostID, model.PermissionReadChannelContent) {
-		return "", errAIToolNotFound
+		return "", notFound
 	}
 	post, appErr := a.GetSinglePost(rctx, args.PostID, false)
-	if appErr != nil {
-		return "", errAIToolNotFound
+	if appErr != nil || !call.mayRead(post.ChannelId) {
+		return "", notFound
 	}
 	rootID := post.Id
 	if post.RootId != "" {
@@ -228,7 +268,7 @@ func (a *App) aiToolReadThread(rctx request.CTX, call *aiToolCall) (string, erro
 	if len(posts) > aiBuiltinThreadMax {
 		posts = append(posts[:1], posts[len(posts)-aiBuiltinThreadMax+1:]...)
 	}
-	posts = a.aiToolReadablePosts(rctx, call.user, posts)
+	posts = a.aiToolReadablePosts(rctx, call, posts)
 	if len(posts) == 0 {
 		return "", errAIToolNotFound
 	}
@@ -283,7 +323,11 @@ func (a *App) aiToolReadChannel(rctx request.CTX, call *aiToolCall) (string, err
 		return "", err
 	}
 	channel := a.aiToolChannel(rctx, call, args.ChannelID, args.ChannelName, model.PermissionReadChannelContent)
-	if channel == nil {
+	if channel == nil || !call.mayRead(channel.Id) {
+		// A confined call gets the same answer for every channel but its own, readable or not.
+		if call.confined() {
+			return "", errAIToolOutsideChannel
+		}
 		return "", errAIToolNotFound
 	}
 	limit := clampAIToolLimit(args.Limit, 30, aiBuiltinChannelMax)
@@ -298,7 +342,7 @@ func (a *App) aiToolReadChannel(rctx request.CTX, call *aiToolCall) (string, err
 		}
 	}
 	slices.SortFunc(posts, func(x, y *model.Post) int { return cmp.Compare(x.CreateAt, y.CreateAt) })
-	posts = a.aiToolReadablePosts(rctx, call.user, posts)
+	posts = a.aiToolReadablePosts(rctx, call, posts)
 	header := fmt.Sprintf("Channel ~%s (%s)", channel.Name, channel.DisplayName)
 	if len(posts) == 0 {
 		return header + "\n(no messages)", nil

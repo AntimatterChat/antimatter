@@ -122,10 +122,83 @@ func TestAIToolsActAsTheAsker(t *testing.T) {
 	outcome := runTestTool(th, turn, "antimatter__search_messages", map[string]any{"terms": "BLUEBIRD"})
 	assert.NotContains(t, outcome.Result, "merger")
 
-	other := toolTestTurn(t, th, agent, th.BasicUser2, th.BasicChannel)
+	// In their own direct message with the agent (elsewhere the tools only read the channel they're used in).
+	dm, appErr := th.App.GetOrCreateDirectChannel(th.Context, th.BasicUser2.Id, agent.UserId)
+	require.Nil(t, appErr)
+	other := toolTestTurn(t, th, agent, th.BasicUser2, dm)
 	th.App.agentToolRunner().Tools(th.Context, other)
 	outcome = runTestTool(th, other, "antimatter__read_channel", map[string]any{"channel_id": secret.Id})
 	assert.Contains(t, outcome.Result, "BLUEBIRD", "someone who may read it reads it")
+}
+
+// Outside the asker's own direct message with the agent, its read tools only read the channel they're used in: the
+// answer is posted where others read it, and their messages (which may tell the model what to look for) are in its
+// input, so the asker's direct messages and private channels stay out of reach.
+func TestAIAgentToolsInPublicChannelStayInChannel(t *testing.T) {
+	th, _, c := setupAgentTest(t, "ok")
+	agent := toolTestAgent(t, th, c.Id, model.AIAgentToolPolicy{Enabled: true, Allowed: []string{"antimatter.*"}, AutoRun: []string{"*"}})
+	asker := th.BasicUser
+
+	// A private channel and a direct message the asker reads.
+	secret := th.CreatePrivateChannel(t, th.BasicTeam)
+	secretPost := th.CreatePost(t, secret, func(p *model.Post) { p.Message = "The merger code name is BLUEBIRD." })
+	direct, appErr := th.App.GetOrCreateDirectChannel(th.Context, asker.Id, th.BasicUser2.Id)
+	require.Nil(t, appErr)
+	th.CreatePost(t, direct, func(p *model.Post) {
+		p.UserId = th.BasicUser2.Id
+		p.Message = "My door code is KESTREL."
+	})
+	// And the public channel the agent is asked in.
+	th.CreatePost(t, th.BasicChannel, func(p *model.Post) { p.Message = "The cafeteria serves LASAGNE today." })
+
+	turn := toolTestTurn(t, th, agent, asker, th.BasicChannel)
+	th.App.agentToolRunner().Tools(th.Context, turn)
+
+	t.Run("other channels stay out of reach", func(t *testing.T) {
+		for _, args := range []map[string]any{{"channel_id": secret.Id}, {"channel_name": secret.Name}, {"channel_id": direct.Id}} {
+			outcome := runTestTool(th, turn, "antimatter__read_channel", args)
+			assert.NotContains(t, outcome.Result, "BLUEBIRD")
+			assert.NotContains(t, outcome.Result, "KESTREL")
+			assert.Contains(t, outcome.Result, "only this channel can be read")
+		}
+		outcome := runTestTool(th, turn, "antimatter__read_thread", map[string]any{"post_id": secretPost.Id})
+		assert.NotContains(t, outcome.Result, "BLUEBIRD")
+		for _, terms := range []string{"BLUEBIRD", "KESTREL", "BLUEBIRD in:" + secret.Name} {
+			outcome := runTestTool(th, turn, "antimatter__search_messages", map[string]any{"terms": terms})
+			assert.NotContains(t, outcome.Result, "merger")
+			assert.NotContains(t, outcome.Result, "door code")
+		}
+	})
+
+	t.Run("the channel itself is read", func(t *testing.T) {
+		outcome := runTestTool(th, turn, "antimatter__read_channel", map[string]any{})
+		assert.Contains(t, outcome.Result, "LASAGNE")
+		outcome = runTestTool(th, turn, "antimatter__read_channel", map[string]any{"channel_id": th.BasicChannel.Id})
+		assert.Contains(t, outcome.Result, "LASAGNE")
+		outcome = runTestTool(th, turn, "antimatter__search_messages", map[string]any{"terms": "LASAGNE"})
+		assert.Contains(t, outcome.Result, "cafeteria")
+	})
+
+	t.Run("in the asker's own direct message with the agent, the tools read what the asker may", func(t *testing.T) {
+		dm, appErr := th.App.GetOrCreateDirectChannel(th.Context, asker.Id, agent.UserId)
+		require.Nil(t, appErr)
+		own := toolTestTurn(t, th, agent, asker, dm)
+		th.App.agentToolRunner().Tools(th.Context, own)
+		outcome := runTestTool(th, own, "antimatter__read_channel", map[string]any{"channel_id": secret.Id})
+		assert.Contains(t, outcome.Result, "BLUEBIRD")
+		outcome = runTestTool(th, own, "antimatter__read_thread", map[string]any{"post_id": secretPost.Id})
+		assert.Contains(t, outcome.Result, "BLUEBIRD")
+		outcome = runTestTool(th, own, "antimatter__read_channel", map[string]any{"channel_id": direct.Id})
+		assert.Contains(t, outcome.Result, "KESTREL")
+	})
+
+	t.Run("someone else's direct message with the agent is confined", func(t *testing.T) {
+		call := &aiToolCall{agent: agent.AIAgent, user: asker, channel: direct}
+		assert.True(t, call.confined(), "a direct message between two people")
+		group := &model.Channel{Id: model.NewId(), Type: model.ChannelTypeGroup}
+		assert.True(t, (&aiToolCall{agent: agent.AIAgent, user: asker, channel: group}).confined())
+		assert.False(t, (&aiToolCall{user: asker, channel: th.BasicChannel}).confined(), "the assistant's reads go to the person alone")
+	})
 }
 
 // A tool that changes something never runs on its own, whatever auto_run says: it waits for the person, who alone
