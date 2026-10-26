@@ -3,7 +3,7 @@
 
 import React, {useEffect, useRef} from 'react';
 import {useDispatch, useSelector, useStore} from 'react-redux';
-import {useRouteMatch} from 'react-router-dom';
+import {useLocation, useRouteMatch} from 'react-router-dom';
 
 import {fetchMyCategories} from 'mattermost-redux/actions/channel_categories';
 import {fetchChannelOverrides} from 'mattermost-redux/actions/channels';
@@ -24,6 +24,7 @@ import CallPrompts from 'fusion/calls/call_prompts';
 import CallWindow from 'fusion/calls/call_window';
 import {ScreenSourcePicker} from 'fusion/calls/screen_sources';
 import {useOpenVoiceChat} from 'fusion/calls/voice_chat';
+import FusionErrorBoundary, {PageError} from 'fusion/components/error_boundary';
 import {IconSprite} from 'fusion/components/icon';
 import {LAYER_ID} from 'fusion/components/layer';
 import Toasts from 'fusion/components/toast';
@@ -271,11 +272,19 @@ function Frame({children}: Props) {
 
 // FusionApp is the Fusion UI's frame around a team's views: team rail, sidebar, main column, right-hand panel or
 // member list, and app rail.
+// An error while drawing it shows a page with a way to reload, instead of a blank window; going to another page (the
+// browser's back) tries again.
 export default function FusionApp({children}: Props) {
+    const {pathname} = useLocation();
     return (
-        <FusionProviders>
-            <Frame>{children}</Frame>
-        </FusionProviders>
+        <FusionErrorBoundary
+            fallback={<PageError/>}
+            resetKey={pathname}
+        >
+            <FusionProviders>
+                <Frame>{children}</Frame>
+            </FusionProviders>
+        </FusionErrorBoundary>
     );
 }
 
@@ -306,8 +315,10 @@ function PopoutFrame({children, panel}: Props & {panel: boolean}) {
 // FusionPopout is the Fusion UI's frame in a popout window; panel shows the right-hand panel beside its content.
 export function FusionPopout({children, panel = true}: Props & {panel?: boolean}) {
     return (
-        <FusionProviders>
-            <PopoutFrame panel={panel}>{children}</PopoutFrame>
-        </FusionProviders>
+        <FusionErrorBoundary fallback={<PageError/>}>
+            <FusionProviders>
+                <PopoutFrame panel={panel}>{children}</PopoutFrame>
+            </FusionProviders>
+        </FusionErrorBoundary>
     );
 }

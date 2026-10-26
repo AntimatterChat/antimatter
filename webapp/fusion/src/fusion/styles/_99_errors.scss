@@ -1,0 +1,13 @@
+// A part of the Fusion UI that couldn't be drawn (components/error_boundary): a message's muted line in its place, or
+// the whole page's card with a way to reload. Tokens only, so light, dark and the other themes all apply.
+
+:is(.am-app, .am-layer) .am-msg.am-render-error { display: flex; align-items: center; padding-top: 4px; padding-bottom: 4px; color: var(--am-muted); font-size: 13.5px; font-style: italic; }
+
+// Outside the frame (which is what failed): over the whole window.
+.am-crash { position: fixed; inset: 0; z-index: 1000; display: grid; place-items: center; padding: 16px; background: var(--am-main); color: var(--am-text); font-family: var(--am-font-ui); }
+.am-crash .am-crash-card { width: 100%; max-width: 420px; padding: 24px; border: 1px solid var(--am-line); border-radius: 12px; background: var(--am-raise); text-align: center; }
+.am-crash .am-crash-card h1 { margin: 0 0 8px; font: 700 18px var(--am-font-display); color: var(--am-text); }
+.am-crash .am-crash-card p { margin: 0 0 18px; color: var(--am-muted); font-size: 14px; line-height: 1.45; }
+.am-crash .am-crash-reload { height: 38px; padding: 0 16px; border: 0; border-radius: 10px; background: var(--am-matter); color: #fff; font: 600 14px var(--am-font-ui); cursor: pointer; }
+.am-crash .am-crash-reload:hover { filter: brightness(1.08); }
+.am-crash .am-crash-reload:focus-visible { outline: 2px solid var(--am-matter); outline-offset: 2px; }

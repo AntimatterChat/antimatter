@@ -28,6 +28,7 @@ import {AgentNameDot, IntegrationTag} from 'fusion/agents/agent_status';
 import AgentToolCalls from 'fusion/agents/tool_calls';
 import CallCard, {useCallCard} from 'fusion/calls/call_card';
 import Avatar from 'fusion/components/avatar';
+import FusionErrorBoundary, {MessageError} from 'fusion/components/error_boundary';
 import Icon from 'fusion/components/icon';
 import type {IconName} from 'fusion/components/icon';
 import StatusEmoji from 'fusion/components/status_emoji';
@@ -139,7 +140,7 @@ function authorStyle(roleColor: string | undefined, colorize: boolean, userId: s
     return colorize ? {color: nameColor(userId)} : undefined;
 }
 
-export default function Message({postId, previousPostId, inThread = false, highlighted = false}: Props) {
+function MessageView({postId, previousPostId, inThread = false, highlighted = false}: Props) {
     const intl = useIntl();
     const {formatMessage} = intl;
     const dispatch = useDispatch();
@@ -696,5 +697,19 @@ export default function Message({postId, previousPostId, inThread = false, highl
                 {popovers}
             </div>
         </CommunityScope>
+    );
+}
+
+// Message is one message of a conversation. One that can't be drawn (a bad link, an app's broken content) shows a
+// line in its place instead of taking the whole conversation down; it's drawn again once it changes (edited).
+export default function Message(props: Props) {
+    const updatedAt = useSelector((state: GlobalState) => getPost(state, props.postId)?.update_at);
+    return (
+        <FusionErrorBoundary
+            fallback={<MessageError postId={props.postId}/>}
+            resetKey={`${props.postId}:${updatedAt}`}
+        >
+            <MessageView {...props}/>
+        </FusionErrorBoundary>
     );
 }

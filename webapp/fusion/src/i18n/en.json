@@ -26243,6 +26243,22 @@
     "defaultMessage": "Show preview",
     "description": ""
   },
+  "fusion.error.message": {
+    "defaultMessage": "This message can't be shown.",
+    "description": "Shown in place of a message that failed to display (for example because of a malformed link); the rest of the conversation keeps working."
+  },
+  "fusion.error.page": {
+    "defaultMessage": "Something went wrong.",
+    "description": "Heading of the full-window page shown when the app's interface failed to display."
+  },
+  "fusion.error.pageHint": {
+    "defaultMessage": "This page couldn't be shown. Reloading usually fixes it.",
+    "description": "Text under 'Something went wrong.' on the full-window error page, above the Reload button."
+  },
+  "fusion.error.reload": {
+    "defaultMessage": "Reload",
+    "description": "Button on the full-window error page: reloads the page."
+  },
   "fusion.files.archived": {
     "defaultMessage": "This file is archived",
     "description": ""
