@@ -228,7 +228,7 @@ type assistantBudget struct {
 // assistantTakeBudgets counts one more use of each budget, in order, only if they all have some left: when one is
 // spent, those already counted are given back, so a use nobody makes never costs anything.
 func (a *App) assistantTakeBudgets(rctx request.CTX, budgets ...assistantBudget) bool {
-	hour := time.Now().UTC().Format("2006010215")
+	hour := assistantBudgetHour()
 	for i, b := range budgets {
 		if !a.assistantCountBudget(rctx, b, hour, 1) {
 			for _, taken := range budgets[:i] {
@@ -238,6 +238,11 @@ func (a *App) assistantTakeBudgets(rctx request.CTX, budgets ...assistantBudget)
 		}
 	}
 	return true
+}
+
+// assistantBudgetHour names the current hour of the hourly budgets.
+func assistantBudgetHour() string {
+	return time.Now().UTC().Format("2006010215")
 }
 
 // assistantCountBudget adds delta (1 to take, -1 to give back) to a budget's count for the hour: it tells whether it

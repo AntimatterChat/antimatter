@@ -242,7 +242,8 @@ func (a *App) makeAssistantInsight(rctx request.CTX, channel *model.Channel, use
 	if a.assistantFeed(user.Id, channel.Id).has(c.DedupeKey, "", model.GetMillis()) {
 		return
 	}
-	if !a.assistantTakeBudget(rctx, "cards_user", user.Id, cfg.cardsPerUser) {
+	budget, hour := assistantBudget{"cards_user", user.Id, cfg.cardsPerUser}, assistantBudgetHour()
+	if !a.assistantCountBudget(rctx, budget, hour, 1) {
 		return
 	}
 	text, err := a.runAssistantTool(rctx, user, channel, c.tool, c.Arguments)
@@ -252,7 +253,10 @@ func (a *App) makeAssistantInsight(rctx request.CTX, channel *model.Channel, use
 	}
 	card := newAssistantCard(user.Id, c)
 	card.Result = shortenForAITool(text, model.AssistantResultMaxRunes)
-	a.addAssistantCard(rctx, card)
+	if !a.addAssistantCard(rctx, card) {
+		// An overlapping window put the same card in the feed meanwhile: this one costs nothing.
+		a.assistantCountBudget(rctx, budget, hour, -1)
+	}
 }
 
 // assistantViewerRun is one person's candidates in a window.

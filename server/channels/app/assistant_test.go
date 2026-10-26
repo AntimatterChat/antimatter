@@ -1139,3 +1139,37 @@ func TestAssistantSpendDecisionDoesNotLeakUserBudgetWhenChannelExhausted(t *test
 	require.True(t, th.App.assistantTakeBudget(th.Context, user.kind, user.id, user.limit))
 	assert.False(t, th.App.assistantBudgetLeft(user.kind, user.id, user.limit))
 }
+
+// Two overlapping windows making the same card: the one whose card is dropped as a duplicate doesn't spend the
+// person's budget.
+func TestMakeAssistantInsightDoesNotSpendBudgetOnDuplicate(t *testing.T) {
+	at := setupAssistantTest(t)
+	at.th.App.UpdateConfig(func(cfg *model.Config) { cfg.AssistantSettings.CardsPerUserHour = model.NewPointer(2) })
+	at.open(at.maya, at.channel)
+	post := at.post(at.maya, at.channel, "cpu on www-1?")
+
+	answer := at.mcp.answer
+	var once sync.Once
+	at.mcp.answer = func(name string, arguments json.RawMessage, who string) string {
+		// While this window's tool runs, an overlapping window puts the same card in the feed first (as it would,
+		// having spent the budget's first card).
+		once.Do(func() {
+			now := model.GetMillis()
+			tool := at.tool(name)
+			assert.True(t, at.th.App.assistantTakeBudget(at.th.Context, "cards_user", at.maya.Id, 2))
+			assert.True(t, at.th.App.addAssistantCard(at.th.Context, &model.AssistantCard{
+				Id: model.NewId(), UserId: at.maya.Id, ChannelId: at.channel.Id, Kind: model.AssistantCardKindInsight,
+				Tool: tool, ToolTitle: name, Arguments: arguments, PostIds: []string{post.Id},
+				DedupeKey: model.AssistantDedupeKey(at.channel.Id, tool, arguments),
+				Status:    model.AssistantCardStatusNew, CreateAt: now, UpdateAt: now,
+			}))
+		})
+		return answer(name, arguments, who)
+	}
+	at.run(at.channel, post)
+	require.Len(t, at.feed(at.maya, at.channel), 1, "the same card once")
+
+	at.mcp.answer = answer
+	at.run(at.channel, at.post(at.maya, at.channel, "memory on www-1?"))
+	assert.Len(t, at.feed(at.maya, at.channel), 2, "the dropped duplicate didn't spend the second card of the hour")
+}
