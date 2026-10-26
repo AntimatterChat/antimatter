@@ -30,7 +30,8 @@ func (api *API) InitCommunityProfile() {
 	api.BaseRoutes.TeamMember.Handle("/profile/image", api.APISessionRequiredTrustRequester(getCommunityAvatar)).Methods(http.MethodGet)
 }
 
-// getCommunityProfiles lists a community's profiles, for those who may see the community.
+// getCommunityProfiles lists a community's profiles, for those who may see the community: the profiles of the people
+// they may see.
 func getCommunityProfiles(c *Context, w http.ResponseWriter, r *http.Request) {
 	c.RequireTeamId()
 	if c.Err != nil {
@@ -40,7 +41,7 @@ func getCommunityProfiles(c *Context, w http.ResponseWriter, r *http.Request) {
 		c.SetPermissionError(model.PermissionViewTeam)
 		return
 	}
-	profiles, appErr := c.App.GetCommunityProfiles(c.AppContext, c.Params.TeamId)
+	profiles, appErr := c.App.GetCommunityProfilesForUser(c.AppContext, c.AppContext.Session().UserId, c.Params.TeamId)
 	if appErr != nil {
 		c.Err = appErr
 		return
@@ -159,8 +160,8 @@ func setCommunityAvatar(c *Context, w http.ResponseWriter, r *http.Request) {
 	writeJSON(c, w, profile)
 }
 
-// getCommunityAvatar gives someone's picture in a community to those who may see the community; 404 when they have
-// none (their profile picture shows instead).
+// getCommunityAvatar gives someone's picture in a community to those who may see the community and the person; 404
+// when they have none (their profile picture shows instead).
 func getCommunityAvatar(c *Context, w http.ResponseWriter, r *http.Request) {
 	c.RequireTeamId().RequireUserId()
 	if c.Err != nil {
@@ -168,6 +169,11 @@ func getCommunityAvatar(c *Context, w http.ResponseWriter, r *http.Request) {
 	}
 	if !c.App.SessionHasPermissionToTeam(*c.AppContext.Session(), c.Params.TeamId, model.PermissionViewTeam) {
 		c.SetPermissionError(model.PermissionViewTeam)
+		return
+	}
+	canSee, appErr := c.App.UserCanSeeOtherUser(c.AppContext, c.AppContext.Session().UserId, c.Params.UserId)
+	if appErr != nil || !canSee {
+		c.SetPermissionError(model.PermissionViewMembers)
 		return
 	}
 	img, profile, appErr := c.App.GetCommunityAvatar(c.Params.TeamId, c.Params.UserId)

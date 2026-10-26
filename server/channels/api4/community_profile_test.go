@@ -291,3 +291,50 @@ func TestCommunityNameDisplay(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, model.ShowFullName, patched.NameDisplay, "patching something else keeps it")
 }
+
+// A guest only sees the profiles (nicknames, pictures) of the people they may see, as the user routes give them.
+func TestGetCommunityProfilesHidesUnseenFromGuest(t *testing.T) {
+	mainHelper.Parallel(t)
+	th := Setup(t).InitBasic(t)
+	th.App.UpdateConfig(func(cfg *model.Config) { *cfg.GuestAccountsSettings.Enable = true })
+	ctx := context.Background()
+
+	// The guest is in the basic channels, with BasicUser; unseen isn't.
+	_, guestClient := th.CreateGuestAndClient(t)
+	unseen := th.CreateUser(t)
+	th.LinkUserToTeam(t, unseen, th.BasicTeam)
+	unseenClient := th.CreateClient()
+	_, _, err := unseenClient.Login(ctx, unseen.Email, unseen.Password)
+	require.NoError(t, err)
+
+	_, _, err = th.Client.PatchCommunityProfile(ctx, th.BasicTeam.Id, th.BasicUser.Id, &model.CommunityProfilePatch{Nickname: model.NewPointer("Seen")})
+	require.NoError(t, err)
+	_, _, err = unseenClient.PatchCommunityProfile(ctx, th.BasicTeam.Id, unseen.Id, &model.CommunityProfilePatch{Nickname: model.NewPointer("Unseen")})
+	require.NoError(t, err)
+	data, err := testutils.ReadTestFile("test.png")
+	require.NoError(t, err)
+	_, _, err = unseenClient.SetCommunityAvatar(ctx, th.BasicTeam.Id, unseen.Id, data)
+	require.NoError(t, err)
+
+	profiles, _, err := guestClient.GetCommunityProfiles(ctx, th.BasicTeam.Id)
+	require.NoError(t, err)
+	ids := make([]string, 0, len(profiles))
+	for _, profile := range profiles {
+		ids = append(ids, profile.UserId)
+	}
+	assert.Contains(t, ids, th.BasicUser.Id)
+	assert.NotContains(t, ids, unseen.Id)
+
+	_, resp, err := guestClient.GetCommunityAvatar(ctx, th.BasicTeam.Id, unseen.Id, "")
+	require.Error(t, err)
+	CheckForbiddenStatus(t, resp)
+
+	t.Run("a member sees them", func(t *testing.T) {
+		profiles, _, err := th.Client.GetCommunityProfiles(ctx, th.BasicTeam.Id)
+		require.NoError(t, err)
+		assert.Len(t, profiles, 2)
+		img, _, err := th.Client.GetCommunityAvatar(ctx, th.BasicTeam.Id, unseen.Id, "")
+		require.NoError(t, err)
+		assert.NotEmpty(t, img)
+	})
+}
