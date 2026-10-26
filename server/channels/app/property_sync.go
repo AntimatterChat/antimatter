@@ -785,7 +785,7 @@ func (s *PropertySyncer) loadUserValues(rctx request.CTX, userID string) (map[st
 // written values. UpsertPropertyValues already announces them as
 // property_values_updated; this event is kept for clients that still listen
 // for it. Like every broadcast, it withholds the values of fields whose access
-// mode restricts who may read them.
+// mode or visibility (hidden, admin only) restricts who may read them.
 func (s *PropertySyncer) publishValuesUpdated(userID string, values []*model.PropertyValue) {
 	if len(values) == 0 {
 		return
@@ -796,7 +796,7 @@ func (s *PropertySyncer) publishValuesUpdated(userID string, values []*model.Pro
 		if i := slices.IndexFunc(s.fields, func(sf *syncedField) bool { return sf.field.ID == value.FieldID }); i >= 0 {
 			field = s.fields[i].field
 		}
-		byField[value.FieldID] = model.BroadcastValue(field, value.Value)
+		byField[value.FieldID] = model.BroadcastUserAttributeValue(field, value.Value)
 	}
 	message := model.NewWebSocketEvent(model.WebsocketEventCPAValuesUpdated, "", "", "", nil, "")
 	message.Add("user_id", userID)

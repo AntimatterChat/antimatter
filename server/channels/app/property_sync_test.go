@@ -891,6 +891,48 @@ func TestPropertySyncer_BroadcastWithholdsRestrictedValues(t *testing.T) {
 	}
 }
 
+// A hidden or admin-only attribute linked to a claim keeps its value out of the
+// event, which goes to everyone; the API path withholds them the same way.
+func TestPropertySyncerPublishWithholdsRestrictedValues(t *testing.T) {
+	mainHelper.Parallel(t)
+	h := setupPropertySyncTest(t)
+
+	hidden := h.createField(model.PropertyFieldTypeText, model.StringInterface{
+		model.PropertyFieldAttrLDAP:       "employeeNumber",
+		model.PropertyFieldAttrVisibility: model.PropertyFieldVisibilityHidden,
+	})
+	adminOnly := h.createField(model.PropertyFieldTypeText, model.StringInterface{
+		model.PropertyFieldAttrLDAP:       "clearance",
+		model.PropertyFieldAttrVisibility: model.PropertyFieldVisibilityAdmin,
+	})
+	shown := h.createField(model.PropertyFieldTypeText, ldapAttrs("title"))
+
+	messages, closeWS := connectFakeWebSocket(t, h.TestHelper, h.BasicUser2.Id, "", []model.WebsocketEventType{model.WebsocketEventCPAValuesUpdated})
+	defer closeWS()
+
+	s := h.syncer(model.PropertySyncSourceLDAP)
+	h.sync(s, h.BasicUser.Id, map[string][]string{
+		"employeeNumber": {"E-1234"},
+		"clearance":      {"Top"},
+		"title":          {"Engineer"},
+	}, false)
+
+	select {
+	case event := <-messages:
+		values, err := json.Marshal(event.GetData()["values"])
+		require.NoError(t, err)
+		var byField map[string]json.RawMessage
+		require.NoError(t, json.Unmarshal(values, &byField))
+		assert.JSONEq(t, model.PropertyValueWithheldJSON, string(byField[hidden.ID]))
+		assert.JSONEq(t, model.PropertyValueWithheldJSON, string(byField[adminOnly.ID]))
+		assert.JSONEq(t, `"Engineer"`, string(byField[shown.ID]))
+		assert.NotContains(t, string(values), "E-1234")
+		assert.NotContains(t, string(values), "Top")
+	case <-time.After(5 * time.Second):
+		require.Fail(t, "the custom profile attribute event was not published")
+	}
+}
+
 func TestPropertySyncHelpers(t *testing.T) {
 	t.Run("normalizeSourceValues", func(t *testing.T) {
 		assert.Equal(t, []string{}, normalizeSourceValues(nil))
