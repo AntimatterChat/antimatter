@@ -7017,6 +7017,11 @@
     "description": "API error of the server's AI service (Antimatter): a database error while saving a model connection."
   },
   {
+    "id": "app.ai.connection.secrets_for_new_address.app_error",
+    "translation": "To change this connection's provider or address, enter its API key and headers again: the saved ones are only sent where they were saved for.",
+    "description": "API error of the server's AI service (Antimatter): an admin changed a model connection's provider or base URL without entering its saved API key or extra headers again."
+  },
+  {
     "id": "app.ai.connection.usage.app_error",
     "translation": "Unable to read the model connection's usage.",
     "description": "API error of the server's AI service (Antimatter): a database error while reading a connection's usage."
@@ -7065,6 +7070,11 @@
     "id": "app.ai.mcp.secret_unreadable.app_error",
     "translation": "The MCP server's secrets can't be read: the AI encryption key may have changed. Enter them again.",
     "description": "Error (Antimatter) when an MCP server's sealed secrets (OAuth client secret, service account headers) can't be decrypted with the server's AI encryption key."
+  },
+  {
+    "id": "app.ai.mcp.secrets_for_new_address.app_error",
+    "translation": "To change this MCP server's address, enter its headers and client secret again: the saved ones are only sent where they were saved for.",
+    "description": "API error of the server's AI service (Antimatter): an admin changed an MCP server's URL without entering its saved headers or OAuth client secret again."
   },
   {
     "id": "app.ai.mcp.slug_taken.app_error",

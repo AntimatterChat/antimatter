@@ -178,6 +178,13 @@ func (a *App) CreateAIConnection(rctx request.CTX, req *model.AIConnectionReques
 	return saved, nil
 }
 
+// aiEndpointChanged tells whether a patched connection would send its key and headers somewhere else: another
+// provider, or another base URL.
+func aiEndpointChanged(before, after *model.AIConnection) bool {
+	norm := func(u string) string { return strings.TrimRight(strings.TrimSpace(u), "/") }
+	return before.Provider != after.Provider || norm(before.BaseURL) != norm(after.BaseURL)
+}
+
 // PatchAIConnection changes a connection; any saved change clears what needed attention, the admin having reviewed
 // it.
 func (a *App) PatchAIConnection(rctx request.CTX, c *model.AIConnection, patch *model.AIConnectionPatch, updaterID string) (*model.AIConnection, *model.AppError) {
@@ -205,6 +212,11 @@ func (a *App) PatchAIConnection(rctx request.CTX, c *model.AIConnection, patch *
 	}
 	if patch.Audience != nil {
 		updated.Audience = *patch.Audience
+	}
+	// The saved key and headers go only where they were saved for: someone who may edit the connection (a
+	// community's other admins) but not read them mustn't point it elsewhere and have them sent there.
+	if aiEndpointChanged(c, &updated) && ((c.APIKeySealed != "" && patch.APIKey == nil) || (c.ExtraHeadersSealed != "" && patch.ExtraHeaders == nil)) {
+		return nil, model.NewAppError("PatchAIConnection", "app.ai.connection.secrets_for_new_address.app_error", nil, "", http.StatusBadRequest)
 	}
 	var apiKey *string
 	if patch.APIKey != nil {

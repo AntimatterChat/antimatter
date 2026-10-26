@@ -621,6 +621,58 @@ func TestAIMCPOAuthSignIn(t *testing.T) {
 	})
 }
 
+// An MCP server's saved headers and client secret go only to the address they were saved for: a new address needs
+// them again, so that someone who may edit the server but not read them can't have them sent elsewhere.
+func TestPatchAIMCPServerURLChangeDropsHeaders(t *testing.T) {
+	th := setupAITest(t)
+	f := newFakeMCPServer(t)
+	elsewhere := "https://elsewhere.example.com/mcp"
+
+	t.Run("service account headers", func(t *testing.T) {
+		s := createTestMCPServer(t, th, f, func(req *model.AIMCPServerRequest) {
+			req.Auth = model.AIMCPAuthServiceAccount
+			req.Headers = map[string]string{"Authorization": "Bearer mcp-header-secret"}
+		})
+		_, appErr := th.App.PatchAIMCPServer(th.Context, s, &model.AIMCPServerPatch{URL: &elsewhere}, th.SystemAdminUser.Id)
+		require.NotNil(t, appErr)
+		assert.Equal(t, "app.ai.mcp.secrets_for_new_address.app_error", appErr.Id)
+		assert.Equal(t, http.StatusBadRequest, appErr.StatusCode)
+
+		stored, appErr := th.App.GetAIMCPServer(th.Context, s.Id)
+		require.Nil(t, appErr)
+		assert.Equal(t, s.URL, stored.URL, "nothing was saved")
+
+		renamed, appErr := th.App.PatchAIMCPServer(th.Context, s, &model.AIMCPServerPatch{Name: model.NewPointer("Renamed"), URL: model.NewPointer(s.URL)}, th.SystemAdminUser.Id)
+		require.Nil(t, appErr, "the same address keeps the saved headers")
+		assert.Equal(t, s.HeadersSealed, renamed.HeadersSealed)
+
+		moved, appErr := th.App.PatchAIMCPServer(th.Context, renamed, &model.AIMCPServerPatch{URL: &elsewhere, Headers: &map[string]string{"Authorization": "Bearer new-header-value"}}, th.SystemAdminUser.Id)
+		require.Nil(t, appErr, "a new address with its headers")
+		assert.Equal(t, elsewhere, moved.URL)
+		assert.NotEqual(t, s.HeadersSealed, moved.HeadersSealed)
+	})
+
+	t.Run("a client secret typed in", func(t *testing.T) {
+		s := createTestMCPServer(t, th, f, func(req *model.AIMCPServerRequest) {
+			req.OAuthClientId = "typed-client"
+			req.OAuthClientSecret = "typed-client-secret-123456"
+		})
+		require.True(t, s.OAuthClientSecretSet)
+		require.False(t, s.OAuthRegistered)
+
+		_, appErr := th.App.PatchAIMCPServer(th.Context, s, &model.AIMCPServerPatch{URL: &elsewhere}, th.SystemAdminUser.Id)
+		require.NotNil(t, appErr)
+		assert.Equal(t, "app.ai.mcp.secrets_for_new_address.app_error", appErr.Id)
+
+		_, appErr = th.App.PatchAIMCPServer(th.Context, s, &model.AIMCPServerPatch{URL: &elsewhere, OAuthClientId: model.NewPointer("other-client")}, th.SystemAdminUser.Id)
+		require.NotNil(t, appErr, "a new client id doesn't carry the old secret over either")
+
+		moved, appErr := th.App.PatchAIMCPServer(th.Context, s, &model.AIMCPServerPatch{URL: &elsewhere, OAuthClientSecret: model.NewPointer("")}, th.SystemAdminUser.Id)
+		require.Nil(t, appErr, "removing the secret is fine")
+		assert.False(t, moved.OAuthClientSecretSet)
+	})
+}
+
 func TestRegisterAIAppTools(t *testing.T) {
 	th := Setup(t)
 	valid := []*model.AIToolDefinition{{Name: "add_item", Title: "Add", Kind: model.AIToolKindWrite}}
