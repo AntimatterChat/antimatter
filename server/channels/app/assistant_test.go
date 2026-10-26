@@ -1173,3 +1173,20 @@ func TestMakeAssistantInsightDoesNotSpendBudgetOnDuplicate(t *testing.T) {
 	at.run(at.channel, at.post(at.maya, at.channel, "memory on www-1?"))
 	assert.Len(t, at.feed(at.maya, at.channel), 2, "the dropped duplicate didn't spend the second card of the hour")
 }
+
+// The cached listings are kept per owner of a listing (each person, for a source they sign in to): the expired ones
+// are dropped, so the cache doesn't grow with everyone who ever opened the assistant.
+func TestAssistantDictionaryCacheDoesNotGrowUnbounded(t *testing.T) {
+	st := &assistantState{}
+	start := time.Now()
+	for i := range 1000 {
+		now := start.Add(time.Duration(i) * time.Second)
+		st.putDictionaryLocked(fmt.Sprintf("tool|{}|name|user%d", i), &assistantDictionaryCache{expires: now.Add(assistantDictionaryTTL)}, now)
+	}
+	limit := int((assistantDictionaryTTL + assistantDictionaryRetry) / time.Second)
+	assert.LessOrEqual(t, len(st.dicts), limit+1, "only the listings of the last minutes are kept")
+
+	assert.NotContains(t, st.dicts, "tool|{}|name|user0", "a listing expired long ago is gone")
+	last := fmt.Sprintf("tool|{}|name|user%d", 999)
+	assert.Contains(t, st.dicts, last, "the newest listing is kept")
+}

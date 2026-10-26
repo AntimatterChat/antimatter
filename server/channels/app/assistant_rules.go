@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"maps"
 	"math"
 	"regexp"
 	"slices"
@@ -723,10 +724,7 @@ func (a *App) assistantDictionaryFor(rctx request.CTX, user *model.User, channel
 					rctx.Logger().Debug("The assistant listed a tool's entities", mlog.String("tool", rt.tool.Name), mlog.String("type", source.Type), mlog.String("field", source.Field), mlog.Int("values", len(cached.values)))
 				}
 				st.mu.Lock()
-				if st.dicts == nil {
-					st.dicts = map[string]*assistantDictionaryCache{}
-				}
-				st.dicts[key] = cached
+				st.putDictionaryLocked(key, cached, time.Now())
 				st.mu.Unlock()
 			} else if cached.err != nil {
 				rctx.Logger().Debug("The assistant's listing of a tool failed a moment ago", mlog.String("tool", rt.tool.Name), mlog.String("user_id", user.Id), mlog.Time("retry_after", cached.expires), mlog.Err(cached.err))
@@ -737,6 +735,20 @@ func (a *App) assistantDictionaryFor(rctx request.CTX, user *model.User, channel
 		}
 	}
 	return dict
+}
+
+// putDictionaryLocked caches a listing. The listings are kept per owner (each person, for a source they sign in
+// to), so the expired ones are dropped now and then: an expired listing is fetched again anyway, and the cache
+// stays as big as the listings of the last few minutes.
+func (st *assistantState) putDictionaryLocked(key string, cached *assistantDictionaryCache, now time.Time) {
+	if st.dicts == nil {
+		st.dicts = map[string]*assistantDictionaryCache{}
+	}
+	if now.Sub(st.dictsSwept) >= assistantDictionaryRetry {
+		st.dictsSwept = now
+		maps.DeleteFunc(st.dicts, func(_ string, c *assistantDictionaryCache) bool { return now.After(c.expires) })
+	}
+	st.dicts[key] = cached
 }
 
 var errAssistantNotARead = errors.New("the assistant only runs tools that read on its own")

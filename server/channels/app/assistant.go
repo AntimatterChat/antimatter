@@ -65,6 +65,9 @@ type assistantState struct {
 	patterns map[string][]*assistantCompiledPattern
 	timers   map[string]*time.Timer
 
+	// dictsSwept is when the expired listings were last dropped from dicts.
+	dictsSwept time.Time
+
 	// publishHook sees every event the assistant sends (tests).
 	publishHook func(*model.WebSocketEvent)
 }
