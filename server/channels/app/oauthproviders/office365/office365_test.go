@@ -14,6 +14,7 @@ import (
 	"github.com/mattermost/mattermost/server/public/model"
 	"github.com/mattermost/mattermost/server/public/shared/request"
 	"github.com/mattermost/mattermost/server/v8/channels/app/oauthproviders/oidc/oidctest"
+	"github.com/mattermost/mattermost/server/v8/einterfaces"
 )
 
 const graphMe = `{"id":"3f2c1a5e-0000-4000-8000-000000000001","displayName":"Ada Lovelace","givenName":"Ada","surname":"Lovelace","mail":"Ada.Lovelace@Contoso.com","userPrincipalName":"ada@contoso.onmicrosoft.com"}`
@@ -108,4 +109,64 @@ func TestGetUserFromIdToken(t *testing.T) {
 	c["aud"] = "other-app"
 	_, err = p.GetUserFromIdToken(rctx, idp.Sign(c))
 	require.Error(t, err)
+}
+
+// Without a directory id any tenant's users sign in, and their admins set their mail addresses (the "nOAuth"
+// attack): the mail address is trusted only in the UPN's domain or with xms_edov=true.
+func TestOffice365UnverifiedEmailNotTrusted(t *testing.T) {
+	rctx := request.TestContext(t)
+	const forged = `{"id":"3f2c1a5e-0000-4000-8000-000000000002","displayName":"Mallory","mail":"CEO@Victim.com","userPrincipalName":"mallory@attacker.onmicrosoft.com"}`
+
+	t.Run("any tenant", func(t *testing.T) {
+		p := New(nil)
+		_, err := p.GetSSOSettings(rctx, config(""), model.ServiceOffice365)
+		require.NoError(t, err)
+
+		user, err := p.GetUserFromJSON(rctx, strings.NewReader(forged), nil, nil)
+		require.NoError(t, err)
+		assert.Equal(t, "ceo@victim.com", user.Email)
+		assert.True(t, einterfaces.TakeOAuthEmailUnverified(user))
+
+		user, err = p.GetUserFromJSON(rctx, strings.NewReader(`{"id":"x","mail":"Ada@Contoso.com","userPrincipalName":"ada.l@contoso.com"}`), nil, nil)
+		require.NoError(t, err)
+		assert.False(t, einterfaces.TakeOAuthEmailUnverified(user), "the tenant owns the UPN's domain")
+
+		user, err = p.GetUserFromJSON(rctx, strings.NewReader(`{"id":"x","userPrincipalName":"bob@contoso.com"}`), nil, nil)
+		require.NoError(t, err)
+		assert.False(t, einterfaces.TakeOAuthEmailUnverified(user), "the UPN itself")
+	})
+
+	t.Run("xms_edov vouches for the token's email only", func(t *testing.T) {
+		idp := oidctest.New()
+		defer idp.Close()
+		p := New(nil)
+		p.jwksURL = func(string) string { return idp.JWKSURL() }
+		_, err := p.GetSSOSettings(rctx, config(""), model.ServiceOffice365)
+		require.NoError(t, err)
+		token := func(email string) *model.User {
+			tokenUser, err := p.GetUserFromIdToken(rctx, idp.Sign(jwt.MapClaims{
+				"iss": "https://login.microsoftonline.com/tenant-x/v2.0", "aud": "app-id", "tid": "tenant-x",
+				"sub": "pairwise", "oid": "3f2c1a5e-0000-4000-8000-000000000002", "email": email, "xms_edov": true,
+			}))
+			require.NoError(t, err)
+			return tokenUser
+		}
+
+		user, err := p.GetUserFromJSON(rctx, strings.NewReader(forged), token("ceo@victim.com"), nil)
+		require.NoError(t, err)
+		assert.False(t, einterfaces.TakeOAuthEmailUnverified(user))
+
+		user, err = p.GetUserFromJSON(rctx, strings.NewReader(forged), token("mallory@attacker.example"), nil)
+		require.NoError(t, err)
+		assert.True(t, einterfaces.TakeOAuthEmailUnverified(user))
+	})
+
+	t.Run("one tenant", func(t *testing.T) {
+		p := New(nil)
+		_, err := p.GetSSOSettings(rctx, config("tenant-1"), model.ServiceOffice365)
+		require.NoError(t, err)
+		user, err := p.GetUserFromJSON(rctx, strings.NewReader(forged), nil, nil)
+		require.NoError(t, err)
+		assert.False(t, einterfaces.TakeOAuthEmailUnverified(user), "its own admins are trusted")
+	})
 }

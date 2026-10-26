@@ -222,7 +222,16 @@ func (p *Provider) GetUserFromIdToken(rctx request.CTX, idToken string) (*model.
 	if identity.Subject == "" {
 		return nil, errors.New("id_token has no subject")
 	}
+	identity.TenantUnrestricted = identity.TenantID != "" && p.acceptsAnyMicrosoftTenant(claims)
 	return identity.ToUser(rctx.Logger(), authDataFor(identity), false), nil
+}
+
+// acceptsAnyMicrosoftTenant tells whether the service a verified token was
+// issued for is a Microsoft multi-tenant registration: its discovery
+// document's issuer is the "{tenantid}" template and no tenant restricts it.
+func (p *Provider) acceptsAnyMicrosoftTenant(claims oidc.Claims) bool {
+	reg := p.findRegistration(claims)
+	return reg != nil && reg.doc != nil && reg.tenant == "" && strings.Contains(reg.doc.Issuer, oidc.MicrosoftTenantPlaceholder)
 }
 
 // verifyIDToken verifies an ID token against the configured service it was
@@ -382,7 +391,14 @@ func (p *Provider) GetUserFromJSON(rctx request.CTX, data io.Reader, tokenUser *
 	}
 
 	authData := authDataFor(identity)
-	email := identity.BestEmail()
+	// Without an email claim, a UPN or preferred username that looks like an
+	// address stands in for it only for Microsoft Entra ID, whose tenants
+	// verify the domains of their UPNs: elsewhere the preferred username is
+	// often chosen by the user.
+	email := identity.Email
+	if email == "" && identity.TenantID != "" {
+		email = identity.BestEmail()
+	}
 	if email == "" {
 		return nil, errors.New("the OpenID Connect user has no email address")
 	}
@@ -395,6 +411,9 @@ func (p *Provider) GetUserFromJSON(rctx request.CTX, data io.Reader, tokenUser *
 		LastName:  last,
 		Username:  oidc.Username(rctx.Logger(), identity.PreferredUsername, email, usePreferred),
 		AuthData:  model.NewPointer(authData),
+	}
+	if identity.EmailUnverified() {
+		einterfaces.MarkOAuthEmailUnverified(user)
 	}
 
 	p.altIDs.Put(authData, identity.Subject)

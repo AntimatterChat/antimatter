@@ -4,7 +4,8 @@
 import type {AIMCPServer} from '@mattermost/types/ai_tools';
 
 import {newHeaderRow} from './connections';
-import {draftFromMCPServer, isValidMCPURL, isValidSlug, mcpPatchOf, mcpProblemsOf, mcpRequestOf, newMCPDraft, slugFromName} from './mcp';
+import {draftFromMCPServer, isValidMCPURL, isValidSlug, mcpPatchOf, mcpProblemsOf, mcpRequestOf, mcpURLChanged, newMCPDraft, slugFromName, withMCPSecretsRetyped} from './mcp';
+import type {MCPDraft} from './mcp';
 
 const saved = (patch: Partial<AIMCPServer> = {}): AIMCPServer => ({
     id: 's1',
@@ -93,5 +94,48 @@ describe('fusion/ai/mcp', () => {
     test('a client the server registered itself isn\'t shown as the admin\'s', () => {
         expect(draftFromMCPServer(saved({oauth_registered: true, oauth_client_id: 'registered'})).clientId).toBe('');
         expect(mcpPatchOf(draftFromMCPServer(saved({oauth_registered: true, oauth_client_id: 'registered'})), saved({oauth_registered: true, oauth_client_id: 'registered'}))).not.toHaveProperty('oauth_client_id');
+    });
+    // The server refuses a patch that moves a server without giving its saved headers and client secret again
+    // (PatchAIMCPServer): the form asks for them, and never sends such a patch.
+    describe('a new address asks for the saved headers and client secret again', () => {
+        const elsewhere = 'https://attacker.example.com/mcp';
+        const edit = (s: AIMCPServer, change: Partial<MCPDraft>) => withMCPSecretsRetyped({...draftFromMCPServer(s), ...change}, s);
+
+        test('the same address keeps them', () => {
+            const draft = edit(saved(), {name: 'Renamed', url: ' https://mcp.example.com/mcp '});
+            expect(mcpURLChanged(draft, saved())).toBe(false);
+            expect(draft.secretAction).toBe('keep');
+            expect(mcpPatchOf(draft, saved())).not.toHaveProperty('oauth_client_secret');
+        });
+
+        test('a typed-in client secret', () => {
+            const draft = edit(saved(), {url: elsewhere});
+            expect(draft.secretAction).toBe('replace');
+            expect(draft.clientSecret).toBe('');
+            expect(mcpPatchOf(draft, saved()).oauth_client_secret).toBe('');
+            expect(mcpPatchOf({...draft, clientSecret: 'new'}, saved()).oauth_client_secret).toBe('new');
+        });
+
+        test('a registered client is registered again, unless a client ID is typed', () => {
+            const registered = saved({oauth_registered: true, oauth_client_id: 'registered'});
+            const draft = edit(registered, {url: elsewhere});
+            expect(draft.secretAction).toBe('keep');
+            expect(mcpPatchOf(draft, registered)).not.toHaveProperty('oauth_client_secret');
+
+            const typed = withMCPSecretsRetyped({...draft, clientId: 'mine'}, registered);
+            expect(typed.secretAction).toBe('replace');
+            expect(mcpPatchOf(typed, registered)).toHaveProperty('oauth_client_secret', '');
+        });
+
+        test('a shared account\'s headers are typed again', () => {
+            const service = saved({auth: 'service_account', header_names: ['Authorization'], oauth_client_id: '', oauth_client_secret_set: false});
+            const draft = edit(service, {url: elsewhere});
+            expect(draft.headersChanged).toBe(true);
+            expect(draft.headers.map((h) => [h.name, h.value])).toEqual([['Authorization', '']]);
+            expect(mcpProblemsOf(draft, true)).toEqual(['headers']);
+            const typed = {...draft, headers: [newHeaderRow('Authorization', 'Bearer new')]};
+            expect(mcpProblemsOf(typed, true)).toEqual([]);
+            expect(mcpPatchOf(typed, service).headers).toEqual({Authorization: 'Bearer new'});
+        });
     });
 });

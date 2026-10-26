@@ -150,7 +150,37 @@ export function mcpRequestOf(draft: MCPDraft, scope: string): AIMCPServerRequest
     return request;
 }
 
-// mcpPatchOf sends what the form edits; the secret only when replaced or removed, the headers only when changed.
+// mcpURLChanged tells whether a saved MCP server's draft points it elsewhere. Its saved headers and client secret go
+// only to the address they were saved for, so the server then asks for them again.
+export function mcpURLChanged(draft: MCPDraft, saved: AIMCPServer): boolean {
+    return draft.url.trim() !== (saved.url || '').trim();
+}
+
+// A client the server registered itself is registered again at a new address, its secret with it, unless a client ID
+// is typed: otherwise the saved secret stays, and goes to the new address.
+function keepsSavedSecret(draft: MCPDraft, saved: AIMCPServer): boolean {
+    return Boolean(saved.oauth_client_secret_set) && !(saved.oauth_registered && !draft.clientId.trim());
+}
+
+// withMCPSecretsRetyped is the draft of a saved MCP server once its address moved: the shared account's headers are
+// typed again (names kept), and a saved client secret is asked for again (left empty: none).
+export function withMCPSecretsRetyped(draft: MCPDraft, saved: AIMCPServer): MCPDraft {
+    if (!mcpURLChanged(draft, saved)) {
+        return draft;
+    }
+    let next = draft;
+    if (draft.auth === 'service_account' && saved.auth === 'service_account' && !draft.headersChanged && (saved.header_names || []).length > 0) {
+        next = {...next, headersChanged: true, headers: draft.headers.map((h) => ({...h, value: ''}))};
+    }
+    if (draft.auth === 'oauth' && draft.secretAction === 'keep' && keepsSavedSecret(draft, saved)) {
+        next = {...next, secretAction: 'replace', clientSecret: ''};
+    }
+    return next;
+}
+
+// mcpPatchOf sends what the form edits; the secret only when replaced or removed, the headers only when changed. At
+// a new address, a secret field left empty sends no secret rather than keeping the saved one, which the server
+// refuses.
 export function mcpPatchOf(draft: MCPDraft, saved: AIMCPServer): AIMCPServerPatch {
     const patch: AIMCPServerPatch = {
         name: draft.name.trim(),
@@ -164,7 +194,7 @@ export function mcpPatchOf(draft: MCPDraft, saved: AIMCPServer): AIMCPServerPatc
             patch.oauth_client_id = clientId;
         }
         patch.oauth_scopes = draft.scopes.trim();
-        if (draft.secretAction === 'replace' && draft.clientSecret) {
+        if (draft.secretAction === 'replace' && (draft.clientSecret || (mcpURLChanged(draft, saved) && keepsSavedSecret(draft, saved)))) {
             patch.oauth_client_secret = draft.clientSecret;
         } else if (draft.secretAction === 'remove') {
             patch.oauth_client_secret = '';

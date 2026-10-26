@@ -311,6 +311,15 @@ func (a *App) PatchAIMCPServer(rctx request.CTX, s *model.AIMCPServer, patch *mo
 		updated.OAuthClientSecretSealed = ""
 		updated.OAuthRegistered = false
 	}
+	// The saved headers and client secret go only to the address they were saved for: someone who may edit the
+	// server (a community's other admins) but not read them mustn't point it elsewhere and have them sent there.
+	if updated.URL != s.URL {
+		keepsHeaders := updated.Auth == model.AIMCPAuthServiceAccount && updated.HeadersSealed != "" && patch.Headers == nil
+		keepsSecret := updated.Auth == model.AIMCPAuthOAuth && updated.OAuthClientSecretSealed != "" && patch.OAuthClientSecret == nil
+		if keepsHeaders || keepsSecret {
+			return nil, model.NewAppError("PatchAIMCPServer", "app.ai.mcp.secrets_for_new_address.app_error", nil, "", http.StatusBadRequest)
+		}
+	}
 	if appErr := a.sealAIMCPServerSecrets(&updated, patch.OAuthClientSecret, patch.Headers); appErr != nil {
 		return nil, appErr
 	}

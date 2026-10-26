@@ -2751,6 +2751,11 @@
     "description": "Admin API validation error when the payload for updating an outgoing OAuth connection is invalid."
   },
   {
+    "id": "api.context.outgoing_oauth_connection.update_connection.secrets_for_new_target.app_error",
+    "translation": "To change this connection's token URL, grant type or username, enter its client secret (and, for the password grant, its password) again: the saved ones are only sent where they were saved for.",
+    "description": "Admin API error (Antimatter): an outgoing OAuth connection's token URL, grant type or username was changed without entering its saved client secret or password again."
+  },
+  {
     "id": "api.context.outgoing_oauth_connection.validate_connection_credentials.app_error",
     "translation": "There was an error while validating the outgoing OAuth connection credentials.",
     "description": "API error returned to an admin when the server fails while testing an outgoing OAuth connection's credentials."
@@ -6102,6 +6107,11 @@
     "description": "API error in the desktop app server-side login flow when the desktop token belongs to a user who does not authenticate via OAuth or SAML."
   },
   {
+    "id": "api.user.oauth.email_unverified.app_error",
+    "translation": "Your identity provider doesn't vouch for your email address, so it can't create an account or sign in to an existing one by email. Verify the address with your identity provider, or ask your administrator.",
+    "description": "Sign-in error (Antimatter): the single sign-on provider (OpenID Connect, Office 365) says the user's email address isn't verified, or a Microsoft sign-in open to every tenant gives an address in a domain the user's tenant isn't known to own."
+  },
+  {
     "id": "api.user.oauth.get_settings.app_error",
     "translation": "Failed to get {{.Service}} settings",
     "description": "Internal error when loading server configuration for an SSO provider; {{.Service}} is the provider name."
@@ -7017,6 +7027,11 @@
     "description": "API error of the server's AI service (Antimatter): a database error while saving a model connection."
   },
   {
+    "id": "app.ai.connection.secrets_for_new_address.app_error",
+    "translation": "To change this connection's provider or address, enter its API key and headers again: the saved ones are only sent where they were saved for.",
+    "description": "API error of the server's AI service (Antimatter): an admin changed a model connection's provider or base URL without entering its saved API key or extra headers again."
+  },
+  {
     "id": "app.ai.connection.usage.app_error",
     "translation": "Unable to read the model connection's usage.",
     "description": "API error of the server's AI service (Antimatter): a database error while reading a connection's usage."
@@ -7065,6 +7080,11 @@
     "id": "app.ai.mcp.secret_unreadable.app_error",
     "translation": "The MCP server's secrets can't be read: the AI encryption key may have changed. Enter them again.",
     "description": "Error (Antimatter) when an MCP server's sealed secrets (OAuth client secret, service account headers) can't be decrypted with the server's AI encryption key."
+  },
+  {
+    "id": "app.ai.mcp.secrets_for_new_address.app_error",
+    "translation": "To change this MCP server's address, enter its headers and client secret again: the saved ones are only sent where they were saved for.",
+    "description": "API error of the server's AI service (Antimatter): an admin changed an MCP server's URL without entering its saved headers or OAuth client secret again."
   },
   {
     "id": "app.ai.mcp.slug_taken.app_error",

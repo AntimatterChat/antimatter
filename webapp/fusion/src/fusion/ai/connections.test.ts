@@ -4,6 +4,7 @@
 import type {AIConnection} from '@mattermost/types/ai_connections';
 
 import {
+    addressChanged,
     draftFromConnection,
     endpointChanged,
     newDraft,
@@ -16,7 +17,9 @@ import {
     sortedPurposes,
     testRequestNeedsSavedSecrets,
     usageByDay,
+    withSecretsRetyped,
 } from './connections';
+import type {Draft} from './connections';
 
 const saved: AIConnection = {
     id: 'c1',
@@ -107,6 +110,60 @@ describe('fusion/ai/connections', () => {
         expect(endpointChanged(moved, saved)).toBe(true);
         expect(testRequestNeedsSavedSecrets(moved, saved)).toBe(true);
         expect(testRequestNeedsSavedSecrets({...moved, keyAction: 'replace', apiKey: 'k', headersChanged: true, headers: []}, saved)).toBe(false);
+    });
+
+    // The server refuses a patch that moves a connection (provider or base URL) without giving the saved key and
+    // headers again (PatchAIConnection): the form asks for them, and never sends such a patch.
+    describe('a new address asks for the saved key and headers again', () => {
+        const serverRefuses = (patch: ReturnType<typeof patchOf>) => (saved.api_key_set && patch.api_key === undefined) || ((saved.extra_header_names || []).length > 0 && patch.extra_headers === undefined);
+        const edit = (change: Partial<Draft>) => withSecretsRetyped({...draftFromConnection(saved), ...change}, saved);
+
+        test('the same address keeps them', () => {
+            const draft = edit({name: 'Renamed', baseURL: 'https://api.openai.com/v1/ '});
+            expect(addressChanged(draft, saved)).toBe(false);
+            expect(draft.keyAction).toBe('keep');
+            expect(draft.headersChanged).toBe(false);
+            expect(patchOf(draft, 'server', saved)).not.toHaveProperty('api_key');
+        });
+
+        test.each([
+            ['another base URL', {baseURL: 'https://attacker.example.com/v1'}],
+            ['another provider', {provider: 'anthropic' as const}],
+        ])('%s', (_, change) => {
+            const draft = edit(change);
+            expect(addressChanged(draft, saved)).toBe(true);
+            expect(draft.keyAction).toBe('replace');
+            expect(draft.apiKey).toBe('');
+            expect(draft.headersChanged).toBe(true);
+            expect(draft.headers.map((h) => [h.name, h.value])).toEqual([['X-Org', '']]);
+
+            // The header values are required; the key left empty means no key.
+            expect(problemsOf({...draft, name: 'x'})).toEqual(['headerValue']);
+            const patch = patchOf(draft, 'server', saved);
+            expect(serverRefuses(patch)).toBe(false);
+            expect(patch.api_key).toBe('');
+            expect(patchOf({...draft, headers: []}, 'server', saved).extra_headers).toEqual({});
+
+            const typedDraft = {...draft, apiKey: ' sk-new ', headers: [newHeaderRow('X-Org', 'acme')]};
+            expect(problemsOf({...typedDraft, name: 'x'})).toEqual([]);
+            const typed = patchOf(typedDraft, 'server', saved);
+            expect(serverRefuses(typed)).toBe(false);
+            expect(typed.api_key).toBe('sk-new');
+            expect(typed.extra_headers).toEqual({'X-Org': 'acme'});
+        });
+
+        test('a removed key stays removed, and a connection without secrets has nothing to ask', () => {
+            expect(edit({keyAction: 'remove', baseURL: 'https://x.example.com/v1'}).keyAction).toBe('remove');
+            const bare: AIConnection = {...saved, api_key_set: false, api_key_last4: '', extra_header_names: []};
+            const draft = withSecretsRetyped({...draftFromConnection(bare), baseURL: 'https://x.example.com/v1'}, bare);
+            expect(draft.keyAction).toBe('keep');
+            expect(draft.headersChanged).toBe(false);
+        });
+
+        test('a key field left empty at a new address tests without the saved key', () => {
+            const draft = edit({baseURL: 'https://x.example.com/v1'});
+            expect(testRequestNeedsSavedSecrets(draft, saved)).toBe(false);
+        });
     });
 
     test('a community is offered no preset on the server\'s own network', () => {

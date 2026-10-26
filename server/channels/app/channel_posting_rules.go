@@ -90,18 +90,43 @@ func (a *App) CanStartConversations(rctx request.CTX, userID string, channel *mo
 // checkChannelPostingRules is what a channel's type asks of a post, in CreatePost. Rule 1, a forum takes only topics:
 // a root post there needs a title, from everyone, apps and moved copies included (checkForumStructure). Rule 2, a
 // root post needs create_root_post (judged on its author: an incoming webhook's maker, the one who ran a command, a
-// bot); apps' posts (trusted, as on the rest of the plugin API) and the copies of a moved or copied thread (the one
-// moving it is checked instead, in MoveThreadToChannel and MoveThread) skip it. System messages skip both; imports
+// bot); the copies of a moved or copied thread skip it (the one moving it is checked instead, in MoveThreadToChannel
+// and MoveThread). An app posting as itself (a bot) is trusted, as on the rest of the plugin API, and skips it too; an
+// app posting as a person has that person's rights, as the REST API would give them: create_post in the channel
+// (read-only channels, overrides), not while they're timed out, and rule 2. System messages skip every rule; imports
 // don't go through here (they check rule 1 themselves).
-func (a *App) checkChannelPostingRules(rctx request.CTX, post *model.Post, channel *model.Channel, flags model.CreatePostFlags) *model.AppError {
+func (a *App) checkChannelPostingRules(rctx request.CTX, post *model.Post, channel *model.Channel, author *model.User, flags model.CreatePostFlags) *model.AppError {
 	if post.IsSystemMessage() {
 		return nil
 	}
 	if appErr := a.checkForumStructure(post, channel); appErr != nil {
 		return appErr
 	}
-	if post.RootId != "" || flags.FromPlugin || flags.RelocatedPost {
+	if flags.RelocatedPost {
+		return nil
+	}
+	if flags.FromPlugin {
+		if author == nil || author.IsBot {
+			return nil
+		}
+		if appErr := a.checkPluginPostAsPerson(rctx, post, channel); appErr != nil {
+			return appErr
+		}
+	}
+	if post.RootId != "" {
 		return nil
 	}
 	return a.CanStartConversations(rctx, post.UserId, channel)
+}
+
+// checkPluginPostAsPerson is what the REST API asks of someone posting, for an app posting as them: create_post in the
+// channel (or create_post_public in a public one they haven't joined), and no timeout in its community.
+func (a *App) checkPluginPostAsPerson(rctx request.CTX, post *model.Post, channel *model.Channel) *model.AppError {
+	if appErr := userCreatePostPermissionCheckWithApp(rctx, a, post.UserId, channel.Id); appErr != nil {
+		return appErr
+	}
+	if channel.TeamId != "" && a.isTimedOut(rctx, channel.TeamId, post.UserId) {
+		return model.MakePermissionErrorForUser(post.UserId, []*model.Permission{model.PermissionCreatePost})
+	}
+	return nil
 }

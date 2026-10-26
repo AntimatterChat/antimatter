@@ -285,6 +285,11 @@ func updateOutgoingOAuthConnection(c *Context, w http.ResponseWriter, r *http.Re
 	}
 	auditRec.AddEventPriorState(currentConnection)
 
+	if appErr := checkOutgoingOAuthSecretsForNewTarget(currentConnection, &inputConnection); appErr != nil {
+		c.Err = appErr
+		return
+	}
+
 	currentConnection.Patch(&inputConnection)
 
 	connection, err := service.UpdateConnection(c.AppContext, currentConnection)
@@ -311,6 +316,28 @@ func updateOutgoingOAuthConnection(c *Context, w http.ResponseWriter, r *http.Re
 		c.Err = model.NewAppError(whereOutgoingOAuthConnection, "api.context.outgoing_oauth_connection.update_connection.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
 		return
 	}
+}
+
+// checkOutgoingOAuthSecretsForNewTarget refuses an update that sends the stored secrets somewhere else without
+// giving them again: a new token URL needs the client secret, and a password grant whose token URL, grant type or
+// username changes needs the password. Someone who may edit connections but not read their secrets could otherwise
+// have them sent to a server of their own the next time a token is fetched.
+func checkOutgoingOAuthSecretsForNewTarget(current, input *model.OutgoingOAuthConnection) *model.AppError {
+	tokenURLChanged := input.OAuthTokenURL != "" && input.OAuthTokenURL != current.OAuthTokenURL
+	grantType := current.GrantType
+	if input.GrantType != "" {
+		grantType = input.GrantType
+	}
+	usernameChanged := input.CredentialsUsername != nil && *input.CredentialsUsername != model.SafeDereference(current.CredentialsUsername)
+
+	needsSecret := tokenURLChanged && current.ClientSecret != "" && input.ClientSecret == ""
+	needsPassword := grantType == model.OutgoingOAuthConnectionGrantTypePassword &&
+		model.SafeDereference(current.CredentialsPassword) != "" && model.SafeDereference(input.CredentialsPassword) == "" &&
+		(tokenURLChanged || grantType != current.GrantType || usernameChanged)
+	if needsSecret || needsPassword {
+		return model.NewAppError(whereOutgoingOAuthConnection, "api.context.outgoing_oauth_connection.update_connection.secrets_for_new_target.app_error", nil, "", http.StatusBadRequest)
+	}
+	return nil
 }
 
 func deleteOutgoingOAuthConnection(c *Context, w http.ResponseWriter, r *http.Request) {

@@ -292,7 +292,7 @@ func (a *App) CreatePost(rctx request.CTX, post *model.Post, channel *model.Chan
 
 	// Antimatter: the channel's type rules (forums take only topics; who starts conversations), see
 	// checkChannelPostingRules.
-	if err = a.checkChannelPostingRules(rctx, post, channel, flags); err != nil {
+	if err = a.checkChannelPostingRules(rctx, post, channel, user, flags); err != nil {
 		return nil, false, err
 	}
 

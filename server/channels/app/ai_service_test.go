@@ -282,6 +282,56 @@ func TestAIConnectionKeysAreSealed(t *testing.T) {
 	assert.NotContains(t, th.LogBuffer.String(), "header-secret-value")
 }
 
+// A connection's saved key and headers go only where they were saved for: pointing it at another address or provider
+// needs them again, so that someone who may edit it but not read them can't have them sent elsewhere.
+func TestPatchAIConnectionBaseURLChangeRequiresKey(t *testing.T) {
+	th := setupAITest(t)
+	f := newFakeLLM(t, "Hi")
+	other := newFakeLLM(t, "Hi")
+	c := createTestAIConnection(t, th, f, model.AIConnectionScopeServer, func(req *model.AIConnectionRequest) {
+		req.ExtraHeaders = map[string]string{"X-Org": "header-secret-value"}
+	})
+	elsewhere := other.URL + "/v1"
+
+	_, appErr := th.App.PatchAIConnection(th.Context, c, &model.AIConnectionPatch{BaseURL: &elsewhere}, th.SystemAdminUser.Id)
+	require.NotNil(t, appErr, "a new address without the key and headers again")
+	assert.Equal(t, "app.ai.connection.secrets_for_new_address.app_error", appErr.Id)
+	assert.Equal(t, http.StatusBadRequest, appErr.StatusCode)
+
+	_, appErr = th.App.PatchAIConnection(th.Context, c, &model.AIConnectionPatch{BaseURL: &elsewhere, APIKey: model.NewPointer("sk-new-key-0000000000wxyz")}, th.SystemAdminUser.Id)
+	require.NotNil(t, appErr, "the headers too")
+	assert.Equal(t, "app.ai.connection.secrets_for_new_address.app_error", appErr.Id)
+
+	_, appErr = th.App.PatchAIConnection(th.Context, c, &model.AIConnectionPatch{Provider: model.NewPointer(model.AIProviderAnthropic)}, th.SystemAdminUser.Id)
+	require.NotNil(t, appErr, "another provider is another address")
+	assert.Equal(t, "app.ai.connection.secrets_for_new_address.app_error", appErr.Id)
+
+	stored, err := th.App.Srv().Store().AIConnection().Get(th.Context, c.Id)
+	require.NoError(t, err)
+	assert.Equal(t, f.URL+"/v1", stored.BaseURL, "nothing was saved")
+
+	sameURL := f.URL + "/v1/"
+	patched, appErr := th.App.PatchAIConnection(th.Context, c, &model.AIConnectionPatch{BaseURL: &sameURL, Name: model.NewPointer("Renamed")}, th.SystemAdminUser.Id)
+	require.Nil(t, appErr, "the same address keeps the saved key and headers")
+	assert.Equal(t, stored.APIKeySealed, patched.APIKeySealed)
+
+	patched, appErr = th.App.PatchAIConnection(th.Context, patched, &model.AIConnectionPatch{
+		BaseURL:      &elsewhere,
+		APIKey:       model.NewPointer("sk-new-key-0000000000wxyz"),
+		ExtraHeaders: &map[string]string{"X-Org": "new-header-value"},
+	}, th.SystemAdminUser.Id)
+	require.Nil(t, appErr, "a new address with its key and headers")
+	assert.Equal(t, elsewhere, patched.BaseURL)
+	assert.Equal(t, "wxyz", patched.APIKeyLast4)
+
+	_, appErr = aiChat(th, AICall{UserID: th.BasicUser.Id, ChannelID: th.BasicChannel.Id}, c.Id)
+	require.Nil(t, appErr)
+	require.NotEmpty(t, other.calls())
+	for _, call := range other.calls() {
+		assert.Equal(t, "Bearer sk-new-key-0000000000wxyz", call.Authorization, "the old key never reaches the new address")
+	}
+}
+
 func TestAIProviderErrorsHideTheKey(t *testing.T) {
 	th := setupAITest(t)
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

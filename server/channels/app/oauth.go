@@ -944,6 +944,10 @@ func (a *App) CompleteSwitchWithOAuth(rctx request.CTX, service string, userData
 		return nil, model.NewAppError("CompleteSwitchWithOAuth", "api.user.complete_switch_with_oauth.parse.app_error",
 			map[string]any{"Service": service}, "", http.StatusBadRequest)
 	}
+	// The switch gives the account the provider's address: not one it doesn't vouch for.
+	if einterfaces.TakeOAuthEmailUnverified(ssoUser) {
+		return nil, model.NewAppError("CompleteSwitchWithOAuth", "api.user.oauth.email_unverified.app_error", nil, "service="+service, http.StatusForbidden)
+	}
 
 	user, nErr := a.Srv().Store().User().GetByEmail(email)
 	if nErr != nil {

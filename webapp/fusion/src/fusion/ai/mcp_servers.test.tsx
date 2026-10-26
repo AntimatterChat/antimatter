@@ -105,6 +105,51 @@ describe('fusion/ai/MCPServers', () => {
         expect(screen.queryByRole('switch', {name: 'All communities'})).not.toBeInTheDocument();
     });
 
+    // The server refuses to keep the saved headers or client secret at a new address: the form asks for them again.
+    test('a new address asks for the shared account\'s headers again', async () => {
+        jest.spyOn(Client4, 'getAIMCPServers').mockResolvedValue([server({auth: 'service_account', header_names: ['Authorization']})]);
+        const patch = jest.spyOn(Client4, 'patchAIMCPServer').mockImplementation(async () => server());
+        renderWithContext(
+            <MCPServers
+                scope='server'
+                listScope=''
+            />,
+            state,
+        );
+        await userEvent.click(await screen.findByRole('button', {name: 'Edit Tracker'}));
+        const url = screen.getByPlaceholderText('https://mcp.example.com/mcp');
+        await userEvent.clear(url);
+        await userEvent.type(url, 'https://mcp2.example.com/mcp');
+        expect(screen.getByLabelText('Value of header 1')).toHaveValue('');
+        expect(screen.getByRole('button', {name: 'Save'})).toBeDisabled();
+
+        await userEvent.type(screen.getByLabelText('Value of header 1'), 'Bearer new');
+        await userEvent.click(screen.getByRole('button', {name: 'Save'}));
+        expect(patch).toHaveBeenCalledWith('s1', expect.objectContaining({url: 'https://mcp2.example.com/mcp', headers: {Authorization: 'Bearer new'}}));
+    });
+
+    test('a new address asks for the client secret again', async () => {
+        jest.spyOn(Client4, 'getAIMCPServers').mockResolvedValue([server({oauth_client_id: 'client', oauth_client_secret_set: true})]);
+        const patch = jest.spyOn(Client4, 'patchAIMCPServer').mockImplementation(async () => server());
+        renderWithContext(
+            <MCPServers
+                scope='server'
+                listScope=''
+            />,
+            state,
+        );
+        await userEvent.click(await screen.findByRole('button', {name: 'Edit Tracker'}));
+        expect(screen.queryByLabelText('OAuth client secret')).not.toBeInTheDocument();
+        const url = screen.getByPlaceholderText('https://mcp.example.com/mcp');
+        await userEvent.clear(url);
+        await userEvent.type(url, 'https://mcp2.example.com/mcp');
+        expect(screen.getByText(/At a new address, type the client secret again/)).toBeInTheDocument();
+
+        await userEvent.type(screen.getByLabelText('OAuth client secret'), 'new-secret');
+        await userEvent.click(screen.getByRole('button', {name: 'Save'}));
+        expect(patch).toHaveBeenCalledWith('s1', expect.objectContaining({url: 'https://mcp2.example.com/mcp', oauth_client_secret: 'new-secret'}));
+    });
+
     test('deleting asks first, in the page', async () => {
         jest.spyOn(Client4, 'getAIMCPServers').mockResolvedValue([server()]);
         const remove = jest.spyOn(Client4, 'deleteAIMCPServer').mockResolvedValue({status: 'OK'});

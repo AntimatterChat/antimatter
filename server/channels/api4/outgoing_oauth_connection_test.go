@@ -15,6 +15,7 @@ import (
 	"github.com/mattermost/mattermost/server/public/plugin/plugintest/mock"
 	"github.com/mattermost/mattermost/server/v8/channels/web"
 	"github.com/mattermost/mattermost/server/v8/einterfaces/mocks"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
@@ -1293,5 +1294,84 @@ func TestHandlerOutgoingOAuthConnectionHandlerValidate(t *testing.T) {
 
 		require.Equal(t, http.StatusOK, httpRecorder.Code)
 		outgoingOauthIface.AssertNotCalled(t, "GetConnection", mock.Anything, mock.Anything)
+	})
+}
+
+// An update that points a connection elsewhere must give its secrets again: someone who may edit connections but
+// not read their secrets could otherwise have them sent to a token URL of their own.
+func TestHandlerOutgoingOAuthConnectionUpdateNeedsSecretsForNewTarget(t *testing.T) {
+	const errID = "api.context.outgoing_oauth_connection.update_connection.secrets_for_new_target.app_error"
+	password := func() *model.OutgoingOAuthConnection {
+		c := newOutgoingOAuthConnection()
+		c.GrantType = model.OutgoingOAuthConnectionGrantTypePassword
+		c.CredentialsUsername = model.NewPointer("alice")
+		c.CredentialsPassword = model.NewPointer("pw")
+		return c
+	}
+
+	for name, tc := range map[string]struct {
+		current *model.OutgoingOAuthConnection
+		input   model.OutgoingOAuthConnection
+		refused bool
+	}{
+		"a new name":                       {current: newOutgoingOAuthConnection(), input: model.OutgoingOAuthConnection{Name: "renamed"}},
+		"the same token URL":               {current: newOutgoingOAuthConnection(), input: model.OutgoingOAuthConnection{OAuthTokenURL: "http://localhost:9999/oauth/token"}},
+		"a new token URL without a secret": {current: newOutgoingOAuthConnection(), input: model.OutgoingOAuthConnection{OAuthTokenURL: "https://attacker.example.com/token"}, refused: true},
+		"a new token URL with a secret":    {current: newOutgoingOAuthConnection(), input: model.OutgoingOAuthConnection{OAuthTokenURL: "https://new.example.com/token", ClientSecret: "new"}},
+		"password grant, new token URL":    {current: password(), input: model.OutgoingOAuthConnection{OAuthTokenURL: "https://attacker.example.com/token", ClientSecret: "known"}, refused: true},
+		"password grant, new username":     {current: password(), input: model.OutgoingOAuthConnection{CredentialsUsername: model.NewPointer("bob")}, refused: true},
+		"password grant, same username":    {current: password(), input: model.OutgoingOAuthConnection{CredentialsUsername: model.NewPointer("alice")}},
+		"password grant, all given again":  {current: password(), input: model.OutgoingOAuthConnection{OAuthTokenURL: "https://new.example.com/token", ClientSecret: "s", CredentialsUsername: model.NewPointer("bob"), CredentialsPassword: model.NewPointer("pw2")}},
+		"back to password grant, old password": {current: func() *model.OutgoingOAuthConnection {
+			c := password()
+			c.GrantType = model.OutgoingOAuthConnectionGrantTypeClientCredentials
+			return c
+		}(), input: model.OutgoingOAuthConnection{GrantType: model.OutgoingOAuthConnectionGrantTypePassword}, refused: true},
+	} {
+		t.Run(name, func(t *testing.T) {
+			appErr := checkOutgoingOAuthSecretsForNewTarget(tc.current, &tc.input)
+			if !tc.refused {
+				require.Nil(t, appErr)
+				return
+			}
+			require.NotNil(t, appErr)
+			assert.Equal(t, errID, appErr.Id)
+			assert.Equal(t, http.StatusBadRequest, appErr.StatusCode)
+		})
+	}
+
+	t.Run("the handler refuses before saving", func(t *testing.T) {
+		th := Setup(t).InitBasic(t)
+		defer outgoingOauthConnectionsCleanup(t, th)
+
+		c := &Context{}
+		c.App = th.App
+		c.Logger = th.App.Srv().Log()
+		session := model.Session{Id: model.NewId(), UserId: model.NewId(), Roles: model.SystemUserRoleId}
+		c.AppContext = th.Context.WithSession(&session)
+		th.AddPermissionToRole(t, model.PermissionManageOutgoingOAuthConnections.Id, model.SystemUserRoleId)
+
+		stored := newOutgoingOAuthConnection()
+		stored.Id = model.NewId()
+		body := &bytes.Buffer{}
+		require.NoError(t, json.NewEncoder(body).Encode(&model.OutgoingOAuthConnection{Id: stored.Id, OAuthTokenURL: "https://attacker.example.com/token"}))
+		req, err := http.NewRequest("PUT", "/"+stored.Id, body)
+		require.NoError(t, err)
+		c.Params = &web.Params{OutgoingOAuthConnectionID: stored.Id}
+
+		// No UpdateConnection expectation: calling it fails the test.
+		outgoingOauthIface := &mocks.OutgoingOAuthConnectionInterface{}
+		th.App.Config().ServiceSettings.EnableOutgoingOAuthConnections = new(true)
+		th.App.Srv().OutgoingOAuthConnection = outgoingOauthIface
+		outgoingOauthIface.Mock.On("GetConnection", c.AppContext, stored.Id).Return(stored, nil)
+
+		http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			updateOutgoingOAuthConnection(c, w, r)
+		}).ServeHTTP(httptest.NewRecorder(), req)
+
+		require.NotNil(t, c.Err)
+		assert.Equal(t, errID, c.Err.Id)
+		assert.Equal(t, http.StatusBadRequest, c.Err.StatusCode)
+		outgoingOauthIface.AssertNotCalled(t, "UpdateConnection", mock.Anything, mock.Anything)
 	})
 }

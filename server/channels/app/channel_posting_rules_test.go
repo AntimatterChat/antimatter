@@ -242,9 +242,65 @@ func TestRootPostsInAnnouncementChannels(t *testing.T) {
 
 	t.Run("apps and system messages", func(t *testing.T) {
 		user := f.member(t, f.announcement)
-		require.Nil(t, f.post(user.Id, f.announcement, "", model.CreatePostFlags{FromPlugin: true}), "the plugin API: apps are trusted")
+		requireRootPostRefusal(t, f.post(user.Id, f.announcement, "", model.CreatePostFlags{FromPlugin: true}), moderatorsOnly, "an app posting as a person has their rights")
+		require.Nil(t, f.post(user.Id, f.announcement, f.root.Id, model.CreatePostFlags{FromPlugin: true}), "replies as everyone")
+		bot := th.CreateBot(t)
+		require.Nil(t, f.post(bot.UserId, f.announcement, "", model.CreatePostFlags{FromPlugin: true}), "an app posting as itself is trusted")
 		_, _, appErr := th.App.CreatePost(th.Context, &model.Post{UserId: user.Id, ChannelId: f.announcement.Id, Type: model.PostTypeJoinChannel, Message: "joined"}, f.announcement, model.CreatePostFlags{})
 		require.Nil(t, appErr, "the server's own messages")
+	})
+}
+
+// An app posting through the plugin API as a person (polls, shared notes) gets the rights the REST API would give
+// them: it can't start a conversation where only moderators do, post where they may not (read-only channels,
+// overrides), nor speak for them while they're timed out. As itself (a bot) it stays trusted.
+func TestPluginRootPostAsUserNeedsRootPostRight(t *testing.T) {
+	mainHelper.Parallel(t)
+	f := setupPostingRules(t)
+	th := f.th
+	api := NewPluginAPI(th.App, th.Context, &model.Manifest{Id: "some.app"})
+	post := func(userID string, channel *model.Channel, rootID string) *model.AppError {
+		_, appErr := api.CreatePost(&model.Post{UserId: userID, ChannelId: channel.Id, RootId: rootID, Message: "From an app " + model.NewId()})
+		return appErr
+	}
+
+	t.Run("where only moderators start conversations", func(t *testing.T) {
+		user := f.member(t, f.announcement)
+		requireRootPostRefusal(t, post(user.Id, f.announcement, ""), moderatorsOnly)
+		require.Nil(t, post(user.Id, f.announcement, f.root.Id), "a reply")
+		require.Nil(t, post(th.SystemAdminUser.Id, f.announcement, ""), "a moderator")
+	})
+
+	t.Run("where they may not post", func(t *testing.T) {
+		user := f.member(t, f.chat)
+		require.Nil(t, post(user.Id, f.chat, ""))
+		f.override(t, f.chat, model.ChannelOverrideTargetUser, user.Id, nil, []string{model.PermissionCreatePost.Id})
+		appErr := post(user.Id, f.chat, "")
+		require.NotNil(t, appErr)
+		assert.Equal(t, http.StatusForbidden, appErr.StatusCode)
+	})
+
+	t.Run("in a private channel they're not in", func(t *testing.T) {
+		user := f.member(t)
+		private := th.CreatePrivateChannel(t, f.team)
+		appErr := post(user.Id, private, "")
+		require.NotNil(t, appErr)
+		assert.Equal(t, http.StatusForbidden, appErr.StatusCode)
+	})
+
+	t.Run("while they're timed out", func(t *testing.T) {
+		user := f.member(t, f.chat)
+		admin := model.Session{UserId: th.SystemAdminUser.Id, Roles: model.SystemAdminRoleId + " " + model.SystemUserRoleId}
+		_, appErr := th.App.SetMemberTimeout(th.Context, admin, f.team.Id, user.Id, &model.MemberTimeoutRequest{Until: model.GetMillis() + int64(time.Hour/time.Millisecond)})
+		require.Nil(t, appErr)
+		appErr = post(user.Id, f.chat, "")
+		require.NotNil(t, appErr)
+		assert.Equal(t, http.StatusForbidden, appErr.StatusCode)
+	})
+
+	t.Run("as itself", func(t *testing.T) {
+		bot := th.CreateBot(t)
+		require.Nil(t, post(bot.UserId, f.announcement, ""), "an app's bot is trusted, as upstream")
 	})
 }
 

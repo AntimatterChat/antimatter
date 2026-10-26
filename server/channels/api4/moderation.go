@@ -29,13 +29,14 @@ func (api *API) InitModeration() {
 }
 
 // getTeamTimeouts lists who's timed out in a team, for its members: their clients keep them from speaking, and show
-// it.
+// it. Why, and by whom, is for those who moderate the team only.
 func getTeamTimeouts(c *Context, w http.ResponseWriter, r *http.Request) {
 	c.RequireTeamId()
 	if c.Err != nil {
 		return
 	}
-	if !c.App.SessionHasPermissionToTeam(*c.AppContext.Session(), c.Params.TeamId, model.PermissionViewTeam) {
+	session := *c.AppContext.Session()
+	if !c.App.SessionHasPermissionToTeam(session, c.Params.TeamId, model.PermissionViewTeam) {
 		c.SetPermissionError(model.PermissionViewTeam)
 		return
 	}
@@ -43,6 +44,16 @@ func getTeamTimeouts(c *Context, w http.ResponseWriter, r *http.Request) {
 	if appErr != nil {
 		c.Err = appErr
 		return
+	}
+	if !c.App.SessionCanModerateTeam(session, c.Params.TeamId) {
+		// The timeouts are the cache's: copy them.
+		public := make([]*model.MemberTimeout, 0, len(timeouts))
+		for _, t := range timeouts {
+			cp := *t
+			cp.Reason, cp.CreatedBy = "", ""
+			public = append(public, &cp)
+		}
+		timeouts = public
 	}
 	writeJSON(c, w, timeouts)
 }

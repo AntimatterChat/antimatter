@@ -210,7 +210,7 @@ export function isValidBaseURL(raw: string): boolean {
     }
 }
 
-export type DraftProblem = 'name' | 'baseURL' | 'limits' | 'headers' | 'apiKey';
+export type DraftProblem = 'name' | 'baseURL' | 'limits' | 'headers' | 'headerValue' | 'apiKey';
 
 // problemsOf lists what keeps a draft from being saved, as the server would refuse it.
 export function problemsOf(draft: Draft): DraftProblem[] {
@@ -227,6 +227,11 @@ export function problemsOf(draft: Draft): DraftProblem[] {
     }
     if (draft.headersChanged && draft.headers.some((h) => (h.name.trim() || h.value) && (!isValidHeaderName(h.name.trim()) || (/[\r\n]/).test(h.value)))) {
         problems.push('headers');
+    }
+
+    // Headers typed again (a new address asks for them) need their values: saved ones are never given back.
+    if (draft.headersChanged && draft.headers.some((h) => h.name.trim() && !h.value)) {
+        problems.push('headerValue');
     }
     if (draft.keyAction === 'replace' && (/[\r\n]/).test(draft.apiKey)) {
         problems.push('apiKey');
@@ -265,9 +270,32 @@ export function requestOf(draft: Draft, scope: string): AIConnectionRequest {
     };
 }
 
+// addressChanged tells whether a saved connection's draft sends its requests elsewhere: another provider or base URL.
+// Its saved key and headers go only to the address they were saved for, so the server then asks for them again.
+export function addressChanged(draft: Draft, saved: AIConnection): boolean {
+    return draft.provider !== saved.provider || draft.baseURL.trim().replace(/\/+$/, '') !== (saved.base_url || '').trim().replace(/\/+$/, '');
+}
+
+// withSecretsRetyped is the draft of a saved connection once its address moved: a saved key can't be kept, so the key
+// field asks for it again (left empty: no key), and saved headers are typed again, names kept.
+export function withSecretsRetyped(draft: Draft, saved: AIConnection): Draft {
+    if (!addressChanged(draft, saved)) {
+        return draft;
+    }
+    let next = draft;
+    if (draft.keyAction === 'keep' && saved.api_key_set) {
+        next = {...next, keyAction: 'replace', apiKey: ''};
+    }
+    if (!draft.headersChanged && (saved.extra_header_names || []).length > 0) {
+        next = {...next, headersChanged: true, headers: draft.headers.map((h) => ({...h, value: ''}))};
+    }
+    return next;
+}
+
 // patchOf is the patch saving an edited connection: the key only when replaced or removed, the headers only when
-// changed; everything else as shown.
-export function patchOf(draft: Draft, scope: string): AIConnectionPatch {
+// changed; everything else as shown. At a new address (saved given), a key field left empty sends no key rather
+// than keeping the saved one, which the server refuses.
+export function patchOf(draft: Draft, scope: string, saved?: AIConnection): AIConnectionPatch {
     const request = requestOf(draft, scope);
     const patch: AIConnectionPatch = {
         name: request.name,
@@ -281,7 +309,7 @@ export function patchOf(draft: Draft, scope: string): AIConnectionPatch {
     if (scope === AI_CONNECTION_SCOPE_SERVER) {
         patch.sharing = request.sharing;
     }
-    if (draft.keyAction === 'replace' && request.api_key) {
+    if (draft.keyAction === 'replace' && (request.api_key || (saved && addressChanged(draft, saved)))) {
         patch.api_key = request.api_key;
     } else if (draft.keyAction === 'remove') {
         patch.api_key = '';
@@ -301,15 +329,19 @@ export function endpointChanged(draft: Draft, saved: AIConnection): boolean {
         draft.headersChanged;
 }
 
-// keyActionOf is what saving does to a saved key: Replace with nothing typed keeps it.
-export function keyActionOf(draft: Draft): KeyAction {
-    return draft.keyAction === 'replace' && !draft.apiKey.trim() ? 'keep' : draft.keyAction;
+// keyActionOf is what saving does to a saved key: Replace with nothing typed keeps it, or removes it at a new address
+// (patchOf).
+export function keyActionOf(draft: Draft, saved?: AIConnection): KeyAction {
+    if (draft.keyAction === 'replace' && !draft.apiKey.trim()) {
+        return saved && addressChanged(draft, saved) ? 'remove' : 'keep';
+    }
+    return draft.keyAction;
 }
 
 // testRequestNeedsSavedSecrets tells whether testing a changed draft would need the saved key or headers, which the
 // form doesn't have: the admin saves first, or types them again.
 export function testRequestNeedsSavedSecrets(draft: Draft, saved: AIConnection): boolean {
-    return (keyActionOf(draft) === 'keep' && saved.api_key_set) || (!draft.headersChanged && (saved.extra_header_names || []).length > 0);
+    return (keyActionOf(draft, saved) === 'keep' && saved.api_key_set) || (!draft.headersChanged && (saved.extra_header_names || []).length > 0);
 }
 
 // The message of an API error (its AppError's, translated by the server), else the fallback.

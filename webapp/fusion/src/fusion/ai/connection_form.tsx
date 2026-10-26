@@ -23,6 +23,7 @@ import {
     DEFAULT_BASE_URLS,
     capabilitiesOf,
     draftFromConnection,
+    addressChanged,
     endpointChanged,
     errorMessage,
     newDraft,
@@ -32,6 +33,7 @@ import {
     problemsOf,
     requestOf,
     testRequestNeedsSavedSecrets,
+    withSecretsRetyped,
 } from './connections';
 import type {Draft, HeaderRow} from './connections';
 
@@ -93,10 +95,12 @@ export default function ConnectionForm({scope: newScope, connection, onSaved, on
 
     const communities = useMemo(() => Object.values(teams).filter((t) => t.delete_at === 0).sort((a, b) => a.display_name.localeCompare(b.display_name)), [teams]);
 
+    // A new address can't keep the saved key and headers (the server refuses it): their fields ask for them again.
     const set = (patch: Partial<Draft>) => {
-        setDraft((d) => ({...d, ...patch}));
+        setDraft((d) => (connection ? withSecretsRetyped({...d, ...patch}, connection) : {...d, ...patch}));
         setError('');
     };
+    const moved = connection ? addressChanged(draft, connection) : false;
     const setHeader = (row: HeaderRow, patch: Partial<HeaderRow>) => set({headers: draft.headers.map((h) => (h.key === row.key ? {...h, ...patch} : h))});
     const toggleIn = (list: string[], id: string) => (list.includes(id) ? list.filter((x) => x !== id) : [...list, id]);
 
@@ -122,7 +126,7 @@ export default function ConnectionForm({scope: newScope, connection, onSaved, on
         setBusy('save');
         setError('');
         try {
-            const saved = connection ? await Client4.patchAIConnection(connection.id, patchOf(draft, scope)) : await Client4.createAIConnection(requestOf(draft, scope));
+            const saved = connection ? await Client4.patchAIConnection(connection.id, patchOf(draft, scope, connection)) : await Client4.createAIConnection(requestOf(draft, scope));
             onSaved(saved, !connection);
         } catch (err) {
             setError(errorMessage(err, formatMessage({id: 'fusion.aiConnections.saveFailed', defaultMessage: 'The connection couldn\'t be saved.'})));
@@ -299,7 +303,7 @@ export default function ConnectionForm({scope: newScope, connection, onSaved, on
                             placeholder={formatMessage({id: 'fusion.aiConnections.keyPlaceholder', defaultMessage: 'Paste the key; leave it empty if the endpoint needs none'})}
                             onChange={(e) => set({apiKey: e.target.value})}
                         />
-                        {connection && (
+                        {connection && !moved && (
                             <button
                                 type='button'
                                 className={am('btn', 'small')}
@@ -322,6 +326,7 @@ export default function ConnectionForm({scope: newScope, connection, onSaved, on
                         </button>
                     </div>
                 )}
+                {moved && connection?.api_key_set && <small className={am('field-note')}>{formatMessage({id: 'fusion.aiConnections.keyRetype', defaultMessage: 'At a new address, type the key again: the saved one is only sent to the address it was saved for. Left empty, the connection has no key.'})}</small>}
                 <small className={am('field-note')}>{formatMessage({id: 'fusion.aiConnections.keyNote', defaultMessage: 'Stored encrypted. It\'s never shown again, only its last four characters.'})}</small>
             </div>
 
@@ -398,7 +403,7 @@ export default function ConnectionForm({scope: newScope, connection, onSaved, on
                             >
                                 {formatMessage({id: 'fusion.aiConnections.headerAdd', defaultMessage: 'Add a header'})}
                             </button>
-                            {connection && (
+                            {connection && !moved && (
                                 <button
                                     type='button'
                                     className={am('btn', 'small')}
@@ -409,6 +414,7 @@ export default function ConnectionForm({scope: newScope, connection, onSaved, on
                             )}
                         </div>
                         {problems.includes('headers') && <small className={am('field-note', 'bad')}>{formatMessage({id: 'fusion.aiConnections.headersBad', defaultMessage: 'A header name is letters, digits and - only, and can\'t be Host, Cookie or Content-Type.'})}</small>}
+                        {problems.includes('headerValue') && <small className={am('field-note', 'bad')}>{formatMessage({id: 'fusion.aiConnections.headerValueMissing', defaultMessage: 'Type each header\'s value, or remove the header.'})}</small>}
                         {connection && (connection.extra_header_names || []).length > 0 && <small className={am('field-note')}>{formatMessage({id: 'fusion.aiConnections.headersRetype', defaultMessage: 'Saved values are never shown: type each value again. Saving replaces all the headers.'})}</small>}
                     </>
                 )}

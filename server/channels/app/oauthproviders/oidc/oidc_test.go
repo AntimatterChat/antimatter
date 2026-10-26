@@ -265,6 +265,40 @@ func TestIdentity(t *testing.T) {
 	assert.False(t, ok)
 }
 
+// An email address the provider doesn't vouch for isn't trusted: email_verified=false, or a Microsoft sign-in open
+// to any tenant giving an address outside the UPN's domain without xms_edov=true.
+func TestIdentityEmailUnverified(t *testing.T) {
+	for name, tc := range map[string]struct {
+		claims     oidc.Claims
+		anyTenant  bool
+		unverified bool
+	}{
+		"no email_verified claim":        {claims: oidc.Claims{"email": "a@corp.com"}},
+		"email_verified true":            {claims: oidc.Claims{"email": "a@corp.com", "email_verified": true}},
+		"email_verified false":           {claims: oidc.Claims{"email": "a@corp.com", "email_verified": false}, unverified: true},
+		"email_verified \"false\"":       {claims: oidc.Claims{"email": "a@corp.com", "email_verified": "false"}, unverified: true},
+		"no email: the UPN stands in":    {claims: oidc.Claims{"upn": "a@corp.com"}, anyTenant: true},
+		"single tenant":                  {claims: oidc.Claims{"email": "ceo@victim.com", "upn": "a@attacker.onmicrosoft.com"}},
+		"any tenant, another domain":     {claims: oidc.Claims{"email": "ceo@victim.com", "upn": "a@attacker.onmicrosoft.com"}, anyTenant: true, unverified: true},
+		"any tenant, no UPN":             {claims: oidc.Claims{"email": "ceo@victim.com"}, anyTenant: true, unverified: true},
+		"any tenant, the UPN's domain":   {claims: oidc.Claims{"email": "Ada@Corp.com", "preferred_username": "ada.l@corp.com"}, anyTenant: true},
+		"any tenant, xms_edov true":      {claims: oidc.Claims{"email": "ada@corp.com", "upn": "a@corp.onmicrosoft.com", "xms_edov": true}, anyTenant: true},
+		"any tenant, xms_edov false":     {claims: oidc.Claims{"email": "ada@corp.com", "upn": "a@corp.onmicrosoft.com", "xms_edov": false}, anyTenant: true, unverified: true},
+		"any tenant, email_verified off": {claims: oidc.Claims{"email": "ada@corp.com", "upn": "a@corp.com", "email_verified": false}, anyTenant: true, unverified: true},
+	} {
+		t.Run(name, func(t *testing.T) {
+			id := oidc.IdentityFromClaims(tc.claims)
+			id.TenantUnrestricted = tc.anyTenant
+			assert.Equal(t, tc.unverified, id.EmailUnverified())
+
+			// The verdict survives the trip through the token user.
+			back, ok := oidc.IdentityFromUser(id.ToUser(nil, "s", false))
+			require.True(t, ok)
+			assert.Equal(t, tc.unverified, back.EmailUnverified())
+		})
+	}
+}
+
 func TestSameUser(t *testing.T) {
 	alt := oidc.NewAltIDCache()
 	db := &model.User{AuthService: "openid", AuthData: model.NewPointer("legacy-sub")}

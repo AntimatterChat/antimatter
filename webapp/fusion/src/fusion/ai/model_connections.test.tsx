@@ -242,7 +242,7 @@ describe('fusion/ai/ModelConnections', () => {
         expect(await screen.findByText(/It works: 12 models in 40 ms/)).toBeInTheDocument();
     });
 
-    test('a new address can\'t be tested with the saved key, which stays on the server', async () => {
+    test('a new address asks for the key again, and is never tested with the saved one', async () => {
         spy('getAIConnections', async () => [connection()]);
         const testSaved = spy('testAIConnection', async () => ({ok: true, latency_ms: 1, model_count: 0}));
         const testRequest = spy('testAIConnectionRequest', async () => ({ok: true, latency_ms: 1, model_count: 0}));
@@ -250,10 +250,27 @@ describe('fusion/ai/ModelConnections', () => {
 
         await userEvent.click(await screen.findByRole('button', {name: 'Edit Lumen OpenAI'}));
         await userEvent.click(screen.getByRole('button', {name: 'OpenRouter'}));
+        expect(screen.getByLabelText('New API key')).toHaveValue('');
+        expect(screen.getByText(/At a new address, type the key again/)).toBeInTheDocument();
+        expect(screen.queryByRole('button', {name: 'Keep the saved key'})).not.toBeInTheDocument();
+
         await userEvent.click(screen.getByRole('button', {name: 'Test connection'}));
-        expect(await screen.findByText(/save first, or type the key again/)).toBeInTheDocument();
+        await waitFor(() => expect(testRequest).toHaveBeenCalledTimes(1));
+        expect(testRequest.mock.calls[0][0]).toMatchObject({base_url: 'https://openrouter.ai/api/v1', api_key: ''});
         expect(testSaved).not.toHaveBeenCalled();
-        expect(testRequest).not.toHaveBeenCalled();
+    });
+
+    test('saving a new address sends the key typed again, as the server asks', async () => {
+        spy('getAIConnections', async () => [connection()]);
+        const patch = spy('patchAIConnection', async () => connection());
+        renderServer();
+
+        await userEvent.click(await screen.findByRole('button', {name: 'Edit Lumen OpenAI'}));
+        await userEvent.click(screen.getByRole('button', {name: 'OpenRouter'}));
+        await userEvent.type(screen.getByLabelText('New API key'), 'sk-router');
+        await userEvent.click(screen.getByRole('button', {name: 'Save'}));
+        await waitFor(() => expect(patch).toHaveBeenCalledTimes(1));
+        expect(patch.mock.calls[0][1]).toMatchObject({base_url: 'https://openrouter.ai/api/v1', api_key: 'sk-router'});
     });
 
     test('loads the models of a saved connection', async () => {
@@ -295,11 +312,6 @@ describe('fusion/ai/ModelConnections', () => {
 
         await userEvent.click(await screen.findByRole('button', {name: 'Edit Lumen OpenAI'}));
         await userEvent.click(screen.getByRole('button', {name: 'OpenRouter'}));
-        await userEvent.click(screen.getByRole('button', {name: 'Load models'}));
-        expect(await screen.findByText(/to load the models of the new address with them, save first/)).toBeInTheDocument();
-        expect(unsaved).not.toHaveBeenCalled();
-
-        await userEvent.click(screen.getByRole('button', {name: 'Replace'}));
         await userEvent.type(screen.getByLabelText('New API key'), 'sk-router');
         await userEvent.click(screen.getByRole('button', {name: 'Load models'}));
         await waitFor(() => expect(unsaved).toHaveBeenCalledTimes(1));
