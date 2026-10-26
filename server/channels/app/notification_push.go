@@ -550,8 +550,8 @@ func (s *Server) StopPushNotificationsHubWorkers() {
 }
 
 func (a *App) rawSendToPushProxy(msg *model.PushNotification) (model.PushResponse, error) {
-	if model.IsMattermostPushServer(*a.Config().EmailSettings.PushNotificationServer) {
-		return nil, errors.New("push notification server is a Mattermost service, which Antimatter doesn't use")
+	if a.Config().EmailSettings.IsPushServerRefused() {
+		return nil, errors.New("push notification server is a Mattermost service, which Antimatter doesn't use unless EmailSettings.AllowMattermostPushService is on")
 	}
 
 	msgJSON, err := json.Marshal(msg)
@@ -637,8 +637,8 @@ func (a *App) SendAckToPushProxy(rctx request.CTX, ack *model.PushNotificationAc
 		mlog.String("status", model.PushReceived),
 	)
 
-	if model.IsMattermostPushServer(*a.Config().EmailSettings.PushNotificationServer) {
-		return errors.New("push notification server is a Mattermost service, which Antimatter doesn't use")
+	if a.Config().EmailSettings.IsPushServerRefused() {
+		return errors.New("push notification server is a Mattermost service, which Antimatter doesn't use unless EmailSettings.AllowMattermostPushService is on")
 	}
 
 	ackJSON, err := json.Marshal(ack)

@@ -4,6 +4,7 @@
 package model
 
 import (
+	"encoding/json"
 	"fmt"
 	"reflect"
 	"regexp"
@@ -110,6 +111,7 @@ func TestDefaultConfigPhonesNoHome(t *testing.T) {
 	cfg.SetDefaults()
 
 	assert.Empty(t, *cfg.EmailSettings.PushNotificationServer, "no push service until the admin sets their own push proxy")
+	assert.False(t, *cfg.EmailSettings.AllowMattermostPushService, "Mattermost's push services stay refused until the admin allows them")
 	assert.Empty(t, *cfg.PluginSettings.MarketplaceURL, "no app marketplace by default")
 	assert.Empty(t, *cfg.AnnouncementSettings.NoticesURL, "no product notices")
 	assert.False(t, *cfg.AnnouncementSettings.AdminNoticesEnabled)
@@ -129,9 +131,93 @@ func TestDefaultConfigPhonesNoHome(t *testing.T) {
 		old.SetDefaults()
 		assert.Empty(t, *old.PluginSettings.MarketplaceURL)
 		assert.Empty(t, *old.AnnouncementSettings.NoticesURL)
-		// The push server is kept as the admin set it (the System Console shows a warning), but nothing is sent to it.
+		// The push server is kept as the admin set it. A configuration upgraded from Mattermost keeps sending to it
+		// (the official mobile apps got their notifications that way): see TestLegacyMattermostPushOptIn.
 		assert.True(t, IsMattermostPushServer(*old.EmailSettings.PushNotificationServer))
 	})
+}
+
+// TestLegacyMattermostPushOptIn: AllowMattermostPushService is only turned on for a configuration upgraded from
+// Mattermost that already sent push notifications to a Mattermost push service, so they keep working. A new
+// configuration, any other upgraded one, and one an earlier Antimatter version already ran (which never sent
+// anything to Mattermost) get it off; a value already saved is never changed.
+func TestLegacyMattermostPushOptIn(t *testing.T) {
+	antimatter := func(cfg *Config) *Config {
+		cfg.ServiceSettings.DefaultWebUI = NewPointer(WebUIFusion)
+		return cfg
+	}
+	withPush := func(server string) *Config {
+		cfg := &Config{}
+		cfg.EmailSettings.SendPushNotifications = NewPointer(true)
+		cfg.EmailSettings.PushNotificationServer = NewPointer(server)
+		return cfg
+	}
+	withOptIn := func(cfg *Config, allow bool) *Config {
+		cfg.EmailSettings.AllowMattermostPushService = NewPointer(allow)
+		return cfg
+	}
+
+	for _, tc := range []struct {
+		name string
+		cfg  *Config
+		want bool
+	}{
+		{"new configuration", &Config{}, false},
+		{"from Mattermost with its test service", withPush(GenericNotificationServer), true},
+		{"from Mattermost with its hosted service", withPush(MHPNSGlobal), true},
+		{"from Mattermost with its legacy hosted service", withPush(MHPNSLegacyUS + "/"), true},
+		{"from Mattermost with its own push proxy", withPush("https://push.example.com"), false},
+		{"from Mattermost without a push server", withPush(""), false},
+		{"from Antimatter with a Mattermost service", antimatter(withPush(MHPNSGlobal)), false},
+		{"from Antimatter with the test service", antimatter(withPush(GenericNotificationServer)), false},
+		{"saved off stays off", withOptIn(withPush(MHPNSGlobal), false), false},
+		{"saved on stays on", withOptIn(antimatter(withPush("https://push.example.com")), true), true},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			tc.cfg.SetDefaults()
+			require.NotNil(t, tc.cfg.EmailSettings.AllowMattermostPushService)
+			assert.Equal(t, tc.want, *tc.cfg.EmailSettings.AllowMattermostPushService)
+
+			// It is written once: loading the saved configuration again keeps it.
+			again := tc.cfg.Clone()
+			again.SetDefaults()
+			assert.Equal(t, tc.want, *again.EmailSettings.AllowMattermostPushService)
+		})
+	}
+
+	t.Run("a Mattermost config.json keeps pushing after the upgrade", func(t *testing.T) {
+		var cfg Config
+		require.NoError(t, json.Unmarshal([]byte(`{
+			"ServiceSettings": {"SiteURL": "https://chat.example.com"},
+			"EmailSettings": {"SendPushNotifications": true, "PushNotificationServer": "https://push-test.mattermost.com"}
+		}`), &cfg))
+		cfg.SetDefaults()
+		assert.True(t, *cfg.EmailSettings.AllowMattermostPushService)
+		assert.False(t, cfg.EmailSettings.IsPushServerRefused())
+		assert.Equal(t, WebUIFusion, *cfg.ServiceSettings.DefaultWebUI, "and the next load sees an Antimatter configuration")
+	})
+}
+
+func TestIsPushServerRefused(t *testing.T) {
+	for _, tc := range []struct {
+		server string
+		allow  *bool
+		want   bool
+	}{
+		{"", nil, false},
+		{"https://push.example.com", nil, false},
+		{"https://push.example.com", NewPointer(true), false},
+		{GenericNotificationServer, nil, true},
+		{GenericNotificationServer, NewPointer(false), true},
+		{GenericNotificationServer, NewPointer(true), false},
+		{MHPNSEU, NewPointer(false), true},
+		{MHPNSEU, NewPointer(true), false},
+		{"https://PUSH.mattermost.com/", NewPointer(false), true},
+	} {
+		s := EmailSettings{PushNotificationServer: NewPointer(tc.server), AllowMattermostPushService: tc.allow}
+		assert.Equal(t, tc.want, s.IsPushServerRefused(), "%q allowed=%v", tc.server, tc.allow)
+	}
+	assert.False(t, (&EmailSettings{}).IsPushServerRefused(), "no push server at all")
 }
 
 // TestAntimatterSettingDefaults pins the defaults of Antimatter's own settings that bear on security and privacy.

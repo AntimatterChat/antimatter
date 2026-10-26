@@ -68,6 +68,14 @@ func IsMattermostPushServer(rawURL string) bool {
 	return IsMattermostServiceURL(rawURL)
 }
 
+// IsPushServerRefused reports whether push notifications must not be sent to the configured push notification
+// server: it is a push service of Mattermost, Inc. and the administrator hasn't allowed it
+// (AllowMattermostPushService). Antimatter contacts Mattermost's push services only on that explicit opt-in.
+func (s *EmailSettings) IsPushServerRefused() bool {
+	return s.PushNotificationServer != nil && IsMattermostPushServer(*s.PushNotificationServer) &&
+		(s.AllowMattermostPushService == nil || !*s.AllowMattermostPushService)
+}
+
 // IsMattermostServiceURL reports whether the given URL points at a service run by Mattermost, Inc.
 // (any host under mattermost.com): push services, the app marketplace, product notices, security
 // bulletins. Antimatter never connects to them, even when an old configuration still names one.

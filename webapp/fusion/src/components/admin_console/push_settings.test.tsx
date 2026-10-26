@@ -8,13 +8,14 @@ import type {AdminConfig} from '@mattermost/types/config';
 import {PushSettings, isMattermostPushServer} from 'components/admin_console/push_settings';
 
 import {defaultIntl} from 'tests/helpers/intl-test-helper';
-import {act, renderWithContext, screen} from 'tests/react_testing_utils';
+import {act, renderWithContext, screen, userEvent} from 'tests/react_testing_utils';
 
-function makeConfig(sendPushNotifications: boolean, pushNotificationServer: string) {
+function makeConfig(sendPushNotifications: boolean, pushNotificationServer: string, allowMattermostPushService = false) {
     return {
         EmailSettings: {
             PushNotificationServer: pushNotificationServer,
             SendPushNotifications: sendPushNotifications,
+            AllowMattermostPushService: allowMattermostPushService,
         },
         TeamSettings: {
             MaxNotificationsPerChannel: 1000,
@@ -87,6 +88,33 @@ describe('components/PushSettings', () => {
         const config = ref.current!.getConfigFromState(makeConfig(false, ''));
         expect(config.EmailSettings.SendPushNotifications).toBe(true);
         expect(config.EmailSettings.PushNotificationServer).toBe('http://push-proxy:8066');
+    });
+
+    test('should only offer the upstream push service opt-in with such a server', () => {
+        renderPushSettings(makeConfig(true, 'https://push.example.com'));
+        expect(screen.queryByTestId('allowMattermostPushServicetrue')).not.toBeInTheDocument();
+
+        renderPushSettings(makeConfig(false, 'https://push-test.mattermost.com'));
+        expect(screen.queryByTestId('allowMattermostPushServicetrue')).not.toBeInTheDocument();
+    });
+
+    test('should keep a Mattermost push service off until allowed', async () => {
+        const {ref} = renderPushSettings(makeConfig(true, 'https://global.push.mattermost.com'));
+
+        expect(screen.getByText('Allow the Upstream Apps\' Push Service:')).toBeInTheDocument();
+        expect(screen.getByTestId('allowMattermostPushServicefalse')).toBeChecked();
+        expect(ref.current!.getConfigFromState(makeConfig(true, 'https://global.push.mattermost.com')).EmailSettings.AllowMattermostPushService).toBe(false);
+
+        await userEvent.click(screen.getByTestId('allowMattermostPushServicetrue'));
+
+        expect(ref.current!.state.allowMattermostPushService).toBe(true);
+        expect(ref.current!.getConfigFromState(makeConfig(true, 'https://global.push.mattermost.com')).EmailSettings.AllowMattermostPushService).toBe(true);
+    });
+
+    test('should show an opt-in already saved', () => {
+        renderPushSettings(makeConfig(true, 'https://push-test.mattermost.com', true));
+
+        expect(screen.getByTestId('allowMattermostPushServicetrue')).toBeChecked();
     });
 
     test('isMattermostPushServer', () => {

@@ -42,13 +42,14 @@ func (a *App) canSendPushNotifications() bool {
 	}
 
 	// Mattermost's push services (hosted and test) only deliver to Mattermost's own apps, and
-	// Antimatter never sends anything to Mattermost, Inc.: operators run their own push proxy.
-	if model.IsMattermostPushServer(pushServer) {
-		a.Log().LogM(mlog.MlvlNotificationWarn, "Push notifications are disabled - Mattermost push service unsupported",
+	// Antimatter sends nothing to Mattermost, Inc. unless the administrator allowed it
+	// (EmailSettings.AllowMattermostPushService): operators otherwise run their own push proxy.
+	if a.Config().EmailSettings.IsPushServerRefused() {
+		a.Log().LogM(mlog.MlvlNotificationWarn, "Push notifications are disabled - Mattermost push service not allowed",
 			mlog.String("status", model.NotificationStatusNotSent),
 			mlog.String("reason", "push_disabled_mattermost_service"),
 		)
-		mlog.Warn("Push notifications have been disabled because the push notification server is a Mattermost service, which Antimatter doesn't use. Go to System Console > Environment > Push Notification Server to use your own push proxy")
+		mlog.Warn("Push notifications have been disabled because the push notification server is a Mattermost service, which Antimatter only uses when EmailSettings.AllowMattermostPushService is on. Go to System Console > Environment > Push Notification Server to use your own push proxy or allow that service")
 		return false
 	}
 

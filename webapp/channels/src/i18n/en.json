@@ -4491,6 +4491,14 @@
     "defaultMessage": "Enable account creation with email:",
     "description": "Admin console setting label (toggle) on the Authentication > Email page allowing account creation with email and password."
   },
+  "admin.email.allowUpstreamPushServiceDescription": {
+    "defaultMessage": "When true, push notifications are sent to this service, the one the official upstream mobile apps receive theirs from. It is run by a third party, which then receives every notification, with the content set in Push Notification Contents. When false, nothing is sent to it.",
+    "description": "Help text under the 'Allow the Upstream Apps' Push Service' setting on the Push Notification Server admin page, shown when the push notification server is the push service of the mobile apps of the project Antimatter is based on. 'Push Notification Contents' is the name of another setting."
+  },
+  "admin.email.allowUpstreamPushServiceTitle": {
+    "defaultMessage": "Allow the Upstream Apps' Push Service:",
+    "description": "Setting label (true/false) on the Push Notification Server admin page: whether push notifications may be sent to the push service used by the official mobile apps of the project Antimatter is based on ('upstream')."
+  },
   "admin.email.allowUsernameSignInDescription": {
     "defaultMessage": "When true, users with email login can sign in using their username and password. This setting does not affect AD/LDAP login.",
     "description": "Admin console help text for the username sign-in toggle on the Authentication > Email page."
@@ -11298,6 +11306,10 @@
   "admin.plugin.addOn.notSupportedWarning": {
     "defaultMessage": "This plugin requires a commercial Mattermost add-on that is licensed separately, so it cannot be enabled on this server.",
     "description": "Warning in the plugin's settings page in the System Console explaining why a plugin that needs a separately licensed commercial Mattermost add-on cannot be enabled. \"Mattermost\" is the add-on vendor's name and must stay as-is."
+  },
+  "admin.plugin.antimatter_build_available": {
+    "defaultMessage": "This isn't Antimatter's build of {name}, and it may not start without a licence. Download Antimatter's build from its <link>releases page</link> and upload it here.",
+    "description": "Warning on an installed app in System Console > App Management when it is an upstream build of an app Antimatter publishes its own build of (Playbooks, Boards): upstream builds may refuse to start without a licence. {name} is the app's name; <link>...</link> wraps the link text to the GitHub releases page of Antimatter's build; 'here' is this page, which has the upload control."
   },
   "admin.plugin.backToPlugins": {
     "defaultMessage": "Go back to the Plugins",
@@ -24410,6 +24422,10 @@
   "marketplace_modal.title": {
     "defaultMessage": "App Marketplace",
     "description": "Title of the dialog where admins browse and install plugins and apps."
+  },
+  "marketplace_modal.upload_hint": {
+    "defaultMessage": "Apps from other marketplaces are installed by uploading their file in the <linkConsole>System Console</linkConsole>.",
+    "description": "One line at the top of the App Marketplace dialog when no remote marketplace is used: apps that are not listed are installed by uploading their file (a .tar.gz bundle) on the System Console's app management page; <linkConsole>...</linkConsole> wraps the link text to that page."
   },
   "media_gallery.count_label": {
     "defaultMessage": "{count, plural, one {# item} other {# items}}",

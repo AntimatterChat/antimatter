@@ -11,6 +11,7 @@ import ExternalLink from 'components/external_link';
 
 import {DocLinks} from 'utils/constants';
 
+import BooleanSetting from './boolean_setting';
 import DropdownSetting from './dropdown_setting';
 import OLDAdminSettings from './old_admin_settings';
 import type {BaseProps, BaseState} from './old_admin_settings';
@@ -24,6 +25,7 @@ type Props = BaseProps & {
 type State = BaseState & {
     pushNotificationServer: string;
     pushNotificationServerType: EmailSettings['PushNotificationServerType'];
+    allowMattermostPushService: boolean;
     maxNotificationsPerChannel: number;
 };
 
@@ -36,12 +38,16 @@ const messages = defineMessages({
     pushNotificationServer: {id: 'admin.environment.pushNotificationServer', defaultMessage: 'Push Notification Server'},
     pushTitle: {id: 'admin.email.pushTitle', defaultMessage: 'Enable Push Notifications: '},
     pushServerTitle: {id: 'admin.email.pushServerTitle', defaultMessage: 'Push Notification Server:'},
+    allowUpstreamPushServiceTitle: {id: 'admin.email.allowUpstreamPushServiceTitle', defaultMessage: 'Allow the Upstream Apps\' Push Service:'},
+    allowUpstreamPushServiceDescription: {id: 'admin.email.allowUpstreamPushServiceDescription', defaultMessage: 'When true, push notifications are sent to this service, the one the official upstream mobile apps receive theirs from. It is run by a third party, which then receives every notification, with the content set in Push Notification Contents. When false, nothing is sent to it.'},
 });
 
 export const searchableStrings = [
     messages.pushNotificationServer,
     messages.pushTitle,
     messages.pushServerTitle,
+    messages.allowUpstreamPushServiceTitle,
+    messages.allowUpstreamPushServiceDescription,
 ];
 
 // Push notification services run by Mattermost, Inc. (their test and hosted services) only deliver
@@ -65,6 +71,7 @@ export class PushSettings extends OLDAdminSettings<Props, State> {
     getConfigFromState = (config: Props['config']) => {
         config.EmailSettings.SendPushNotifications = this.state.pushNotificationServerType !== PUSH_NOTIFICATIONS_OFF;
         config.EmailSettings.PushNotificationServer = this.state.pushNotificationServer.trim();
+        config.EmailSettings.AllowMattermostPushService = this.state.allowMattermostPushService;
         config.TeamSettings.MaxNotificationsPerChannel = this.state.maxNotificationsPerChannel;
 
         return config;
@@ -84,6 +91,7 @@ export class PushSettings extends OLDAdminSettings<Props, State> {
         return {
             pushNotificationServerType,
             pushNotificationServer,
+            allowMattermostPushService: Boolean(config.EmailSettings.AllowMattermostPushService),
             maxNotificationsPerChannel,
         };
     }
@@ -113,6 +121,11 @@ export class PushSettings extends OLDAdminSettings<Props, State> {
             </ExternalLink>
         );
 
+        // Nothing is sent to a push service of Mattermost, Inc. unless the administrator allows it (the server
+        // refuses it otherwise): the setting is only offered with such a server.
+        const usesMattermostPushServer = this.state.pushNotificationServerType === PUSH_NOTIFICATIONS_CUSTOM &&
+            isMattermostPushServer(this.state.pushNotificationServer);
+
         let sendHelpText = null;
         let pushServerHelpText = null;
         if (this.state.pushNotificationServerType === PUSH_NOTIFICATIONS_OFF) {
@@ -131,7 +144,7 @@ export class PushSettings extends OLDAdminSettings<Props, State> {
                         defaultMessage='The address of your Antimatter push proxy, which delivers notifications to the Antimatter apps for iOS and Android. <link>Learn how to set it up</link>.'
                         values={{link: setupLink}}
                     />
-                    {isMattermostPushServer(this.state.pushNotificationServer) && (
+                    {usesMattermostPushServer && (
                         <>
                             {' '}
                             <FormattedMessage
@@ -166,6 +179,17 @@ export class PushSettings extends OLDAdminSettings<Props, State> {
                     disabled={this.props.isDisabled || this.state.pushNotificationServerType !== PUSH_NOTIFICATIONS_CUSTOM}
                     setByEnv={this.isSetByEnv('EmailSettings.PushNotificationServer')}
                 />
+                {usesMattermostPushServer && (
+                    <BooleanSetting
+                        id='allowMattermostPushService'
+                        label={<FormattedMessage {...messages.allowUpstreamPushServiceTitle}/>}
+                        helpText={<FormattedMessage {...messages.allowUpstreamPushServiceDescription}/>}
+                        value={this.state.allowMattermostPushService}
+                        onChange={this.handleChange}
+                        disabled={this.props.isDisabled}
+                        setByEnv={this.isSetByEnv('EmailSettings.AllowMattermostPushService')}
+                    />
+                )}
                 <TextSetting
                     id='maxNotificationsPerChannel'
                     type='number'

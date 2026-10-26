@@ -10,11 +10,14 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
+
+	"github.com/mattermost/mattermost/server/public/model"
 )
 
 func TestGetOldClientLicense(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t)
+	th.App.UpdateConfig(func(cfg *model.Config) { *cfg.TeamSettings.SiteName = "Lumen Labs" })
 
 	check := func(t *testing.T, license map[string]string) {
 		t.Helper()
@@ -23,7 +26,9 @@ func TestGetOldClientLicense(t *testing.T) {
 		require.Equal(t, "true", license["SAML"])
 		require.Equal(t, "false", license["Cloud"])
 		require.Equal(t, "false", license["MHPNS"])
-		require.NotContains(t, license, "SkuShortName")
+		// The official apps' Enterprise Advanced features need a known SKU; "Licensed to" shows the site's name.
+		require.Equal(t, "advanced", license["SkuShortName"])
+		require.Equal(t, "Lumen Labs", license["Company"])
 	}
 
 	t.Run("anonymous", func(t *testing.T) {

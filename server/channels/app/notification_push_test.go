@@ -1706,17 +1706,22 @@ func TestCanSendPushNotifications(t *testing.T) {
 	th := Setup(t)
 
 	testCases := []struct {
-		name     string
-		enabled  bool
-		server   string
-		expected bool
+		name            string
+		enabled         bool
+		server          string
+		allowMattermost bool
+		expected        bool
 	}{
 		{name: "turned off", enabled: false, server: "https://push.example.com", expected: false},
 		{name: "no push notification server (the default)", enabled: true, server: model.DefaultPushNotificationServer, expected: false},
 		{name: "blank push notification server", enabled: true, server: "  ", expected: false},
 		{name: "own push proxy", enabled: true, server: "https://push.example.com", expected: true},
-		{name: "Mattermost's test service is never used", enabled: true, server: model.GenericNotificationServer, expected: false},
-		{name: "Mattermost's hosted service is never used", enabled: true, server: model.MHPNSGlobal, expected: false},
+		{name: "Mattermost's test service is not used by default", enabled: true, server: model.GenericNotificationServer, expected: false},
+		{name: "Mattermost's hosted service is not used by default", enabled: true, server: model.MHPNSGlobal, expected: false},
+		{name: "Mattermost's test service once allowed", enabled: true, server: model.GenericNotificationServer, allowMattermost: true, expected: true},
+		{name: "Mattermost's hosted service once allowed", enabled: true, server: model.MHPNSGlobal, allowMattermost: true, expected: true},
+		{name: "allowed but turned off", enabled: false, server: model.MHPNSGlobal, allowMattermost: true, expected: false},
+		{name: "allowed without a push notification server", enabled: true, server: "", allowMattermost: true, expected: false},
 	}
 
 	for _, tc := range testCases {
@@ -1724,6 +1729,7 @@ func TestCanSendPushNotifications(t *testing.T) {
 			th.App.UpdateConfig(func(cfg *model.Config) {
 				*cfg.EmailSettings.SendPushNotifications = tc.enabled
 				*cfg.EmailSettings.PushNotificationServer = tc.server
+				*cfg.EmailSettings.AllowMattermostPushService = tc.allowMattermost
 			})
 
 			assert.Equal(t, tc.expected, th.App.canSendPushNotifications())

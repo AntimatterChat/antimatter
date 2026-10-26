@@ -596,8 +596,9 @@ func TestGetClientConfig(t *testing.T) {
 			"push notifications with a Mattermost push server, which the server refuses to send to",
 			&model.Config{
 				EmailSettings: model.EmailSettings{
-					SendPushNotifications:  new(true),
-					PushNotificationServer: new(model.GenericNotificationServer),
+					SendPushNotifications:      new(true),
+					PushNotificationServer:     new(model.GenericNotificationServer),
+					AllowMattermostPushService: new(false),
 				},
 			},
 			"",
@@ -610,8 +611,9 @@ func TestGetClientConfig(t *testing.T) {
 			"push notifications with Mattermost's hosted push server",
 			&model.Config{
 				EmailSettings: model.EmailSettings{
-					SendPushNotifications:  new(true),
-					PushNotificationServer: new("https://push.mattermost.com"),
+					SendPushNotifications:      new(true),
+					PushNotificationServer:     new("https://push.mattermost.com"),
+					AllowMattermostPushService: new(false),
 				},
 			},
 			"",
@@ -631,6 +633,65 @@ func TestGetClientConfig(t *testing.T) {
 			"",
 			map[string]string{
 				"SendPushNotifications": "false",
+			},
+			nil,
+		},
+		{
+			"push notifications to a Mattermost push service not allowed",
+			&model.Config{
+				EmailSettings: model.EmailSettings{
+					SendPushNotifications:      new(true),
+					PushNotificationServer:     new(model.GenericNotificationServer),
+					AllowMattermostPushService: new(false),
+				},
+			},
+			"",
+			map[string]string{
+				"SendPushNotifications": "false",
+			},
+			nil,
+		},
+		{
+			"push notifications to a Mattermost push service the admin allowed",
+			&model.Config{
+				EmailSettings: model.EmailSettings{
+					SendPushNotifications:      new(true),
+					PushNotificationServer:     new(model.MHPNSGlobal),
+					AllowMattermostPushService: new(true),
+				},
+			},
+			"",
+			map[string]string{
+				"SendPushNotifications": "true",
+			},
+			nil,
+		},
+		{
+			"push notifications to a Mattermost push service in a configuration Antimatter already ran",
+			&model.Config{
+				ServiceSettings: model.ServiceSettings{DefaultWebUI: new(model.WebUIFusion)},
+				EmailSettings: model.EmailSettings{
+					SendPushNotifications:  new(true),
+					PushNotificationServer: new(model.MHPNSGlobal),
+				},
+			},
+			"",
+			map[string]string{
+				"SendPushNotifications": "false",
+			},
+			nil,
+		},
+		{
+			"push notifications to a Mattermost push service in a configuration upgraded from Mattermost",
+			&model.Config{
+				EmailSettings: model.EmailSettings{
+					SendPushNotifications:  new(true),
+					PushNotificationServer: new(model.MHPNSGlobal),
+				},
+			},
+			"",
+			map[string]string{
+				"SendPushNotifications": "true",
 			},
 			nil,
 		},

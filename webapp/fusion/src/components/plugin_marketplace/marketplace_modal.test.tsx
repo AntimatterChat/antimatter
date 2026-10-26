@@ -182,6 +182,54 @@ describe('components/marketplace/', () => {
         expect(baseElement).toMatchSnapshot();
     });
 
+    describe('without a remote marketplace', () => {
+        const hint = /Apps from other marketplaces are installed by uploading their file/;
+
+        test('says apps from elsewhere are uploaded, linking to the System Console', async () => {
+            mockState.entities.general.config = {IsDefaultMarketplace: 'true'};
+
+            renderWithContext(
+                <MarketplaceModal/>,
+                mockState,
+            );
+
+            await waitForListingToLoad();
+
+            const line = screen.getByText(hint);
+            expect(line).toBeInTheDocument();
+            expect(line.querySelector('a')).toHaveAttribute('href', '/admin_console/plugins/plugin_management');
+            expect(screen.queryByText('Error connecting to the marketplace server', {exact: false})).not.toBeInTheDocument();
+        });
+
+        test('says so when the remote marketplace is turned off', async () => {
+            mockState.entities.general.config = {IsDefaultMarketplace: 'false'};
+            mockState.entities.admin.config = {PluginSettings: {EnableRemoteMarketplace: false}} as unknown as GlobalState['entities']['admin']['config'];
+
+            renderWithContext(
+                <MarketplaceModal/>,
+                mockState,
+            );
+
+            await waitForListingToLoad();
+
+            expect(screen.getByText(hint)).toBeInTheDocument();
+        });
+
+        test('says nothing with a remote marketplace in use', async () => {
+            mockState.entities.general.config = {IsDefaultMarketplace: 'false'};
+            mockState.entities.admin.config = {PluginSettings: {EnableRemoteMarketplace: true}} as unknown as GlobalState['entities']['admin']['config'];
+
+            renderWithContext(
+                <MarketplaceModal/>,
+                mockState,
+            );
+
+            await waitForListingToLoad();
+
+            expect(screen.queryByText(hint)).not.toBeInTheDocument();
+        });
+    });
+
     test('hides search and links to no web marketplace', async () => {
         mockState.views.marketplace.plugins = [
             samplePlugin,
