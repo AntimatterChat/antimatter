@@ -125,7 +125,8 @@ func (s LocalCacheReadReceiptStore) Get(rctx request.CTX, postID, userID string)
 
 	s.rootStore.doStandardAddToCache(s.rootStore.readReceiptCache, fmt.Sprintf("%s:%s", postID, userID), rr.ExpireAt)
 
-	// Update post readers cache: add this userID to the list if not already present
+	// Update post readers cache: add this userID to the list if not already present. Only GetByPost seeds that
+	// list: one user's receipt says nothing of the other readers, so a cold entry stays cold.
 	var existingUserIDs []string
 	if err := s.rootStore.doStandardReadCache(s.rootStore.readReceiptPostReadersCache, postID, &existingUserIDs); err == nil {
 		// Cache exists: check if userID is already in the list
@@ -134,9 +135,6 @@ func (s LocalCacheReadReceiptStore) Get(rctx request.CTX, postID, userID string)
 			existingUserIDs = append(existingUserIDs, userID)
 			s.rootStore.doStandardAddToCache(s.rootStore.readReceiptPostReadersCache, postID, existingUserIDs)
 		}
-	} else {
-		// Cache doesn't exist: create new entry with just this userID
-		s.rootStore.doStandardAddToCache(s.rootStore.readReceiptPostReadersCache, postID, []string{userID})
 	}
 
 	return rr, nil

@@ -341,7 +341,7 @@ func (a *App) PatchAIMCPServer(rctx request.CTX, s *model.AIMCPServer, patch *mo
 			rctx.Logger().Warn("Couldn't forget the sign-ins to an MCP server whose address changed", mlog.String("server_id", saved.Id), mlog.Err(err))
 		}
 	}
-	a.aiMCP().forget(saved.Id, "")
+	a.forgetAIMCPTools(saved.Id, "")
 	a.publishAIToolsChanged("")
 	return saved, nil
 }
@@ -351,7 +351,7 @@ func (a *App) DeleteAIMCPServer(rctx request.CTX, s *model.AIMCPServer) *model.A
 	if err := a.Srv().Store().AIMCPServer().Delete(rctx, s.Id, model.GetMillis()); err != nil {
 		return aiMCPStoreError("DeleteAIMCPServer", err)
 	}
-	a.aiMCP().forget(s.Id, "")
+	a.forgetAIMCPTools(s.Id, "")
 	a.publishAIToolsChanged("")
 	return nil
 }
@@ -537,7 +537,7 @@ func (a *App) aiMCPHeadersFor(rctx request.CTX, s *model.AIMCPServer, userID str
 				var refused *aimcp.TokenRefusedError
 				if errors.As(err, &refused) {
 					_ = a.Srv().Store().AIMCPServer().DeleteUserToken(rctx, s.Id, userID)
-					a.aiMCP().forget(s.Id, userID)
+					a.forgetAIMCPTools(s.Id, userID)
 					a.publishAIToolsChanged(userID)
 					return nil, errAIMCPNotSignedIn
 				}
@@ -790,7 +790,7 @@ func (a *App) FinishAIMCPOAuth(rctx request.CTX, userID, state, code, oauthError
 	if appErr := a.saveAIMCPSignIn(rctx, s.Id, userID, si); appErr != nil {
 		return s, appErr
 	}
-	a.aiMCP().forget(s.Id, userID)
+	a.forgetAIMCPTools(s.Id, userID)
 	a.publishAIToolsChanged(userID)
 	return s, nil
 }
@@ -806,7 +806,7 @@ func (a *App) DisconnectAIMCPServer(rctx request.CTX, userID string, s *model.AI
 	if err := a.Srv().Store().AIMCPServer().DeleteUserToken(rctx, s.Id, userID); err != nil {
 		return aiMCPStoreError("DisconnectAIMCPServer", err)
 	}
-	a.aiMCP().forget(s.Id, userID)
+	a.forgetAIMCPTools(s.Id, userID)
 	a.publishAIToolsChanged(userID)
 	return nil
 }

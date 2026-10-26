@@ -220,7 +220,10 @@ func (m *memATStore) Save(t *model.Translation) error {
 		return nil
 	}
 	c := t.Clone()
-	c.UpdateAt = model.GetMillis()
+	// As the SQL store: the row's time, stamped on the caller's translation too. A millisecond back, so that a time
+	// the caller would set after saving can't match it by chance.
+	c.UpdateAt = model.GetMillis() - 1
+	t.UpdateAt = c.UpdateAt
 	m.rows[key] = c
 	m.saves++
 	return nil

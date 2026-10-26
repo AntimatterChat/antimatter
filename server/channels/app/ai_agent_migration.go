@@ -173,7 +173,7 @@ func (s *Server) doAgentsFromBotsMigration() error {
 		return getErr == nil && c.DeleteAt == 0
 	}
 
-	made := 0
+	made, failed := 0, 0
 	for _, bot := range bots {
 		if _, getErr := s.Store().AIAgent().Get(rctx, bot.UserId); getErr == nil {
 			continue
@@ -190,6 +190,7 @@ func (s *Server) doAgentsFromBotsMigration() error {
 		agent := agentsPluginAgentToAIAgent(bot.UserId, src, connectionExists)
 		if _, saveErr := s.Store().AIAgent().Save(rctx, agent); saveErr != nil {
 			s.Log().Error("Couldn't save the settings of an agent migrated from the Agents plugin", mlog.String("user_id", bot.UserId), mlog.String("username", bot.Username), mlog.Err(saveErr))
+			failed++
 			continue
 		}
 		made++
@@ -204,6 +205,11 @@ func (s *Server) doAgentsFromBotsMigration() error {
 	}
 	a.invalidateAIAgents()
 	s.Log().Info("Made the Agents plugin's bots agents", mlog.Int("bots", len(changed)), mlog.Int("settings", made))
+	if failed > 0 {
+		// Left undone: the next start makes the settings that couldn't be saved (the saved ones are skipped).
+		s.Log().Error("Some agents migrated from the Agents plugin have no settings yet: they'll be made at the next start", mlog.Int("failed", failed))
+		return nil
+	}
 	if err := s.Store().System().SaveOrUpdate(&model.System{Name: agentsFromBotsMigrationKey, Value: "true"}); err != nil {
 		return fmt.Errorf("failed to mark the agents migration as completed: %w", err)
 	}

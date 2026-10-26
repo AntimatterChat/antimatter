@@ -395,6 +395,27 @@ func (a *App) updateDMRequestsForPost(rctx request.CTX, post *model.Post, channe
 	return updated
 }
 
+// silencedForPost gives who of a channel's members (profileMap) gets no notification for a post, and the members'
+// notify props with the post's direct message moved in or out of the message requests. It fails closed: when who
+// ignores the author can't be told, nobody is notified (the post itself is still posted), rather than notifying
+// people who asked not to be.
+func (a *App) silencedForPost(rctx request.CTX, post *model.Post, channel *model.Channel, sender *model.User, profileMap map[string]*model.User, notifyProps map[string]model.StringMap) (model.StringSet, map[string]model.StringMap) {
+	if !a.UserBlockingEnabled() || post.UserId == "" {
+		return nil, notifyProps
+	}
+	ignoring, err := a.usersIgnoring(post.UserId)
+	if err != nil {
+		rctx.Logger().Error("Failed to get who ignores the author of a post: nobody is notified of it", mlog.String("post_id", post.Id), mlog.Err(err))
+		silenced := make(model.StringSet, len(profileMap))
+		for id := range profileMap {
+			silenced.Add(id)
+		}
+		return silenced, notifyProps
+	}
+	notifyProps = a.updateDMRequestsForPost(rctx, post, channel, sender, ignoring, notifyProps)
+	return silencedRecipients(post, channel, ignoring, notifyProps), notifyProps
+}
+
 // silencedRecipients lists the people of a channel who get no notification for a post: those who ignore or block its
 // author, and the recipient of a direct message waiting as a message request.
 func silencedRecipients(post *model.Post, channel *model.Channel, ignoring map[string]string, notifyProps map[string]model.StringMap) model.StringSet {

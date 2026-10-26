@@ -64,8 +64,27 @@ func TestAISettingsDefaultsAndValidation(t *testing.T) {
 		cfg.SetDefaults()
 		*cfg.TextToSpeechSettings.Enable = true
 		*cfg.TextToSpeechSettings.Model = "tts-1"
-		require.NotNil(t, cfg.TextToSpeechSettings.isValid(cfg.TextToSpeechUsesConnection()))
+		require.NotNil(t, cfg.TextToSpeechSettings.isValid(cfg.TextToSpeechUsesConnection(), ""))
 		cfg.AISettings.TextToSpeech.ConnectionId = NewPointer(NewId())
-		require.Nil(t, cfg.TextToSpeechSettings.isValid(cfg.TextToSpeechUsesConnection()))
+		require.Nil(t, cfg.TextToSpeechSettings.isValid(cfg.TextToSpeechUsesConnection(), ""))
+	})
+
+	t.Run("text to speech through a connection takes the model from either setting", func(t *testing.T) {
+		cfg := Config{}
+		cfg.SetDefaults()
+		*cfg.TextToSpeechSettings.Enable = true
+		cfg.AISettings.TextToSpeech.ConnectionId = NewPointer(NewId())
+		appErr := cfg.TextToSpeechSettings.isValid(cfg.TextToSpeechUsesConnection(), "")
+		require.NotNil(t, appErr, "a connection has no default speech model: one is needed somewhere")
+		require.Equal(t, "model.config.is_valid.text_to_speech.model.app_error", appErr.Id)
+
+		cfg.AISettings.TextToSpeech.Model = NewPointer("tts-1")
+		require.Nil(t, cfg.TextToSpeechSettings.isValid(cfg.TextToSpeechUsesConnection(), *cfg.AISettings.TextToSpeech.Model), "the connection's model is enough")
+
+		// The same through the whole configuration's check.
+		appErr = cfg.IsValid()
+		if appErr != nil {
+			require.NotEqual(t, "model.config.is_valid.text_to_speech.model.app_error", appErr.Id)
+		}
 	})
 }

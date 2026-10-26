@@ -1297,7 +1297,7 @@ type AIConnectionStore interface {
 	GetUsageTotals(rctx request.CTX, connectionID string, sinceDay int) (model.AIUsageTotals, error)
 	// GetUserUsageTotals adds up a person's usage of a connection since a day.
 	GetUserUsageTotals(rctx request.CTX, connectionID, userID string, sinceDay int) (model.AIUsageTotals, error)
-	// GetUsage lists a connection's usage rows since a day, by day.
+	// GetUsage lists a connection's usage since a day, by day and purpose, everyone's together (UserId "").
 	GetUsage(rctx request.CTX, connectionID string, sinceDay int) ([]*model.AIUsage, error)
 	// AnonymizeUsageByUser moves a person's usage to nobody's (UserId ""), adding it to what was there, so that the
 	// connections' totals stay right once the person is gone.

@@ -77,6 +77,12 @@ func TestAgentsConfigToConnections(t *testing.T) {
 
 	legacy := byName["Legacy"]
 	assert.True(t, model.IsValidId(legacy.connection.Id), "a legacy UUID gets a new ID")
+	again, _, _ := agentsConfigToConnections(cfg)
+	for _, m := range again {
+		if m.connection.Name == "Legacy" {
+			assert.Equal(t, legacy.connection.Id, m.connection.Id, "the same at every start, so a retried migration doesn't make it twice")
+		}
+	}
 	assert.Equal(t, "https://api.mistral.ai/v1", legacy.connection.BaseURL)
 
 	assert.Equal(t, openaiID, featureConnection, "the default bot's service")
@@ -172,4 +178,77 @@ func TestAIConnectionsFromAgentsMigrationWithoutThePlugin(t *testing.T) {
 	done, err := th.App.Srv().Store().System().GetByName(aiConnectionsFromAgentsMigrationKey)
 	require.NoError(t, err, "nothing to migrate: done")
 	assert.Equal(t, "true", done.Value)
+}
+
+// A connection that couldn't be saved leaves the migration undone, and the built-in features aren't pointed at it
+// until the next start saves it.
+func TestDoAIConnectionsFromAgentsMigration_PartialSaveFailureDoesNotMarkDoneOrConfigureFeature(t *testing.T) {
+	th := Setup(t)
+	master := th.GetSqlStore().GetMaster()
+	_, err := master.Exec("DROP TABLE IF EXISTS Agents_ConfigHistory")
+	require.NoError(t, err)
+	_, err = master.Exec(`CREATE TABLE Agents_ConfigHistory (
+		ID VARCHAR(26) PRIMARY KEY, Config TEXT NOT NULL, CreateAt BIGINT NOT NULL, Active BOOLEAN NOT NULL DEFAULT false)`)
+	require.NoError(t, err)
+	t.Cleanup(func() {
+		_, dropErr := master.Exec("DROP TABLE IF EXISTS Agents_ConfigHistory")
+		require.NoError(t, dropErr)
+	})
+
+	brokenID := model.NewId()
+	// A legacy UUID: the connection gets an ID of its own.
+	fineName := "Fine" + brokenID[:6]
+	active := map[string]any{
+		"services": []map[string]any{
+			{"id": brokenID, "name": "Broken" + brokenID[:6], "type": "openaicompatible", "apiURL": "https://llm.example.com/v1", "apiKey": "sk-broken-0123456789", "defaultModel": "gpt-test"},
+			{"id": "3b0f6c1e-5bd8-4d0e-9a63-5d8e0f7c2a11", "name": fineName, "type": "openaicompatible", "apiURL": "https://other.example.com/v1", "apiKey": "sk-fine-0123456789", "defaultModel": "gpt-test"},
+		},
+		"bots":           []map[string]any{{"name": "ai", "serviceID": brokenID, "model": "gpt-bot"}},
+		"defaultBotName": "ai",
+	}
+	activeJSON, _ := json.Marshal(active)
+	_, err = master.Exec("INSERT INTO Agents_ConfigHistory (ID, Config, CreateAt, Active) VALUES ($1, $2, 1, true)", model.NewId(), string(activeJSON))
+	require.NoError(t, err)
+	stop := injectInsertFailure(t, th, "AIConnections", "Id", brokenID)
+
+	_, err = th.App.Srv().Store().System().PermanentDeleteByName(aiConnectionsFromAgentsMigrationKey)
+	require.NoError(t, err)
+	th.App.UpdateConfig(func(cfg *model.Config) {
+		cfg.AISettings.Rewrite.ConnectionId = model.NewPointer("")
+		cfg.AISettings.Recaps.ConnectionId = model.NewPointer("")
+	})
+
+	countFine := func() int {
+		all, getErr := th.App.Srv().Store().AIConnection().GetAll(th.Context)
+		require.NoError(t, getErr)
+		n := 0
+		for _, c := range all {
+			if c.Name == fineName {
+				n++
+			}
+		}
+		return n
+	}
+
+	require.NoError(t, th.App.Srv().doAIConnectionsFromAgentsMigration())
+	assert.Equal(t, 1, countFine(), "the service that saved is a connection")
+	_, appErr := th.App.GetAIConnection(th.Context, brokenID)
+	require.NotNil(t, appErr, "the failed one isn't")
+	_, err = th.App.Srv().Store().System().GetByName(aiConnectionsFromAgentsMigrationKey)
+	require.Error(t, err, "the migration isn't marked done after a failed save")
+	cfg := th.App.Config()
+	assert.Empty(t, *cfg.AISettings.Rewrite.ConnectionId, "the rewrite isn't pointed at a connection that doesn't exist")
+	assert.Empty(t, *cfg.AISettings.Recaps.ConnectionId)
+
+	stop()
+	require.NoError(t, th.App.Srv().doAIConnectionsFromAgentsMigration())
+	_, appErr = th.App.GetAIConnection(th.Context, brokenID)
+	require.Nil(t, appErr, "the next start saves it")
+	cfg = th.App.Config()
+	assert.Equal(t, brokenID, *cfg.AISettings.Rewrite.ConnectionId)
+	assert.Equal(t, brokenID, *cfg.AISettings.Recaps.ConnectionId)
+	done, err := th.App.Srv().Store().System().GetByName(aiConnectionsFromAgentsMigrationKey)
+	require.NoError(t, err)
+	assert.Equal(t, "true", done.Value)
+	assert.Equal(t, 1, countFine(), "the connection saved the first time isn't made again")
 }

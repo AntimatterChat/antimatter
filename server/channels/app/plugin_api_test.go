@@ -5229,6 +5229,14 @@ func TestPluginAPISendMailWithAttachment(t *testing.T) {
 		appErr := api.SendMailWithAttachment("user@example.com", "Subject", "<p>Body</p>", "invite.ics", calendar, ics)
 		require.NotNil(t, appErr, "nothing listens on the SMTP port, so the send must fail")
 		assert.Equal(t, http.StatusInternalServerError, appErr.StatusCode)
+		assert.Equal(t, "plugin_api.send_mail.send_failed", appErr.Id, "a failed send isn't reported as a missing body")
+	})
+
+	t.Run("a failed plain send has its own error too", func(t *testing.T) {
+		appErr := api.SendMail("user@example.com", "Subject", "<p>Body</p>")
+		require.NotNil(t, appErr)
+		assert.Equal(t, "plugin_api.send_mail.send_failed", appErr.Id)
+		assert.Equal(t, http.StatusInternalServerError, appErr.StatusCode)
 	})
 
 	t.Run("sends nothing while email notifications are off", func(t *testing.T) {

@@ -132,8 +132,10 @@ func (a *App) runAIAppTool(rctx request.CTX, tool *model.AITool, call *model.AIT
 	}
 	done := make(chan *model.AIToolResult, 1)
 	pc := pluginContext(rctx)
-	a.Srv().Go(func() {
-		done <- hooks.ExecuteAITool(pc, call)
+	a.goRecovered("an app's tool", func() {
+		var result *model.AIToolResult
+		defer func() { done <- result }() // nil after a panic: the app gave no result
+		result = hooks.ExecuteAITool(pc, call)
 	})
 	ctx, cancel := context.WithTimeout(rctx.Context(), aiAppToolTimeout)
 	defer cancel()

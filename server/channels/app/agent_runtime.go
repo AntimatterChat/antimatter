@@ -8,6 +8,7 @@ import (
 	"context"
 	"fmt"
 	"regexp"
+	"runtime/debug"
 	"slices"
 	"strings"
 	"time"
@@ -139,8 +140,21 @@ func (a *App) maybeStartAgentTurns(rctx request.CTX, post *model.Post, channel *
 	}
 	post = post.Clone()
 	channel = channel.DeepCopy()
-	a.Srv().Go(func() {
+	a.goRecovered("an agent's turn", func() {
 		a.handlePostForAgents(request.EmptyContext(a.Log()), post, channel)
+	})
+}
+
+// goRecovered runs f in the background like Srv().Go, logging a panic instead of letting it stop the server (as the
+// message actions and webhooks do).
+func (a *App) goRecovered(what string, f func()) {
+	a.Srv().Go(func() {
+		defer func() {
+			if r := recover(); r != nil {
+				a.Log().Error("Recovered from a panic in "+what, mlog.Any("panic", r), mlog.String("stack", string(debug.Stack())))
+			}
+		}()
+		f()
 	})
 }
 

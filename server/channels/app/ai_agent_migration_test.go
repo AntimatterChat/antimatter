@@ -5,6 +5,7 @@ package app
 
 import (
 	"encoding/json"
+	"fmt"
 	"strings"
 	"testing"
 
@@ -237,4 +238,65 @@ func TestAntimatterTeamAgentPermissionsMigration(t *testing.T) {
 	assert.ElementsMatch(t, []string{model.PermissionManageTeam.Id, model.PermissionManageOwnAgent.Id, model.PermissionManageOthersAgent.Id}, teamAdmin.Permissions)
 	assert.ElementsMatch(t, []string{model.PermissionViewTeam.Id}, teamUser.Permissions, "members get nothing")
 	assert.ElementsMatch(t, []string{model.PermissionManageOwnAgent.Id}, systemUser.Permissions)
+}
+
+// injectInsertFailure makes every insert into table fail where column equals value, until the returned stop is
+// called (or the test ends).
+func injectInsertFailure(t *testing.T, th *TestHelper, table, column, value string) (stop func()) {
+	t.Helper()
+	db := th.GetSqlStore().GetMaster()
+	name := "test_fail_insert_" + model.NewId()
+	_, err := db.Exec(fmt.Sprintf(`
+		CREATE FUNCTION %[1]s() RETURNS trigger LANGUAGE plpgsql AS $$
+		BEGIN
+			IF NEW.%[3]s = '%[4]s' THEN
+				RAISE EXCEPTION 'injected failure of INSERT on %%', TG_TABLE_NAME;
+			END IF;
+			RETURN NEW;
+		END $$;
+		CREATE TRIGGER %[1]s BEFORE INSERT ON %[2]s FOR EACH ROW EXECUTE FUNCTION %[1]s();`, name, table, column, value))
+	require.NoError(t, err)
+	stopped := false
+	stop = func() {
+		if stopped {
+			return
+		}
+		stopped = true
+		_, dropErr := db.Exec("DROP FUNCTION " + name + " CASCADE")
+		require.NoError(t, dropErr)
+	}
+	t.Cleanup(stop)
+	return stop
+}
+
+// A bot whose settings couldn't be saved leaves the migration undone, and the next start makes them.
+func TestDoAgentsFromBotsMigration_PartialSaveFailureRetries(t *testing.T) {
+	th := Setup(t).InitBasic(t)
+	_, err := th.GetSqlStore().GetMaster().Exec("DROP TABLE IF EXISTS Agents_ConfigHistory")
+	require.NoError(t, err)
+
+	saved := makePluginBot(t, th, "fine"+strings.ToLower(model.NewId()[:8]))
+	broken := makePluginBot(t, th, "broken"+strings.ToLower(model.NewId()[:8]))
+	stop := injectInsertFailure(t, th, "AIAgents", "UserId", broken.UserId)
+
+	_, err = th.App.Srv().Store().System().PermanentDeleteByName(agentsFromBotsMigrationKey)
+	require.NoError(t, err)
+	require.NoError(t, th.App.Srv().doAgentsFromBotsMigration())
+
+	_, appErr := th.App.GetAIAgent(th.Context, saved.UserId)
+	require.Nil(t, appErr, "the bot whose settings were saved is an agent")
+	_, appErr = th.App.GetAIAgent(th.Context, broken.UserId)
+	require.NotNil(t, appErr, "the failed bot has no settings yet")
+	_, err = th.App.Srv().Store().System().GetByName(agentsFromBotsMigrationKey)
+	require.Error(t, err, "the migration isn't marked done after a failed save")
+
+	stop()
+	require.NoError(t, th.App.Srv().doAgentsFromBotsMigration())
+	_, appErr = th.App.GetAIAgent(th.Context, broken.UserId)
+	require.Nil(t, appErr, "the next start makes the missing settings")
+	_, appErr = th.App.GetAIAgent(th.Context, saved.UserId)
+	require.Nil(t, appErr)
+	done, err := th.App.Srv().Store().System().GetByName(agentsFromBotsMigrationKey)
+	require.NoError(t, err)
+	assert.Equal(t, "true", done.Value)
 }

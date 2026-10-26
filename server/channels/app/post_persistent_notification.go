@@ -244,6 +244,7 @@ func (a *App) persistentNotificationsAuxiliaryData(rctx request.CTX, channelsMap
 	channelProfileMap := make(map[string]model.UserMap, len(channelsMap))
 	channelKeywords := make(map[string]MentionKeywords, len(channelsMap))
 	channelNotifyProps := make(map[string]map[string]model.StringMap, len(channelsMap))
+	communityNotifyProps := make(map[string]map[string]model.StringMap, len(teamsMap)) // one query per community
 	for _, c := range channelsMap {
 		team := teamsMap[c.TeamId]
 		if team == nil && !c.IsGroupOrDirect() {
@@ -277,7 +278,7 @@ func (a *App) persistentNotificationsAuxiliaryData(rctx request.CTX, channelsMap
 			}
 		}
 		// Antimatter: each member's notification settings for the channel's community over their own.
-		channelProfileMap[c.Id] = a.withCommunityNotifyProps(rctx, c.TeamId, profileMap)
+		channelProfileMap[c.Id] = a.withCommunityNotifyPropsMemo(rctx, c.TeamId, profileMap, communityNotifyProps)
 	}
 	return channelGroupMap, channelProfileMap, channelKeywords, channelNotifyProps, nil
 }
@@ -345,10 +346,11 @@ func (a *App) sendPersistentNotifications(post *model.Post, channel *model.Chann
 
 	sender := profileMap[post.UserId]
 	notification := &PostNotification{
-		Post:       post,
-		Channel:    channel,
-		ProfileMap: profileMap,
-		Sender:     sender,
+		Post:           post,
+		Channel:        channel,
+		ProfileMap:     profileMap,
+		Sender:         sender,
+		senderNickname: &communityNicknameMemo{},
 	}
 
 	if int64(len(mentionedUsersList)) > *a.Config().TeamSettings.MaxNotificationsPerChannel {

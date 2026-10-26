@@ -4,6 +4,7 @@
 package app
 
 import (
+	"errors"
 	"net/http"
 	"testing"
 
@@ -11,6 +12,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/mattermost/mattermost/server/public/model"
+	storemocks "github.com/mattermost/mattermost/server/v8/channels/store/storetest/mocks"
 )
 
 func TestUserBlocking(t *testing.T) {
@@ -395,5 +397,47 @@ func TestUserBlocking(t *testing.T) {
 		_, appErr := th.App.UpdateMessageRequest(th.Context, channel, bob.Id, model.MessageRequestActionRequest)
 		require.Nil(t, appErr)
 		assert.True(t, th.App.notificationSilenced(th.Context, bob.Id, alice.Id, channel.Id))
+	})
+}
+
+// When who ignores or blocks the author can't be read, nobody is notified of the post rather than everyone: the
+// post itself still goes out (only the notifications are held back).
+func TestSendNotificationsFailsClosedOnUsersIgnoringError(t *testing.T) {
+	mainHelper.Parallel(t)
+	th := SetupWithStoreMock(t)
+	th.App.UpdateConfig(func(cfg *model.Config) { *cfg.PrivacySettings.EnableUserBlocking = true })
+
+	sender := &model.User{Id: model.NewId(), Username: "sender"}
+	recipient := &model.User{Id: model.NewId(), Username: "recipient"}
+	ignorer := &model.User{Id: model.NewId(), Username: "ignorer"}
+	profileMap := map[string]*model.User{sender.Id: sender, recipient.Id: recipient, ignorer.Id: ignorer}
+
+	mockStore := th.App.Srv().Store().(*storemocks.Store)
+	mockPreference := storemocks.PreferenceStore{}
+	mockStore.On("Preference").Return(&mockPreference)
+	failing := model.NewId()
+	mockPreference.On("GetCategoryAndName", model.PreferenceCategoryUserBlock, failing).Return(nil, errors.New("database unavailable"))
+	mockPreference.On("GetCategoryAndName", model.PreferenceCategoryUserBlock, sender.Id).Return(model.Preferences{
+		{UserId: ignorer.Id, Category: model.PreferenceCategoryUserBlock, Name: sender.Id, Value: model.UserBlockIgnore},
+	}, nil)
+
+	t.Run("a failed lookup silences everyone, and leaves message requests alone", func(t *testing.T) {
+		author := &model.User{Id: failing, Username: "author"}
+		dm := &model.Channel{Id: model.NewId(), Type: model.ChannelTypeDirect, Name: model.GetDMNameFromIds(author.Id, recipient.Id)}
+		post := &model.Post{Id: model.NewId(), UserId: author.Id, ChannelId: dm.Id, Message: "hello"}
+		members := map[string]*model.User{author.Id: author, recipient.Id: recipient}
+		props := map[string]model.StringMap{}
+		// The store mock has no channel store: touching the message request would fail the test.
+		silenced, gotProps := th.App.silencedForPost(th.Context, post, dm, author, members, props)
+		assert.True(t, silenced.Has(recipient.Id), "the recipient isn't notified")
+		assert.Equal(t, props, gotProps)
+	})
+
+	t.Run("a working lookup silences only those who ignore the author", func(t *testing.T) {
+		channel := &model.Channel{Id: model.NewId(), Type: model.ChannelTypeOpen, TeamId: model.NewId()}
+		post := &model.Post{Id: model.NewId(), UserId: sender.Id, ChannelId: channel.Id, Message: "hello"}
+		silenced, _ := th.App.silencedForPost(th.Context, post, channel, sender, profileMap, map[string]model.StringMap{})
+		assert.True(t, silenced.Has(ignorer.Id))
+		assert.False(t, silenced.Has(recipient.Id))
 	})
 }

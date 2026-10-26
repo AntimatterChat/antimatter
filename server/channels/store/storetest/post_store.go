@@ -33,6 +33,7 @@ func TestPostStore(t *testing.T, rctx request.CTX, ss store.Store, s SqlStore) {
 	t.Run("PermDelete1Level2", func(t *testing.T) { testPostStorePermDelete1Level2(t, rctx, ss) })
 	t.Run("PermDeleteLimitExceeded", func(t *testing.T) { testPostStorePermDeleteLimitExceeded(t, rctx, ss, s) })
 	t.Run("PermDeleteByUserAssociatedData", func(t *testing.T) { testPostStorePermDeleteByUserAssociatedData(t, rctx, ss, s) })
+	t.Run("PermanentDeleteByChannelAssociatedData", func(t *testing.T) { testPostStorePermanentDeleteByChannelAssociatedData(t, rctx, ss, s) })
 	t.Run("GetWithChildren", func(t *testing.T) { testPostStoreGetWithChildren(t, rctx, ss) })
 	t.Run("GetPostsWithDetails", func(t *testing.T) { testPostStoreGetPostsWithDetails(t, rctx, ss) })
 	t.Run("GetPostsBeforeAfter", func(t *testing.T) { testPostStoreGetPostsBeforeAfter(t, rctx, ss) })
@@ -2015,6 +2016,69 @@ func testPostStorePermDeleteByUserAssociatedData(t *testing.T, rctx request.CTX,
 	require.Error(t, err, "replies to the user's root posts should be deleted")
 	_, err = ss.Post().GetSingle(rctx, otherRoot.Id, true)
 	require.NoError(t, err, "posts the user replied to should not be deleted")
+}
+
+// Deleting a channel for good removes what its posts kept in the tables that have no foreign key to do it.
+func testPostStorePermanentDeleteByChannelAssociatedData(t *testing.T, rctx request.CTX, ss store.Store, s SqlStore) {
+	newChannel := func() *model.Channel {
+		channel, err := ss.Channel().Save(rctx, &model.Channel{
+			TeamId:      model.NewId(),
+			DisplayName: "Associated data",
+			Name:        "channel" + model.NewId(),
+			Type:        model.ChannelTypeOpen,
+		}, -1)
+		require.NoError(t, err)
+		return channel
+	}
+	channel, kept := newChannel(), newChannel()
+	userID := model.NewId()
+	withPriority := func(post *model.Post) *model.Post {
+		post.Metadata = &model.PostMetadata{Priority: &model.PostPriority{
+			Priority:                model.NewPointer(model.PostPriorityUrgent),
+			RequestedAck:            model.NewPointer(true),
+			PersistentNotifications: model.NewPointer(true),
+		}}
+		return post
+	}
+
+	root, err := ss.Post().Save(rctx, withPriority(&model.Post{ChannelId: channel.Id, UserId: userID, Message: "root"}))
+	require.NoError(t, err)
+	reply, err := ss.Post().Save(rctx, withPriority(&model.Post{ChannelId: channel.Id, UserId: userID, RootId: root.Id, Message: "reply"}))
+	require.NoError(t, err)
+	other, err := ss.Post().Save(rctx, withPriority(&model.Post{ChannelId: kept.Id, UserId: userID, Message: "in another channel"}))
+	require.NoError(t, err)
+
+	for _, post := range []*model.Post{root, reply, other} {
+		_, err = ss.Reaction().Save(&model.Reaction{UserId: userID, PostId: post.Id, EmojiName: "smile", ChannelId: post.ChannelId})
+		require.NoError(t, err)
+		_, err = ss.PostAcknowledgement().SaveWithModel(&model.PostAcknowledgement{UserId: userID, PostId: post.Id, ChannelId: post.ChannelId, AcknowledgedAt: model.GetMillis()})
+		require.NoError(t, err)
+		_, err = ss.ReadReceipt().Save(rctx, &model.ReadReceipt{UserID: userID, PostID: post.Id, ExpireAt: model.GetMillis() + 100000})
+		require.NoError(t, err)
+		require.NoError(t, ss.Post().SetPostReminder(&model.PostReminder{UserId: userID, PostId: post.Id, TargetTime: model.GetMillis()/1000 + 1000}))
+	}
+
+	tables := []string{"Reactions", "PostAcknowledgements", "ReadReceipts", "PostReminders", "PostsPriority", "PersistentNotifications"}
+	count := func(t *testing.T, table string, ids ...any) int {
+		t.Helper()
+		var n int
+		require.NoError(t, s.GetMaster().Get(&n, "SELECT COUNT(*) FROM "+table+" WHERE PostId IN (?"+strings.Repeat(", ?", len(ids)-1)+")", ids...))
+		return n
+	}
+	for _, table := range tables {
+		require.Equal(t, 2, count(t, table, root.Id, reply.Id), "test setup should have left rows in %s", table)
+	}
+
+	require.NoError(t, ss.Post().PermanentDeleteByChannel(rctx, channel.Id))
+
+	for _, table := range tables {
+		assert.Zero(t, count(t, table, root.Id, reply.Id), "%s still holds rows for the deleted channel's posts", table)
+		assert.Equal(t, 1, count(t, table, other.Id), "%s keeps the rows of another channel's posts", table)
+	}
+	_, err = ss.Post().GetSingle(rctx, reply.Id, true)
+	require.Error(t, err, "the channel's posts are gone")
+	_, err = ss.Post().GetSingle(rctx, other.Id, true)
+	require.NoError(t, err, "another channel's posts stay")
 }
 
 func testPostStoreGetWithChildren(t *testing.T, rctx request.CTX, ss store.Store) {

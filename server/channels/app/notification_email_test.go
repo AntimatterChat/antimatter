@@ -1138,6 +1138,33 @@ func TestGenerateHyperlinkForChannelsMultiPublic(t *testing.T) {
 	assert.Equal(t, expMessage, outMessage)
 }
 
+// A channel whose name starts another's: each mention links to its own channel, whole.
+func TestGenerateHyperlinkForChannels_OverlappingNames(t *testing.T) {
+	mainHelper.Parallel(t)
+	th := SetupWithStoreMock(t)
+
+	short := &model.Channel{Id: model.NewId(), Name: "town-square", DisplayName: "Town Square", Type: model.ChannelTypeOpen}
+	long := &model.Channel{Id: model.NewId(), Name: "town-square-events", DisplayName: "Events", Type: model.ChannelTypeOpen}
+	message := "See ~town-square-events and ~town-square, or #town-square-events"
+
+	teamName := "testteam"
+	teamURL := "http://localhost:8065/landing#/testteam"
+	storeMock := th.App.Srv().Store().(*mocks.Store)
+	teamStoreMock := mocks.TeamStore{}
+	teamStoreMock.On("GetByName", "testteam").Return(&model.Team{Id: "test", Name: "testteam"}, nil)
+	storeMock.On("Team").Return(&teamStoreMock)
+	channelStoreMock := mocks.ChannelStore{}
+	// The shorter name first: the order in which the old code broke the longer one's link.
+	channelStoreMock.On("GetByNames", "test", []string{long.Name, short.Name}, true).Return([]*model.Channel{short, long}, nil)
+	storeMock.On("Channel").Return(&channelStoreMock)
+
+	th.App.Srv().EmailService.SetStore(storeMock)
+	outMessage, err := th.App.Srv().EmailService.GenerateHyperlinkForChannels(message, teamName, teamURL)
+	require.NoError(t, err)
+	shortURL, longURL := teamURL+"/channels/"+short.Name, teamURL+"/channels/"+long.Name
+	assert.Equal(t, "See <a href='"+longURL+"'>~town-square-events</a> and <a href='"+shortURL+"'>~town-square</a>, or <a href='"+longURL+"'>#town-square-events</a>", outMessage)
+}
+
 func TestGenerateHyperlinkForChannelsPrivate(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := SetupWithStoreMock(t)

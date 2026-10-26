@@ -6,6 +6,7 @@ package app
 import (
 	"context"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -59,7 +60,9 @@ func TestRewriteUsesItsConnection(t *testing.T) {
 	require.Nil(t, appErr)
 	assert.Equal(t, int64(1), usage.ByPurpose[string(ai.PurposeRewrite)].Requests)
 	require.NotEmpty(t, usage.Days)
-	assert.Equal(t, th.BasicUser.Id, usage.Days[0].UserId, "counted against the person rewriting")
+	mine, err := th.App.Srv().Store().AIConnection().GetUserUsageTotals(th.Context, c.Id, th.BasicUser.Id, model.AIUsageMonthStart(time.Now()))
+	require.NoError(t, err)
+	assert.Positive(t, mine.Requests, "counted against the person rewriting")
 
 	t.Run("not on a community's connection", func(t *testing.T) {
 		community := createTestAIConnection(t, th, f, th.BasicTeam.Id, nil)

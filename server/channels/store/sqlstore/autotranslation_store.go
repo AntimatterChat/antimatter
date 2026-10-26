@@ -343,8 +343,13 @@ func (s *SqlAutoTranslationStore) Save(translation *model.Translation) error {
 					WHERE Translations.NormHash IS DISTINCT FROM EXCLUDED.NormHash
 					   OR Translations.State != EXCLUDED.State`)
 
-	if _, err := s.GetMaster().ExecBuilder(query); err != nil {
+	result, err := s.GetMaster().ExecBuilder(query)
+	if err != nil {
 		return errors.Wrapf(err, "failed to save translation for object_id=%s, lang=%s", objectID, dstLang)
+	}
+	// The row's time, for the caller to hand on (unchanged when the row was already the same).
+	if n, rowsErr := result.RowsAffected(); rowsErr == nil && n > 0 {
+		translation.UpdateAt = now
 	}
 
 	return nil

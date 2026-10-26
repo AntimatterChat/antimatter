@@ -421,28 +421,36 @@ func (r *run) deleteFiles() error {
 		return nil
 	}
 	rctx := request.EmptyContext(r.logger)
-	kept := map[string]struct{}{}
+	// The files are read oldest first, from the creation time of the last one seen (since): the files kept there (a
+	// bookmark's, a pinned post's) come back first and are skipped, without reading again all those kept before.
+	var since int64
+	keptAtSince := map[string]struct{}{}
 	for {
 		if err := r.ctx.Err(); err != nil {
 			return err
 		}
-		perPage := int(r.batchSize) + len(kept)
+		perPage := max(int(r.batchSize), 1) + len(keptAtSince)
 		infos, err := r.store.FileInfo().GetWithOptions(0, perPage, &model.GetFileInfosOptions{
 			IncludeDeleted: true,
 			SortBy:         model.FileinfoSortByCreated,
+			Since:          since,
 		})
 		if err != nil {
 			return fmt.Errorf("failed to get the files to delete: %w", err)
 		}
 
+		kept := map[string]struct{}{}
 		candidates := make([]*model.FileInfo, 0, len(infos))
+		var seen []*model.FileInfo
 		reachedCutoff := false
 		for _, info := range infos {
 			if info.CreateAt >= r.fileCutoff {
 				reachedCutoff = true
 				break
 			}
-			if _, ok := kept[info.Id]; ok {
+			seen = append(seen, info)
+			if _, ok := keptAtSince[info.Id]; ok {
+				kept[info.Id] = struct{}{}
 				continue
 			}
 			if info.CreatorId == model.BookmarkFileOwner {
@@ -467,13 +475,19 @@ func (r *run) deleteFiles() error {
 			r.add(JobDataFilesDeleted, 1)
 		}
 
-		// Files are sorted by creation time: once a file newer than the
-		// cutoff was seen, or the page was not full, everything eligible was
-		// processed. Otherwise the page only held files older than the
-		// cutoff, each of which was either deleted or newly kept (the page
-		// size accounts for the previously kept ones), so progress is made.
-		if reachedCutoff || len(infos) < perPage {
+		// Files are sorted by creation time (then ID): once a file newer than the cutoff was seen, or the page was
+		// not full, everything eligible was processed. Otherwise the next page starts at the last creation time seen,
+		// where only the files kept at that time come back before new ones: the page has room for them, so each page
+		// deletes or keeps some new files.
+		if reachedCutoff || len(infos) < perPage || len(seen) == 0 {
 			return nil
+		}
+		since = seen[len(seen)-1].CreateAt
+		keptAtSince = map[string]struct{}{}
+		for _, info := range seen {
+			if _, ok := kept[info.Id]; ok && info.CreateAt == since {
+				keptAtSince[info.Id] = struct{}{}
+			}
 		}
 		if err := sleepCtx(r.ctx, r.pause); err != nil {
 			return err

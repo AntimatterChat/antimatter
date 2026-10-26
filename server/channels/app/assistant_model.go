@@ -92,8 +92,11 @@ func (a *App) assistantSpendDecision(rctx request.CTX, userID, channelID string,
 	if !a.assistantBudgetLeft("decisions_user", userID, cfg.decisionsPerUser) || !a.assistantBudgetLeft("decisions_channel", channelID, cfg.decisionsPerChannel) {
 		return false
 	}
-	return a.assistantTakeBudget(rctx, "decisions_user", userID, cfg.decisionsPerUser) &&
-		a.assistantTakeBudget(rctx, "decisions_channel", channelID, cfg.decisionsPerChannel)
+	// Both or neither: the channel's (the one overlapping windows race for) first, the person's given back if the
+	// channel's runs out.
+	return a.assistantTakeBudgets(rctx,
+		assistantBudget{"decisions_channel", channelID, cfg.decisionsPerChannel},
+		assistantBudget{"decisions_user", userID, cfg.decisionsPerUser})
 }
 
 // assistantWindowValues gives the values found in a window's messages, of the type an argument takes first.

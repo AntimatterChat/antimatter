@@ -1270,23 +1270,12 @@ func (s *SqlPostStore) PermanentDeleteByChannel(rctx request.CTX, channelId stri
 
 		id = ids[len(ids)-1]
 
-		if err = s.permanentDeleteThreads(transaction, ids); err != nil {
+		// Everything kept by post (threads, reactions, acknowledgements, priority, reminders...), as for any post
+		// deleted for good: none of those tables has a foreign key to clean up after it.
+		if err = s.permanentDeleteAssociatedData(transaction, ids); err != nil {
 			return err
 		}
 		time.Sleep(10 * time.Millisecond)
-
-		if err = s.permanentDeleteReactions(transaction, ids); err != nil {
-			return err
-		}
-		time.Sleep(10 * time.Millisecond)
-
-		if err = s.permanentDeleteTemporaryPosts(transaction, ids); err != nil {
-			return err
-		}
-
-		if err = s.permanentDeleteReadReceipts(transaction, ids); err != nil {
-			return err
-		}
 
 		query := s.getQueryBuilder().
 			Delete("Posts").
@@ -3142,43 +3131,6 @@ func (s *SqlPostStore) permanentDeleteThreads(transaction *sqlxTxWrapper, postId
 		)
 	if _, err := transaction.ExecBuilder(query); err != nil {
 		return errors.Wrap(err, "failed to delete ThreadMemberships")
-	}
-	return nil
-}
-
-func (s *SqlPostStore) permanentDeleteReactions(transaction *sqlxTxWrapper, postIds []string) error {
-	query := s.getQueryBuilder().
-		Delete("Reactions").
-		Where(
-			sq.Eq{"PostId": postIds},
-		)
-	if _, err := transaction.ExecBuilder(query); err != nil {
-		return errors.Wrap(err, "failed to delete Reactions")
-	}
-
-	return nil
-}
-
-func (s *SqlPostStore) permanentDeleteReadReceipts(transaction *sqlxTxWrapper, postIds []string) error {
-	query := s.getQueryBuilder().
-		Delete("ReadReceipts").
-		Where(
-			sq.Eq{"PostId": postIds},
-		)
-	if _, err := transaction.ExecBuilder(query); err != nil {
-		return errors.Wrap(err, "failed to delete ReadReceipts")
-	}
-	return nil
-}
-
-func (s *SqlPostStore) permanentDeleteTemporaryPosts(transaction *sqlxTxWrapper, postIds []string) error {
-	query := s.getQueryBuilder().
-		Delete("TemporaryPosts").
-		Where(
-			sq.Eq{"PostId": postIds},
-		)
-	if _, err := transaction.ExecBuilder(query); err != nil {
-		return errors.Wrap(err, "failed to delete Threads")
 	}
 	return nil
 }

@@ -12,6 +12,7 @@ import (
 	"path/filepath"
 	"slices"
 	"strings"
+	"sync"
 
 	"github.com/mattermost/mattermost/server/public/model"
 	"github.com/mattermost/mattermost/server/public/shared/mlog"
@@ -357,12 +358,35 @@ func (a *App) communityNotificationNames(notification *PostNotification, nameFor
 	if nameFormat != model.ShowNicknameFullName {
 		return nameFormat, notification
 	}
-	profile, appErr := a.GetCommunityProfile(teamID, notification.Sender.Id)
-	if appErr != nil || profile.Nickname == "" {
+	nickname := a.senderCommunityNickname(notification, teamID)
+	if nickname == "" {
 		return nameFormat, notification
 	}
 	adjusted := *notification
 	adjusted.Sender = notification.Sender.DeepCopy()
-	adjusted.Sender.Nickname = profile.Nickname
+	adjusted.Sender.Nickname = nickname
 	return nameFormat, &adjusted
+}
+
+// communityNicknameMemo keeps a notification's sender's community nickname, looked up once for all its recipients
+// (the copies of the notification for each recipient share it).
+type communityNicknameMemo struct {
+	once     sync.Once
+	nickname string
+}
+
+func (a *App) senderCommunityNickname(notification *PostNotification, teamID string) string {
+	lookup := func() string {
+		profile, appErr := a.GetCommunityProfile(teamID, notification.Sender.Id)
+		if appErr != nil {
+			return ""
+		}
+		return profile.Nickname
+	}
+	memo := notification.senderNickname
+	if memo == nil {
+		return lookup()
+	}
+	memo.once.Do(func() { memo.nickname = lookup() })
+	return memo.nickname
 }

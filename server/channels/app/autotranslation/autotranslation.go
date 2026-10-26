@@ -293,9 +293,24 @@ func (s *Service) onConfigChange(_, newCfg *model.Config) {
 	defer s.lifecycleMu.Unlock()
 	if n := workerCount(newCfg); n != s.workers && s.workers != 0 {
 		s.workers = n
-		go s.pool.resize(n)
+		// The count is recorded now, in order; the workers are restarted in the background, as they finish their
+		// current task.
+		s.pool.setSize(n)
+		s.goRecovered("resizing the workers", s.pool.applySize)
 	}
 	// The provider is rebuilt lazily on its next use.
+}
+
+// goRecovered runs f in the background, logging a panic instead of letting it stop the server (as processTask does).
+func (s *Service) goRecovered(what string, f func()) {
+	go func() {
+		defer func() {
+			if r := recover(); r != nil {
+				s.h.Log().Error("Auto-translation panicked while "+what, mlog.Any("panic", r))
+			}
+		}()
+		f()
+	}()
 }
 
 // Shutdown stops the workers, letting in-flight tasks finish.

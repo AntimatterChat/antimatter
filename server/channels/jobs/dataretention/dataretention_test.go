@@ -8,6 +8,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"fmt"
 	"net/http"
 	"testing"
 
@@ -17,6 +18,7 @@ import (
 
 	"github.com/mattermost/mattermost/server/public/model"
 	"github.com/mattermost/mattermost/server/public/shared/mlog"
+	"github.com/mattermost/mattermost/server/public/shared/request"
 	"github.com/mattermost/mattermost/server/v8/channels/store"
 	"github.com/mattermost/mattermost/server/v8/channels/store/storetest"
 	"github.com/mattermost/mattermost/server/v8/platform/services/searchengine"
@@ -311,4 +313,59 @@ func TestDeletionJobStartTime(t *testing.T) {
 	*cfg.DataRetentionSettings.DeletionJobStartTime = "garbage"
 	st = deletionJobStartTime(cfg)
 	assert.Equal(t, 2, st.Hour())
+}
+
+// Many old pinned files: each page reads the next files after them, not every kept file again from the start.
+func TestRun_DeleteFiles_ManyPinnedFilesStaysBounded(t *testing.T) {
+	const now = int64(10_000_000_000)
+	const batch = 10
+	fileCutoff := now - msPerHour
+
+	// 200 old files: three in four on a pinned post, some sharing a creation time; then one newer than the cutoff.
+	var files []*model.FileInfo
+	pinned := map[string]bool{}
+	for i := range 200 {
+		info := &model.FileInfo{Id: fmt.Sprintf("f%03d", i), PostId: fmt.Sprintf("p%03d", i), CreatorId: "u", CreateAt: fileCutoff - 1000 + int64(i/3)}
+		pinned[info.PostId] = i%4 != 0
+		files = append(files, info)
+	}
+	files = append(files, &model.FileInfo{Id: "new", CreatorId: "u", CreateAt: fileCutoff + 1})
+	deleted := map[string]bool{}
+
+	s := &storetest.Store{}
+	maxPage := 0
+	s.FileInfoStore.On("GetWithOptions", 0, mock.Anything, mock.Anything).Return(func(_, perPage int, opt *model.GetFileInfosOptions) ([]*model.FileInfo, error) {
+		maxPage = max(maxPage, perPage)
+		var out []*model.FileInfo
+		for _, f := range files { // already sorted by creation time, then ID
+			if !deleted[f.Id] && f.CreateAt >= opt.Since && len(out) < perPage {
+				out = append(out, f)
+			}
+		}
+		return out, nil
+	})
+	s.FileInfoStore.On("PermanentDelete", mock.Anything, mock.Anything).Return(func(_ request.CTX, id string) error {
+		deleted[id] = true
+		return nil
+	})
+	s.PostStore.On("GetPostsByIds", mock.Anything).Return(func(ids []string) ([]*model.Post, error) {
+		posts := make([]*model.Post, 0, len(ids))
+		for _, id := range ids {
+			posts = append(posts, &model.Post{Id: id, IsPinned: pinned[id]})
+		}
+		return posts, nil
+	})
+
+	r := &run{ctx: context.Background(), logger: mlog.CreateConsoleTestLogger(t), job: &model.Job{Data: model.StringMap{}}, store: s,
+		fileCutoff: fileCutoff, preservePinned: true, batchSize: batch, counters: map[string]int64{}}
+	require.NoError(t, r.deleteFiles())
+
+	assert.Len(t, deleted, 50, "every unpinned old file is deleted")
+	for _, f := range files {
+		if f.Id != "new" {
+			assert.Equal(t, !pinned[f.PostId], deleted[f.Id], f.Id)
+		}
+	}
+	assert.False(t, deleted["new"])
+	assert.LessOrEqual(t, maxPage, batch+3, "a page only has room for the kept files of one creation time")
 }

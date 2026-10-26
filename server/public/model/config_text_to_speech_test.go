@@ -12,18 +12,20 @@ import (
 func TestTextToSpeechSettingsIsValid(t *testing.T) {
 	s := TextToSpeechSettings{}
 	s.SetDefaults()
-	require.Nil(t, s.isValid(false), "off, nothing is required")
+	require.Nil(t, s.isValid(false, ""), "off, nothing is required")
 
 	s.Enable = NewPointer(true)
-	require.NotNil(t, s.isValid(false))
+	require.NotNil(t, s.isValid(false, ""))
 
 	s.URL = NewPointer("http://tts.example.com/v1")
-	appErr := s.isValid(false)
+	appErr := s.isValid(false, "")
 	require.NotNil(t, appErr)
 	require.Equal(t, "model.config.is_valid.text_to_speech.model.app_error", appErr.Id)
 
+	require.NotNil(t, s.isValid(false, "tts-1"), "without a connection, its model doesn't count")
+
 	s.Model = NewPointer("tts-1")
-	require.Nil(t, s.isValid(false))
+	require.Nil(t, s.isValid(false, ""))
 
 	cfg := Config{}
 	cfg.SetDefaults()
