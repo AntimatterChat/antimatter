@@ -2754,6 +2754,41 @@ func (a *App) GetChannelMembersTimezones(rctx request.CTX, channelID string) ([]
 	return model.RemoveDuplicateStrings(timezones), nil
 }
 
+// GetChannelMembersTimezonesForUser is GetChannelMembersTimezones as viewerID may see it (Antimatter): without the time
+// zones of the members whose local time is hidden from them (profile privacy). System admins (asAdmin) see them all.
+func (a *App) GetChannelMembersTimezonesForUser(rctx request.CTX, channelID, viewerID string, asAdmin bool) ([]string, *model.AppError) {
+	if asAdmin {
+		return a.GetChannelMembersTimezones(rctx, channelID)
+	}
+	profiles, err := a.Srv().Store().User().GetAllProfilesInChannel(rctx, channelID, true)
+	if err != nil {
+		return nil, model.NewAppError("GetChannelMembersTimezonesForUser", "app.channel.get_members.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
+	}
+	viewer := a.newProfileViewer(viewerID, false)
+	concerned := false
+	for _, user := range profiles {
+		if viewer.concerned(user) {
+			concerned = true
+			break
+		}
+	}
+	if !concerned {
+		return a.GetChannelMembersTimezones(rctx, channelID)
+	}
+
+	var timezones []string
+	for _, user := range profiles {
+		if viewer.hidden(user)[model.ProfileFieldLocalTime] {
+			continue
+		}
+		if user.Timezone["automaticTimezone"] == "" && user.Timezone["manualTimezone"] == "" {
+			continue
+		}
+		timezones = append(timezones, model.GetPreferredTimezone(user.Timezone))
+	}
+	return model.RemoveDuplicateStrings(timezones), nil
+}
+
 func (a *App) GetChannelMembersByIds(rctx request.CTX, channelID string, userIDs []string) (model.ChannelMembers, *model.AppError) {
 	members, err := a.Srv().Store().Channel().GetMembersByIds(channelID, userIDs)
 	if err != nil {

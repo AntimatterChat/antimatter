@@ -6856,6 +6856,53 @@ func TestGetChannelMembersTimezones(t *testing.T) {
 	require.Empty(t, timezone, "should return 0 timezone")
 }
 
+// The time zones of a channel's members leave out those whose local time is hidden from the caller (profile
+// privacy), as the user routes do.
+func TestGetChannelMembersTimezonesHonoursProfilePrivacy(t *testing.T) {
+	mainHelper.Parallel(t)
+	th := Setup(t).InitBasic(t)
+	ctx := context.Background()
+
+	me, appErr := th.App.GetUser(th.Context, th.BasicUser.Id)
+	require.Nil(t, appErr)
+	me.Timezone = model.StringMap{"useAutomaticTimezone": "false", "manualTimezone": "Asia/Tokyo"}
+	_, appErr = th.App.UpdateUser(th.Context, me, false)
+	require.Nil(t, appErr)
+
+	// BasicUser2 hides their local time from everyone.
+	other, appErr := th.App.GetUser(th.Context, th.BasicUser2.Id)
+	require.Nil(t, appErr)
+	other.Timezone = model.StringMap{"useAutomaticTimezone": "false", "manualTimezone": "Europe/Rome"}
+	privacy, err := json.Marshal(model.ProfilePrivacy{model.ProfilePrivacyDefault: {model.ProfileFieldLocalTime}})
+	require.NoError(t, err)
+	other.Props = model.StringMap{model.UserPropsKeyProfilePrivacy: string(privacy)}
+	_, appErr = th.App.UpdateUser(th.Context, other, false)
+	require.Nil(t, appErr)
+
+	timezones, _, err := th.Client.GetChannelMembersTimezones(ctx, th.BasicChannel.Id)
+	require.NoError(t, err)
+	assert.Contains(t, timezones, "Asia/Tokyo")
+	assert.NotContains(t, timezones, "Europe/Rome")
+
+	dm, appErr := th.App.GetOrCreateDirectChannel(th.Context, th.BasicUser.Id, th.BasicUser2.Id)
+	require.Nil(t, appErr)
+	timezones, _, err = th.Client.GetChannelMembersTimezones(ctx, dm.Id)
+	require.NoError(t, err)
+	assert.Equal(t, []string{"Asia/Tokyo"}, timezones, "not in their direct message either")
+
+	t.Run("they and system admins see it", func(t *testing.T) {
+		client2 := th.CreateClient()
+		th.LoginBasic2WithClient(t, client2)
+		timezones, _, err := client2.GetChannelMembersTimezones(ctx, dm.Id)
+		require.NoError(t, err)
+		assert.ElementsMatch(t, []string{"Asia/Tokyo", "Europe/Rome"}, timezones)
+
+		timezones, _, err = th.SystemAdminClient.GetChannelMembersTimezones(ctx, th.BasicChannel.Id)
+		require.NoError(t, err)
+		assert.Contains(t, timezones, "Europe/Rome")
+	})
+}
+
 func TestChannelMembersMinusGroupMembers(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)
