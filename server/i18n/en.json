@@ -2751,6 +2751,11 @@
     "description": "Admin API validation error when the payload for updating an outgoing OAuth connection is invalid."
   },
   {
+    "id": "api.context.outgoing_oauth_connection.update_connection.secrets_for_new_target.app_error",
+    "translation": "To change this connection's token URL, grant type or username, enter its client secret (and, for the password grant, its password) again: the saved ones are only sent where they were saved for.",
+    "description": "Admin API error (Antimatter): an outgoing OAuth connection's token URL, grant type or username was changed without entering its saved client secret or password again."
+  },
+  {
     "id": "api.context.outgoing_oauth_connection.validate_connection_credentials.app_error",
     "translation": "There was an error while validating the outgoing OAuth connection credentials.",
     "description": "API error returned to an admin when the server fails while testing an outgoing OAuth connection's credentials."
