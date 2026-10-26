@@ -148,15 +148,7 @@ func (a *App) SendNotifications(rctx request.CTX, post *model.Post, team *model.
 
 	// Antimatter: those who ignore or block the author get no notification from them, nor does the recipient of a
 	// direct message waiting as a message request; writing in a direct message also moves it in or out of the requests.
-	var silenced model.StringSet
-	if a.UserBlockingEnabled() && post.UserId != "" {
-		ignoring, err := a.usersIgnoring(post.UserId)
-		if err != nil {
-			rctx.Logger().Warn("Failed to get who ignores the author of a post", mlog.String("post_id", post.Id), mlog.Err(err))
-		}
-		channelMemberNotifyPropsMap = a.updateDMRequestsForPost(rctx, post, channel, sender, ignoring, channelMemberNotifyPropsMap)
-		silenced = silencedRecipients(post, channel, ignoring, channelMemberNotifyPropsMap)
-	}
+	silenced, channelMemberNotifyPropsMap := a.silencedForPost(rctx, post, channel, sender, profileMap, channelMemberNotifyPropsMap)
 
 	followers := make(model.StringSet, 0)
 	if tchan != nil {
