@@ -35,6 +35,9 @@ import (
 // another worker.
 var syncPollInterval = time.Second
 
+// syncCancelWait bounds how long a synchronous export whose caller gave up waits for its job to end once canceled.
+var syncCancelWait = 30 * time.Second
+
 // MessageExport implements einterfaces.MessageExportInterface.
 type MessageExport struct {
 	deps func() Deps
@@ -120,12 +123,30 @@ func waitForJob(ctx context.Context, rctx request.CTX, jobServer *jobs.JobServer
 		}
 		select {
 		case <-ctx.Done():
-			if appErr := jobServer.RequestCancellation(rctx, id); appErr != nil {
-				rctx.Logger().Warn("Unable to cancel the message export job", mlog.String("job_id", id), mlog.Err(appErr))
-			}
-			job.Status = model.JobStatusCanceled
-			return job, nil
+			// The caller's context is done: ask, and wait a little, on one of our own.
+			return awaitCancellation(rctx.WithContext(context.Background()), jobServer, job)
 		case <-time.After(syncPollInterval):
 		}
+	}
+}
+
+// awaitCancellation requests the cancellation of a job and waits a bounded time for it to end (the worker that
+// runs it, perhaps on another node, stops at its next batch): the job is returned with its real status, terminal
+// or still being canceled, never one made up here.
+func awaitCancellation(rctx request.CTX, jobServer *jobs.JobServer, job *model.Job) (*model.Job, *model.AppError) {
+	if appErr := jobServer.RequestCancellation(rctx, job.Id); appErr != nil {
+		rctx.Logger().Warn("Unable to cancel the message export job", mlog.String("job_id", job.Id), mlog.Err(appErr))
+	}
+	for deadline := time.Now().Add(syncCancelWait); ; {
+		latest, appErr := jobServer.GetJob(rctx, job.Id)
+		if appErr != nil {
+			rctx.Logger().Warn("Unable to read the message export job being canceled", mlog.String("job_id", job.Id), mlog.Err(appErr))
+			return job, nil
+		}
+		job = latest
+		if isTerminal(job.Status) || !time.Now().Before(deadline) {
+			return job, nil
+		}
+		time.Sleep(syncPollInterval)
 	}
 }

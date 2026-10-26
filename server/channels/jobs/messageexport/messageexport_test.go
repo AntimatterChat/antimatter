@@ -663,3 +663,47 @@ func TestUpdatedType(t *testing.T) {
 	assert.Equal(t, UpdatedTypeEditedOriginalMsg, typ)
 	assert.Equal(t, "new", id)
 }
+
+// A synchronous export whose caller gives up while another worker runs the job reports what became of the job, not a
+// cancellation made up on the spot.
+func TestWaitForJob_ContextDoneWhileAnotherWorkerOwnsJob_ReturnsActualOutcome(t *testing.T) {
+	interval, wait := syncPollInterval, syncCancelWait
+	syncPollInterval, syncCancelWait = 10*time.Millisecond, 2*time.Second
+	t.Cleanup(func() { syncPollInterval, syncCancelWait = interval, wait })
+
+	st := newTestStore()
+	js := newTestJobServer(t, st, newTestConfig())
+	running := func() *model.Job {
+		job := &model.Job{Id: model.NewId(), Type: model.JobTypeMessageExport, Status: model.JobStatusInProgress, Data: model.StringMap{}}
+		_, err := st.jobs.Save(job)
+		require.NoError(t, err)
+		return job
+	}
+	gaveUp, cancel := context.WithCancel(context.Background())
+	cancel()
+
+	t.Run("the other worker finishes it anyway", func(t *testing.T) {
+		job := running()
+		go func() {
+			// The other worker sees the request at its next batch, but its last batch was written: success.
+			for {
+				if j, _ := st.jobs.Get(nil, job.Id); j != nil && j.Status == model.JobStatusCancelRequested {
+					_, _ = st.jobs.UpdateStatus(job.Id, model.JobStatusSuccess)
+					return
+				}
+				time.Sleep(time.Millisecond)
+			}
+		}()
+		got, appErr := waitForJob(gaveUp, request.TestContext(t), js, job.Id)
+		require.Nil(t, appErr)
+		assert.Equal(t, model.JobStatusSuccess, got.Status)
+	})
+
+	t.Run("the other worker hasn't stopped yet", func(t *testing.T) {
+		syncCancelWait = 50 * time.Millisecond
+		job := running()
+		got, appErr := waitForJob(gaveUp, request.TestContext(t), js, job.Id)
+		require.Nil(t, appErr)
+		assert.Equal(t, model.JobStatusCancelRequested, got.Status, "still being canceled, not canceled")
+	})
+}
