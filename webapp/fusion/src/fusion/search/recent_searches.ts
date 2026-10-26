@@ -16,7 +16,12 @@ function keyFor(userId: string): string {
 }
 
 function currentKey(): string | null {
-    const userId = getCurrentUserId(store.getState());
+    let userId = '';
+    try {
+        userId = getCurrentUserId(store.getState());
+    } catch {
+        // No store yet (or not a full one): nobody is known to be signed in.
+    }
     return userId ? keyFor(userId) : null;
 }
 
