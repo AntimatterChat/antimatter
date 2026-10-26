@@ -43,6 +43,7 @@ import store from 'stores/redux_store';
 import SubMenuModal from 'components/widgets/menu/menu_modals/submenu_modal/submenu_modal';
 
 import WebSocketClient from 'client/web_websocket_client';
+import {clearRecentSearches} from 'fusion/search/recent_searches';
 import {getHistory} from 'utils/browser_history';
 import {ActionTypes, PostTypes, RHSStates, ModalIdentifiers, PreviousViewedTypes, UserStatuses} from 'utils/constants';
 import DesktopApp from 'utils/desktop_api';
@@ -274,6 +275,10 @@ export function emitLocalUserTypingEvent(channelId: string, parentPostId: string
 }
 
 export function emitUserLoggedOutEvent(redirectTo = '/', shouldSignalLogout = true, userAction = true) {
+    // Antimatter: the next person signed in in this browser doesn't see what you searched for (while you're still
+    // known: signing out forgets who you were).
+    clearRecentSearches();
+
     // If the logout was intentional, discard knowledge about having previously been logged in.
     // This bit is otherwise used to detect session expirations on the login page.
     if (userAction) {
