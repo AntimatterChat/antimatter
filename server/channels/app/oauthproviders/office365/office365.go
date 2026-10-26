@@ -78,7 +78,16 @@ func (p *Provider) GetUserFromJSON(rctx request.CTX, data io.Reader, tokenUser *
 	}
 	if hasToken {
 		identity = identity.Merge(tokenIdentity)
+		// xms_edov vouches for the token's email claim only.
+		if !strings.EqualFold(tokenIdentity.Email, identity.Email) {
+			identity.EmailDomainVerified = ""
+		}
 	}
+	// Without a directory, any tenant's users sign in, and their admins set
+	// their mail addresses.
+	p.mu.RLock()
+	identity.TenantUnrestricted = oidc.IsMicrosoftMultiTenant(p.tenant)
+	p.mu.RUnlock()
 
 	email := identity.BestEmail()
 	if email == "" {
@@ -86,14 +95,18 @@ func (p *Provider) GetUserFromJSON(rctx request.CTX, data io.Reader, tokenUser *
 	}
 	first, last := identity.Names()
 
-	return &model.User{
+	user := &model.User{
 		Email:       email,
 		FirstName:   first,
 		LastName:    last,
 		Username:    oidc.Username(rctx.Logger(), "", email, false),
 		AuthData:    model.NewPointer(id),
 		AuthService: model.ServiceOffice365,
-	}, nil
+	}
+	if identity.EmailUnverified() {
+		einterfaces.MarkOAuthEmailUnverified(user)
+	}
+	return user, nil
 }
 
 func (p *Provider) GetSSOSettings(_ request.CTX, config *model.Config, _ string) (*model.SSOSettings, error) {

@@ -4,6 +4,7 @@
 package oidc
 
 import (
+	"strconv"
 	"strings"
 
 	"github.com/mattermost/mattermost/server/public/model"
@@ -110,6 +111,25 @@ type Identity struct {
 	Name              string
 	PreferredUsername string
 	UPN               string
+	// EmailVerified is the email_verified claim: "true", "false", or "" when
+	// the provider didn't send it.
+	EmailVerified string
+	// EmailDomainVerified is Microsoft's xms_edov claim (the owner of the
+	// email's domain is verified): "true", "false" or "".
+	EmailDomainVerified string
+	// TenantUnrestricted is set by the provider, not read from a claim: the
+	// sign-in accepts users of any Microsoft tenant, whose admins choose
+	// their users' email addresses.
+	TenantUnrestricted bool
+}
+
+// boolClaim gives a boolean claim as "true", "false", or "" when absent.
+func boolClaim(c Claims, name string) string {
+	value, present := Bool(c, name)
+	if !present {
+		return ""
+	}
+	return strconv.FormatBool(value)
 }
 
 // IdentityFromClaims extracts the identity claims. It understands both the
@@ -124,15 +144,17 @@ func IdentityFromClaims(c Claims) Identity {
 		return ""
 	}
 	return Identity{
-		Subject:           first("sub"),
-		ObjectID:          first("oid"),
-		TenantID:          first("tid"),
-		Email:             strings.ToLower(first("email", "mail")),
-		GivenName:         first("given_name", "givenName"),
-		FamilyName:        first("family_name", "surname"),
-		Name:              first("name", "displayName"),
-		PreferredUsername: first("preferred_username"),
-		UPN:               first("upn", "userPrincipalName", "unique_name"),
+		Subject:             first("sub"),
+		ObjectID:            first("oid"),
+		TenantID:            first("tid"),
+		Email:               strings.ToLower(first("email", "mail")),
+		GivenName:           first("given_name", "givenName"),
+		FamilyName:          first("family_name", "surname"),
+		Name:                first("name", "displayName"),
+		PreferredUsername:   first("preferred_username"),
+		UPN:                 first("upn", "userPrincipalName", "unique_name"),
+		EmailVerified:       boolClaim(c, "email_verified"),
+		EmailDomainVerified: boolClaim(c, "xms_edov"),
 	}
 }
 
@@ -152,7 +174,37 @@ func (i Identity) Merge(other Identity) Identity {
 	fill(&i.Name, other.Name)
 	fill(&i.PreferredUsername, other.PreferredUsername)
 	fill(&i.UPN, other.UPN)
+	fill(&i.EmailVerified, other.EmailVerified)
+	fill(&i.EmailDomainVerified, other.EmailDomainVerified)
+	i.TenantUnrestricted = i.TenantUnrestricted || other.TenantUnrestricted
 	return i
+}
+
+// EmailUnverified tells whether the email claim (Email, not a UPN standing in
+// for it) can't be trusted as the user's own address: the provider says it
+// isn't verified, or a Microsoft sign-in open to any tenant gives an address
+// in a domain the user's tenant isn't known to own. Such a tenant's admins
+// can give their users any address (the "nOAuth" attack), so the address is
+// trusted only with xms_edov=true or in the UPN's domain, which the tenant
+// has verified. A provider that doesn't send email_verified is trusted.
+func (i Identity) EmailUnverified() bool {
+	if i.Email == "" {
+		return false
+	}
+	if i.EmailVerified == "false" {
+		return true
+	}
+	if !i.TenantUnrestricted || i.EmailDomainVerified == "true" {
+		return false
+	}
+	_, emailDomain, _ := strings.Cut(i.Email, "@")
+	for _, candidate := range []string{i.UPN, i.PreferredUsername} {
+		if LooksLikeEmail(candidate) {
+			_, domain, _ := strings.Cut(strings.ToLower(candidate), "@")
+			return domain != emailDomain
+		}
+	}
+	return true
 }
 
 // BestEmail returns the email claim, falling back to the UPN or the preferred
@@ -194,15 +246,18 @@ func (i Identity) ToUser(logger mlog.LoggerIFace, authData string, usePreferred 
 		Username:  Username(logger, i.PreferredUsername, email, usePreferred),
 		AuthData:  model.NewPointer(authData),
 		Props: model.StringMap{
-			propPrefix + "sub":                i.Subject,
-			propPrefix + "oid":                i.ObjectID,
-			propPrefix + "tid":                i.TenantID,
-			propPrefix + "email":              i.Email,
-			propPrefix + "given_name":         i.GivenName,
-			propPrefix + "family_name":        i.FamilyName,
-			propPrefix + "name":               i.Name,
-			propPrefix + "preferred_username": i.PreferredUsername,
-			propPrefix + "upn":                i.UPN,
+			propPrefix + "sub":                 i.Subject,
+			propPrefix + "oid":                 i.ObjectID,
+			propPrefix + "tid":                 i.TenantID,
+			propPrefix + "email":               i.Email,
+			propPrefix + "given_name":          i.GivenName,
+			propPrefix + "family_name":         i.FamilyName,
+			propPrefix + "name":                i.Name,
+			propPrefix + "preferred_username":  i.PreferredUsername,
+			propPrefix + "upn":                 i.UPN,
+			propPrefix + "email_verified":      i.EmailVerified,
+			propPrefix + "xms_edov":            i.EmailDomainVerified,
+			propPrefix + "tenant_unrestricted": strconv.FormatBool(i.TenantUnrestricted),
 		},
 	}
 	return user
@@ -219,14 +274,17 @@ func IdentityFromUser(u *model.User) (Identity, bool) {
 	}
 	p := u.Props
 	return Identity{
-		Subject:           p[propPrefix+"sub"],
-		ObjectID:          p[propPrefix+"oid"],
-		TenantID:          p[propPrefix+"tid"],
-		Email:             p[propPrefix+"email"],
-		GivenName:         p[propPrefix+"given_name"],
-		FamilyName:        p[propPrefix+"family_name"],
-		Name:              p[propPrefix+"name"],
-		PreferredUsername: p[propPrefix+"preferred_username"],
-		UPN:               p[propPrefix+"upn"],
+		Subject:             p[propPrefix+"sub"],
+		ObjectID:            p[propPrefix+"oid"],
+		TenantID:            p[propPrefix+"tid"],
+		Email:               p[propPrefix+"email"],
+		GivenName:           p[propPrefix+"given_name"],
+		FamilyName:          p[propPrefix+"family_name"],
+		Name:                p[propPrefix+"name"],
+		PreferredUsername:   p[propPrefix+"preferred_username"],
+		UPN:                 p[propPrefix+"upn"],
+		EmailVerified:       p[propPrefix+"email_verified"],
+		EmailDomainVerified: p[propPrefix+"xms_edov"],
+		TenantUnrestricted:  p[propPrefix+"tenant_unrestricted"] == "true",
 	}, true
 }

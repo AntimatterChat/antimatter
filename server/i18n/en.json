@@ -6102,6 +6102,11 @@
     "description": "API error in the desktop app server-side login flow when the desktop token belongs to a user who does not authenticate via OAuth or SAML."
   },
   {
+    "id": "api.user.oauth.email_unverified.app_error",
+    "translation": "Your identity provider doesn't vouch for your email address, so it can't create an account or sign in to an existing one by email. Verify the address with your identity provider, or ask your administrator.",
+    "description": "Sign-in error (Antimatter): the single sign-on provider (OpenID Connect, Office 365) says the user's email address isn't verified, or a Microsoft sign-in open to every tenant gives an address in a domain the user's tenant isn't known to own."
+  },
+  {
     "id": "api.user.oauth.get_settings.app_error",
     "translation": "Failed to get {{.Service}} settings",
     "description": "Internal error when loading server configuration for an SSO provider; {{.Service}} is the provider name."

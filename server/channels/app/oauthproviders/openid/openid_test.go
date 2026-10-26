@@ -265,3 +265,93 @@ func mustKey(t *testing.T) *rsa.PrivateKey {
 	require.NoError(t, err)
 	return key
 }
+
+// An address the provider says it hasn't verified is marked so that it neither creates nor links an account, and a
+// preferred username never stands in for a missing email outside Microsoft Entra ID.
+func TestOpenIDGetUserFromJSONDropsUnverifiedEmail(t *testing.T) {
+	p, idp, cfg, rctx := setup(t)
+	settings, err := p.GetSSOSettings(rctx, cfg, model.ServiceOpenid)
+	require.NoError(t, err)
+
+	unverified := func(u *model.User) bool { return einterfaces.TakeOAuthEmailUnverified(u) }
+
+	t.Run("email_verified false in the userinfo", func(t *testing.T) {
+		user, err := p.GetUserFromJSON(rctx, strings.NewReader(`{"sub":"s1","email":"ceo@corp.com","email_verified":false}`), nil, settings)
+		require.NoError(t, err)
+		assert.True(t, unverified(user))
+		assert.Empty(t, user.Props, "the mark is taken off")
+	})
+
+	t.Run("email_verified false in the id token", func(t *testing.T) {
+		tokenUser, err := p.GetUserFromIdToken(rctx, idp.Sign(jwt.MapClaims{
+			"iss": idp.URL(), "aud": "client-id", "sub": "s2", "email": "ceo@corp.com", "email_verified": false,
+		}))
+		require.NoError(t, err)
+		user, err := p.GetUserFromJSON(rctx, strings.NewReader(`{"sub":"s2"}`), tokenUser, settings)
+		require.NoError(t, err)
+		assert.Equal(t, "ceo@corp.com", user.Email)
+		assert.True(t, unverified(user))
+	})
+
+	t.Run("a verified or unflagged address is trusted", func(t *testing.T) {
+		user, err := p.GetUserFromJSON(rctx, strings.NewReader(`{"sub":"s3","email":"jane@corp.com","email_verified":true}`), nil, settings)
+		require.NoError(t, err)
+		assert.False(t, unverified(user))
+		user, err = p.GetUserFromJSON(rctx, strings.NewReader(`{"sub":"s3","email":"jane@corp.com"}`), nil, settings)
+		require.NoError(t, err)
+		assert.False(t, unverified(user))
+	})
+
+	t.Run("no preferred username for an email", func(t *testing.T) {
+		tokenUser, err := p.GetUserFromIdToken(rctx, idp.Sign(jwt.MapClaims{
+			"iss": idp.URL(), "aud": "client-id", "sub": "s4", "preferred_username": "ceo@corp.com",
+		}))
+		require.NoError(t, err)
+		_, err = p.GetUserFromJSON(rctx, strings.NewReader(`{"sub":"s4","preferred_username":"ceo@corp.com"}`), tokenUser, settings)
+		require.Error(t, err)
+	})
+}
+
+// A Microsoft registration open to every tenant ("common") trusts the email claim only with xms_edov=true or in the
+// UPN's domain: any tenant's admins can give their users any address.
+func TestOpenIDMicrosoftAnyTenantEmail(t *testing.T) {
+	p, idp, cfg, rctx := setup(t)
+	idp.Issuer = "https://login.example.com/{tenantid}/v2.0"
+	cfg.Office365Settings.Enable = model.NewPointer(true)
+	cfg.Office365Settings.Id = model.NewPointer("ms-client")
+	cfg.Office365Settings.Scope = model.NewPointer("openid profile email")
+	cfg.Office365Settings.DiscoveryEndpoint = model.NewPointer(idp.DiscoveryURL())
+
+	signIn := func(t *testing.T, directory string, extra jwt.MapClaims) *model.User {
+		t.Helper()
+		cfg.Office365Settings.DirectoryId = model.NewPointer(directory)
+		settings, err := p.GetSSOSettings(rctx, cfg, model.ServiceOffice365)
+		require.NoError(t, err)
+		claims := jwt.MapClaims{
+			"iss": "https://login.example.com/tenant-x/v2.0", "aud": "ms-client", "sub": "pairwise-sub",
+			"oid": "object-id", "tid": "tenant-x", "preferred_username": "mallory@attacker.onmicrosoft.com",
+			"email": "ceo@victim.com",
+		}
+		for k, v := range extra {
+			claims[k] = v
+		}
+		tokenUser, err := p.GetUserFromIdToken(rctx, idp.Sign(claims))
+		require.NoError(t, err)
+		user, err := p.GetUserFromJSON(rctx, strings.NewReader(`{"sub":"pairwise-sub"}`), tokenUser, settings)
+		require.NoError(t, err)
+		return user
+	}
+
+	user := signIn(t, "", nil)
+	assert.Equal(t, "ceo@victim.com", user.Email)
+	assert.True(t, einterfaces.TakeOAuthEmailUnverified(user), "any tenant, another domain, no xms_edov")
+
+	user = signIn(t, "", jwt.MapClaims{"xms_edov": true})
+	assert.False(t, einterfaces.TakeOAuthEmailUnverified(user), "xms_edov vouches for the domain")
+
+	user = signIn(t, "", jwt.MapClaims{"preferred_username": "ceo.x@victim.com"})
+	assert.False(t, einterfaces.TakeOAuthEmailUnverified(user), "the tenant owns the UPN's domain")
+
+	user = signIn(t, "tenant-x", nil)
+	assert.False(t, einterfaces.TakeOAuthEmailUnverified(user), "one tenant: its admins are trusted")
+}

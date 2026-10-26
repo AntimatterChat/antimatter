@@ -447,6 +447,7 @@ func (a *App) CreateOAuthUser(rctx request.CTX, service string, userData io.Read
 	if user.AuthService == "" {
 		user.AuthService = service
 	}
+	emailUnverified := einterfaces.TakeOAuthEmailUnverified(user)
 
 	found := true
 	count := 0
@@ -460,6 +461,13 @@ func (a *App) CreateOAuthUser(rctx request.CTX, service string, userData io.Read
 	userByAuth, _ := a.ch.srv.userService.GetUserByAuth(user.AuthData, service)
 	if userByAuth != nil {
 		return userByAuth, false, nil
+	}
+
+	// An address the identity provider doesn't vouch for could be anyone's:
+	// it neither creates an account (which would count as verified and pass
+	// the communities' allowed domains) nor takes over one by email.
+	if emailUnverified {
+		return nil, false, model.NewAppError("CreateOAuthUser", "api.user.oauth.email_unverified.app_error", nil, "service="+service+" email="+user.Email+" (the provider says the address is unverified; for Microsoft without a directory id, the address must carry xms_edov=true or be in the UPN's domain)", http.StatusForbidden)
 	}
 
 	userByEmail, _ := a.ch.srv.userService.GetUserByEmail(user.Email)
@@ -2662,6 +2670,8 @@ func (a *App) UpdateOAuthUserAttrs(rctx request.CTX, userData io.Reader, user *m
 	if err1 != nil {
 		return model.NewAppError("UpdateOAuthUserAttrs", "api.user.update_oauth_user_attrs.get_user.app_error", map[string]any{"Service": service}, "", http.StatusBadRequest).Wrap(err1)
 	}
+	// The account keeps its address rather than take one the provider doesn't vouch for.
+	emailUnverified := einterfaces.TakeOAuthEmailUnverified(oauthUser)
 
 	userAttrsChanged := false
 
@@ -2678,7 +2688,7 @@ func (a *App) UpdateOAuthUserAttrs(rctx request.CTX, userData io.Reader, user *m
 		userAttrsChanged = true
 	}
 
-	if oauthUser.Email != user.Email {
+	if oauthUser.Email != user.Email && !emailUnverified {
 		if existingUser, _ := a.GetUserByEmail(oauthUser.Email); existingUser == nil {
 			user.Email = oauthUser.Email
 			userAttrsChanged = true

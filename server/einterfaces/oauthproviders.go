@@ -42,6 +42,32 @@ type OAuthClaimsProvider interface {
 	GetClaimValues(rctx request.CTX, in OAuthClaimsInput, claimPaths []string) (map[string][]string, error)
 }
 
+// OAuthEmailUnverifiedProp marks a user returned by GetUserFromJSON whose
+// email address the identity provider doesn't vouch for. Such an address
+// must not create an account, link one by email, or replace the address of
+// an existing account. The mark is never stored.
+const OAuthEmailUnverifiedProp = "antimatter_oauth_email_unverified"
+
+// MarkOAuthEmailUnverified marks the email of a user returned by
+// GetUserFromJSON as unverified.
+func MarkOAuthEmailUnverified(user *model.User) {
+	if user.Props == nil {
+		user.Props = model.StringMap{}
+	}
+	user.Props[OAuthEmailUnverifiedProp] = "true"
+}
+
+// TakeOAuthEmailUnverified tells whether a user returned by GetUserFromJSON has
+// an unverified email address, and removes the mark so it is never stored.
+func TakeOAuthEmailUnverified(user *model.User) bool {
+	if user == nil || user.Props == nil {
+		return false
+	}
+	_, marked := user.Props[OAuthEmailUnverifiedProp]
+	delete(user.Props, OAuthEmailUnverifiedProp)
+	return marked
+}
+
 var oauthProviders = make(map[string]OAuthProvider)
 
 func RegisterOAuthProvider(name string, newProvider OAuthProvider) {
