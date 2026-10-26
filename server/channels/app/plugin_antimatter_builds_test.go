@@ -124,3 +124,47 @@ func TestPrepackagedPluginsSignedByOtherKeysAreNotAntimatterBuilds(t *testing.T)
 	_, recorded := th.App.ch.antimatterPrepackagedPlugins.Load("testplugin")
 	require.False(t, recorded, "testplugin is signed with the development key, not the Antimatter key")
 }
+
+// A configuration upgraded from Mattermost keeps EnableRemoteMarketplace=true, but SetDefaults blanks its
+// mattermost.com MarketplaceURL. The listing used to fail with "Failed to create marketplace client" (500) and showed
+// no app at all; it now skips the remote fetch and still lists the prepackaged and installed apps.
+func TestGetMarketplacePluginsWithRemoteMarketplaceOnAndNoURL(t *testing.T) {
+	mainHelper.Parallel(t)
+	testsPath, found := fileutils.FindDir("tests")
+	require.True(t, found)
+
+	th := SetupConfig(t, func(cfg *model.Config) {
+		cfg.PluginSettings.SignaturePublicKeyFiles = []string{filepath.Join(testsPath, "development-public-key.asc")}
+	})
+	prepackagedDir := filepath.Join(th.tempWorkspace, prepackagedPluginsDir)
+	require.NoError(t, os.Mkdir(prepackagedDir, os.ModePerm))
+	for _, name := range []string{"testplugin.tar.gz", "testplugin.tar.gz.sig"} {
+		require.NoError(t, testlib.CopyFile(filepath.Join(testsPath, name), filepath.Join(prepackagedDir, name)))
+	}
+
+	th.App.UpdateConfig(func(cfg *model.Config) {
+		*cfg.PluginSettings.Enable = true
+		*cfg.PluginSettings.EnableMarketplace = true
+		*cfg.PluginSettings.EnableRemoteMarketplace = true
+		*cfg.PluginSettings.MarketplaceURL = "https://api.integrations.mattermost.com"
+	})
+	require.True(t, *th.App.Config().PluginSettings.EnableRemoteMarketplace)
+	require.Empty(t, *th.App.Config().PluginSettings.MarketplaceURL, "SetDefaults blanks a mattermost.com Marketplace URL")
+	require.False(t, th.App.Config().PluginSettings.RemoteMarketplaceEnabled())
+
+	require.Nil(t, th.App.ch.syncPlugins())
+	require.NoError(t, th.App.ch.processPrepackagedPlugins(prepackagedDir))
+
+	plugins, appErr := th.App.GetMarketplacePlugins(th.Context, &model.MarketplacePluginFilter{})
+	require.Nil(t, appErr)
+	var ids []string
+	for _, p := range plugins {
+		ids = append(ids, p.Manifest.Id)
+		require.Empty(t, p.Labels, "no \"not listed in the marketplace\" label without a remote Marketplace")
+	}
+	require.Contains(t, ids, "testplugin")
+
+	plugins, appErr = th.App.GetMarketplacePlugins(th.Context, &model.MarketplacePluginFilter{RemoteOnly: true})
+	require.Nil(t, appErr)
+	require.Empty(t, plugins)
+}

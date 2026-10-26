@@ -5555,3 +5555,26 @@ func TestTeamSettingsMemberLimit(t *testing.T) {
 	*c.TeamSettings.MaxUsersPerTeam = -1
 	assert.NotNil(t, c.TeamSettings.isValid())
 }
+
+func TestPluginSettingsRemoteMarketplaceEnabled(t *testing.T) {
+	enabled := func(on bool, url string) bool {
+		s := PluginSettings{EnableRemoteMarketplace: NewPointer(on), MarketplaceURL: NewPointer(url)}
+		return s.RemoteMarketplaceEnabled()
+	}
+
+	require.True(t, enabled(true, "https://marketplace.example.com"))
+	require.False(t, enabled(false, "https://marketplace.example.com"))
+	require.False(t, enabled(true, ""))
+	require.False(t, enabled(true, "  "))
+	require.False(t, (&PluginSettings{}).RemoteMarketplaceEnabled())
+
+	// An upgraded Mattermost configuration: the remote Marketplace stays switched on, the mattermost.com URL is
+	// blanked, so nothing is fetched.
+	upgraded := PluginSettings{
+		EnableRemoteMarketplace: NewPointer(true),
+		MarketplaceURL:          NewPointer("https://api.integrations.mattermost.com"),
+	}
+	upgraded.SetDefaults(LogSettings{}, MetricsSettings{})
+	require.True(t, *upgraded.EnableRemoteMarketplace)
+	require.False(t, upgraded.RemoteMarketplaceEnabled())
+}

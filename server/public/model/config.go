@@ -3991,6 +3991,15 @@ func (s *PluginSettings) SetDefaults(ls LogSettings, ms MetricsSettings) {
 // If it is, the setting is replaced with a fake value.
 // If a plugin is no longer installed, no stored settings for that plugin are returned.
 // If the list of manifests in nil, i.e. plugins are disabled, all settings are sanitized.
+// RemoteMarketplaceEnabled reports whether the server fetches apps from a remote Marketplace: the setting is on and
+// a Marketplace URL is set. Configurations upgraded from Mattermost keep EnableRemoteMarketplace=true but lose their
+// mattermost.com URL in SetDefaults; with no URL there is nothing to fetch, and the listing and installs carry on
+// with the local and prepackaged apps.
+func (s *PluginSettings) RemoteMarketplaceEnabled() bool {
+	return s.EnableRemoteMarketplace != nil && *s.EnableRemoteMarketplace &&
+		s.MarketplaceURL != nil && strings.TrimSpace(*s.MarketplaceURL) != ""
+}
+
 func (s *PluginSettings) Sanitize(pluginManifests []*Manifest) {
 	manifestMap := make(map[string]*Manifest, len(pluginManifests))
 
