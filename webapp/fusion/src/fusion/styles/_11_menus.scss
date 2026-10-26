@@ -93,3 +93,6 @@
   :is(.am-app, .am-layer) .am-fly-menu { position: static; width: auto; margin: 2px 0 4px 26px; box-shadow: none; }
   :is(.am-app, .am-layer) .am-fly-menu::after { display: none; }
 }
+
+// Entries older apps draw themselves in the message menu (registerPostDropdownMenuComponent): often list items.
+:is(.am-app, .am-layer) .am-fly-menu .am-mi-components :is(ul, li) { list-style: none; margin: 0; padding: 0; }
