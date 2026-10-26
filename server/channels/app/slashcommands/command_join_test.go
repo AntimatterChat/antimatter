@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/mattermost/mattermost/server/public/model"
 	"github.com/mattermost/mattermost/server/public/shared/i18n"
@@ -167,4 +168,30 @@ func TestJoinCommandPermissions(t *testing.T) {
 
 	actual = cmd.DoCommand(th.App, th.Context, args, "~"+channel3.Name).Text
 	assert.Equal(t, "api.command_join.fail.app_error", actual)
+}
+
+// Antimatter: town-square is the default channel's Mattermost name; /join ~town-square joins General.
+func TestJoinCommandWithLegacyDefaultChannelName(t *testing.T) {
+	th := setup(t).initBasic(t)
+
+	if testing.Short() {
+		t.SkipNow()
+	}
+
+	// No channel named town-square: the store alone finds nothing.
+	_, err := th.App.Srv().Store().Channel().GetByName(th.BasicTeam.Id, model.LegacyDefaultChannelName, false)
+	require.Error(t, err)
+
+	cmd := &JoinProvider{}
+	for _, message := range []string{"~" + model.LegacyDefaultChannelName, model.LegacyDefaultChannelName} {
+		resp := cmd.DoCommand(th.App, th.Context, &model.CommandArgs{
+			T:       i18n.IdentityTfunc(),
+			UserId:  th.BasicUser2.Id,
+			SiteURL: "http://test.url",
+			TeamId:  th.BasicTeam.Id,
+		}, message)
+
+		assert.Equal(t, "", resp.Text, message)
+		assert.Equal(t, "http://test.url/"+th.BasicTeam.Name+"/channels/"+model.DefaultChannelName, resp.GotoLocation, message)
+	}
 }

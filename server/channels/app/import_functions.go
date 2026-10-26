@@ -281,8 +281,10 @@ func (a *App) importChannel(rctx request.CTX, data *imports.ChannelImportData, d
 		return model.NewAppError("BulkImport", "app.import.import_channel.team_not_found.error", map[string]any{"TeamName": teamName}, "", http.StatusBadRequest).Wrap(err)
 	}
 
+	// Antimatter: a Mattermost export's town-square is the community's default channel (General here), which the
+	// import updates instead of making a second default channel next to it. It keeps its name and display name.
 	var channel *model.Channel
-	if result, gErr := a.Srv().Store().Channel().GetByNameIncludeDeleted(team.Id, channelName, true); gErr == nil {
+	if result, gErr := a.getChannelByNameOrLegacy(rctx, team.Id, channelName, true, true); gErr == nil {
 		channel = result
 	} else {
 		channel = &model.Channel{
@@ -291,7 +293,9 @@ func (a *App) importChannel(rctx request.CTX, data *imports.ChannelImportData, d
 	}
 
 	channel.TeamId = team.Id
-	channel.DisplayName = *data.DisplayName
+	if channel.Name == channelName {
+		channel.DisplayName = *data.DisplayName
+	}
 	channel.Type = *data.Type
 
 	if data.Header != nil {
@@ -1438,7 +1442,7 @@ func (a *App) importUserChannels(rctx request.CTX, user *model.User, team *model
 	for _, tdata := range *data {
 		channelNames = append(channelNames, *tdata.Name)
 	}
-	allChannels, err := a.getChannelsByNames(channelNames, team.Id)
+	allChannels, err := a.getChannelsByNames(rctx, channelNames, team.Id)
 	if err != nil {
 		return err
 	}
@@ -2121,7 +2125,7 @@ func (a *App) getTeamsByNames(names []string) (map[string]*model.Team, *model.Ap
 	return teams, nil
 }
 
-func (a *App) getChannelsByNames(names []string, teamID string) (map[string]*model.Channel, *model.AppError) {
+func (a *App) getChannelsByNames(rctx request.CTX, names []string, teamID string) (map[string]*model.Channel, *model.AppError) {
 	allChannels, err := a.Srv().Store().Channel().GetByNamesIncludeDeleted(teamID, names, true)
 	if err != nil {
 		return nil, model.NewAppError("BulkImport", "app.import.get_teams_by_names.some_teams_not_found.error", nil, "", http.StatusBadRequest).Wrap(err)
@@ -2131,11 +2135,21 @@ func (a *App) getChannelsByNames(names []string, teamID string) (map[string]*mod
 	for _, channel := range allChannels {
 		channels[strings.ToLower(channel.Name)] = channel
 	}
+
+	// Antimatter: memberships of a Mattermost export's town-square go to the community's default channel.
+	for _, name := range names {
+		if strings.ToLower(name) != model.LegacyDefaultChannelName || channels[model.LegacyDefaultChannelName] != nil {
+			continue
+		}
+		if legacy := a.legacyDefaultChannel(rctx, teamID, model.LegacyDefaultChannelName); legacy != nil {
+			channels[model.LegacyDefaultChannelName] = legacy
+		}
+	}
 	return channels, nil
 }
 
 // getChannelsForPosts returns map[teamName]map[channelName]*model.Channel
-func (a *App) getChannelsForPosts(teams map[string]*model.Team, data []*imports.PostImportData, deactivateMissingUsers bool) (map[string]map[string]*model.Channel, *model.AppError) {
+func (a *App) getChannelsForPosts(rctx request.CTX, teams map[string]*model.Team, data []*imports.PostImportData, deactivateMissingUsers bool) (map[string]map[string]*model.Channel, *model.AppError) {
 	teamChannels := make(map[string]map[string]*model.Channel)
 	unavailableTeamChannels := make(map[string]map[string]struct{})
 	for _, postData := range data {
@@ -2154,7 +2168,8 @@ func (a *App) getChannelsForPosts(teams map[string]*model.Team, data []*imports.
 			continue
 		}
 		if _, ok := teamChannels[teamName][channelName]; !ok {
-			channel, err := a.Srv().Store().Channel().GetByNameIncludeDeleted(team.Id, *postData.Channel, true)
+			// Antimatter: posts of a Mattermost export's town-square go to the community's default channel.
+			channel, err := a.getChannelByNameOrLegacy(rctx, team.Id, channelName, true, true)
 			if err != nil {
 				var nfErr *store.ErrNotFound
 				if deactivateMissingUsers && errors.As(err, &nfErr) {
@@ -2235,7 +2250,7 @@ func (a *App) importMultiplePostLines(rctx request.CTX, lines []imports.LineImpo
 		return 0, err
 	}
 
-	channels, err := a.getChannelsForPosts(teams, postsData, deactivateMissingUsers)
+	channels, err := a.getChannelsForPosts(rctx, teams, postsData, deactivateMissingUsers)
 	if err != nil {
 		return 0, err
 	}
