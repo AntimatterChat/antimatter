@@ -140,7 +140,11 @@ func TestModeration(t *testing.T) {
 		resp.Body.Close()
 		found := false
 		for _, timeout := range timeouts {
-			found = found || (timeout.UserId == user.Id && timeout.Reason == "spam")
+			if timeout.UserId == user.Id {
+				found = true
+				assert.Empty(t, timeout.Reason, "why is for its moderators")
+				assert.Empty(t, timeout.CreatedBy, "and by whom")
+			}
 		}
 		assert.True(t, found)
 
