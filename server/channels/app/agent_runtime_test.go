@@ -116,7 +116,9 @@ func TestAgentAnswersAMention(t *testing.T) {
 		return appErr == nil && usage.ByPurpose["agent:"+agent.UserId].Requests == 1
 	}, 5*time.Second, 50*time.Millisecond, "the call is counted for the agent")
 	require.NotEmpty(t, usage.Days)
-	assert.Equal(t, th.BasicUser.Id, usage.Days[0].UserId, "against the person who asked")
+	theirs, err := th.App.Srv().Store().AIConnection().GetUserUsageTotals(th.Context, c.Id, th.BasicUser.Id, model.AIUsageMonthStart(time.Now()))
+	require.NoError(t, err)
+	assert.Positive(t, theirs.Requests, "against the person who asked")
 }
 
 func TestAgentAnswersADirectMessage(t *testing.T) {

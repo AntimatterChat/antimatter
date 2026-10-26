@@ -19,6 +19,7 @@ func TestAIConnectionStore(t *testing.T, rctx request.CTX, ss store.Store) {
 	t.Run("Scopes", func(t *testing.T) { testAIConnectionScopes(t, rctx, ss) })
 	t.Run("Delete", func(t *testing.T) { testAIConnectionDelete(t, rctx, ss) })
 	t.Run("Usage", func(t *testing.T) { testAIConnectionUsage(t, rctx, ss) })
+	t.Run("GetUsageBoundedRows", func(t *testing.T) { testAIConnectionGetUsageBoundedRows(t, rctx, ss) })
 	t.Run("AnonymizeUsageByUser", func(t *testing.T) { testAIConnectionAnonymizeUsageByUser(t, rctx, ss) })
 }
 
@@ -184,13 +185,14 @@ func testAIConnectionUsage(t *testing.T, rctx request.CTX, ss store.Store) {
 	add(user, "", 20260930, 1000, 1000) // last month
 	add(user, "", 20261001, 10, 5)
 	add(user, "", 20261001, 20, 5) // the same day adds up
+	add(other, "", 20261001, 2, 2) // and with the others' of the day
 	add(user, "rewrite", 20261002, 7, 3)
 	add(other, "", 20261003, 100, 50)
 	add("", "auto_translation", 20261003, 1, 1)
 
 	totals, err := ss.AIConnection().GetUsageTotals(rctx, connectionID, 20261001)
 	require.NoError(t, err)
-	assert.Equal(t, model.AIUsageTotals{Requests: 5, InputTokens: 138, OutputTokens: 64}, totals)
+	assert.Equal(t, model.AIUsageTotals{Requests: 6, InputTokens: 140, OutputTokens: 66}, totals)
 
 	mine, err := ss.AIConnection().GetUserUsageTotals(rctx, connectionID, user, 20261001)
 	require.NoError(t, err)
@@ -202,9 +204,26 @@ func testAIConnectionUsage(t *testing.T, rctx request.CTX, ss store.Store) {
 
 	rows, err := ss.AIConnection().GetUsage(rctx, connectionID, 20261001)
 	require.NoError(t, err)
-	require.Len(t, rows, 4)
+	require.Len(t, rows, 4, "one row per day and purpose, however many people")
 	assert.Equal(t, 20261001, rows[0].Day)
-	assert.Equal(t, int64(2), rows[0].Requests)
+	assert.Equal(t, int64(3), rows[0].Requests)
+	assert.Equal(t, int64(32), rows[0].InputTokens)
+	assert.Equal(t, int64(12), rows[0].OutputTokens)
+	assert.Empty(t, rows[0].UserId)
+	assert.Equal(t, "rewrite", rows[1].Purpose)
+	assert.Equal(t, []string{"", "auto_translation"}, []string{rows[2].Purpose, rows[3].Purpose})
+}
+
+// GetUsage stays bounded by days and purposes, not by the people using a connection.
+func testAIConnectionGetUsageBoundedRows(t *testing.T, rctx request.CTX, ss store.Store) {
+	connectionID := model.NewId()
+	for range 50 {
+		require.NoError(t, ss.AIConnection().AddUsage(rctx, &model.AIUsage{ConnectionId: connectionID, UserId: model.NewId(), Purpose: "", Day: 20261005, Requests: 1, InputTokens: 1, OutputTokens: 1}))
+	}
+	rows, err := ss.AIConnection().GetUsage(rctx, connectionID, 20261001)
+	require.NoError(t, err)
+	require.Len(t, rows, 1)
+	assert.Equal(t, int64(50), rows[0].Requests)
 }
 
 // TestAIConnectionAgentsPluginConfig reads the Agents plugin's active configuration from its table, and only that

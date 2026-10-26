@@ -305,11 +305,15 @@ func (s *SqlAIConnectionStore) GetUserUsageTotals(rctx request.CTX, connectionID
 
 func (s *SqlAIConnectionStore) GetUsage(rctx request.CTX, connectionID string, sinceDay int) ([]*model.AIUsage, error) {
 	usage := []*model.AIUsage{}
+	// Everyone's usage together, per day and purpose: a month of a connection everyone uses is a few hundred rows,
+	// not one per person.
 	query := s.getQueryBuilder().
-		Select("ConnectionId", "UserId", "Purpose", "Day", "Requests", "InputTokens", "OutputTokens").
+		Select("ConnectionId", "'' AS UserId", "Purpose", "Day",
+			"COALESCE(SUM(Requests), 0) AS Requests", "COALESCE(SUM(InputTokens), 0) AS InputTokens", "COALESCE(SUM(OutputTokens), 0) AS OutputTokens").
 		From("AIUsage").
 		Where(sq.And{sq.Eq{"ConnectionId": connectionID}, sq.GtOrEq{"Day": sinceDay}}).
-		OrderBy("Day", "Purpose", "UserId")
+		GroupBy("ConnectionId", "Day", "Purpose").
+		OrderBy("Day", "Purpose")
 	if err := s.DBXFromContext(rctx.Context()).SelectBuilder(&usage, query); err != nil {
 		return nil, errors.Wrapf(err, "failed to get the usage of the model connection id=%s", connectionID)
 	}

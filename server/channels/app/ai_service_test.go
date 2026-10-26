@@ -146,11 +146,9 @@ func assertAIUsageFor(t *testing.T, th *TestHelper, userID string) {
 	require.NoError(t, err)
 	found := false
 	for _, c := range connections {
-		usage, appErr := th.App.GetAIConnectionUsage(th.Context, c)
-		require.Nil(t, appErr)
-		for _, day := range usage.Days {
-			found = found || day.UserId == userID
-		}
+		theirs, err := th.App.Srv().Store().AIConnection().GetUserUsageTotals(th.Context, c.Id, userID, model.AIUsageMonthStart(time.Now()))
+		require.NoError(t, err)
+		found = found || theirs.Requests > 0
 	}
 	assert.True(t, found, "the call is counted against the person")
 }
