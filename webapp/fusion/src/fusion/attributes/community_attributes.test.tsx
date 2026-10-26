@@ -20,6 +20,10 @@ let mockListener: ((msg: unknown) => void) | undefined;
 jest.spyOn(webSocketClient, 'addMessageListener').mockImplementation((listener) => {
     mockListener = listener as never;
 });
+let mockReconnect: (() => void) | undefined;
+jest.spyOn(webSocketClient, 'addReconnectListener').mockImplementation((listener) => {
+    mockReconnect = listener as never;
+});
 
 let team = 0;
 const people = ['ana', 'ben', 'cleo'].map((id) => TestHelper.getUserMock({id, username: id}));
@@ -110,5 +114,40 @@ describe('fusion/attributes/community_attributes', () => {
 
         await act(() => saveMemberAttributeValues(`team${team}`, 'ana', {company: 'a'}));
         expect(screen.getByTestId('values')).toHaveTextContent('{"company":"a"}');
+    });
+
+    // sec-fusion #6: the cache outlived a sign-out (which doesn't reload the page), so the next person signed in in
+    // the same tab saw the values the previous one could see (admin-only ones included).
+    test('another user signed in doesn\'t see the values the previous one loaded', async () => {
+        jest.spyOn(Client4, 'getCommunityAttributes').mockResolvedValue([company]);
+        const values = jest.spyOn(Client4, 'getCommunityAttributeValues').mockResolvedValue({ana: {company: 'l'}});
+        const {replaceStoreState} = renderWithContext(<Values userId='ana'/>, attributesState(`team${team}`) as never);
+        await waitFor(() => expect(screen.getByTestId('values')).toHaveTextContent('{"company":"l"}'));
+        expect(values).toHaveBeenCalledTimes(1);
+
+        // User B can't see that attribute's value.
+        values.mockResolvedValue({ana: {}});
+        const other = attributesState(`team${team}`);
+        other.entities.users.currentUserId = 'sofia';
+        act(() => replaceStoreState(other as never));
+        expect(screen.getByTestId('values')).not.toHaveTextContent('Lumen');
+        expect(screen.getByTestId('values')).not.toHaveTextContent('"company":"l"');
+        await waitFor(() => expect(values).toHaveBeenCalledTimes(2));
+        await waitFor(() => expect(screen.getByTestId('values')).toHaveTextContent('{}'));
+    });
+
+    test('everything is asked for again after the connection comes back', async () => {
+        const fields = jest.spyOn(Client4, 'getCommunityAttributes').mockResolvedValue([company]);
+        const values = jest.spyOn(Client4, 'getCommunityAttributeValues').mockResolvedValue({ana: {company: 'l'}});
+        renderWithContext(<Values userId='ana'/>, attributesState(`team${team}`) as never);
+        await waitFor(() => expect(screen.getByTestId('values')).toHaveTextContent('{"company":"l"}'));
+        fields.mockClear();
+        values.mockClear();
+
+        values.mockResolvedValue({ana: {company: 'a'}});
+        expect(mockReconnect).toBeDefined();
+        act(() => mockReconnect?.());
+        await waitFor(() => expect(screen.getByTestId('values')).toHaveTextContent('{"company":"a"}'));
+        expect(fields).toHaveBeenCalled();
     });
 });
