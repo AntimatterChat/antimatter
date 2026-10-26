@@ -4,6 +4,7 @@
 package app
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -132,6 +133,48 @@ func TestAgentActivityBroadcast(t *testing.T) {
 	guestConn.InvalidateCache()
 	th.App.Srv().Platform().InvalidateCacheForUser(guest.Id)
 	assert.True(t, guestConn.ShouldSendEvent(communityEvent), "a guest sharing a channel with it")
+}
+
+// Someone who isn't a guest but whose roles don't let them see everyone gets the activity of a server agent only
+// when they can see it, as the GET routes give it.
+func TestAgentActivityEventNotSentToUsersWhoCannotSeeAgent(t *testing.T) {
+	th, _, c := setupAgentTest(t, "")
+	server := createTestAgent(t, th, model.AIAgentScopeServer, c.Id, nil).AIAgent
+
+	// A role like system_user without view_members.
+	role, appErr := th.App.CreateRole(&model.Role{
+		Name:        "restricted_" + strings.ToLower(model.NewId()[:10]),
+		DisplayName: "Restricted",
+		Permissions: []string{model.PermissionCreateDirectChannel.Id, model.PermissionCreateGroupChannel.Id},
+	})
+	require.Nil(t, appErr)
+	restricted := th.CreateUser(t)
+	restricted, appErr = th.App.UpdateUserRoles(th.Context, restricted.Id, role.Name, false)
+	require.Nil(t, appErr)
+	channel := th.CreateChannel(t, th.BasicTeam)
+	th.LinkUserToTeam(t, restricted, th.BasicTeam)
+	th.AddUserToChannel(t, restricted, channel)
+
+	session, appErr := th.App.CreateSession(th.Context, &model.Session{UserId: restricted.Id, Roles: restricted.GetRawRoles()})
+	require.Nil(t, appErr)
+	wc := &platform.WebConn{Platform: th.Server.Platform(), Suite: th.App, UserId: restricted.Id, T: i18n.T}
+	wc.SetConnectionID(model.NewId())
+	wc.SetSession(session)
+	wc.SetSessionToken(session.Token)
+	wc.SetSessionExpiresAt(session.ExpiresAt)
+
+	activity := &model.AgentActivity{UserId: server.UserId, State: model.AgentStateWorking, Text: "Reading the payroll", UpdateAt: model.GetMillis()}
+	canSee, appErr := th.App.UserCanSeeOtherUser(th.Context, restricted.Id, server.UserId)
+	require.Nil(t, appErr)
+	require.False(t, canSee)
+	assert.False(t, wc.ShouldSendEvent(agentActivityEvent(server, activity)), "they can't see the agent")
+
+	agentUser := mustGetUser(t, th, server.UserId)
+	th.LinkUserToTeam(t, agentUser, th.BasicTeam)
+	th.AddUserToChannel(t, agentUser, channel)
+	wc.InvalidateCache()
+	th.App.Srv().Platform().InvalidateCacheForUser(restricted.Id)
+	assert.True(t, wc.ShouldSendEvent(agentActivityEvent(server, activity)), "they do once they share a channel with it")
 }
 
 func mustGetUser(t *testing.T, th *TestHelper, id string) *model.User {
