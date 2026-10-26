@@ -1177,7 +1177,7 @@ func (api *PluginAPI) SendMail(to, subject, htmlBody string) *model.AppError {
 	}
 
 	if err := api.app.Srv().EmailService.SendNotificationMail(to, subject, htmlBody); err != nil {
-		return model.NewAppError("SendMail", "plugin_api.send_mail.missing_htmlbody", nil, "", http.StatusInternalServerError).Wrap(err)
+		return model.NewAppError("SendMail", "plugin_api.send_mail.send_failed", nil, "", http.StatusInternalServerError).Wrap(err)
 	}
 
 	return nil
@@ -1237,7 +1237,7 @@ func (api *PluginAPI) SendMailWithAttachment(to, subject, htmlBody, attachmentNa
 	}
 
 	if err := api.app.Srv().EmailService.SendMailWithAttachment(to, subject, htmlBody, attachmentName, attachmentContentType, attachmentData, "", "", "", ""); err != nil {
-		return model.NewAppError("SendMailWithAttachment", "plugin_api.send_mail.missing_htmlbody", nil, "", http.StatusInternalServerError).Wrap(err)
+		return model.NewAppError("SendMailWithAttachment", "plugin_api.send_mail.send_failed", nil, "", http.StatusInternalServerError).Wrap(err)
 	}
 
 	return nil

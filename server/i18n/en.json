@@ -20263,6 +20263,11 @@
     "description": "Error returned to plugins calling the send-email API without a recipient (TO) address; developer-facing."
   },
   {
+    "id": "plugin_api.send_mail.send_failed",
+    "translation": "The email couldn't be sent.",
+    "description": "Error returned to apps calling the send-email APIs when the mail server couldn't send the message (for example, it can't be reached); developer-facing."
+  },
+  {
     "id": "plugin_reattach_request.is_valid.manifest.app_error",
     "translation": "Missing manifest",
     "description": "API error for the plugin reattach developer endpoint when the request lacks a plugin manifest; audience is plugin developers."
