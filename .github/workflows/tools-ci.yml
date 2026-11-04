@@ -20,6 +20,9 @@ permissions:
 jobs:
   check-style:
     name: check-style (${{ matrix.tool }})
+    # Upstream-only: lints mattermost/mattermost's standalone CLI tools, which
+    # ran here on every push/PR with no owner guard.
+    if: github.repository_owner == 'mattermost'
     runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
@@ -44,6 +47,8 @@ jobs:
 
   test:
     name: Test (${{ matrix.tool }})
+    # Same upstream-only tools as check-style above.
+    if: github.repository_owner == 'mattermost'
     runs-on: ubuntu-22.04
     strategy:
       fail-fast: false

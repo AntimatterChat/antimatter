@@ -11,6 +11,9 @@ permissions:
 
 jobs:
   build:
+    # Upstream-only: builds mattermost/mattermost's separate api/ service, which
+    # this fork doesn't ship. Without this guard it ran on every push and PR here.
+    if: github.repository_owner == 'mattermost'
     runs-on: ubuntu-24.04
     defaults:
       run:
