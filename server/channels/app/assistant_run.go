@@ -4,9 +4,10 @@
 package app
 
 import (
+	"cmp"
 	"encoding/json"
 	"slices"
-	"sort"
+	"strings"
 	"time"
 
 	"github.com/mattermost/mattermost/server/public/model"
@@ -145,7 +146,7 @@ func (a *App) assistantWindowPosts(rctx request.CTX, channel *model.Channel, pos
 		names[post.UserId] = author.Username
 		posts = append(posts, post)
 	}
-	sort.SliceStable(posts, func(i, j int) bool { return posts[i].CreateAt < posts[j].CreateAt })
+	slices.SortStableFunc(posts, func(x, y *model.Post) int { return cmp.Compare(x.CreateAt, y.CreateAt) })
 	return posts, names, apps
 }
 
@@ -205,7 +206,7 @@ func (a *App) assistantToolsFor(rctx request.CTX, user *model.User, channel *mod
 			}
 		}
 	}
-	sort.Slice(tools, func(i, j int) bool { return tools[i].tool.Name < tools[j].tool.Name })
+	slices.SortFunc(tools, func(x, y *aiResolvedTool) int { return strings.Compare(x.tool.Name, y.tool.Name) })
 	return tools
 }
 

@@ -9,7 +9,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"slices"
-	"sort"
 	"strings"
 	"unicode/utf8"
 
@@ -137,7 +136,9 @@ func assistantArgumentOptions(name string, p assistantSchemaProperty, values []m
 	}
 	preferred := assistantPropertyEntityTypes[strings.NewReplacer("_", "", "-", "").Replace(strings.ToLower(name))]
 	sorted := slices.Clone(values)
-	sort.SliceStable(sorted, func(i, j int) bool { return sorted[i].Type == preferred && sorted[j].Type != preferred })
+	slices.SortStableFunc(sorted, func(x, y model.AssistantEntityMatch) int {
+		return assistantTrueFirst(x.Type == preferred, y.Type == preferred)
+	})
 	for _, v := range sorted {
 		if _, ok := assistantConvert(p, v.Value); ok {
 			add(v.Value, "a "+v.Type+" named in the conversation")
@@ -298,7 +299,7 @@ func (a *App) assistantModelCandidates(rctx request.CTX, user *model.User, chann
 		return nil
 	}
 	sorted := slices.Clone(tools)
-	sort.Slice(sorted, func(i, j int) bool { return sorted[i].tool.Name < sorted[j].tool.Name })
+	slices.SortFunc(sorted, func(x, y *aiResolvedTool) int { return strings.Compare(x.tool.Name, y.tool.Name) })
 	if len(sorted) > assistantModelMaxTools {
 		sorted = sorted[:assistantModelMaxTools]
 	}

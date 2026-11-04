@@ -4,11 +4,11 @@
 package app
 
 import (
+	"cmp"
 	"encoding/json"
 	"math"
 	"net/http"
 	"slices"
-	"sort"
 	"strings"
 	"sync"
 	"time"
@@ -82,17 +82,17 @@ func (a *App) assistant() *assistantState {
 }
 
 // stop drops the windows and timers of a node that shuts down.
-func (s *assistantState) stop() {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-	s.stopped = true
-	for _, w := range s.windows {
+func (st *assistantState) stop() {
+	st.mu.Lock()
+	defer st.mu.Unlock()
+	st.stopped = true
+	for _, w := range st.windows {
 		w.timer.Stop()
 	}
-	for _, t := range s.timers {
+	for _, t := range st.timers {
 		t.Stop()
 	}
-	s.windows, s.timers = nil, nil
+	st.windows, st.timers = nil, nil
 }
 
 // assistantConfig is the assistant's settings for a community ("" for direct and group messages): the server's,
@@ -441,13 +441,23 @@ func assistantViewersOf(entries map[string]assistantPresenceEntry) []assistantVi
 	for userID, e := range entries {
 		viewers = append(viewers, assistantViewer{userID: userID, openedAt: e.OpenedAt})
 	}
-	sort.Slice(viewers, func(i, j int) bool {
-		if viewers[i].openedAt != viewers[j].openedAt {
-			return viewers[i].openedAt < viewers[j].openedAt
-		}
-		return viewers[i].userID < viewers[j].userID
+	slices.SortFunc(viewers, func(x, y assistantViewer) int {
+		return cmp.Or(cmp.Compare(x.openedAt, y.openedAt), strings.Compare(x.userID, y.userID))
 	})
 	return viewers
+}
+
+// assistantTrueFirst compares two flags for slices.SortStableFunc, so that what has the flag comes first and the
+// rest keeps its order.
+func assistantTrueFirst(x, y bool) int {
+	switch {
+	case x == y:
+		return 0
+	case x:
+		return -1
+	default:
+		return 1
+	}
 }
 
 // assistantViewers gives who has the assistant open on a channel, by who opened it first. cached takes the node's
@@ -684,7 +694,7 @@ func (a *App) GetAssistantFeed(rctx request.CTX, userID, channelID string) (*mod
 		}
 		feed.Cards = append(feed.Cards, &c)
 	}
-	sort.SliceStable(feed.Cards, func(i, j int) bool { return feed.Cards[i].Pinned && !feed.Cards[j].Pinned })
+	slices.SortStableFunc(feed.Cards, func(x, y *model.AssistantCard) int { return assistantTrueFirst(x.Pinned, y.Pinned) })
 	return feed, nil
 }
 
