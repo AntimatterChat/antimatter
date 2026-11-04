@@ -27,6 +27,9 @@ jobs:
           persist-credentials: false
       - name: Run the policy checks
         run: python3 scripts/antimatter/policy_check.py
+      - name: Test the check and report scripts
+        if: ${{ !cancelled() }}
+        run: python3 -m unittest discover -s scripts/antimatter -p '*_test.py'
 
   workflows:
     name: Workflows (actionlint, yamllint)

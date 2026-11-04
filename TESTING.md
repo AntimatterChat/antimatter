@@ -112,6 +112,9 @@ lines, "Mattermost, Inc." named as the company running a service, or detection c
 `scripts/antimatter/policy-allowlist.txt`, each with a comment saying why. Anything else fails the build,
 with a message saying what to do.
 
+**The scripts' own tests** (`scripts/antimatter/*_test.py`, standard library only) run with the policy
+checks, in CI and in `scripts/antimatter/check.sh policy`.
+
 **Upstream's workflows.** The Mattermost workflows inherited from upstream are kept to ease merges. Those
 that need Mattermost's infrastructure or secrets, or that Antimatter's workflows replace, only run when
 `github.repository_owner == 'mattermost'`. The few that work here still run (tools CI, the API reference
