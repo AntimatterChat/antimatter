@@ -1092,6 +1092,9 @@ type GroupStore interface {
 	// AssignServerWideTeams gives each Antimatter team still of the whole server (a custom group of no team, from
 	// before teams belonged to one community) a community, and returns how many it moved (Antimatter).
 	AssignServerWideTeams() (int64, error)
+	// PermanentDeleteForTeam deletes the roles and Antimatter teams of a community (the groups of a team ID, never
+	// the server-wide ones), deleted or not, with their members and syncables (Antimatter).
+	PermanentDeleteForTeam(teamID string) error
 }
 
 type LinkMetadataStore interface {
@@ -1290,6 +1293,9 @@ type AIConnectionStore interface {
 	GetAll(rctx request.CTX) ([]*model.AIConnection, error)
 	// Delete marks a connection deleted and forgets its sealed key and headers.
 	Delete(rctx request.CTX, id string, deleteAt int64) error
+	// PermanentDeleteForScope deletes the connections of a community (a team ID, never "server"), deleted or not,
+	// with their usage.
+	PermanentDeleteForScope(rctx request.CTX, scope string) error
 
 	// AddUsage adds requests and tokens to a connection's usage of a day, for a person and purpose.
 	AddUsage(rctx request.CTX, usage *model.AIUsage) error
@@ -1323,6 +1329,9 @@ type AIAgentStore interface {
 	Delete(rctx request.CTX, userID string, deleteAt int64) error
 	// PermanentDelete deletes an agent's settings, deleted or not; nothing when there are none.
 	PermanentDelete(rctx request.CTX, userID string) error
+	// PermanentDeleteForScope deletes the settings of a community's agents (a team ID, never "server"), deleted or
+	// not. Their accounts are the app's to deactivate.
+	PermanentDeleteForScope(rctx request.CTX, scope string) error
 
 	// GetAgentsPluginUserAgents gives the agents people made in the Agents plugin, from its own table
 	// Agents_UserAgents (not deleted ones); none when the table isn't there.
@@ -1350,6 +1359,9 @@ type AIMCPServerStore interface {
 	GetAll(rctx request.CTX) ([]*model.AIMCPServer, error)
 	// Delete marks an MCP server deleted and forgets everyone's sign-in to it.
 	Delete(rctx request.CTX, id string, deleteAt int64) error
+	// PermanentDeleteForScope deletes the MCP servers of a community (a team ID, never "server"), deleted or not,
+	// with everyone's sign-in to them.
+	PermanentDeleteForScope(rctx request.CTX, scope string) error
 
 	// SaveUserToken keeps a person's sign-in to an MCP server, replacing the one they had.
 	SaveUserToken(rctx request.CTX, token *model.AIMCPUserToken) error

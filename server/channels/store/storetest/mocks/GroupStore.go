@@ -1392,6 +1392,24 @@ func (_m *GroupStore) GroupTeamCount() (int64, error) {
 	return r0, r1
 }
 
+// PermanentDeleteForTeam provides a mock function with given fields: teamID
+func (_m *GroupStore) PermanentDeleteForTeam(teamID string) error {
+	ret := _m.Called(teamID)
+
+	if len(ret) == 0 {
+		panic("no return value specified for PermanentDeleteForTeam")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(string) error); ok {
+		r0 = rf(teamID)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
 // PermanentDeleteMembersByUser provides a mock function with given fields: userID
 func (_m *GroupStore) PermanentDeleteMembersByUser(userID string) error {
 	ret := _m.Called(userID)

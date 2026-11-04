@@ -899,6 +899,27 @@ func (s *RetryLayerAIAgentStore) PermanentDelete(rctx request.CTX, userID string
 
 }
 
+func (s *RetryLayerAIAgentStore) PermanentDeleteForScope(rctx request.CTX, scope string) error {
+
+	tries := 0
+	for {
+		err := s.AIAgentStore.PermanentDeleteForScope(rctx, scope)
+		if err == nil {
+			return nil
+		}
+		if !isRepeatableError(err) {
+			return err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
 func (s *RetryLayerAIAgentStore) Save(rctx request.CTX, agent *model.AIAgent) (*model.AIAgent, error) {
 
 	tries := 0
@@ -1151,6 +1172,27 @@ func (s *RetryLayerAIConnectionStore) GetUserUsageTotals(rctx request.CTX, conne
 
 }
 
+func (s *RetryLayerAIConnectionStore) PermanentDeleteForScope(rctx request.CTX, scope string) error {
+
+	tries := 0
+	for {
+		err := s.AIConnectionStore.PermanentDeleteForScope(rctx, scope)
+		if err == nil {
+			return nil
+		}
+		if !isRepeatableError(err) {
+			return err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
 func (s *RetryLayerAIConnectionStore) Save(rctx request.CTX, connection *model.AIConnection) (*model.AIConnection, error) {
 
 	tries := 0
@@ -1376,6 +1418,27 @@ func (s *RetryLayerAIMCPServerStore) GetUserTokenServerIds(rctx request.CTX, use
 		if tries >= 3 {
 			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
 			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerAIMCPServerStore) PermanentDeleteForScope(rctx request.CTX, scope string) error {
+
+	tries := 0
+	for {
+		err := s.AIMCPServerStore.PermanentDeleteForScope(rctx, scope)
+		if err == nil {
+			return nil
+		}
+		if !isRepeatableError(err) {
+			return err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return err
 		}
 		timepkg.Sleep(100 * timepkg.Millisecond)
 	}
@@ -8771,6 +8834,27 @@ func (s *RetryLayerGroupStore) GroupTeamCount() (int64, error) {
 		if tries >= 3 {
 			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
 			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerGroupStore) PermanentDeleteForTeam(teamID string) error {
+
+	tries := 0
+	for {
+		err := s.GroupStore.PermanentDeleteForTeam(teamID)
+		if err == nil {
+			return nil
+		}
+		if !isRepeatableError(err) {
+			return err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return err
 		}
 		timepkg.Sleep(100 * timepkg.Millisecond)
 	}

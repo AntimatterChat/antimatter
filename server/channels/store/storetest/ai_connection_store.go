@@ -21,6 +21,7 @@ func TestAIConnectionStore(t *testing.T, rctx request.CTX, ss store.Store) {
 	t.Run("Usage", func(t *testing.T) { testAIConnectionUsage(t, rctx, ss) })
 	t.Run("GetUsageBoundedRows", func(t *testing.T) { testAIConnectionGetUsageBoundedRows(t, rctx, ss) })
 	t.Run("AnonymizeUsageByUser", func(t *testing.T) { testAIConnectionAnonymizeUsageByUser(t, rctx, ss) })
+	t.Run("PermanentDeleteForScope", func(t *testing.T) { testAIConnectionPermanentDeleteForScope(t, rctx, ss) })
 }
 
 func testAIConnectionAnonymizeUsageByUser(t *testing.T, rctx request.CTX, ss store.Store) {
@@ -255,4 +256,45 @@ func TestAIConnectionAgentsPluginConfig(t *testing.T, rctx request.CTX, ss store
 	require.NoError(t, err)
 	assert.Contains(t, config, "current-key")
 	assert.NotContains(t, config, "old-history-key")
+}
+
+// A community's connections go with it, deleted ones and their usage too; nobody else's.
+func testAIConnectionPermanentDeleteForScope(t *testing.T, rctx request.CTX, ss store.Store) {
+	team, other := model.NewId(), model.NewId()
+	live, err := ss.AIConnection().Save(rctx, newTestAIConnection(team))
+	require.NoError(t, err)
+	deleted, err := ss.AIConnection().Save(rctx, newTestAIConnection(team))
+	require.NoError(t, err)
+	require.NoError(t, ss.AIConnection().Delete(rctx, deleted.Id, model.GetMillis()))
+	kept, err := ss.AIConnection().Save(rctx, newTestAIConnection(other))
+	require.NoError(t, err)
+	server, err := ss.AIConnection().Save(rctx, newTestAIConnection(model.AIConnectionScopeServer))
+	require.NoError(t, err)
+	for _, c := range []*model.AIConnection{live, kept} {
+		require.NoError(t, ss.AIConnection().AddUsage(rctx, &model.AIUsage{ConnectionId: c.Id, UserId: model.NewId(), Day: 20261101, Requests: 1, InputTokens: 10}))
+	}
+
+	var invErr *store.ErrInvalidInput
+	assert.ErrorAs(t, ss.AIConnection().PermanentDeleteForScope(rctx, model.AIConnectionScopeServer), &invErr, "never the server-wide ones")
+	assert.ErrorAs(t, ss.AIConnection().PermanentDeleteForScope(rctx, ""), &invErr)
+
+	require.NoError(t, ss.AIConnection().PermanentDeleteForScope(rctx, team))
+	require.NoError(t, ss.AIConnection().PermanentDeleteForScope(rctx, team), "again is fine")
+
+	var nfErr *store.ErrNotFound
+	for _, c := range []*model.AIConnection{live, deleted} {
+		_, err = ss.AIConnection().Get(rctx, c.Id)
+		assert.ErrorAs(t, err, &nfErr, "gone, deleted before or not")
+	}
+	usage, err := ss.AIConnection().GetUsageTotals(rctx, live.Id, 0)
+	require.NoError(t, err)
+	assert.Equal(t, model.AIUsageTotals{}, usage, "with its usage")
+
+	for _, c := range []*model.AIConnection{kept, server} {
+		_, err = ss.AIConnection().Get(rctx, c.Id)
+		assert.NoError(t, err, "the others stay")
+	}
+	usage, err = ss.AIConnection().GetUsageTotals(rctx, kept.Id, 0)
+	require.NoError(t, err)
+	assert.Equal(t, int64(1), usage.Requests, "with theirs")
 }

@@ -21,6 +21,7 @@ func TestAIMCPServerStore(t *testing.T, rctx request.CTX, ss store.Store) {
 	t.Run("Scopes", func(t *testing.T) { testAIMCPServerScopes(t, rctx, ss) })
 	t.Run("UserTokens", func(t *testing.T) { testAIMCPServerUserTokens(t, rctx, ss) })
 	t.Run("DeleteForgetsSignIns", func(t *testing.T) { testAIMCPServerDeleteForgetsSignIns(t, rctx, ss) })
+	t.Run("PermanentDeleteForScope", func(t *testing.T) { testAIMCPServerPermanentDeleteForScope(t, rctx, ss) })
 }
 
 func newTestAIMCPServer(scope string) *model.AIMCPServer {
@@ -179,4 +180,44 @@ func testAIMCPServerDeleteForgetsSignIns(t *testing.T, rctx request.CTX, ss stor
 	require.NoError(t, err)
 	assert.NotZero(t, deleted.DeleteAt)
 	assert.Empty(t, deleted.OAuthClientSecretSealed, "and its secrets")
+}
+
+// A community's MCP servers go with it, deleted ones and everyone's sign-ins too; nobody else's.
+func testAIMCPServerPermanentDeleteForScope(t *testing.T, rctx request.CTX, ss store.Store) {
+	team, other := model.NewId(), model.NewId()
+	save := func(scope string) *model.AIMCPServer {
+		t.Helper()
+		s := newTestAIMCPServer(scope)
+		s.OAuthClientSecretSealed = "sealed-secret"
+		server, err := ss.AIMCPServer().Save(rctx, s)
+		require.NoError(t, err)
+		return server
+	}
+	live, deleted, kept, server := save(team), save(team), save(other), save(model.AIConnectionScopeServer)
+	require.NoError(t, ss.AIMCPServer().Delete(rctx, deleted.Id, model.GetMillis()))
+	user := model.NewId()
+	for _, s := range []*model.AIMCPServer{live, kept} {
+		require.NoError(t, ss.AIMCPServer().SaveUserToken(rctx, &model.AIMCPUserToken{ServerId: s.Id, UserId: user, TokenSealed: "token"}))
+	}
+
+	var invErr *store.ErrInvalidInput
+	assert.ErrorAs(t, ss.AIMCPServer().PermanentDeleteForScope(rctx, model.AIConnectionScopeServer), &invErr, "never the server-wide ones")
+	assert.ErrorAs(t, ss.AIMCPServer().PermanentDeleteForScope(rctx, ""), &invErr)
+
+	require.NoError(t, ss.AIMCPServer().PermanentDeleteForScope(rctx, team))
+
+	var nf *store.ErrNotFound
+	for _, s := range []*model.AIMCPServer{live, deleted} {
+		_, err := ss.AIMCPServer().Get(rctx, s.Id)
+		assert.ErrorAs(t, err, &nf, "gone, deleted before or not")
+	}
+	_, err := ss.AIMCPServer().GetUserToken(rctx, live.Id, user)
+	assert.ErrorAs(t, err, &nf, "with the sign-ins to it")
+
+	for _, s := range []*model.AIMCPServer{kept, server} {
+		_, err = ss.AIMCPServer().Get(rctx, s.Id)
+		assert.NoError(t, err, "the others stay")
+	}
+	_, err = ss.AIMCPServer().GetUserToken(rctx, kept.Id, user)
+	assert.NoError(t, err, "with theirs")
 }

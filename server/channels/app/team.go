@@ -2156,6 +2156,16 @@ func (a *App) PermanentDeleteTeam(rctx request.CTX, team *model.Team) *model.App
 		return appErr
 	}
 
+	// Antimatter: and its agents, MCP servers and model connections, with their secrets; its roles and teams; its
+	// attributes. See community_teardown.go for everything a community's deletion removes.
+	if appErr := a.deleteCommunityAIForTeam(rctx, team.Id); appErr != nil {
+		return appErr
+	}
+	if appErr := a.deleteCommunityGroupsForTeam(team.Id); appErr != nil {
+		return appErr
+	}
+	a.deleteCommunityAttributesForTeam(rctx, team.Id)
+
 	if err := a.Srv().Store().Team().PermanentDelete(team.Id); err != nil {
 		return model.NewAppError("PermanentDeleteTeam", "app.team.permanent_delete.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
 	}

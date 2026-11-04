@@ -224,6 +224,30 @@ func (s *SqlAIMCPServerStore) Delete(rctx request.CTX, id string, deleteAt int64
 	return nil
 }
 
+func (s *SqlAIMCPServerStore) PermanentDeleteForScope(rctx request.CTX, scope string) (err error) {
+	if err = checkCommunityScope("AIMCPServer", scope); err != nil {
+		return err
+	}
+
+	transaction, err := s.GetMaster().Begin()
+	if err != nil {
+		return errors.Wrap(err, "begin_transaction")
+	}
+	defer finalizeTransactionX(transaction, &err)
+
+	if _, err = transaction.Exec("DELETE FROM AIMCPUserTokens WHERE ServerId IN (SELECT Id FROM AIMCPServers WHERE Scope = ?)", scope); err != nil {
+		return errors.Wrapf(err, "failed to forget the sign-ins to the MCP servers of scope=%s", scope)
+	}
+	if _, err = transaction.ExecBuilder(s.getQueryBuilder().Delete("AIMCPServers").Where(sq.Eq{"Scope": scope})); err != nil {
+		return errors.Wrapf(err, "failed to delete the MCP servers of scope=%s", scope)
+	}
+
+	if err = transaction.Commit(); err != nil {
+		return errors.Wrap(err, "commit_transaction")
+	}
+	return nil
+}
+
 func (s *SqlAIMCPServerStore) SaveUserToken(rctx request.CTX, token *model.AIMCPUserToken) error {
 	if !model.IsValidId(token.ServerId) || !model.IsValidId(token.UserId) || token.TokenSealed == "" {
 		return store.NewErrInvalidInput("AIMCPUserToken", "ServerId/UserId/TokenSealed", "")

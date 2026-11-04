@@ -20,6 +20,7 @@ func TestAIAgentStore(t *testing.T, rctx request.CTX, ss store.Store) {
 	t.Run("Scopes", func(t *testing.T) { testAIAgentScopes(t, rctx, ss) })
 	t.Run("Delete", func(t *testing.T) { testAIAgentDelete(t, rctx, ss) })
 	t.Run("PermanentDelete", func(t *testing.T) { testAIAgentPermanentDelete(t, rctx, ss) })
+	t.Run("PermanentDeleteForScope", func(t *testing.T) { testAIAgentPermanentDeleteForScope(t, rctx, ss) })
 	t.Run("Conversations", func(t *testing.T) { testAIAgentConversations(t, rctx, ss) })
 }
 
@@ -194,6 +195,36 @@ func testAIAgentPermanentDelete(t *testing.T, rctx request.CTX, ss store.Store) 
 
 	_, err = ss.AIAgent().Get(rctx, kept.UserId)
 	require.NoError(t, err, "other agents stay")
+}
+
+// A community's agents go with it, deleted ones too; nobody else's.
+func testAIAgentPermanentDeleteForScope(t *testing.T, rctx request.CTX, ss store.Store) {
+	team := model.NewId()
+	live, err := ss.AIAgent().Save(rctx, newTestAIAgent(team))
+	require.NoError(t, err)
+	deleted, err := ss.AIAgent().Save(rctx, newTestAIAgent(team))
+	require.NoError(t, err)
+	require.NoError(t, ss.AIAgent().Delete(rctx, deleted.UserId, model.GetMillis()))
+	kept, err := ss.AIAgent().Save(rctx, newTestAIAgent(model.NewId()))
+	require.NoError(t, err)
+	server, err := ss.AIAgent().Save(rctx, newTestAIAgent(model.AIAgentScopeServer))
+	require.NoError(t, err)
+
+	var invErr *store.ErrInvalidInput
+	assert.ErrorAs(t, ss.AIAgent().PermanentDeleteForScope(rctx, model.AIAgentScopeServer), &invErr, "never the server-wide ones")
+	assert.ErrorAs(t, ss.AIAgent().PermanentDeleteForScope(rctx, ""), &invErr)
+
+	require.NoError(t, ss.AIAgent().PermanentDeleteForScope(rctx, team))
+
+	var nfErr *store.ErrNotFound
+	for _, a := range []*model.AIAgent{live, deleted} {
+		_, err = ss.AIAgent().Get(rctx, a.UserId)
+		assert.ErrorAs(t, err, &nfErr, "gone, deleted before or not")
+	}
+	for _, a := range []*model.AIAgent{kept, server} {
+		_, err = ss.AIAgent().Get(rctx, a.UserId)
+		assert.NoError(t, err, "the others stay")
+	}
 }
 
 func testAgentActivitySaveGet(t *testing.T, rctx request.CTX, ss store.Store) {

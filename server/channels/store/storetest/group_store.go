@@ -101,6 +101,8 @@ func TestGroupStore(t *testing.T, rctx request.CTX, ss store.Store) {
 	t.Run("DistinctGroupMemberCountForSource", func(t *testing.T) { groupTestDistinctGroupMemberCountForSource(t, rctx, ss) })
 	t.Run("GroupCountBySource", func(t *testing.T) { groupTestGroupCountBySource(t, rctx, ss) })
 
+	t.Run("PermanentDeleteForTeam", func(t *testing.T) { groupTestPermanentDeleteForTeam(t, rctx, ss) })
+
 	// Last: it moves every custom group of no team, those of the tests above too.
 	t.Run("AssignServerWideTeams", func(t *testing.T) { groupTestAssignServerWideTeams(t, rctx, ss) })
 }
@@ -6400,4 +6402,63 @@ func groupTestAssignServerWideTeams(t *testing.T, rctx request.CTX, ss store.Sto
 	require.NoError(t, err)
 	require.Len(t, listed, 1)
 	assert.Equal(t, role.Id, listed[0].Id)
+}
+
+// A community's roles and teams go with it, archived ones, their members and syncables too; nobody else's groups.
+func groupTestPermanentDeleteForTeam(t *testing.T, rctx request.CTX, ss store.Store) {
+	newCommunity := func() *model.Team {
+		team, err := ss.Team().Save(&model.Team{
+			DisplayName: "Community",
+			Name:        "z-z-" + model.NewId() + "a",
+			Email:       MakeEmail(),
+			Type:        model.TeamOpen,
+		})
+		require.NoError(t, err)
+		return team
+	}
+	user, err := ss.User().Save(rctx, &model.User{Email: MakeEmail(), Username: model.NewUsername()})
+	require.NoError(t, err)
+	newGroup := func(edit func(g *model.Group)) *model.Group {
+		g := &model.Group{Name: new(model.NewId()), DisplayName: "group", Source: model.GroupSourceCustom, AllowReference: true}
+		edit(g)
+		group, err := ss.Group().Create(g)
+		require.NoError(t, err)
+		_, err = ss.Group().UpsertMember(group.Id, user.Id)
+		require.NoError(t, err)
+		return group
+	}
+
+	community, other := newCommunity(), newCommunity()
+	role := newGroup(func(g *model.Group) { g.TeamId = community.Id })
+	crew := newGroup(func(g *model.Group) { g.TeamId = community.Id; g.IsTeam = true })
+	archived := newGroup(func(g *model.Group) { g.TeamId = community.Id })
+	_, err = ss.Group().Delete(archived.Id)
+	require.NoError(t, err)
+	_, err = ss.Group().CreateGroupSyncable(model.NewGroupTeam(role.Id, community.Id, false))
+	require.NoError(t, err)
+	othersRole := newGroup(func(g *model.Group) { g.TeamId = other.Id })
+	serverWide := newGroup(func(g *model.Group) {})
+
+	var invErr *store.ErrInvalidInput
+	assert.ErrorAs(t, ss.Group().PermanentDeleteForTeam(""), &invErr, "never the server-wide groups")
+
+	require.NoError(t, ss.Group().PermanentDeleteForTeam(community.Id))
+	require.NoError(t, ss.Group().PermanentDeleteForTeam(community.Id), "again is fine")
+
+	var nfErr *store.ErrNotFound
+	for _, g := range []*model.Group{role, crew, archived} {
+		_, err = ss.Group().Get(g.Id)
+		assert.ErrorAs(t, err, &nfErr, "gone, archived before or not")
+		_, err = ss.Group().GetMember(g.Id, user.Id)
+		assert.Error(t, err, "with its members")
+	}
+	_, err = ss.Group().GetGroupSyncable(role.Id, community.Id, model.GroupSyncableTypeTeam)
+	assert.Error(t, err, "and its syncables")
+
+	for _, g := range []*model.Group{othersRole, serverWide} {
+		_, err = ss.Group().Get(g.Id)
+		assert.NoError(t, err, "the others stay")
+		_, err = ss.Group().GetMember(g.Id, user.Id)
+		assert.NoError(t, err, "with their members")
+	}
 }

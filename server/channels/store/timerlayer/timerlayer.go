@@ -852,6 +852,22 @@ func (s *TimerLayerAIAgentStore) PermanentDelete(rctx request.CTX, userID string
 	return err
 }
 
+func (s *TimerLayerAIAgentStore) PermanentDeleteForScope(rctx request.CTX, scope string) error {
+	start := time.Now()
+
+	err := s.AIAgentStore.PermanentDeleteForScope(rctx, scope)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("AIAgentStore.PermanentDeleteForScope", success, elapsed)
+	}
+	return err
+}
+
 func (s *TimerLayerAIAgentStore) Save(rctx request.CTX, agent *model.AIAgent) (*model.AIAgent, error) {
 	start := time.Now()
 
@@ -1044,6 +1060,22 @@ func (s *TimerLayerAIConnectionStore) GetUserUsageTotals(rctx request.CTX, conne
 	return result, err
 }
 
+func (s *TimerLayerAIConnectionStore) PermanentDeleteForScope(rctx request.CTX, scope string) error {
+	start := time.Now()
+
+	err := s.AIConnectionStore.PermanentDeleteForScope(rctx, scope)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("AIConnectionStore.PermanentDeleteForScope", success, elapsed)
+	}
+	return err
+}
+
 func (s *TimerLayerAIConnectionStore) Save(rctx request.CTX, connection *model.AIConnection) (*model.AIConnection, error) {
 	start := time.Now()
 
@@ -1218,6 +1250,22 @@ func (s *TimerLayerAIMCPServerStore) GetUserTokenServerIds(rctx request.CTX, use
 		s.Root.Metrics.ObserveStoreMethodDuration("AIMCPServerStore.GetUserTokenServerIds", success, elapsed)
 	}
 	return result, err
+}
+
+func (s *TimerLayerAIMCPServerStore) PermanentDeleteForScope(rctx request.CTX, scope string) error {
+	start := time.Now()
+
+	err := s.AIMCPServerStore.PermanentDeleteForScope(rctx, scope)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("AIMCPServerStore.PermanentDeleteForScope", success, elapsed)
+	}
+	return err
 }
 
 func (s *TimerLayerAIMCPServerStore) Save(rctx request.CTX, server *model.AIMCPServer) (*model.AIMCPServer, error) {
@@ -7114,6 +7162,22 @@ func (s *TimerLayerGroupStore) GroupTeamCount() (int64, error) {
 		s.Root.Metrics.ObserveStoreMethodDuration("GroupStore.GroupTeamCount", success, elapsed)
 	}
 	return result, err
+}
+
+func (s *TimerLayerGroupStore) PermanentDeleteForTeam(teamID string) error {
+	start := time.Now()
+
+	err := s.GroupStore.PermanentDeleteForTeam(teamID)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("GroupStore.PermanentDeleteForTeam", success, elapsed)
+	}
+	return err
 }
 
 func (s *TimerLayerGroupStore) PermanentDeleteMembersByUser(userID string) error {
