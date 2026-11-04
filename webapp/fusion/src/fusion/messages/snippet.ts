@@ -3,6 +3,7 @@
 
 import {useCallback} from 'react';
 import {useIntl} from 'react-intl';
+import type {IntlShape} from 'react-intl';
 import {useSelector} from 'react-redux';
 
 import type {Post} from '@mattermost/types/posts';
@@ -45,25 +46,49 @@ export function getSnippetCover(state: GlobalState, post?: CoverPost): SnippetCo
     return coverOf(post, getCurrentUserId(state), getBlockLists(state), isUserBlockingEnabled(state));
 }
 
+/** snippetCoverLabel is the placeholder shown instead of a covered message's text, or '' for no cover. */
+export function snippetCoverLabel(cover: SnippetCover, formatMessage: IntlShape['formatMessage']): string {
+    switch (cover) {
+    case 'spoiler':
+        return formatMessage({id: 'fusion.home.spoiler', defaultMessage: 'Spoiler'});
+    case 'block':
+        return formatMessage({id: 'fusion.folded.blocked', defaultMessage: 'Message from someone you blocked'});
+    case 'ignore':
+        return formatMessage({id: 'fusion.folded.ignored', defaultMessage: 'Message from someone you ignore'});
+    default:
+        return '';
+    }
+}
+
+/** useSnippetCoverOf gives coverOf for the current user, as a function of the message, for lists of them. */
+export function useSnippetCoverOf(): (post?: CoverPost) => SnippetCover {
+    const me = useSelector(getCurrentUserId);
+    const lists = useSelector(getBlockLists);
+    const enabled = useSelector(isUserBlockingEnabled);
+    return useCallback((post?: CoverPost) => coverOf(post, me, lists, enabled), [me, lists, enabled]);
+}
+
 /**
  * useSnippetCover gives a function saying, for a message shown as a snippet, the placeholder to show instead of its
  * text ("Spoiler", "Message from someone you ignore"), or '' when its text can show.
  */
 export function useSnippetCover(): (post?: CoverPost) => string {
     const {formatMessage} = useIntl();
-    const me = useSelector(getCurrentUserId);
-    const lists = useSelector(getBlockLists);
-    const enabled = useSelector(isUserBlockingEnabled);
-    return useCallback((post?: CoverPost) => {
-        switch (coverOf(post, me, lists, enabled)) {
-        case 'spoiler':
-            return formatMessage({id: 'fusion.home.spoiler', defaultMessage: 'Spoiler'});
-        case 'block':
-            return formatMessage({id: 'fusion.folded.blocked', defaultMessage: 'Message from someone you blocked'});
-        case 'ignore':
-            return formatMessage({id: 'fusion.folded.ignored', defaultMessage: 'Message from someone you ignore'});
-        default:
-            return '';
-        }
-    }, [formatMessage, me, lists, enabled]);
+    const coverOfPost = useSnippetCoverOf();
+    return useCallback((post?: CoverPost) => snippetCoverLabel(coverOfPost(post), formatMessage), [formatMessage, coverOfPost]);
+}
+
+/**
+ * snippetTitle is a thread's or topic's title in a list (the sidebar, the forum's topics and image board): its name,
+ * else the start of its text. A spoiler keeps its name, given to be shown, but not its text; the name and text of
+ * someone you ignore or block are both covered, as their message folds.
+ */
+export function snippetTitle(named: string, text: string, cover: SnippetCover, label: string): string {
+    if (cover === 'block' || cover === 'ignore') {
+        return label;
+    }
+    if (named) {
+        return named;
+    }
+    return cover ? label : text;
 }

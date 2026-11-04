@@ -28,14 +28,14 @@ describe('fusion/sidebar/ChannelThreads', () => {
     const staleTopic = TestHelper.getPostMock({id: 'stale', channel_id: 'ch', create_at: NOW - (10 * DAY), props: {[THREAD_TITLE_PROP]: 'Old topic'}});
     const plainReply = TestHelper.getPostMock({id: 'reply-root', channel_id: 'ch', create_at: NOW - DAY, message: 'Does anyone know…'});
 
-    const render = (posts: Array<ReturnType<typeof TestHelper.getPostMock>>, threads: Record<string, unknown> = {}, period?: string) => renderWithContext(
+    const render = (posts: Array<ReturnType<typeof TestHelper.getPostMock>>, threads: Record<string, unknown> = {}, period?: string, prefs: Record<string, unknown> = {}) => renderWithContext(
         <ChannelThreads channelId='ch'/>,
         {
             entities: {
                 general: {config: {CollapsedThreads: CollapsedThreads.ALWAYS_ON}},
                 posts: {posts: Object.fromEntries(posts.map((p) => [p.id, p])), postsInChannel: {ch: [{order: posts.map((p) => p.id), recent: true}]}},
                 threads: {threads},
-                preferences: {myPreferences: period ? {'fusion_sidebar--topic_period': {category: 'fusion_sidebar', name: 'topic_period', value: period}} : {}},
+                preferences: {myPreferences: {...prefs, ...(period ? {'fusion_sidebar--topic_period': {category: 'fusion_sidebar', name: 'topic_period', value: period}} : {})}},
             },
             views: {rhs: {selectedPostId: ''}},
         } as never,
@@ -64,6 +64,34 @@ describe('fusion/sidebar/ChannelThreads', () => {
         const row = screen.getByRole('button', {name: /^Thread:/});
         expect(row).toHaveClass('am-unread');
         expect(row).toHaveTextContent('1');
+    });
+
+    // audit-1104 fusion-core-4: the row showed the root's first words also for a spoiler, or someone you block.
+    describe('covers the root as a snippet', () => {
+        const followed = {id: plainReply.id, post: {channel_id: 'ch'}, is_following: true, unread_replies: 2, unread_mentions: 0, last_reply_at: NOW - DAY};
+        const blocks = (userId: string) => ({[`user_block--${userId}`]: {user_id: 'me', category: 'user_block', name: userId, value: 'block'}});
+
+        test('a spoiler shows as one', () => {
+            render([{...plainReply, props: {spoiler: true}}], {[plainReply.id]: followed});
+
+            expect(screen.getByRole('button', {name: /^Thread: Spoiler/})).toBeInTheDocument();
+            expect(screen.queryByText(/Does anyone know/)).not.toBeInTheDocument();
+        });
+
+        test('a spoiler topic keeps its name', () => {
+            render([{...topic, props: {...topic.props, spoiler: true}}]);
+
+            expect(screen.getByRole('button', {name: /^Topic: Release 2\.1/})).toBeInTheDocument();
+        });
+
+        test('the thread and the topic of someone you block show neither name nor text', () => {
+            const theirs = {...plainReply, user_id: 'bad'};
+            render([theirs, {...topic, user_id: 'bad'}], {[plainReply.id]: followed}, undefined, blocks('bad'));
+
+            expect(screen.getByRole('button', {name: /^Thread: Message from someone you blocked/})).toBeInTheDocument();
+            expect(screen.getByRole('button', {name: /^Topic: Message from someone you blocked/})).toBeInTheDocument();
+            expect(screen.queryByText(/Does anyone know|Release 2\.1/)).not.toBeInTheDocument();
+        });
     });
 
     test('an ordinary thread with no unread replies and not open doesn\'t show', () => {

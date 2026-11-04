@@ -17,6 +17,7 @@ import {FORUM_VIEW_OPTIONS} from 'fusion/channel/channel_type_presets';
 import Avatar from 'fusion/components/avatar';
 import Icon from 'fusion/components/icon';
 import {useDisplayName, useUser} from 'fusion/hooks/users';
+import {snippetCoverLabel, snippetTitle, useSnippetCoverOf} from 'fusion/messages/snippet';
 import {getThreadTitle} from 'fusion/messages/thread_title';
 import {useWhen} from 'fusion/messages/time';
 import {am} from 'fusion/utils/class_names';
@@ -46,9 +47,12 @@ function TopicRow({topic, channel, mode}: {topic: ForumTopic; channel: Channel; 
     const unread = isTopicUnread(topic, lastViewedAt, thread || undefined);
     const author = useUser(topic.post.user_id);
     const authorName = useDisplayName(author, channel.team_id);
-    const title = getThreadTitle(topic.post) || topic.post.message;
-    const firstLine = plainText(topic.post.message, 140);
-    const image = firstImageFile(topic.post);
+
+    // Covered as a snippet: a spoiler's text and image, and all of a topic from someone you ignore or block.
+    const cover = useSnippetCoverOf()(topic.post);
+    const title = snippetTitle(getThreadTitle(topic.post), topic.post.message, cover, snippetCoverLabel(cover, formatMessage));
+    const firstLine = cover ? '' : plainText(topic.post.message, 140);
+    const image = cover ? undefined : firstImageFile(topic.post);
     const others = topic.participant_ids.filter((id) => id !== topic.post.user_id).slice(0, 3);
 
     const open = () => team && getHistory().push(topicPath(team.name, channel, topic.post.id));

@@ -18,8 +18,9 @@ describe('fusion/messages/ReplyRef', () => {
     const quoted = TestHelper.getPostMock({id: 'quoted', type: '', channel_id: 'channel', user_id: author.id, message: 'Is the **build** green?'});
     const reply = TestHelper.getPostMock({id: 'reply', type: '', channel_id: 'channel', user_id: me.id, message: 'Yes', props: {reply_to: quoted.id}});
 
-    const state = (posts: Record<string, Post>, files: Record<string, FileInfo> = {}) => ({
+    const state = (posts: Record<string, Post>, files: Record<string, FileInfo> = {}, authorLevel = '') => ({
         entities: {
+            preferences: {myPreferences: authorLevel ? {[`user_block--${author.id}`]: {user_id: me.id, category: 'user_block', name: author.id, value: authorLevel}} : {}},
             users: {currentUserId: me.id, profiles: {me, author}},
             posts: {posts},
             files: {
@@ -30,13 +31,13 @@ describe('fusion/messages/ReplyRef', () => {
         },
     });
 
-    const renderRef = (post: Post, posts: Record<string, Post>, files?: Record<string, FileInfo>) => renderWithContext(
+    const renderRef = (post: Post, posts: Record<string, Post>, files?: Record<string, FileInfo>, authorLevel?: string) => renderWithContext(
         <ReplyRef
             post={post}
             quotedId={quoted.id}
             threadReply={false}
         />,
-        state(posts, files),
+        state(posts, files, authorLevel),
     );
 
     test('shows the quoted author\'s picture and name, and the start of their message', () => {
@@ -71,6 +72,30 @@ describe('fusion/messages/ReplyRef', () => {
         renderRef(described, {reply: described});
 
         expect(screen.getByRole('button', {name: /Replying to marie:/}).querySelector('.am-snip')).toHaveTextContent('Spoiler');
+    });
+
+    // audit-1104 fusion-core-4: the quote above a reply showed the text of someone you block or ignore, whose message
+    // itself is folded.
+    test.each([
+        ['block', 'Message from someone you blocked'],
+        ['ignore', 'Message from someone you ignore'],
+    ])('leaves out the text of a quoted message from someone you %s', (level, placeholder) => {
+        const withFiles = {...quoted, file_ids: ['file']};
+        renderRef(reply, {quoted: withFiles, reply}, undefined, level);
+
+        const snip = screen.getByRole('button', {name: /Replying to marie:/}).querySelector('.am-snip');
+        expect(snip).toHaveTextContent(placeholder);
+        expect(snip).not.toHaveTextContent('build');
+        expect(snip?.querySelector('svg')).toBeNull();
+    });
+
+    test('leaves out the text the server describes of a message from someone you block', () => {
+        const described = {...reply, metadata: {...reply.metadata, reply_to: {post_id: quoted.id, user_id: author.id, message: 'From the server'}}} as Post;
+        renderRef(described, {reply: described}, undefined, 'block');
+
+        const snip = screen.getByRole('button', {name: /Replying to marie:/}).querySelector('.am-snip');
+        expect(snip).toHaveTextContent('Message from someone you blocked');
+        expect(snip).not.toHaveTextContent('From the server');
     });
 
     test('offers to see the attachments of a message without text', () => {

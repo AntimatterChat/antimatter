@@ -12,6 +12,7 @@ import {getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
 
 import {useDisplayName, useUser} from 'fusion/hooks/users';
 import {isImage} from 'fusion/messages/content/files';
+import {snippetCoverLabel, snippetTitle, useSnippetCoverOf} from 'fusion/messages/snippet';
 import {getThreadTitle} from 'fusion/messages/thread_title';
 import {useWhen} from 'fusion/messages/time';
 import {am} from 'fusion/utils/class_names';
@@ -46,9 +47,13 @@ function BoardCard({topic, channel, mode}: {topic: ForumTopic; channel: Channel;
     const when = useWhen();
     const author = useUser(topic.post.user_id);
     const authorName = useDisplayName(author, channel.team_id);
-    const title = getThreadTitle(topic.post) || topic.post.message;
-    const body = plainText(topic.post.message, 600);
-    const image = firstImageFile(topic.post);
+
+    // Covered as snippets: a spoiler's text and image, and all of a topic or reply from someone you ignore or block.
+    const coverOf = useSnippetCoverOf();
+    const cover = coverOf(topic.post);
+    const title = snippetTitle(getThreadTitle(topic.post), topic.post.message, cover, snippetCoverLabel(cover, formatMessage));
+    const body = cover ? '' : plainText(topic.post.message, 600);
+    const image = cover ? undefined : firstImageFile(topic.post);
     const images = countImages(topic);
     const replies = topic.replies || [];
 
@@ -110,7 +115,8 @@ function BoardCard({topic, channel, mode}: {topic: ForumTopic; channel: Channel;
                 {replies.length > 0 && (
                     <div className={am('board-replies')}>
                         {replies.map((reply) => {
-                            const thumb = firstImageFile(reply);
+                            const replyCover = coverOf(reply);
+                            const thumb = replyCover ? undefined : firstImageFile(reply);
                             return (
                                 <div
                                     key={reply.id}
@@ -123,7 +129,7 @@ function BoardCard({topic, channel, mode}: {topic: ForumTopic; channel: Channel;
                                             alt=''
                                         />
                                     )}
-                                    <span className={am('board-reply-text')}>{plainText(reply.message, 80)}</span>
+                                    <span className={am('board-reply-text')}>{replyCover ? snippetCoverLabel(replyCover, formatMessage) : plainText(reply.message, 80)}</span>
                                 </div>
                             );
                         })}
