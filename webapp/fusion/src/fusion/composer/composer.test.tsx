@@ -107,6 +107,27 @@ describe('fusion/composer/Composer', () => {
         expect(screen.getByRole('textbox', {name: 'Write to General'})).toHaveValue('Lost message');
     });
 
+    // audit-1104 fusion-core-1: the composer is keyed per conversation, so leaving it mid-upload unmounted it and the
+    // finished upload, added only to the composer's state, was dropped without a word.
+    test('an upload that finishes after leaving the conversation is in its draft on coming back', async () => {
+        const {store, unmount} = render();
+        const file = new File(['mp4'], 'talk.mp4', {type: 'video/mp4'});
+        fireEvent.paste(screen.getByRole('textbox', {name: 'Write to General'}), {clipboardData: {files: [file], types: ['Files'], getData: () => ''}});
+        const {onSuccess} = jest.mocked(uploadFile).mock.calls[0][0] as unknown as {onSuccess: (data: {file_infos: unknown[]}) => void};
+
+        unmount();
+        act(() => onSuccess({file_infos: [TestHelper.getFileInfoMock({id: 'f1', name: 'talk.mp4', channel_id: 'c1'})]}));
+
+        renderWithContext(
+            <Composer
+                channelId='c1'
+                placeholder='Write to General'
+            />,
+            store.getState() as never,
+        );
+        expect(await screen.findByText('talk.mp4')).toBeInTheDocument();
+    });
+
     test('has no schedule button in the formatting bar: the send button\'s chevron schedules', () => {
         render();
 

@@ -3,7 +3,9 @@
 
 import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import type {Dispatch, SetStateAction} from 'react';
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch, useSelector, useStore} from 'react-redux';
+
+import type {FileInfo} from '@mattermost/types/files';
 
 import {updateDraft} from 'actions/views/drafts';
 import {makeGetDraft} from 'selectors/drafts';
@@ -34,6 +36,12 @@ type DraftAutosave = {
     /** Drops the save still waiting (the message was just sent). */
     cancel: () => void;
 
+    /**
+     * Adds finished uploads to the draft they were started in, also when the composer has left that conversation
+     * (or closed) since: they're added to its stored draft then. Keep the function from the time of the upload.
+     */
+    addFiles: (fileInfos: FileInfo[]) => void;
+
     /** The draft's key in the stored drafts. */
     key: string;
 };
@@ -45,12 +53,25 @@ type DraftAutosave = {
 // server's arrive later) fills it while it's empty.
 export function useDraftAutosave(channelId: string, rootId = ''): DraftAutosave {
     const dispatch = useDispatch();
+    const store = useStore<GlobalState>();
     const getDraft = useMemo(() => makeGetDraft(), []);
     const storedDraft = useSelector((state: GlobalState) => getDraft(state, channelId, rootId));
     const [draft, setDraft] = useState<PostDraft>(storedDraft);
     const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
     const pending = useRef<(() => void) | null>(null);
     const key = rootId ? StoragePrefixes.COMMENT_DRAFT + rootId : StoragePrefixes.DRAFT + channelId;
+
+    // What addFiles needs to know when an upload finishes: the draft shown now (state set since the last render
+    // included), which conversation it belongs to, and whether the composer is still there.
+    const shown = useRef({draft, key, mounted: false});
+    shown.current.draft = draft;
+    shown.current.key = key;
+    useEffect(() => {
+        shown.current.mounted = true;
+        return () => {
+            shown.current.mounted = false;
+        };
+    }, []);
 
     const flush = useCallback(() => {
         clearTimeout(timer.current);
@@ -67,6 +88,7 @@ export function useDraftAutosave(channelId: string, rootId = ''): DraftAutosave 
     // Saved with show, as the classic web app does, so it's listed in Drafts.
     const save = useCallback((next: PostDraft) => {
         setDraft(next);
+        shown.current.draft = next;
         clearTimeout(timer.current);
         pending.current = () => dispatch(updateDraft(key, {...next, show: true}, rootId, true));
         timer.current = setTimeout(flush, DRAFT_SAVE_DELAY);
@@ -102,5 +124,25 @@ export function useDraftAutosave(channelId: string, rootId = ''): DraftAutosave 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [storedDraft]);
 
-    return {draft, setDraft, save, cancel, key};
+    // An upload can finish after the person has left the conversation (the composer is keyed per conversation, so it
+    // is gone by then): the file goes into that conversation's stored draft, as in the classic web app, instead of
+    // being dropped with the composer's state. While the draft is shown, it goes into what's shown, and into the save
+    // still waiting, which would otherwise store the draft from before the file a moment later.
+    const addFiles = useCallback((fileInfos: FileInfo[]) => {
+        if (shown.current.mounted && shown.current.key === key) {
+            const next = {...shown.current.draft, channelId, rootId, fileInfos: [...shown.current.draft.fileInfos, ...fileInfos]};
+            shown.current.draft = next;
+            setDraft(next);
+            if (pending.current) {
+                pending.current = () => dispatch(updateDraft(key, {...next, show: true}, rootId, true));
+            }
+            dispatch(updateDraft(key, {...next, show: true}, rootId, true));
+            return;
+        }
+        const stored = getDraft(store.getState(), channelId, rootId);
+        const next = {...stored, channelId, rootId, createAt: stored.createAt || Date.now(), fileInfos: [...stored.fileInfos, ...fileInfos]};
+        dispatch(updateDraft(key, {...next, show: true}, rootId, true));
+    }, [channelId, dispatch, getDraft, key, rootId, store]);
+
+    return {draft, setDraft, save, cancel, key, addFiles};
 }
