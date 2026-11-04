@@ -54,7 +54,7 @@ Pinned cards come first, then the newest. Dismissed cards aren't listed.
         "entities": [{"type": "host", "value": "www-1", "text": "www-1"}]
       },
       "post_ids": ["p1q7x3m9d4hf8bk2e5r6w1t0ny"],
-      "dedupe_key": "6f1c2b0e9a8d7c6b5a4f3e2d1c0b9a8f",
+      "dedupe_key": "<32 hex characters: a hash of the channel, the tool and the arguments>",
       "result": "www-1 CPU, last hour: 23% average, 61% peak at 14:05",
       "status": "new",
       "pinned": false,
@@ -74,7 +74,7 @@ Pinned cards come first, then the newest. Dismissed cards aren't listed.
         "probabilities": {"card": 0.91, "tool": 0.88, "service": 0.95}
       },
       "post_ids": ["r5t1y8u2i9op3as4df6gh7jk0l", "z9x8c7v6b5nm4as3df2gh1jk0q"],
-      "dedupe_key": "0e9d8c7b6a5f4e3d2c1b0a9f8e7d6c5b",
+      "dedupe_key": "<dedupe key>",
       "status": "new",
       "pinned": false,
       "offer_id": "o3f7h1k9m2q8x4c6v5b1n0z7wa",
