@@ -175,7 +175,8 @@ jobs:
           AM_TOOLS_DIR: ${{ runner.temp }}/am-tools/bin
         run: scripts/antimatter/install-tools.sh gitleaks
       - name: Scan the working tree
-        run: gitleaks dir . --config .gitleaks.toml --redact --no-banner
+        # --verbose names the file, line and rule of each finding (the secret itself stays redacted).
+        run: gitleaks dir . --config .gitleaks.toml --redact --verbose --no-banner
       - name: Scan the new commits
         if: ${{ !cancelled() && github.event_name != 'schedule' && github.event_name != 'workflow_dispatch' }}
         env:
@@ -189,4 +190,4 @@ jobs:
             range="$BASE..$HEAD"
           fi
           echo "Scanning $range"
-          gitleaks git . --config .gitleaks.toml --redact --no-banner --log-opts="$range"
+          gitleaks git . --config .gitleaks.toml --redact --verbose --no-banner --log-opts="$range"
