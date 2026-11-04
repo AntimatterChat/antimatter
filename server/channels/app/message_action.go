@@ -300,7 +300,8 @@ func (a *App) sendMessageAction(rctx request.CTX, hook *model.OutgoingWebhook, p
 
 // answerMessageAction posts what a message action answered with (text or attachments), as outgoing webhooks do: in
 // the channel, or as a reply with response_type "comment". Where the person who ran it can't post (a read-only or
-// archived channel), the answer is shown to them alone.
+// archived channel), or the hook's owner can't (timed out, or kept from posting by an override), the answer is shown
+// to the person alone.
 func (a *App) answerMessageAction(rctx request.CTX, hook *model.OutgoingWebhook, post *model.Post, channel *model.Channel, user *model.User, resp *model.OutgoingWebhookResponse) {
 	if resp.Text == nil && len(resp.Attachments) == 0 {
 		return
@@ -338,9 +339,14 @@ func (a *App) answerMessageAction(rctx request.CTX, hook *model.OutgoingWebhook,
 		iconURL = hook.IconURL
 	}
 
+	// The answer is posted as the hook's owner at the runner's request: both must be allowed to post here, so that
+	// neither speaks through the other (an owner timed out or kept from posting by an override, through any click).
 	canPost := channel.DeleteAt == 0
 	if canPost {
 		canPost, _ = a.HasPermissionToChannel(rctx, user.Id, channel.Id, model.PermissionCreatePost)
+	}
+	if canPost {
+		canPost = !a.hookOwnerSilenced(rctx, channel, hook.CreatorId)
 	}
 	if canPost {
 		if _, err := a.CreateWebhookPost(rctx, hook.CreatorId, channel, text, username, iconURL, "", props, resp.Type, rootID, resp.Priority, false); err != nil {

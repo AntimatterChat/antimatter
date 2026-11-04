@@ -13,6 +13,7 @@ import (
 	"net/http/httptest"
 	"sync/atomic"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -194,6 +195,60 @@ func TestMessageActionsInArchivedChannel(t *testing.T) {
 	require.NoError(t, err)
 	CheckOKStatus(t, resp)
 	assert.Equal(t, int32(1), calls.Load())
+}
+
+// A message action's answer is posted as the hook's owner: someone else's click mustn't let them speak while they're
+// timed out, nor where an override keeps them from posting. The person who ran it then sees the answer alone.
+func TestMessageActionAnswerNeedsItsOwnersVoice(t *testing.T) {
+	mainHelper.Parallel(t)
+	th, _, _ := setupMessageActionsAPI(t)
+	const answer = "answer from the hook's owner"
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = w.Write([]byte(`{"text": "` + answer + `"}`))
+	}))
+	t.Cleanup(ts.Close)
+	// Owned by BasicUser; BasicUser2 runs it.
+	hook := createMessageActionHook(t, th, "", ts.URL)
+	runner := loginNewClient(t, th, th.BasicUser2)
+
+	run := func(t *testing.T, channel *model.Channel) int {
+		th.AddUserToChannel(t, th.BasicUser2, channel)
+		post := th.CreatePostWithClient(t, runner, channel)
+		_, resp, err := runner.RunMessageAction(context.Background(), post.Id, hook.Id)
+		require.NoError(t, err)
+		CheckOKStatus(t, resp)
+
+		posts, appErr := th.App.GetPosts(th.Context, channel.Id, 0, 50)
+		require.Nil(t, appErr)
+		n := 0
+		for _, p := range posts.Posts {
+			if p.Message == answer {
+				assert.Equal(t, th.BasicUser.Id, p.UserId)
+				n++
+			}
+		}
+		return n
+	}
+
+	t.Run("an owner who may post is answered for", func(t *testing.T) {
+		assert.Equal(t, 1, run(t, th.CreatePublicChannel(t)))
+	})
+
+	t.Run("not where an override keeps the owner from posting", func(t *testing.T) {
+		channel := th.CreatePublicChannel(t)
+		_, appErr := th.App.SaveChannelOverride(th.Context, channel, &model.ChannelOverride{TargetType: model.ChannelOverrideTargetUser, TargetId: th.BasicUser.Id, Deny: []string{model.PermissionCreatePost.Id}})
+		require.Nil(t, appErr)
+		assert.Zero(t, run(t, channel))
+	})
+
+	t.Run("not while the owner is timed out", func(t *testing.T) {
+		channel := th.CreatePublicChannel(t)
+		admin := model.Session{UserId: th.SystemAdminUser.Id, Roles: model.SystemAdminRoleId + " " + model.SystemUserRoleId}
+		_, appErr := th.App.SetMemberTimeout(th.Context, admin, th.BasicTeam.Id, th.BasicUser.Id, &model.MemberTimeoutRequest{Until: model.GetMillis() + int64(time.Hour/time.Millisecond)})
+		require.Nil(t, appErr)
+		assert.Zero(t, run(t, channel))
+	})
 }
 
 func testPNG(t *testing.T) []byte {

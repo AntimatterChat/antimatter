@@ -1840,6 +1840,73 @@ func (r *deadlineRecorder) RoundTrip(req *http.Request) (*http.Response, error) 
 	return r.next.RoundTrip(req)
 }
 
+// A trigger word's answer is posted as the hook's owner: not while they're timed out, nor where an override keeps
+// them from posting, whoever wrote the message that set it off.
+func TestOutgoingWebhookAnswerNeedsItsOwnersVoice(t *testing.T) {
+	mainHelper.Parallel(t)
+	th := Setup(t).InitBasic(t)
+	th.App.UpdateConfig(func(cfg *model.Config) {
+		*cfg.ServiceSettings.EnableOutgoingWebhooks = true
+		*cfg.ServiceSettings.AllowedUntrustedInternalConnections = "localhost,127.0.0.1"
+	})
+	const answer = "answer from the hook's owner"
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		_, _ = w.Write([]byte(`{"text": "` + answer + `"}`))
+	}))
+	t.Cleanup(ts.Close)
+
+	answers := func(t *testing.T, channel *model.Channel) int {
+		posts, appErr := th.App.GetPosts(th.Context, channel.Id, 0, 50)
+		require.Nil(t, appErr)
+		n := 0
+		for _, p := range posts.Posts {
+			if p.Message == answer {
+				assert.Equal(t, th.BasicUser.Id, p.UserId)
+				n++
+			}
+		}
+		return n
+	}
+	trigger := func(t *testing.T, channel *model.Channel) {
+		hook, appErr := th.App.CreateOutgoingWebhook(&model.OutgoingWebhook{
+			ChannelId:    channel.Id,
+			TeamId:       channel.TeamId,
+			CallbackURLs: []string{ts.URL},
+			DisplayName:  "Answers",
+			CreatorId:    th.BasicUser.Id,
+			TriggerWords: []string{"Abracadabra"},
+			ContentType:  "application/json",
+		})
+		require.Nil(t, appErr)
+		// Called directly, as the tests above do: posting the message would also set the hook off in the background.
+		payload := &model.OutgoingWebhookPayload{Token: hook.Token, TeamId: hook.TeamId, ChannelId: channel.Id, PostId: th.BasicPost.Id, UserId: th.BasicUser2.Id, Text: "Abracadabra", TriggerWord: "Abracadabra"}
+		th.App.TriggerWebhook(th.Context, payload, hook, th.BasicPost, channel)
+	}
+
+	t.Run("an owner who may post is answered for", func(t *testing.T) {
+		channel := th.CreateChannel(t, th.BasicTeam)
+		trigger(t, channel)
+		assert.Equal(t, 1, answers(t, channel))
+	})
+
+	t.Run("not where an override keeps the owner from posting", func(t *testing.T) {
+		channel := th.CreateChannel(t, th.BasicTeam)
+		_, appErr := th.App.SaveChannelOverride(th.Context, channel, &model.ChannelOverride{TargetType: model.ChannelOverrideTargetUser, TargetId: th.BasicUser.Id, Deny: []string{model.PermissionCreatePost.Id}})
+		require.Nil(t, appErr)
+		trigger(t, channel)
+		assert.Zero(t, answers(t, channel))
+	})
+
+	t.Run("not while the owner is timed out", func(t *testing.T) {
+		channel := th.CreateChannel(t, th.BasicTeam)
+		admin := model.Session{UserId: th.SystemAdminUser.Id, Roles: model.SystemAdminRoleId + " " + model.SystemUserRoleId}
+		_, appErr := th.App.SetMemberTimeout(th.Context, admin, th.BasicTeam.Id, th.BasicUser.Id, &model.MemberTimeoutRequest{Until: model.GetMillis() + int64(time.Hour/time.Millisecond)})
+		require.Nil(t, appErr)
+		trigger(t, channel)
+		assert.Zero(t, answers(t, channel))
+	})
+}
+
 // Outgoing webhooks and slash commands share Srv().outgoingWebhookClient and give every request a
 // deadline of OutgoingIntegrationRequestsTimeout, so a timeout on the client itself would cap a
 // value configured above httpservice.RequestTimeout.
