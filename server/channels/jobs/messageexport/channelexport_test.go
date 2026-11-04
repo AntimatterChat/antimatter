@@ -98,6 +98,34 @@ func TestExportChannelCSV(t *testing.T) {
 		}
 	})
 
+	t.Run("without the emails their authors hide from the person exporting", func(t *testing.T) {
+		s := channelExportFixture(t, filter, 4)
+		p := params
+		var asked [][]string
+		p.HiddenEmails = func(userIDs []string) map[string]bool {
+			asked = append(asked, userIDs)
+			return map[string]bool{"u1": true}
+		}
+		rows, _ := exportChannelRows(t, s, p)
+		require.Len(t, rows, 5)
+		assert.Empty(t, rows[1][5], "alice hides hers")
+		assert.Equal(t, "bob@example.com", rows[2][5])
+		assert.Equal(t, "helper@example.com", rows[3][5])
+		assert.Empty(t, rows[4][5], "on her webhook's posts too")
+		assert.Equal(t, [][]string{{"u1", "u2"}, {"b1", "u1"}}, asked, "asked once a page, once per author")
+	})
+
+	t.Run("nobody asked who hides theirs when there are no emails", func(t *testing.T) {
+		s := channelExportFixture(t, filter, 4)
+		p := params
+		p.IncludeEmails = false
+		p.HiddenEmails = func([]string) map[string]bool {
+			t.Error("not asked without the emails")
+			return nil
+		}
+		exportChannelRows(t, s, p)
+	})
+
 	t.Run("too many messages: refused before reading any", func(t *testing.T) {
 		s := channelExportFixture(t, filter, 3)
 		p := params

@@ -50,6 +50,11 @@ type ChannelExportParams struct {
 	// IncludeEmails fills the authors' email addresses in, when the person exporting may see them.
 	IncludeEmails bool
 
+	// HiddenEmails tells, for the authors of a page of posts (by id), whose email address is hidden from the person
+	// exporting (profile privacy): true for those, whose cell is left empty. Nil hides none. Only asked when
+	// IncludeEmails is set.
+	HiddenEmails func(userIDs []string) map[string]bool
+
 	// ConsumePosts runs the plugins' MessagesWillBeConsumed hooks on a page of posts (by id), which may replace
 	// them, as when posts are read anywhere else: redaction plugins apply to the export too. Nil runs none.
 	ConsumePosts func(posts map[string]*model.Post)
@@ -195,6 +200,8 @@ func channelExportRows(st store.Store, page []*model.ChannelExportPost, params C
 		params.ConsumePosts(posts)
 	}
 
+	hiddenEmails := channelExportHiddenEmails(page, params)
+
 	rows := make([][]string, 0, len(page))
 	for _, p := range page {
 		consumed := posts[p.PostId]
@@ -202,7 +209,7 @@ func channelExportRows(st store.Store, page []*model.ChannelExportPost, params C
 			continue
 		}
 		email := ""
-		if params.IncludeEmails {
+		if params.IncludeEmails && !hiddenEmails[p.UserId] {
 			email = exportCell(p.UserEmail)
 		}
 		rows = append(rows, []string{
@@ -219,6 +226,23 @@ func channelExportRows(st store.Store, page []*model.ChannelExportPost, params C
 		})
 	}
 	return rows, nil
+}
+
+// channelExportHiddenEmails asks params.HiddenEmails whose email address, of the authors of the page, is hidden
+// from the person exporting, once per author.
+func channelExportHiddenEmails(page []*model.ChannelExportPost, params ChannelExportParams) map[string]bool {
+	if !params.IncludeEmails || params.HiddenEmails == nil {
+		return nil
+	}
+	seen := make(map[string]bool, len(page))
+	authors := make([]string, 0, len(page))
+	for _, p := range page {
+		if !seen[p.UserId] {
+			seen[p.UserId] = true
+			authors = append(authors, p.UserId)
+		}
+	}
+	return params.HiddenEmails(authors)
 }
 
 // channelExportPost is the post the plugins' hooks are given: its message, and

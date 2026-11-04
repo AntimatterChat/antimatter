@@ -162,20 +162,26 @@ func matchesVisibleDetails(user *model.User, words []string) bool {
 // attributesHiddenFrom tells, for each of userIDs, whether they hide their attributes from viewerID: true only for
 // those who do. When the profiles can't be read, everyone's are hidden (fail closed).
 func (a *App) attributesHiddenFrom(rctx request.CTX, viewerID string, exempt bool, userIDs []string) map[string]bool {
+	return a.profileFieldHiddenFrom(rctx, a.newProfileViewer(viewerID, exempt), model.ProfileFieldAttributes, userIDs)
+}
+
+// profileFieldHiddenFrom tells, for each of userIDs, whether they hide field (one of model.ProfileFields) from the
+// viewer: true only for those who do. When the profiles can't be read, everyone's is hidden but the viewer's own
+// (fail closed). The viewer can be kept across calls, for the communities they're in to be read once.
+func (a *App) profileFieldHiddenFrom(rctx request.CTX, viewer *profileViewer, field string, userIDs []string) map[string]bool {
 	hidden := map[string]bool{}
-	if exempt || len(userIDs) == 0 {
+	if viewer.exempt || len(userIDs) == 0 {
 		return hidden
 	}
 	users, err := a.Srv().Store().User().GetProfileByIds(rctx, userIDs, nil, true)
 	if err != nil {
 		for _, id := range userIDs {
-			hidden[id] = id != viewerID
+			hidden[id] = id != viewer.id
 		}
 		return hidden
 	}
-	viewer := a.newProfileViewer(viewerID, exempt)
 	for _, user := range users {
-		if viewer.hidden(user)[model.ProfileFieldAttributes] {
+		if viewer.hidden(user)[field] {
 			hidden[user.Id] = true
 		}
 	}
