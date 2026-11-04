@@ -311,6 +311,16 @@ func (a *App) PatchAIMCPServer(rctx request.CTX, s *model.AIMCPServer, patch *mo
 		updated.OAuthClientSecretSealed = ""
 		updated.OAuthRegistered = false
 	}
+	// A secret belongs to its sign-in kind. Left behind by a switch to another kind, it would come back with the
+	// switch back, unchecked, at whatever address the server has by then: the address guard below sees one patch
+	// only, so moving the server while it is on another kind would get past it.
+	if updated.Auth != model.AIMCPAuthServiceAccount && patch.Headers == nil {
+		updated.HeadersSealed = ""
+		updated.HeaderNames = []string{}
+	}
+	if updated.Auth != model.AIMCPAuthOAuth && patch.OAuthClientSecret == nil {
+		updated.OAuthClientSecretSealed = ""
+	}
 	// The saved headers and client secret go only to the address they were saved for: someone who may edit the
 	// server (a community's other admins) but not read them mustn't point it elsewhere and have them sent there.
 	if updated.URL != s.URL {
