@@ -69,6 +69,7 @@ jobs:
             --npm-audit "all dependencies=report/npm-audit.json" \
             --npm-audit "shipped (no dev dependencies)=report/npm-audit-prod.json"
       - name: Secrets in the whole history
+        if: ${{ !cancelled() }}
         run: |
           status=0
           gitleaks git . --config .gitleaks.toml --redact --no-banner \
