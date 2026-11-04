@@ -22,6 +22,10 @@ permissions:
 jobs:
   warm:
     name: Warm Go Module and Build Cache
+    # Warms the gomod-v1-* cache that only upstream's server-ci.yml/
+    # server-ci-weekly.yml restore (both already owner-guarded); no Antimatter
+    # workflow reads this key, so this ran daily here for a cache nothing used.
+    if: github.repository_owner == 'mattermost'
     runs-on: ubuntu-22.04
     # Don't let a hung run hold the concurrency group for the default 6 hours.
     timeout-minutes: 60
