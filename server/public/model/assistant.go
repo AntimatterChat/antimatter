@@ -151,6 +151,14 @@ func (s *AssistantSettings) SetDefaults() {
 	if s.AppWindowsPerChannelHour == nil {
 		s.AppWindowsPerChannelHour = NewPointer(30)
 	}
+	// An unset rules field becomes the JSON null it is stored as: a nil RawMessage marshals to null but unmarshals
+	// back as the bytes "null", so a nil default would never equal the same config after Clone or a save. Not "[]":
+	// for Patterns an empty list means none, null means the built-in ones.
+	for _, raw := range []*json.RawMessage{&s.Patterns, &s.SeedEntities, &s.DictionarySources} {
+		if len(*raw) == 0 {
+			*raw = json.RawMessage("null")
+		}
+	}
 }
 
 func (s *AssistantSettings) isValid() *AppError {
