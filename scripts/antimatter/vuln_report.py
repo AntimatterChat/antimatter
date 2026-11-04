@@ -112,7 +112,7 @@ def npm_audit(path):
     return counts, rows
 
 
-def main():
+def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--out", required=True)
     parser.add_argument("--govulncheck", action="append", default=[])
@@ -120,13 +120,15 @@ def main():
     parser.add_argument("--npm-audit", action="append", default=[])
     parser.add_argument("--fail-on-called", action="store_true")
     parser.add_argument("--allowlist")
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     allowed = read_allowlist(args.allowlist)
     md = ["## Dependency vulnerabilities", ""]
     result = {}
     called_total = 0
     allowed_seen = set()
+    # The allowlist holds govulncheck IDs only: the osv-scanner and npm audit results have other shapes.
+    fixed_govuln_ids = set()
 
     for spec in args.govulncheck:
         label, _, path = spec.partition("=")
@@ -141,6 +143,7 @@ def main():
                 if not r["fixed"]:
                     r["allowlisted"] = allowed[r["id"]]
         result[f"govulncheck:{label}"] = rows
+        fixed_govuln_ids.update(r["id"] for r in rows if r["fixed"])
         called = [r for r in rows if r["level"] == "called" and "allowlisted" not in r]
         called_allowed = sum(1 for r in rows if r["level"] == "called" and "allowlisted" in r)
         called_total += len(called)
@@ -194,7 +197,7 @@ def main():
         md += [f"- [{vid}](https://pkg.go.dev/vuln/{vid}): {amlib.md_escape(reason)}"
                + ("" if vid in allowed_seen else " **Stale: govulncheck no longer reports it; remove the entry.**")
                + (" **It has a fix now: update the module (the entry is ignored).**"
-                  if any(r["id"] == vid and r["fixed"] for rows in result.values() for r in rows) else "")
+                  if vid in fixed_govuln_ids else "")
                for vid, reason in sorted(allowed.items())]
         md.append("")
 
