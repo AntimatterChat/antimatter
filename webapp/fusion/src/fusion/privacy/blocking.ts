@@ -191,9 +191,25 @@ export function updateMessageRequest(channelId: string, action: 'accept' | 'dism
     };
 }
 
+// returnsToConversations tells whether your direct message with someone you stop ignoring or blocking goes back among
+// your conversations. Its state from before can't be told apart from a request's (ignoring moved it among the
+// requests), so it goes back only when it surely was a conversation, or when accepting it gets round none of your
+// choices: you started it, or you take direct messages from everyone, in all communities. A request you ignored
+// (dismissed), and a pending one while you ask first or refuse some people, stay requests for you to accept: stopping
+// ignoring a stranger must not accept their request for you (audit 2026-11-04, fusion-core-5).
+function returnsToConversations(state: GlobalState, channel: Channel, member: ChannelMembership, me: string): boolean {
+    if ((member.notify_props as MessageRequestProps).dm_request !== 'pending') {
+        return false;
+    }
+    if (channel.creator_id === me) {
+        return true;
+    }
+    return !Object.values(getMyPreferences(state)).some((pref) => pref.category === DM_PRIVACY_CATEGORY && (pref.value === 'ask' || pref.value === 'refuse'));
+}
+
 // setBlockLevel ignores someone, blocks them, or forgets both (''). Your direct message with them follows: it goes
 // among the message requests as you ignore or block them, out of the unread counts, and back to your conversations
-// as you stop.
+// as you stop, when it was one (returnsToConversations).
 export function setBlockLevel(userId: string, level: BlockLevel): ActionFuncAsync {
     return async (dispatch, getState) => {
         const state = getState();
@@ -209,7 +225,7 @@ export function setBlockLevel(userId: string, level: BlockLevel): ActionFuncAsyn
         if (direct && member) {
             if (level && !isMessageRequest(member)) {
                 await dispatch(updateMessageRequest(direct.id, 'request'));
-            } else if (!level && isMessageRequest(member)) {
+            } else if (!level && isMessageRequest(member) && returnsToConversations(state, direct, member, me)) {
                 await dispatch(updateMessageRequest(direct.id, 'accept'));
             }
         }
