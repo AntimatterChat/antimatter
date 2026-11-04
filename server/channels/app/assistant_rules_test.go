@@ -189,6 +189,23 @@ func TestAssistantRuleCandidates(t *testing.T) {
 			assert.Equal(t, want, why, message)
 		}
 	})
+
+	// A regression: a message without an entity was skipped before matching, so a pattern without slots never
+	// matched (TestAssistantAPI's "say hello" action timed out).
+	t.Run("a pattern without slots matches a message without entities", func(t *testing.T) {
+		say := compileAssistantPatterns([]*model.AssistantPattern{{
+			Id: "say", Kind: model.AssistantCardKindAction, Match: []string{`\bsay hello\b`},
+			Tools: []string{"*post_message"}, Arguments: map[string]string{"message": "hello"},
+		}})
+		postMessage := testAssistantTool("antimatter.post_message", model.AIToolKindWrite, `{"type":"object","properties":{"message":{"type":"string"}},"required":["message"]}`)
+		got, why := assistantRuleCandidates(&model.Post{Id: model.NewId(), Message: "say hello please"}, dict, say, []*aiResolvedTool{postMessage})
+		require.Len(t, got, 1, why)
+		assert.Equal(t, model.AssistantCardKindAction, got[0].Kind)
+		assert.JSONEq(t, `{"message":"hello"}`, string(got[0].Arguments))
+
+		_, why = assistantRuleCandidates(&model.Post{Id: model.NewId(), Message: "lunch anyone?"}, dict, say, []*aiResolvedTool{postMessage})
+		assert.Equal(t, "no entity", why, "still the reason when nothing matched")
+	})
 }
 
 // The dedupe key: the channel, the tool and the arguments, normalised.
