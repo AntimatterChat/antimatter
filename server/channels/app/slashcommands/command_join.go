@@ -68,7 +68,7 @@ func (*JoinProvider) DoCommand(a *app.App, rctx request.CTX, args *model.Command
 		return &model.CommandResponse{Text: args.T("api.command_join.fail.app_error"), ResponseType: model.CommandResponseTypeEphemeral}
 	}
 
-	if appErr := a.JoinChannel(rctx, channel, args.UserId); appErr != nil {
+	if appErr = a.JoinChannel(rctx, channel, args.UserId); appErr != nil {
 		return &model.CommandResponse{Text: args.T("api.command_join.fail.app_error"), ResponseType: model.CommandResponseTypeEphemeral}
 	}
 

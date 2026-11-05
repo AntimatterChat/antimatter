@@ -2761,8 +2761,8 @@ func TestCPAValuesEventHonoursProfilePrivacy(t *testing.T) {
 				if event.EventType() != model.WebsocketEventCPAValuesUpdated {
 					return false
 				}
-				data, err := json.Marshal(event.GetData()["values"])
-				require.NoError(t, err)
+				data, marshalErr := json.Marshal(event.GetData()["values"])
+				require.NoError(t, marshalErr)
 				require.NoError(t, json.Unmarshal(data, &values))
 				return true
 			default:

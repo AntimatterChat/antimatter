@@ -6,6 +6,7 @@ package oauthopenid
 import (
 	"crypto/rand"
 	"crypto/rsa"
+	"maps"
 	"strings"
 	"testing"
 
@@ -332,9 +333,7 @@ func TestOpenIDMicrosoftAnyTenantEmail(t *testing.T) {
 			"oid": "object-id", "tid": "tenant-x", "preferred_username": "mallory@attacker.onmicrosoft.com",
 			"email": "ceo@victim.com",
 		}
-		for k, v := range extra {
-			claims[k] = v
-		}
+		maps.Copy(claims, extra)
 		tokenUser, err := p.GetUserFromIdToken(rctx, idp.Sign(claims))
 		require.NoError(t, err)
 		user, err := p.GetUserFromJSON(rctx, strings.NewReader(`{"sub":"pairwise-sub"}`), tokenUser, settings)

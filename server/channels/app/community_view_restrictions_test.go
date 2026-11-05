@@ -35,9 +35,9 @@ func TestCommunityAttributeValuesRespectGuestViewRestrictions(t *testing.T) {
 	setDesk := func(user *model.User, desk string) {
 		t.Helper()
 		session := model.Session{UserId: user.Id, Roles: user.Roles}
-		_, appErr := th.App.PatchCommunityAttributeValues(th.Context, session, th.BasicTeam.Id, user.Id,
+		_, patchErr := th.App.PatchCommunityAttributeValues(th.Context, session, th.BasicTeam.Id, user.Id,
 			map[string]json.RawMessage{field.ID: json.RawMessage(`"` + desk + `"`)})
-		require.Nil(t, appErr)
+		require.Nil(t, patchErr)
 	}
 	setDesk(th.BasicUser, "B-12")
 	setDesk(unseen, "C-07")

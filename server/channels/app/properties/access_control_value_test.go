@@ -2602,9 +2602,9 @@ func TestUpsertPropertyValue_SyncLockFollowsLinkedTemplate(t *testing.T) {
 	}
 
 	for _, callerID := range []string{"", userID, model.CallerIDSAMLSync} {
-		_, err := th.service.UpsertPropertyValue(RequestContextWithCallerID(th.Context, callerID), value("Engineering"))
-		require.Error(t, err, "caller %q", callerID)
-		assert.ErrorIs(t, err, ErrSyncLocked, "caller %q", callerID)
+		_, lockedErr := th.service.UpsertPropertyValue(RequestContextWithCallerID(th.Context, callerID), value("Engineering"))
+		require.Error(t, lockedErr, "caller %q", callerID)
+		assert.ErrorIs(t, lockedErr, ErrSyncLocked, "caller %q", callerID)
 	}
 
 	written, err := th.service.UpsertPropertyValue(RequestContextWithCallerID(th.Context, model.CallerIDLDAPSync), value("Sales"))
