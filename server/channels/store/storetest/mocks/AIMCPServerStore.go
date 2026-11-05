@@ -238,6 +238,24 @@ func (_m *AIMCPServerStore) GetUserTokenServerIds(rctx request.CTX, userID strin
 	return r0, r1
 }
 
+// PermanentDeleteForScope provides a mock function with given fields: rctx, scope
+func (_m *AIMCPServerStore) PermanentDeleteForScope(rctx request.CTX, scope string) error {
+	ret := _m.Called(rctx, scope)
+
+	if len(ret) == 0 {
+		panic("no return value specified for PermanentDeleteForScope")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(request.CTX, string) error); ok {
+		r0 = rf(rctx, scope)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
 // Save provides a mock function with given fields: rctx, server
 func (_m *AIMCPServerStore) Save(rctx request.CTX, server *model.AIMCPServer) (*model.AIMCPServer, error) {
 	ret := _m.Called(rctx, server)

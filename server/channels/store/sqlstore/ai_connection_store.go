@@ -238,6 +238,39 @@ func (s *SqlAIConnectionStore) Delete(rctx request.CTX, id string, deleteAt int6
 	return nil
 }
 
+// checkCommunityScope refuses what isn't a community's scope (a team ID) to the deletions by scope: "server", or
+// nothing, would reach every server-wide row.
+func checkCommunityScope(entity, scope string) error {
+	if !model.IsValidId(scope) {
+		return store.NewErrInvalidInput(entity, "Scope", scope)
+	}
+	return nil
+}
+
+func (s *SqlAIConnectionStore) PermanentDeleteForScope(rctx request.CTX, scope string) (err error) {
+	if err = checkCommunityScope("AIConnection", scope); err != nil {
+		return err
+	}
+
+	transaction, err := s.GetMaster().Begin()
+	if err != nil {
+		return errors.Wrap(err, "begin_transaction")
+	}
+	defer finalizeTransactionX(transaction, &err)
+
+	if _, err = transaction.Exec("DELETE FROM AIUsage WHERE ConnectionId IN (SELECT Id FROM AIConnections WHERE Scope = ?)", scope); err != nil {
+		return errors.Wrapf(err, "failed to delete the model usage of the connections of scope=%s", scope)
+	}
+	if _, err = transaction.ExecBuilder(s.getQueryBuilder().Delete("AIConnections").Where(sq.Eq{"Scope": scope})); err != nil {
+		return errors.Wrapf(err, "failed to delete the model connections of scope=%s", scope)
+	}
+
+	if err = transaction.Commit(); err != nil {
+		return errors.Wrap(err, "commit_transaction")
+	}
+	return nil
+}
+
 func (s *SqlAIConnectionStore) AddUsage(rctx request.CTX, usage *model.AIUsage) error {
 	builder := s.getQueryBuilder().
 		Insert("AIUsage").

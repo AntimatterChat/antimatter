@@ -1940,6 +1940,35 @@ func (s *SqlGroupStore) AssignServerWideTeams() (int64, error) {
 	return res.RowsAffected()
 }
 
+// PermanentDeleteForTeam deletes a community's roles and teams. An empty teamID is refused: the groups of no team
+// are the server-wide ones.
+func (s *SqlGroupStore) PermanentDeleteForTeam(teamID string) (err error) {
+	if !model.IsValidId(teamID) {
+		return store.NewErrInvalidInput("Group", "TeamId", teamID)
+	}
+
+	transaction, err := s.GetMaster().Begin()
+	if err != nil {
+		return errors.Wrap(err, "begin_transaction")
+	}
+	defer finalizeTransactionX(transaction, &err)
+
+	ofTheTeam := sq.Expr("GroupId IN (SELECT Id FROM UserGroups WHERE TeamId = ?)", teamID)
+	for _, table := range []string{"GroupMembers", "GroupTeams", "GroupChannels"} {
+		if _, err = transaction.ExecBuilder(s.getQueryBuilder().Delete(table).Where(ofTheTeam)); err != nil {
+			return errors.Wrapf(err, "failed to delete the %s of the groups of teamId=%s", table, teamID)
+		}
+	}
+	if _, err = transaction.ExecBuilder(s.getQueryBuilder().Delete("UserGroups").Where(sq.Eq{"TeamId": teamID})); err != nil {
+		return errors.Wrapf(err, "failed to delete the groups of teamId=%s", teamID)
+	}
+
+	if err = transaction.Commit(); err != nil {
+		return errors.Wrap(err, "commit_transaction")
+	}
+	return nil
+}
+
 func (s *SqlGroupStore) GroupCount() (int64, error) {
 	return s.countTable("UserGroups")
 }

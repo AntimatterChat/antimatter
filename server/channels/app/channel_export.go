@@ -160,6 +160,14 @@ func (a *App) exportChannel(rctx request.CTX, rec *model.AuditRecord, userID, ch
 			a.applyPostsWillBeConsumedHook(rctx, posts)
 		},
 	}
+	if params.IncludeEmails && !isAdmin {
+		// The authors who hide their email address from the person exporting (profile privacy) are left out, as
+		// everywhere else; system admins see every address.
+		viewer := a.newProfileViewer(userID, false)
+		params.HiddenEmails = func(userIDs []string) map[string]bool {
+			return a.profileFieldHiddenFrom(rctx, viewer, model.ProfileFieldEmail, userIDs)
+		}
+	}
 
 	file := &ChannelExportFile{
 		Name:        channelExportFileName(channel, time.Now()),

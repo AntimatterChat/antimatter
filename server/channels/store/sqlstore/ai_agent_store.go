@@ -214,6 +214,16 @@ func (s *SqlAIAgentStore) PermanentDelete(rctx request.CTX, userID string) error
 	return nil
 }
 
+func (s *SqlAIAgentStore) PermanentDeleteForScope(rctx request.CTX, scope string) error {
+	if err := checkCommunityScope("AIAgent", scope); err != nil {
+		return err
+	}
+	if _, err := s.GetMaster().ExecBuilder(s.getQueryBuilder().Delete("AIAgents").Where(sq.Eq{"Scope": scope})); err != nil {
+		return errors.Wrapf(err, "failed to permanently delete the agents of scope=%s", scope)
+	}
+	return nil
+}
+
 // agentsPluginUserAgentRow is a row of the Agents plugin's Agents_UserAgents, its lists as JSON text.
 type agentsPluginUserAgentRow struct {
 	BotUserID          string `db:"botuserid"`
