@@ -816,10 +816,6 @@
     "translation": "Perintah telah dinonaktifkan oleh admin sistem."
   },
   {
-    "id": "api.command.duplicate_trigger.app_error",
-    "translation": "Kata pemicu ini sudah digunakan. Silakan pilih kata lain."
-  },
-  {
     "id": "api.command.execute_command.create_post_failed.app_error",
     "translation": "Perintah '{{.Trigger}}' gagal memposting respons. Hubungi Admin Sistem Anda."
   },

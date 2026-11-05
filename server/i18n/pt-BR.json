@@ -852,10 +852,6 @@
     "translation": "Os comandos foram desabilitados pelo administrador do sistema."
   },
   {
-    "id": "api.command.duplicate_trigger.app_error",
-    "translation": "Esta palavra gatilho já está em uso. Por favor escolha outra palavra."
-  },
-  {
     "id": "api.command.execute_command.create_post_failed.app_error",
     "translation": "Commando '{{.Trigger}}' falhou ao publicar a resposta. Entre em contato com o Administrador do Sistema."
   },

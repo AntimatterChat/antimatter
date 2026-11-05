@@ -816,10 +816,6 @@
     "translation": "सिस्टम एडमिन द्वारा कमैंड्स अक्षम कर दिए गए हैं।"
   },
   {
-    "id": "api.command.duplicate_trigger.app_error",
-    "translation": "यह ट्रिगर शब्द पहले से ही उपयोग में है। कृपया कोई अन्य शब्द चुनें।"
-  },
-  {
     "id": "api.command.execute_command.create_post_failed.app_error",
     "translation": "कमैंड '{{.Trigger}}' का प्रतिक्रिया पोस्ट करने में विफल रहा। कृपया अपने सिस्टम एडमिन से संपर्क करें।"
   },

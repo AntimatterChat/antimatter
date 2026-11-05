@@ -816,10 +816,6 @@
     "translation": "கட்டளைகள் அமைப்பு நிர்வாகியால் முடக்கப்பட்டுள்ளன."
   },
   {
-    "id": "api.command.duplicate_trigger.app_error",
-    "translation": "இந்தத் தூண்டுதல் சொல் ஏற்கனவே பயன்பாட்டில் உள்ளது. வேறு ஒரு சொல்லைத் தேர்ந்தெடுக்கவும்."
-  },
-  {
     "id": "api.command.execute_command.create_post_failed.app_error",
     "translation": "'{{.Trigger}}' கட்டளை பதிலைப் பதிவு செய்யத் தோல்வியடைந்தது. உங்கள் அமைப்பு நிர்வாகியைத் தொடர்பு கொள்ளவும்."
   },

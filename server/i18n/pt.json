@@ -852,10 +852,6 @@
     "translation": "Os comandos foram desativados pelo administrador do sistema."
   },
   {
-    "id": "api.command.duplicate_trigger.app_error",
-    "translation": "Esta palavra de ativação já está a ser utilizada. Por favor, escolha outra palavra."
-  },
-  {
     "id": "api.command.execute_command.create_post_failed.app_error",
     "translation": "O comando '{{.Trigger}}' não conseguiu publicar a resposta. Por favor, contacte o seu Administrador do Sistema."
   },

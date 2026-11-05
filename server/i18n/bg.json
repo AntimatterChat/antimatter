@@ -852,10 +852,6 @@
     "translation": "Командите са деактивирани от системния администратор."
   },
   {
-    "id": "api.command.duplicate_trigger.app_error",
-    "translation": "Тази задействаща дума вече се използва. Моля, изберете друга дума."
-  },
-  {
     "id": "api.command.execute_command.create_post_failed.app_error",
     "translation": "Командата '{{.Trigger}}' не изпраща отговор. Моля, свържете се със системния си администратор."
   },

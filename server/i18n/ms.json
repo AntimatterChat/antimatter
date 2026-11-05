@@ -816,10 +816,6 @@
     "translation": "Arahan telah dilumpuhkan oleh pentadbir sistem."
   },
   {
-    "id": "api.command.duplicate_trigger.app_error",
-    "translation": "Perkataan pencetus ini sudah digunakan. Sila pilih perkataan lain."
-  },
-  {
     "id": "api.command.execute_command.create_post_failed.app_error",
     "translation": "Arahan '{{.Trigger}}' gagal memuat naik respons. Sila hubungi Pentadbir Sistem anda."
   },

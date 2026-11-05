@@ -816,10 +816,6 @@
     "translation": "Οι εντολές έχουν απενεργοποιηθεί από τον διαχειριστή του συστήματος."
   },
   {
-    "id": "api.command.duplicate_trigger.app_error",
-    "translation": "Αυτή η λέξη ενεργοποίησης χρησιμοποιείται ήδη. Παρακαλώ επιλέξτε άλλη λέξη."
-  },
-  {
     "id": "api.command.execute_command.create_post_failed.app_error",
     "translation": "Η εντολή «{{.Trigger}}» απέτυχε να δημοσιεύσει την απάντηση. Παρακαλώ επικοινωνήστε με τον Διαχειριστή Συστήματος."
   },

@@ -816,10 +816,6 @@
     "translation": "คำสั่งสแลชได้ถูกปิดใช้งานโดยผู้ดูแลระบบ"
   },
   {
-    "id": "api.command.duplicate_trigger.app_error",
-    "translation": "คำกระตุ้นนี้ถูกใช้งานอยู่แล้ว กรุณาเลือกคำอื่น"
-  },
-  {
     "id": "api.command.execute_command.create_post_failed.app_error",
     "translation": "คำสั่ง '{{.Trigger}}' ไม่สามารถโพสต์คำตอบได้ กรุณาติดต่อผู้ดูแลระบบ"
   },

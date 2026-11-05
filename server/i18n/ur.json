@@ -816,10 +816,6 @@
     "translation": "سسٹم ایڈمن نے کمانڈز غیر فعال کر دی ہیں۔"
   },
   {
-    "id": "api.command.duplicate_trigger.app_error",
-    "translation": "یہ ٹریگر ورڈ پہلے سے استعمال میں ہے۔ براہ کرم کوئی اور ورڈ منتخب کریں۔"
-  },
-  {
     "id": "api.command.execute_command.create_post_failed.app_error",
     "translation": "کمانڈ '{{.Trigger}}' جواب پوسٹ کرنے میں ناکام رہی۔ براہ کرم اپنے سسٹم ایڈمن سے رابطہ کریں۔"
   },

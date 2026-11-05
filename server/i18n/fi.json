@@ -852,10 +852,6 @@
     "translation": "Järjestelmänvalvoja on poistanut komennot käytöstä."
   },
   {
-    "id": "api.command.duplicate_trigger.app_error",
-    "translation": "Tämä laukaisusana on jo käytössä. Valitse toinen sana."
-  },
-  {
     "id": "api.command.execute_command.create_post_failed.app_error",
     "translation": "Komento '{{.Trigger}}' epäonnistui toimittamaan vastausta. Ota yhteyttä järjestelmänvalvojaan."
   },

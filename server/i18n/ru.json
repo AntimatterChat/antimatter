@@ -852,10 +852,6 @@
     "translation": "Комманды были отключены системным администратором."
   },
   {
-    "id": "api.command.duplicate_trigger.app_error",
-    "translation": "Это триггер слово уже используется. Пожалуйста, выберите другое."
-  },
-  {
     "id": "api.command.execute_command.create_post_failed.app_error",
     "translation": "Команда '{{.Trigger}}' не отправила ответ. Пожалуйста, обратитесь к вашему системному администратору."
   },

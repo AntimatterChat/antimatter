@@ -6998,10 +6998,6 @@
     "translation": "Command '{{.Trigger}}' failed to post response. Please contact your System Administrator."
   },
   {
-    "id": "api.command.duplicate_trigger.app_error",
-    "translation": "This trigger word is already in use. Please choose another."
-  },
-  {
     "id": "api.command.disabled.app_error",
     "translation": "Commands have been disabled by the system admin."
   },

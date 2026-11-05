@@ -852,10 +852,6 @@
     "translation": "Deze opdrachten zijn uitgeschakeld door de beheerder."
   },
   {
-    "id": "api.command.duplicate_trigger.app_error",
-    "translation": "Dit trigger woord is al in gebruik. Kies een ander woord."
-  },
-  {
     "id": "api.command.execute_command.create_post_failed.app_error",
     "translation": "Opdracht '{{.Trigger}}' kon geen antwoord plaatsen. Contacteer je systeembeheerder."
   },

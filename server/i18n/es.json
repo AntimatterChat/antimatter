@@ -852,10 +852,6 @@
     "translation": "Los comandos han sido inhabilitados por el administrador de sistema."
   },
   {
-    "id": "api.command.duplicate_trigger.app_error",
-    "translation": "Esta palabra que desencadena la acción ya está siendo utilizada. Por favor escoge otra palabra."
-  },
-  {
     "id": "api.command.execute_command.create_post_failed.app_error",
     "translation": "El comando '{{.Trigger}}' falló en publicar la respuesta. Por favor contacta a tu Administrador de Sistema."
   },

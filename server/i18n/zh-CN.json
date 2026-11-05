@@ -852,10 +852,6 @@
     "translation": "命令已经被系统管理员禁用。"
   },
   {
-    "id": "api.command.duplicate_trigger.app_error",
-    "translation": "触发词已经使用。请选择其它单词。"
-  },
-  {
     "id": "api.command.execute_command.create_post_failed.app_error",
     "translation": "指令“{{.Trigger}}”发送回复失败。请联系您的系统管理员。"
   },

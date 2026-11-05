@@ -852,10 +852,6 @@
     "translation": "Các lệnh đã bị vô hiệu hóa bởi quản trị viên hệ thống."
   },
   {
-    "id": "api.command.duplicate_trigger.app_error",
-    "translation": "Từ kích hoạt này đã được sử dụng. Vui lòng có một từ khác."
-  },
-  {
     "id": "api.command.execute_command.create_post_failed.app_error",
     "translation": "Lệnh '{{.Trigger}}' không thể gửi phản hồi. Xin vui lòng liên hệ với quản trị hệ thống của bạn."
   },

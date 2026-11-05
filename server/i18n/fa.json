@@ -852,10 +852,6 @@
     "translation": "دستورات توسط مدیر سیستم غیرفعال شده اند."
   },
   {
-    "id": "api.command.duplicate_trigger.app_error",
-    "translation": "این واژه نگه دارنده از قبل استفاده شده است. لطفاً کلمه دیگری انتخاب کنید."
-  },
-  {
     "id": "api.command.execute_command.create_post_failed.app_error",
     "translation": "دستور '{{.Trigger}}' در ارسال پاسخ ناموفق بود. لطفا با سرپرست سیستم خود تماس بگیرید."
   },

@@ -852,10 +852,6 @@
     "translation": "Kommandoer er deaktivert av systemadministratoren."
   },
   {
-    "id": "api.command.duplicate_trigger.app_error",
-    "translation": "Dette triggerordet er allerede i bruk. Velg et annet ord."
-  },
-  {
     "id": "api.command.execute_command.create_post_failed.app_error",
     "translation": "Kommandoen «{{.Trigger}}» kunne ikke poste svaret. Kontakt systemadministratoren din."
   },

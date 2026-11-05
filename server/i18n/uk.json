@@ -852,10 +852,6 @@
     "translation": "Команди вимкнені системним адміністратором."
   },
   {
-    "id": "api.command.duplicate_trigger.app_error",
-    "translation": "Це слово-тригер вже використовується. Будь ласка, виберіть інше слово."
-  },
-  {
     "id": "api.command.execute_command.create_post_failed.app_error",
     "translation": "Команді '{{.Trigger}}' не вдалося опублікувати відповідь. Зверніться до системного адміністратора."
   },

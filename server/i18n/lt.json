@@ -528,10 +528,6 @@
     "translation": "Komandas išjungė sistemos administratorius."
   },
   {
-    "id": "api.command.duplicate_trigger.app_error",
-    "translation": "Šis trigeris jau naudojamas. Pasirinkite kitą žodį."
-  },
-  {
     "id": "api.command.execute_command.failed.app_error",
     "translation": "Komanda, kurios trigeris yra '{{.Trigger}}', nepavyko."
   },

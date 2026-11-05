@@ -852,10 +852,6 @@
     "translation": "Les commandes ont été désactivées par l'administrateur système."
   },
   {
-    "id": "api.command.duplicate_trigger.app_error",
-    "translation": "Ce mot déclencheur est déjà utilisé. Veuillez choisir un autre mot."
-  },
-  {
     "id": "api.command.execute_command.create_post_failed.app_error",
     "translation": "Impossible de publier la réponse de la commande « {{.Trigger}} ». Veuillez contacter votre administrateur système."
   },

@@ -852,10 +852,6 @@
     "translation": "I comandi sono stati disabilitati dall'amministratore di sistema."
   },
   {
-    "id": "api.command.duplicate_trigger.app_error",
-    "translation": "Questa parola di innnesco è già utilizzata. Scegli un altra parola."
-  },
-  {
     "id": "api.command.execute_command.create_post_failed.app_error",
     "translation": "Il comando '{{.Trigger}}' ha fallito pubblicando la risposta. Contattare l'Amministratore di Sistema."
   },

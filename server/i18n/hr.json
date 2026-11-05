@@ -1520,10 +1520,6 @@
     "translation": "Administrator sustava je isključio naredbe."
   },
   {
-    "id": "api.command.duplicate_trigger.app_error",
-    "translation": "Ova se riječ za pokretanje već koristi. Odaberi drugu riječ."
-  },
-  {
     "id": "api.command.execute_command.create_post_failed.app_error",
     "translation": "Naredba '{{.Trigger}}' nije uspjela objaviti odgovor. Obrati se svom administratoru sustava."
   },

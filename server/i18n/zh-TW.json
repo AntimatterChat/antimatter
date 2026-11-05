@@ -852,10 +852,6 @@
     "translation": "命令已被系統管理員停用。"
   },
   {
-    "id": "api.command.duplicate_trigger.app_error",
-    "translation": "此觸發關鍵字已被使用。請選擇另外的關鍵字。"
-  },
-  {
     "id": "api.command.execute_command.create_post_failed.app_error",
     "translation": "命令「{{.Trigger}}」發布回應時失敗，請聯絡系統管理員。"
   },

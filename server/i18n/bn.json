@@ -816,10 +816,6 @@
     "translation": "সিস্টেম অ্যাডমিন দ্বারা কমান্ডসমূহ নিষ্ক্রিয় করা হয়েছে।"
   },
   {
-    "id": "api.command.duplicate_trigger.app_error",
-    "translation": "এই ট্রিগার শব্দটি ইতিমধ্যে ব্যবহৃত হচ্ছে। অনুগ্রহ করে অন্য একটি শব্দ নির্বাচন করুন।"
-  },
-  {
     "id": "api.command.execute_command.create_post_failed.app_error",
     "translation": "'{{.Trigger}}' কমান্ডের উত্তর পোস্ট করা ব্যর্থ হয়েছে। অনুগ্রহ করে আপনার সিস্টেম অ্যাডমিনের সাথে যোগাযোগ করুন।"
   },

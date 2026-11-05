@@ -852,10 +852,6 @@
     "translation": "Komutlar sistem yöneticisi tarafından kapatılmış."
   },
   {
-    "id": "api.command.duplicate_trigger.app_error",
-    "translation": "Bu tetikleyici sözcük zaten kullanılıyor. Lütfen başka bir sözcük seçin."
-  },
-  {
     "id": "api.command.execute_command.create_post_failed.app_error",
     "translation": "'{{.Trigger}}' komutu yanıtı gönderemedi. Lütfen sistem yöneticiniz ile görüşün."
   },

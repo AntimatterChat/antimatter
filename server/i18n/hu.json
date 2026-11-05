@@ -852,10 +852,6 @@
     "translation": "A parancsokat letiltotta a rendszergazda."
   },
   {
-    "id": "api.command.duplicate_trigger.app_error",
-    "translation": "Ez a kulcsszó már használva van. Kérem válasszon egy másik szót."
-  },
-  {
     "id": "api.command.execute_command.create_post_failed.app_error",
     "translation": "A '{{.Trigger}}' parancs nem küldött választ. Kérjük forduljon a rendszergazdához."
   },

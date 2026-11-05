@@ -852,10 +852,6 @@
     "translation": "コマンドがシステム管理者によって無効化されています。"
   },
   {
-    "id": "api.command.duplicate_trigger.app_error",
-    "translation": "このトリガーワードは既に使われています。他の単語を選んでください。"
-  },
-  {
     "id": "api.command.execute_command.create_post_failed.app_error",
     "translation": "コマンド '{{.Trigger}}' はレスポンスを投稿できませんでした。システム管理者に連絡してください。"
   },

@@ -852,10 +852,6 @@
     "translation": "Příkazy byly zakázány systémovým administrátorem."
   },
   {
-    "id": "api.command.duplicate_trigger.app_error",
-    "translation": "Toto klíčové slovo je již používáno. Prosím, vyberte jiné slovo."
-  },
-  {
     "id": "api.command.execute_command.create_post_failed.app_error",
     "translation": "Příkazu '{{.Trigger}}' se nepodařilo se odeslat odpověď. Prosím kontaktujte správce systému."
   },

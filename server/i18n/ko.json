@@ -852,10 +852,6 @@
     "translation": "시스템 관리자가 비활성화한 명령입니다."
   },
   {
-    "id": "api.command.duplicate_trigger.app_error",
-    "translation": "선택한 트리거 단어는 이미 사용중입니다. 다른 단어를 선택해주세요."
-  },
-  {
     "id": "api.command.execute_command.create_post_failed.app_error",
     "translation": "Command '{{.Trigger}}' failed to post response. Please contact your System Administrator."
   },

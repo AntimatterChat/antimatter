@@ -852,10 +852,6 @@
     "translation": "Polecenia zostały wyłączone przez administratora systemu."
   },
   {
-    "id": "api.command.duplicate_trigger.app_error",
-    "translation": "To słowo wyzwalacza zostało już użyte. Proszę wybrać inne słowo."
-  },
-  {
     "id": "api.command.execute_command.create_post_failed.app_error",
     "translation": "Komenda \"{{.Trigger}}\" nie mogła opublikować odpowiedzi. Skontaktuj się z administratorem systemu."
   },

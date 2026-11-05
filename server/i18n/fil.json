@@ -816,10 +816,6 @@
     "translation": "Inakal ng system admin ang mga command."
   },
   {
-    "id": "api.command.duplicate_trigger.app_error",
-    "translation": "Nagagamit na ang trigger word na ito. Mangyayaring pumili ng ibang salita."
-  },
-  {
     "id": "api.command.execute_command.create_post_failed.app_error",
     "translation": "Hindi nakapag-post ng tugon ang command na '{{.Trigger}}'. Mangyayaring makipag-ugnayan sa inyong System Administrator."
   },

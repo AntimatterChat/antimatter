@@ -852,10 +852,6 @@
     "translation": "Comenzile au fost dezactivate de sistem admin."
   },
   {
-    "id": "api.command.duplicate_trigger.app_error",
-    "translation": "Acest cuvânt de declanşare este deja în uz. Vă rugăm să alegeţi un alt cuvânt."
-  },
-  {
     "id": "api.command.execute_command.create_post_failed.app_error",
     "translation": "Comanda '{{.Trigger}}' nu a reușit să publice răspunsul. Contactați administratorul de sistem."
   },

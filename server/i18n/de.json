@@ -852,10 +852,6 @@
     "translation": "Befehle wurden durch den Systemadministrator deaktiviert."
   },
   {
-    "id": "api.command.duplicate_trigger.app_error",
-    "translation": "Dieses Auslösewort wird bereits verwendet. Bitte wähle ein anderes Wort."
-  },
-  {
     "id": "api.command.execute_command.create_post_failed.app_error",
     "translation": "Kommando '{{.Trigger}}' konnte keine Antwort senden. Bitte kontaktiere deinen Systemadministrator."
   },

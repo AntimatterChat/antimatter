@@ -816,10 +816,6 @@
     "translation": "Les comandes han estat desactivades per l'administrador del sistema."
   },
   {
-    "id": "api.command.duplicate_trigger.app_error",
-    "translation": "Aquesta paraula d'activació ja s'està utilitzant. Si us plau, trieu-ne una altra."
-  },
-  {
     "id": "api.command.execute_command.create_post_failed.app_error",
     "translation": "La comanda '{{.Trigger}}' no ha pogut publicar la resposta. Si us plau, contacteu amb el vostre administrador del sistema."
   },

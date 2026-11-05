@@ -816,10 +816,6 @@
     "translation": "تم تعطيل الأوامر بواسطة مدير النظام."
   },
   {
-    "id": "api.command.duplicate_trigger.app_error",
-    "translation": "كلمة التشغيل هذه قيد الاستخدام بالفعل. يرجى اختيار كلمة أخرى."
-  },
-  {
     "id": "api.command.execute_command.create_post_failed.app_error",
     "translation": "تعذّر نشر استجابة الأمر '{{.Trigger}}'. يرجى التواصل مع مدير النظام."
   },
