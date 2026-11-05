@@ -23,6 +23,10 @@ permissions:
 jobs:
   buildenv:
     name: Build Environment
+    # Upstream-only: feeds the race-detector run below, which has no owner guard
+    # and ran here nightly for 2h18m, finding real data races in upstream tests
+    # that `allow-failure: true` then hides behind a green tick.
+    if: github.repository_owner == 'mattermost'
     runs-on: ubuntu-22.04
     outputs:
       build-server-tag: ${{ steps.calculate.outputs.BUILD_SERVER_TAG }}
@@ -41,6 +45,7 @@ jobs:
   test-race:
     name: Race Detector
     needs: buildenv
+    if: github.repository_owner == 'mattermost'
     permissions:
       contents: read
       actions: write
