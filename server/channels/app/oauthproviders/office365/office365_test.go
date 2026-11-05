@@ -144,11 +144,11 @@ func TestOffice365UnverifiedEmailNotTrusted(t *testing.T) {
 		_, err := p.GetSSOSettings(rctx, config(""), model.ServiceOffice365)
 		require.NoError(t, err)
 		token := func(email string) *model.User {
-			tokenUser, err := p.GetUserFromIdToken(rctx, idp.Sign(jwt.MapClaims{
+			tokenUser, tokenErr := p.GetUserFromIdToken(rctx, idp.Sign(jwt.MapClaims{
 				"iss": "https://login.microsoftonline.com/tenant-x/v2.0", "aud": "app-id", "tid": "tenant-x",
 				"sub": "pairwise", "oid": "3f2c1a5e-0000-4000-8000-000000000002", "email": email, "xms_edov": true,
 			}))
-			require.NoError(t, err)
+			require.NoError(t, tokenErr)
 			return tokenUser
 		}
 
