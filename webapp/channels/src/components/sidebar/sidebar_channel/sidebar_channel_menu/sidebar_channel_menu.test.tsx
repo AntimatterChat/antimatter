@@ -66,7 +66,14 @@ describe('components/sidebar/sidebar_channel/sidebar_channel_menu', () => {
         const user = userEvent.setup();
         const menuButton = screen.getByRole('button', {name: /channel options/i});
         await user.click(menuButton);
-        await screen.findByRole('menu', {name: 'Edit channel menu'});
+        const menu = await screen.findByRole('menu', {name: 'Edit channel menu'});
+
+        // Wait for the menu's opening transition to end too: until then its paper is scaled ("scale(1, 1)"), then
+        // "none". A snapshot taken mid-transition depends on how long the steps above took (it flaked on a loaded
+        // CI runner, run 41975620635).
+        await waitFor(() => {
+            expect((menu.closest('.MuiPaper-root') as HTMLElement).style.transform).toBe('none');
+        });
 
         // Tooltip-on-hover is opened by `userEvent.click` before the click reaches
         // the button; the menu opening then dismisses it via a fade-out transition.

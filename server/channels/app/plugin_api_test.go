@@ -884,6 +884,9 @@ func TestPluginAPIHasPermissionToFileAction(t *testing.T) {
 func TestPluginAPIGetFileInfos(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)
+	// The plugin API posts as BasicUser2 below, and an app posting as a person has that person's rights: they must
+	// be able to post in the channel (InitBasic only adds them to the team).
+	th.AddUserToChannel(t, th.BasicUser2, th.BasicChannel)
 
 	api := th.SetupPluginAPI()
 

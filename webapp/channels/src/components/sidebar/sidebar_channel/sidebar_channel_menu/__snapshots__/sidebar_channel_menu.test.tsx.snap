@@ -49,7 +49,7 @@ exports[`components/sidebar/sidebar_channel/sidebar_channel_menu should match sn
     />
     <div
       class="MuiPaper-root-jrNovL xmIEL MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation8 MuiPopover-paper-mFrfA kbkePd MuiPopover-paper"
-      style="opacity: 1; transform: scale(1, 1); transition: opacity 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,transform 100ms cubic-bezier(0.4, 0, 0.2, 1) 0ms; top: 0px; left: 0px; transform-origin: 0px 0px;"
+      style="opacity: 1; transform: none; transition: opacity 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,transform 100ms cubic-bezier(0.4, 0, 0.2, 1) 0ms; top: 0px; left: 0px; transform-origin: 0px 0px;"
       tabindex="-1"
     >
       <ul
@@ -342,7 +342,7 @@ exports[`components/sidebar/sidebar_channel/sidebar_channel_menu should match sn
     />
     <div
       class="MuiPaper-root-jrNovL xmIEL MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation8 MuiPopover-paper-mFrfA kbkePd MuiPopover-paper"
-      style="opacity: 1; transform: scale(1, 1); transition: opacity 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,transform 100ms cubic-bezier(0.4, 0, 0.2, 1) 0ms; top: 0px; left: 0px; transform-origin: 0px 0px;"
+      style="opacity: 1; transform: none; transition: opacity 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,transform 100ms cubic-bezier(0.4, 0, 0.2, 1) 0ms; top: 0px; left: 0px; transform-origin: 0px 0px;"
       tabindex="-1"
     >
       <ul
@@ -635,7 +635,7 @@ exports[`components/sidebar/sidebar_channel/sidebar_channel_menu should match sn
     />
     <div
       class="MuiPaper-root-jrNovL xmIEL MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation8 MuiPopover-paper-mFrfA kbkePd MuiPopover-paper"
-      style="opacity: 1; transform: scale(1, 1); transition: opacity 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,transform 100ms cubic-bezier(0.4, 0, 0.2, 1) 0ms; top: 0px; left: 0px; transform-origin: 0px 0px;"
+      style="opacity: 1; transform: none; transition: opacity 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,transform 100ms cubic-bezier(0.4, 0, 0.2, 1) 0ms; top: 0px; left: 0px; transform-origin: 0px 0px;"
       tabindex="-1"
     >
       <ul
@@ -928,7 +928,7 @@ exports[`components/sidebar/sidebar_channel/sidebar_channel_menu should show cor
     />
     <div
       class="MuiPaper-root-jrNovL xmIEL MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation8 MuiPopover-paper-mFrfA kbkePd MuiPopover-paper"
-      style="opacity: 1; transform: scale(1, 1); transition: opacity 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,transform 100ms cubic-bezier(0.4, 0, 0.2, 1) 0ms; top: 0px; left: 0px; transform-origin: 0px 0px;"
+      style="opacity: 1; transform: none; transition: opacity 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,transform 100ms cubic-bezier(0.4, 0, 0.2, 1) 0ms; top: 0px; left: 0px; transform-origin: 0px 0px;"
       tabindex="-1"
     >
       <ul
@@ -1153,7 +1153,7 @@ exports[`components/sidebar/sidebar_channel/sidebar_channel_menu should show cor
     />
     <div
       class="MuiPaper-root-jrNovL xmIEL MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation8 MuiPopover-paper-mFrfA kbkePd MuiPopover-paper"
-      style="opacity: 1; transform: scale(1, 1); transition: opacity 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,transform 100ms cubic-bezier(0.4, 0, 0.2, 1) 0ms; top: 0px; left: 0px; transform-origin: 0px 0px;"
+      style="opacity: 1; transform: none; transition: opacity 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,transform 100ms cubic-bezier(0.4, 0, 0.2, 1) 0ms; top: 0px; left: 0px; transform-origin: 0px 0px;"
       tabindex="-1"
     >
       <ul
@@ -1414,7 +1414,7 @@ exports[`components/sidebar/sidebar_channel/sidebar_channel_menu should show cor
     />
     <div
       class="MuiPaper-root-jrNovL xmIEL MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation8 MuiPopover-paper-mFrfA kbkePd MuiPopover-paper"
-      style="opacity: 1; transform: scale(1, 1); transition: opacity 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,transform 100ms cubic-bezier(0.4, 0, 0.2, 1) 0ms; top: 0px; left: 0px; transform-origin: 0px 0px;"
+      style="opacity: 1; transform: none; transition: opacity 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,transform 100ms cubic-bezier(0.4, 0, 0.2, 1) 0ms; top: 0px; left: 0px; transform-origin: 0px 0px;"
       tabindex="-1"
     >
       <ul
@@ -1704,7 +1704,7 @@ exports[`components/sidebar/sidebar_channel/sidebar_channel_menu should show cor
     />
     <div
       class="MuiPaper-root-jrNovL xmIEL MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation8 MuiPopover-paper-mFrfA kbkePd MuiPopover-paper"
-      style="opacity: 1; transform: scale(1, 1); transition: opacity 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,transform 100ms cubic-bezier(0.4, 0, 0.2, 1) 0ms; top: 0px; left: 0px; transform-origin: 0px 0px;"
+      style="opacity: 1; transform: none; transition: opacity 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,transform 100ms cubic-bezier(0.4, 0, 0.2, 1) 0ms; top: 0px; left: 0px; transform-origin: 0px 0px;"
       tabindex="-1"
     >
       <ul
@@ -1997,7 +1997,7 @@ exports[`components/sidebar/sidebar_channel/sidebar_channel_menu should show cor
     />
     <div
       class="MuiPaper-root-jrNovL xmIEL MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation8 MuiPopover-paper-mFrfA kbkePd MuiPopover-paper"
-      style="opacity: 1; transform: scale(1, 1); transition: opacity 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,transform 100ms cubic-bezier(0.4, 0, 0.2, 1) 0ms; top: 0px; left: 0px; transform-origin: 0px 0px;"
+      style="opacity: 1; transform: none; transition: opacity 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,transform 100ms cubic-bezier(0.4, 0, 0.2, 1) 0ms; top: 0px; left: 0px; transform-origin: 0px 0px;"
       tabindex="-1"
     >
       <ul
@@ -2290,7 +2290,7 @@ exports[`components/sidebar/sidebar_channel/sidebar_channel_menu should show cor
     />
     <div
       class="MuiPaper-root-jrNovL xmIEL MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation8 MuiPopover-paper-mFrfA kbkePd MuiPopover-paper"
-      style="opacity: 1; transform: scale(1, 1); transition: opacity 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,transform 100ms cubic-bezier(0.4, 0, 0.2, 1) 0ms; top: 0px; left: 0px; transform-origin: 0px 0px;"
+      style="opacity: 1; transform: none; transition: opacity 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,transform 100ms cubic-bezier(0.4, 0, 0.2, 1) 0ms; top: 0px; left: 0px; transform-origin: 0px 0px;"
       tabindex="-1"
     >
       <ul
@@ -2583,7 +2583,7 @@ exports[`components/sidebar/sidebar_channel/sidebar_channel_menu should show cor
     />
     <div
       class="MuiPaper-root-jrNovL xmIEL MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation8 MuiPopover-paper-mFrfA kbkePd MuiPopover-paper"
-      style="opacity: 1; transform: scale(1, 1); transition: opacity 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,transform 100ms cubic-bezier(0.4, 0, 0.2, 1) 0ms; top: 0px; left: 0px; transform-origin: 0px 0px;"
+      style="opacity: 1; transform: none; transition: opacity 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,transform 100ms cubic-bezier(0.4, 0, 0.2, 1) 0ms; top: 0px; left: 0px; transform-origin: 0px 0px;"
       tabindex="-1"
     >
       <ul

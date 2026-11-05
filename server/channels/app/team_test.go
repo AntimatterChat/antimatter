@@ -1379,9 +1379,12 @@ func TestLeaveTeamPanic(t *testing.T) {
 	mockStore.On("Team").Return(&mockTeamStore)
 	mockStore.On("GetDBSchemaVersion").Return(1, nil)
 
-	// Antimatter: someone leaving a team leaves its roles; here they have none.
+	// Antimatter: someone leaving a team leaves its roles; here they have none. The roles are read unpaged and for
+	// this team only (a page of the whole server's groups could miss some of them).
 	mockGroupStore := mocks.GroupStore{}
-	mockGroupStore.On("GetGroups", 0, 1000, mock.Anything, mock.Anything).Return([]*model.Group{}, nil)
+	mockGroupStore.On("GetGroups", 0, 0, mock.MatchedBy(func(opts model.GroupSearchOpts) bool {
+		return opts.FilterTeamId == "myteam" && opts.FilterHasMember == "userID"
+	}), mock.Anything).Return([]*model.Group{}, nil)
 	mockStore.On("Group").Return(&mockGroupStore)
 
 	team := &model.Team{Id: "myteam"}
