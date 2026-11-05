@@ -38,12 +38,12 @@ func (a *App) deleteCommunityAIForTeam(rctx request.CTX, teamID string) *model.A
 		if _, appErr := a.UpdateBotActive(rctx, agent.UserId, false); appErr != nil {
 			rctx.Logger().Warn("Couldn't deactivate the account of a deleted community's agent", mlog.String("user_id", agent.UserId), mlog.String("team_id", teamID), mlog.Err(appErr))
 		}
-		if err := a.Srv().Store().AgentActivity().Delete(rctx, agent.UserId); err != nil {
+		if err = a.Srv().Store().AgentActivity().Delete(rctx, agent.UserId); err != nil {
 			rctx.Logger().Warn("Couldn't forget a deleted community's agent's activity", mlog.String("user_id", agent.UserId), mlog.String("team_id", teamID), mlog.Err(err))
 		}
 		a.setAIAgentStatus(agent.UserId, model.StatusOffline)
 	}
-	if err := a.Srv().Store().AIAgent().PermanentDeleteForScope(rctx, teamID); err != nil {
+	if err = a.Srv().Store().AIAgent().PermanentDeleteForScope(rctx, teamID); err != nil {
 		return failed(err)
 	}
 	a.invalidateAIAgents()
