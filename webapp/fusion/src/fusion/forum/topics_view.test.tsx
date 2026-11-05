@@ -92,6 +92,38 @@ describe('fusion/forum/TopicsView', () => {
         expect(screen.queryByText('Unanswered')).not.toBeInTheDocument();
     });
 
+    // audit-1104 fusion-core-4: the rows showed a spoiler's first line, and the topics of someone you block.
+    test('a spoiler topic shows its name, without its text or image', async () => {
+        const image = TestHelper.getFileInfoMock({id: 'f1', mime_type: 'image/png', has_preview_image: true});
+        const post = TestHelper.getPostMock({id: 'p1', user_id: 'ada', message: 'The ending: the beam wins', props: {spoiler: true, am_thread_title: 'Season finale'}, metadata: {files: [image]}});
+        jest.mocked(Client4.getForumTopics).mockResolvedValue({topics: [topic({post})], next_cursor: ''});
+        const {container} = renderWithContext(<TopicsView channel={channel}/>, baseState('discussion'));
+
+        expect(await screen.findByRole('button', {name: 'Season finale'})).toBeInTheDocument();
+        expect(screen.queryByText(/the beam wins/)).not.toBeInTheDocument();
+        expect(container.querySelector('img.am-topic-thumb')).not.toBeInTheDocument();
+    });
+
+    test('an unnamed spoiler topic is called a spoiler', async () => {
+        const post = TestHelper.getPostMock({id: 'p1', user_id: 'ada', message: 'The ending: the beam wins', props: {spoiler: true}});
+        jest.mocked(Client4.getForumTopics).mockResolvedValue({topics: [topic({post})], next_cursor: ''});
+        renderWithContext(<TopicsView channel={channel}/>, baseState('discussion'));
+
+        expect(await screen.findByRole('button', {name: 'Spoiler'})).toBeInTheDocument();
+        expect(screen.queryByText(/the beam wins/)).not.toBeInTheDocument();
+    });
+
+    test('the topic of someone you block shows neither its name nor its text', async () => {
+        const post = TestHelper.getPostMock({id: 'p1', user_id: 'ada', message: 'You all are wrong', props: {am_thread_title: 'Insults'}});
+        jest.mocked(Client4.getForumTopics).mockResolvedValue({topics: [topic({post})], next_cursor: ''});
+        const state = baseState('discussion') as unknown as {entities: {preferences: {myPreferences: Record<string, unknown>}}};
+        state.entities.preferences.myPreferences = {'user_block--ada': {user_id: 'me', category: 'user_block', name: 'ada', value: 'block'}};
+        renderWithContext(<TopicsView channel={channel}/>, state as never);
+
+        expect(await screen.findByRole('button', {name: 'Message from someone you blocked'})).toBeInTheDocument();
+        expect(screen.queryByText(/Insults|You all are wrong/)).not.toBeInTheDocument();
+    });
+
     test('Q&A mode: the answered mark and votes show, the Unanswered filter and sort are offered', async () => {
         jest.mocked(Client4.getForumTopics).mockResolvedValue({topics: [topic({accepted_answer_id: 'r1'})], next_cursor: ''});
         renderWithContext(<TopicsView channel={channel}/>, baseState('qa'));

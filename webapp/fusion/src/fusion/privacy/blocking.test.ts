@@ -3,13 +3,20 @@
 
 import type {ChannelMembership} from '@mattermost/types/channels';
 
+import {deletePreferences} from 'mattermost-redux/actions/preferences';
+import {Client4} from 'mattermost-redux/client';
 import {calculateUnreadCount, setMessageRequestsEnabled} from 'mattermost-redux/utils/channel_utils';
 
 import {TestHelper} from 'utils/test_helper';
 
 import type {GlobalState} from 'types/store';
 
-import {getBlockLevel, getBlockLists, getHiddenDirectIds, getMessageRequests} from './blocking';
+import {getBlockLevel, getBlockLists, getHiddenDirectIds, getMessageRequests, setBlockLevel} from './blocking';
+
+jest.mock('mattermost-redux/actions/preferences', () => ({
+    savePreferences: jest.fn(() => ({type: 'SAVE_PREFERENCES'})),
+    deletePreferences: jest.fn(() => ({type: 'DELETE_PREFERENCES'})),
+}));
 
 describe('fusion/privacy/blocking', () => {
     const me = 'me';
@@ -93,5 +100,73 @@ describe('fusion/privacy/blocking', () => {
 
         setMessageRequestsEnabled(false);
         expect(calculateUnreadCount(count, member('dm-bob', 'pending'), false)).toMatchObject({showUnread: true, mentions: 2});
+    });
+
+    // audit-1104 fusion-core-5: stopping ignoring or blocking someone accepted whatever request their direct message
+    // was, also a stranger's that was waiting before, round the person's "Ask me first".
+    describe('setBlockLevel', () => {
+        const blockState = (request: 'pending' | 'dismissed' | 'accepted', {creator = 'stranger', privacy = 'ask'} = {}) => ({
+            entities: {
+                general: {config: {EnableUserBlocking: 'true'}},
+                users: {currentUserId: me, profiles: {}},
+                channels: {
+                    channels: {'dm-stranger': {...dm('stranger'), creator_id: creator}},
+                    myMembers: {'dm-stranger': member('dm-stranger', request)},
+                },
+                preferences: {
+                    myPreferences: {
+                        'user_block--stranger': pref('stranger', 'ignore'),
+                        ...(privacy ? {'dm_privacy--default': {user_id: me, category: 'dm_privacy', name: 'default', value: privacy}} : {}),
+                    },
+                },
+            },
+        } as unknown as GlobalState);
+
+        const run = async (state: GlobalState, level: '' | 'ignore' | 'block') => {
+            const getState = () => state;
+            const dispatch: jest.Mock = jest.fn((action: unknown) => (typeof action === 'function' ? action(dispatch, getState, undefined) : {data: true}));
+            return setBlockLevel('stranger', level)(dispatch as never, getState as never, undefined as never);
+        };
+
+        let updateMessageRequest: jest.SpyInstance;
+        beforeEach(() => {
+            jest.clearAllMocks();
+            updateMessageRequest = jest.spyOn(Client4, 'updateMessageRequest').mockImplementation((channelId) => Promise.resolve(member(channelId, 'accepted')));
+        });
+        afterEach(() => updateMessageRequest.mockRestore());
+
+        test('a stranger\'s request waiting before they were ignored stays a request when you ask first', async () => {
+            await run(blockState('pending'), '');
+
+            expect(deletePreferences).toHaveBeenCalled();
+            expect(updateMessageRequest).not.toHaveBeenCalled();
+        });
+
+        test('a request you ignored stays ignored, whatever your choice for direct messages', async () => {
+            await run(blockState('dismissed', {privacy: 'everyone'}), '');
+            await run(blockState('dismissed', {creator: me}), '');
+
+            expect(updateMessageRequest).not.toHaveBeenCalled();
+        });
+
+        test('a conversation you started goes back among your conversations', async () => {
+            await run(blockState('pending', {creator: me}), '');
+
+            expect(updateMessageRequest).toHaveBeenCalledWith('dm-stranger', 'accept');
+        });
+
+        test('it goes back too when you take direct messages from everyone: accepting gets round no choice', async () => {
+            await run(blockState('pending', {privacy: ''}), '');
+            await run(blockState('pending', {privacy: 'everyone'}), '');
+
+            expect(updateMessageRequest).toHaveBeenCalledTimes(2);
+            expect(updateMessageRequest).toHaveBeenCalledWith('dm-stranger', 'accept');
+        });
+
+        test('ignoring someone puts your conversation with them among the requests', async () => {
+            await run(blockState('accepted'), 'ignore');
+
+            expect(updateMessageRequest).toHaveBeenCalledWith('dm-stranger', 'request');
+        });
     });
 });

@@ -17,6 +17,7 @@ import {selectPostById} from 'actions/views/rhs';
 import {getSelectedPostId} from 'selectors/rhs';
 
 import {useHideUnreads} from 'fusion/focus/focus';
+import {getSnippetCover, snippetCoverLabel, snippetTitle} from 'fusion/messages/snippet';
 import {getThreadTitle} from 'fusion/messages/thread_title';
 import {am} from 'fusion/utils/class_names';
 import {plainText} from 'fusion/utils/plain_text';
@@ -50,7 +51,10 @@ function ThreadRow({threadId}: {threadId: string}) {
     const thread = useSelector((state: GlobalState) => getThreads(state)[threadId]);
     const named = useSelector((state: GlobalState) => getThreadTitle(getPost(state, threadId)));
     const firstWords = useSelector((state: GlobalState) => plainText(getPost(state, threadId)?.message || '').slice(0, 80));
-    const title = named || firstWords;
+
+    // The root's text is covered as a snippet's: a spoiler's, and the name and text of someone you ignore or block.
+    const cover = useSelector((state: GlobalState) => getSnippetCover(state, getPost(state, threadId)));
+    const title = snippetTitle(named, firstWords, cover, snippetCoverLabel(cover, formatMessage));
     const open = useSelector(getSelectedPostId) === threadId;
     const hideUnreads = useHideUnreads();
     if (!thread && !named) {

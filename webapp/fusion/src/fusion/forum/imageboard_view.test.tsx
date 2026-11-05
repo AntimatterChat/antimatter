@@ -71,6 +71,38 @@ describe('fusion/forum/ImageboardView', () => {
         expect(cards[1]).toHaveClass('am-no-image');
     });
 
+    // audit-1104 fusion-core-4: the cards showed a spoiler's text and image, and the replies of someone you ignore.
+    test('a spoiler topic shows neither its text nor its image; a reply from someone you ignore, no text', async () => {
+        jest.mocked(Client4.getForumTopics).mockResolvedValue({
+            topics: [topic({
+                post: TestHelper.getPostMock({id: 'p1', user_id: 'ada', message: 'The ending: the beam wins', props: {spoiler: true}, metadata: {files: [image]}}),
+                replies: [
+                    TestHelper.getPostMock({id: 'r1', user_id: 'troll', message: 'Nobody cares', metadata: {files: [image]}}),
+                    TestHelper.getPostMock({id: 'r2', user_id: 'ada', message: 'a reply'}),
+                ],
+            })],
+            next_cursor: '',
+        });
+        const state = {
+            entities: {
+                ...(baseState as unknown as {entities: object}).entities,
+                preferences: {myPreferences: {'user_block--troll': {user_id: 'me', category: 'user_block', name: 'troll', value: 'ignore'}}},
+            },
+        };
+        const {container} = renderWithContext(
+            <ImageboardView
+                channel={channel}
+                mode='discussion'
+            />, state as never);
+
+        expect(await screen.findByRole('button', {name: 'Spoiler'})).toBeInTheDocument();
+        expect(screen.queryByText(/the beam wins|Nobody cares/)).not.toBeInTheDocument();
+        expect(container.querySelector('img.am-board-thumb')).not.toBeInTheDocument();
+        expect(container.querySelector('img.am-board-reply-thumb')).not.toBeInTheDocument();
+        expect(screen.getByText('Message from someone you ignore')).toBeInTheDocument();
+        expect(screen.getByText('a reply')).toBeInTheDocument();
+    });
+
     test('fetches a fixed page of 10, the latest 3 replies, in bump order', async () => {
         renderWithContext(
             <ImageboardView

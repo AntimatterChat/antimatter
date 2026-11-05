@@ -1,6 +1,8 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
+import type {FileInfo} from '@mattermost/types/files';
+
 import {setGlobalItem} from 'actions/storage';
 import {updateDraft} from 'actions/views/drafts';
 import globalStore from 'stores/redux_store';
@@ -16,6 +18,13 @@ jest.mock('actions/views/drafts', () => {
     const storage = jest.requireActual('actions/storage');
     return {updateDraft: jest.fn((key: string, value: unknown) => storage.setGlobalItem(key, value))};
 });
+
+const fileOf = (id: string) => ({id, name: id + '.mp4'}) as FileInfo;
+const storedDraft = (key: string) => (globalStore.getState() as {storage: {storage: Record<string, {value: PostDraft}>}}).storage.storage[key]?.value;
+
+// Fake timers freeze Date, and stored items only take a write with a newer timestamp: a write made later is moved a
+// millisecond on, as it would be in real use.
+const later = () => jest.advanceTimersByTime(1);
 
 const draftOf = (channelId: string, message: string): PostDraft => ({message, fileInfos: [], uploadsInProgress: [], channelId, rootId: '', createAt: 1, updateAt: 1});
 
@@ -116,5 +125,57 @@ describe('fusion/composer/useDraftAutosave', () => {
             window.dispatchEvent(new Event('pagehide'));
         });
         expect(updateDraft).not.toHaveBeenCalled();
+    });
+
+    // audit-1104 fusion-core-1 / fusion-ui-1: an upload that finished after leaving the conversation was dropped, and
+    // one that finished while a save was waiting was overwritten by it a moment later.
+    describe('addFiles (finished uploads)', () => {
+        test('adds the file to what is shown, and stores it', () => {
+            const {result} = render({draft_a: draftOf('a', 'look')});
+
+            later();
+            act(() => result.current.addFiles([fileOf('f1')]));
+
+            expect(result.current.draft.fileInfos.map((f) => f.id)).toEqual(['f1']);
+            expect(storedDraft('draft_a')).toEqual(expect.objectContaining({message: 'look', fileInfos: [expect.objectContaining({id: 'f1'})], show: true}));
+        });
+
+        test('a save waiting when the upload finishes keeps the file', () => {
+            const {result} = render();
+            act(() => result.current.save(draftOf('a', 'a')));
+
+            act(() => result.current.addFiles([fileOf('f1')]));
+            act(() => {
+                jest.advanceTimersByTime(DRAFT_SAVE_DELAY);
+            });
+
+            expect(updateDraft).toHaveBeenLastCalledWith('draft_a', expect.objectContaining({message: 'a', fileInfos: [expect.objectContaining({id: 'f1'})]}), '', true);
+            expect(storedDraft('draft_a')).toEqual(expect.objectContaining({message: 'a', fileInfos: [expect.objectContaining({id: 'f1'})]}));
+        });
+
+        test('an upload that finishes after the composer closed goes into the stored draft of its conversation', () => {
+            const {result, unmount} = render();
+            act(() => result.current.save(draftOf('a', 'the video')));
+            const addFiles = result.current.addFiles;
+
+            unmount();
+            later();
+            act(() => addFiles([fileOf('f1')]));
+
+            expect(storedDraft('draft_a')).toEqual(expect.objectContaining({message: 'the video', channelId: 'a', fileInfos: [expect.objectContaining({id: 'f1'})], show: true}));
+        });
+
+        test('an upload started in another conversation goes into that one, not into the draft shown now', () => {
+            const {result, rerender} = render({draft_b: draftOf('b', 'other')});
+            const addFiles = result.current.addFiles;
+
+            channelId = 'b';
+            rerender();
+            act(() => addFiles([fileOf('f1')]));
+
+            expect(result.current.draft.fileInfos).toEqual([]);
+            expect(storedDraft('draft_b')?.fileInfos).toEqual([]);
+            expect(storedDraft('draft_a')).toEqual(expect.objectContaining({channelId: 'a', fileInfos: [expect.objectContaining({id: 'f1'})]}));
+        });
     });
 });

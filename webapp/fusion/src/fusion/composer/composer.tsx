@@ -147,7 +147,7 @@ function MessageBox({channelId, rootId = '', placeholder, afterSubmit, extraProp
     const inlineReplies = useInlineRepliesEnabled();
     const mentionByDefault = useSelector((state: GlobalState) => getBool(state, MENTION_PREFERENCE_CATEGORY, MENTION_PREFERENCE_NAME, true));
     const currentUserId = useSelector(getCurrentUserId);
-    const {draft, setDraft, save, cancel: cancelSave, key} = useDraftAutosave(channelId, rootId);
+    const {draft, setDraft, save, cancel: cancelSave, key, addFiles} = useDraftAutosave(channelId, rootId);
     const [showFormatting, setShowFormatting] = useShowFormatting();
     const [pending, setPending] = useState<Pending[]>([]);
     const [menu, setMenu] = useState<'plus' | 'emoji' | 'options' | 'more' | 'schedule' | 'ai' | null>(null);
@@ -230,7 +230,8 @@ function MessageBox({channelId, rootId = '', placeholder, afterSubmit, extraProp
         return () => window.removeEventListener(COMPOSER_MODE_EVENT, onMode);
     }, [channelId, rootId]);
 
-    // The draft switches with the conversation (useDraftAutosave); the uploads in progress don't follow it.
+    // The draft switches with the conversation (useDraftAutosave). The uploads in progress aren't shown in the other
+    // conversation, but they go on and land in the draft they were started in (addFiles).
     useEffect(() => {
         setPending([]);
         setModeId(null);
@@ -596,11 +597,7 @@ function MessageBox({channelId, rootId = '', placeholder, afterSubmit, extraProp
                 onProgress: (info) => setPending((p) => p.map((x) => (x.clientId === clientId ? {...x, progress: info.percent || 0} : x))),
                 onSuccess: (data: {file_infos: FileInfo[]}) => {
                     setPending((p) => p.filter((x) => x.clientId !== clientId));
-                    setDraft((d) => {
-                        const next = {...d, fileInfos: [...d.fileInfos, ...data.file_infos]};
-                        dispatch(updateDraft(key, next, rootId, true));
-                        return next;
-                    });
+                    addFiles(data.file_infos);
                 },
                 onError: (error: string | {message?: string}) => {
                     setPending((p) => p.filter((x) => x.clientId !== clientId));

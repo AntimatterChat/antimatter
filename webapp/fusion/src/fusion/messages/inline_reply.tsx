@@ -24,6 +24,7 @@ import {isSystemMessage} from 'utils/post_utils';
 
 import type {GlobalState} from 'types/store';
 
+import {getSnippetCover, snippetCoverLabel} from './snippet';
 import {isSpoiler} from './spoiler';
 
 // Inline replies answer one message in the conversation, quoting it above the reply, without opening a thread (the
@@ -108,6 +109,10 @@ export type Quoted = {
     // Set when the quoted message is a spoiler: its text is left out then.
     spoiler?: boolean;
 
+    // Set when the quoted message is from someone you ignore or block: its text is left out then, as the message
+    // itself folds.
+    folded?: 'ignore' | 'block';
+
     // Set when the quoted message is loaded and was posted by an incoming webhook: replies don't notify anyone then.
     fromWebhook?: boolean;
 };
@@ -116,6 +121,11 @@ export type Quoted = {
 // deletions as they happen, else the server's description of it.
 export function useQuoted(id: string, described?: PostReplyTo): Quoted {
     const post = useSelector((state: GlobalState) => (id ? getPost(state, id) : undefined));
+    const authorId = post?.user_id || (described?.post_id === id ? described.user_id : '') || '';
+
+    // Only whom it's from: a spoiler is told by the message, or by the server's description of it.
+    const cover = useSelector((state: GlobalState) => getSnippetCover(state, {user_id: authorId}));
+    const folded = cover === 'ignore' || cover === 'block' ? cover : undefined;
 
     // The files of loaded posts are kept apart from them, in the files entities.
     const imageCount = useSelector((state: GlobalState) => (id ? (state.entities.files.fileIdsByPostId[id] || []).filter((fileId) => state.entities.files.files[fileId]?.mime_type?.startsWith('image')).length : 0));
@@ -129,8 +139,9 @@ export function useQuoted(id: string, described?: PostReplyTo): Quoted {
         return {
             deleted: false,
             userId: post.user_id,
-            message: spoiler ? '' : post.message,
+            message: spoiler || folded ? '' : post.message,
             spoiler,
+            folded,
             type: post.type,
             fileCount: post.file_ids?.length || files.length,
             imageCount: imageCount || files.filter((file) => file.mime_type?.startsWith('image')).length,
@@ -142,7 +153,8 @@ export function useQuoted(id: string, described?: PostReplyTo): Quoted {
         return {
             deleted: false,
             userId: described.user_id,
-            message: described.message || '',
+            message: folded ? '' : described.message || '',
+            folded,
             type: described.type,
             fileCount: described.file_count || 0,
             imageCount: described.image_count || 0,
@@ -170,6 +182,9 @@ export function quotedIcon(quoted: Quoted): IconName | undefined {
     if (quoted.deleted) {
         return undefined;
     }
+    if (quoted.folded) {
+        return undefined;
+    }
     if (quoted.spoiler) {
         return 'eye-off';
     }
@@ -193,6 +208,8 @@ function QuotedSnippet({quoted, variant}: {quoted: Quoted; variant: 'ref' | 'bar
     let text;
     if (quoted.deleted) {
         text = formatMessage({id: 'fusion.inlineReply.deleted', defaultMessage: 'Original message was deleted'});
+    } else if (quoted.folded) {
+        text = snippetCoverLabel(quoted.folded, formatMessage);
     } else if (quoted.spoiler) {
         text = formatMessage({id: 'fusion.inlineReply.spoiler', defaultMessage: 'Spoiler'});
     } else if (quoted.message.trim()) {
