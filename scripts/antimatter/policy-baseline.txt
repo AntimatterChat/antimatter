@@ -276,7 +276,6 @@ translations	webapp/fusion/src/i18n/el.json	adminConsole.list.table.rowsCount.50
 translations	webapp/fusion/src/i18n/el.json	fusion.attributes.none
 translations	webapp/fusion/src/i18n/el.json	fusion.settings.fieldNone
 translations	webapp/fusion/src/i18n/es.json	admin.cacheSettings.redisDBPlaceholder
-translations	webapp/fusion/src/i18n/es.json	admin.global_attributes.attribute_details.external_source.links_removed
 translations	webapp/fusion/src/i18n/es.json	admin.image.extractContentTimeoutExample
 translations	webapp/fusion/src/i18n/es.json	admin.userManagement.userDetail.arrayValueSeparator
 translations	webapp/fusion/src/i18n/es.json	admin.userManagement.userDetail.separator
@@ -382,7 +381,6 @@ translations	webapp/fusion/src/i18n/ja.json	admin.service.revokeNonCompliantToke
 translations	webapp/fusion/src/i18n/ja.json	admin.service.revokeNonCompliantTokens.success
 translations	webapp/fusion/src/i18n/ja.json	fusion.attributes.none
 translations	webapp/fusion/src/i18n/ja.json	fusion.settings.fieldNone
-translations	webapp/fusion/src/i18n/ko.json	admin.global_attributes.attribute_details.external_source.links_removed
 translations	webapp/fusion/src/i18n/ko.json	admin.image.extractContentTimeoutExample
 translations	webapp/fusion/src/i18n/ko.json	admin.userManagement.userDetail.arrayValueSeparator
 translations	webapp/fusion/src/i18n/ko.json	admin.userManagement.userDetail.separator
@@ -401,7 +399,6 @@ translations	webapp/fusion/src/i18n/ms.json	adminConsole.list.table.rowsCount.20
 translations	webapp/fusion/src/i18n/ms.json	adminConsole.list.table.rowsCount.50
 translations	webapp/fusion/src/i18n/ms.json	fusion.attributes.none
 translations	webapp/fusion/src/i18n/ms.json	fusion.settings.fieldNone
-translations	webapp/fusion/src/i18n/ms.json	system_policy_indicator.description_with_membership_policy
 translations	webapp/fusion/src/i18n/nb-NO.json	admin.cacheSettings.redisDBPlaceholder
 translations	webapp/fusion/src/i18n/nb-NO.json	admin.image.extractContentTimeoutExample
 translations	webapp/fusion/src/i18n/nb-NO.json	admin.image.maxFileSizeExample
