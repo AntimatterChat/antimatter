@@ -307,7 +307,8 @@
         "EmailBatchingInterval": null,
         "EnablePreviewModeBanner": null,
         "SkipServerCertificateVerification": null,
-        "EmailNotificationContentsType": null
+        "EmailNotificationContentsType": null,
+        "AllowMattermostPushService": null
     },
     "RateLimitSettings": {
         "Enable": null,
@@ -801,6 +802,7 @@
         "ResourceAttributesInPolicies": false,
         "MmBlocksEnabled": false,
         "ClusterGracefulDrain": false,
+        "EnableMFIPluginSignaturePublicKey": false,
         "RecurringScheduledPosts": false,
         "PostDeliveryTracking": false,
         "EnforceLogPathRoot": false,
