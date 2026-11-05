@@ -6421,10 +6421,10 @@ func groupTestPermanentDeleteForTeam(t *testing.T, rctx request.CTX, ss store.St
 	newGroup := func(edit func(g *model.Group)) *model.Group {
 		g := &model.Group{Name: new(model.NewId()), DisplayName: "group", Source: model.GroupSourceCustom, AllowReference: true}
 		edit(g)
-		group, err := ss.Group().Create(g)
-		require.NoError(t, err)
-		_, err = ss.Group().UpsertMember(group.Id, user.Id)
-		require.NoError(t, err)
+		group, groupErr := ss.Group().Create(g)
+		require.NoError(t, groupErr)
+		_, groupErr = ss.Group().UpsertMember(group.Id, user.Id)
+		require.NoError(t, groupErr)
 		return group
 	}
 
