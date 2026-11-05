@@ -4,6 +4,7 @@
 package app
 
 import (
+	"cmp"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -11,7 +12,6 @@ import (
 	"math"
 	"regexp"
 	"slices"
-	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -266,7 +266,7 @@ func assistantNormalise(text string, dict *assistantDictionary) (string, []model
 	addMatches(assistantDateRE, "date", 0, strings.ToLower)
 	addMatches(assistantNumberRE, "number", 0, func(word string) string { return strings.TrimLeft(word, "#!") })
 
-	sort.Slice(spans, func(i, j int) bool { return spans[i].start < spans[j].start })
+	slices.SortFunc(spans, func(x, y assistantSpan) int { return cmp.Compare(x.start, y.start) })
 	var out strings.Builder
 	entities := make([]model.AssistantEntityMatch, 0, len(spans))
 	last := 0
@@ -433,7 +433,7 @@ func (s *assistantSchema) propertyNames() []string {
 	for name := range s.Properties {
 		names = append(names, name)
 	}
-	sort.Strings(names)
+	slices.Sort(names)
 	return names
 }
 
@@ -517,7 +517,7 @@ func assistantFillArguments(schemaRaw json.RawMessage, templates map[string]stri
 	for name := range templates {
 		names = append(names, name)
 	}
-	sort.Strings(names)
+	slices.Sort(names)
 	for _, name := range names {
 		text, ok := m.expand(templates[name])
 		if !ok {

@@ -18,6 +18,7 @@ export type PublishedAttachmentsCardProps = {
 };
 
 export type PublishedCardsUtils = {
+
     // Draws a result's attachments with the same look as a posted message's (chart, fields, ...), for content
     // that isn't a post itself: an assistant card, shown with a channel id but no post of its own. Actions are
     // always hidden, whatever the attachments carry.

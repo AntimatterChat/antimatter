@@ -54,7 +54,12 @@ section() { printf '\n=== %s\n' "$*"; }
 
 run_policy() {
     section "Antimatter policy checks"
-    python3 "$HERE/policy_check.py" --summary "$REPORT_DIR/policy.md"
+    local status=0
+    python3 "$HERE/policy_check.py" --summary "$REPORT_DIR/policy.md" || status=1
+    # Explicit status: `run_policy || status=1` in `all` turns set -e off in here.
+    section "Tests of the check and report scripts"
+    python3 -m unittest discover -s "$HERE" -p '*_test.py' || status=1
+    return "$status"
 }
 
 lint_server() {
