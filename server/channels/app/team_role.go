@@ -191,11 +191,23 @@ func (a *App) syncTeamRoleForAllMembers(rctx request.CTX, group *model.Group, gr
 	a.syncTeamRole(rctx, group, userIDs, grant)
 }
 
+// teamRoleGroups gives all of a team's live roles (not its Antimatter teams), or those of them someone is in. It asks
+// the store for that team's alone, unpaged: on a server with many groups a page of all of them could miss the team's
+// roles, and rank a new role above them.
+func (a *App) teamRoleGroups(teamID, memberID string) ([]*model.Group, error) {
+	return a.Srv().Store().Group().GetGroups(0, 0, model.GroupSearchOpts{
+		Source:          model.GroupSourceCustom,
+		FilterTeamId:    teamID,
+		FilterIsTeam:    model.NewPointer(false),
+		FilterHasMember: memberID,
+	}, nil)
+}
+
 // highestTeamRolePosition is the place of someone's highest role in a team (0 = highest); -1 without any. Roles anyone
 // can take don't rank: taking one mustn't lift someone above the roles they manage; nor does the default role, which
 // everyone has.
 func (a *App) highestTeamRolePosition(userID, teamID string) int {
-	groups, err := a.Srv().Store().Group().GetGroups(0, 1000, model.GroupSearchOpts{FilterHasMember: userID, Source: model.GroupSourceCustom}, nil)
+	groups, err := a.teamRoleGroups(teamID, userID)
 	if err != nil {
 		return -1
 	}
@@ -223,7 +235,7 @@ func (a *App) LowestTeamRolePositionFor(session model.Session, teamID string) in
 
 // nextTeamRolePosition is the place below all of a team's roles, but its default role, which stays below them.
 func (a *App) nextTeamRolePosition(teamID string) int {
-	groups, err := a.Srv().Store().Group().GetGroups(0, 1000, model.GroupSearchOpts{Source: model.GroupSourceCustom}, nil)
+	groups, err := a.teamRoleGroups(teamID, "")
 	if err != nil {
 		return model.GroupPositionMax
 	}
@@ -302,7 +314,8 @@ func (a *App) KeepTeamRoles(rctx request.CTX, teamID, userID, roles string) (str
 // LeaveTeamRoles takes someone out of a team's roles and Antimatter teams when they leave the team: coming back doesn't
 // bring them back.
 func (a *App) LeaveTeamRoles(rctx request.CTX, teamID, userID string) {
-	groups, err := a.Srv().Store().Group().GetGroups(0, 1000, model.GroupSearchOpts{FilterHasMember: userID, Source: model.GroupSourceCustom}, nil)
+	// The team's groups only, all of them (perPage 0): a page of the whole server's could miss some of theirs.
+	groups, err := a.Srv().Store().Group().GetGroups(0, 0, model.GroupSearchOpts{FilterHasMember: userID, FilterTeamId: teamID, Source: model.GroupSourceCustom}, nil)
 	if err != nil {
 		rctx.Logger().Warn("Failed to get the roles of someone leaving a team", mlog.String("team_id", teamID), mlog.String("user_id", userID), mlog.Err(err))
 		return

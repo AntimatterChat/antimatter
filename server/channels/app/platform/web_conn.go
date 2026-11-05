@@ -862,8 +862,8 @@ func (wc *WebConn) ShouldSendEventToGuest(msg *model.WebSocketEvent) bool {
 		userID = user.Id
 	case model.WebsocketEventNewUser:
 		userID = msg.GetData()["user_id"].(string)
-	case model.WebsocketEventAgentActivityChanged:
-		// Antimatter: a guest only hears of the agents they can see.
+	case model.WebsocketEventAgentActivityChanged, model.WebsocketEventCommunityProfileUpdated:
+		// Antimatter: a guest only hears of the people (and agents) they can see.
 		id, ok := msg.GetData()["user_id"].(string)
 		if !ok || id == "" {
 			return false
@@ -1039,9 +1039,9 @@ func (wc *WebConn) ShouldSendEvent(msg *model.WebSocketEvent) bool {
 		if !wc.isMemberOfTeam(msg.GetBroadcast().TeamId) {
 			return false
 		}
-		// Antimatter: a community agent's activity goes to its community, and to a guest in it only for an agent the
-		// guest can see.
-		if msg.EventType() != model.WebsocketEventAgentActivityChanged {
+		// Antimatter: an event about one person of a community (an agent's activity, a nickname) goes to its members
+		// who can see that person, as the REST routes give it.
+		if !isAboutOneTeamMember(msg.EventType()) {
 			return true
 		}
 	}
@@ -1050,14 +1050,24 @@ func (wc *WebConn) ShouldSendEvent(msg *model.WebSocketEvent) bool {
 		return wc.ShouldSendEventToGuest(msg)
 	}
 
-	// Antimatter: an agent's activity only goes to those who can see the agent, guests or not: someone whose roles
+	// Antimatter: an event about one person only goes to those who can see them, guests or not: someone whose roles
 	// don't let them see everyone (view_members) is checked as a guest is.
-	if msg.EventType() == model.WebsocketEventAgentActivityChanged &&
+	if isAboutOneTeamMember(msg.EventType()) &&
 		!wc.Suite.RolesGrantPermission(strings.Fields(wc.GetSession().Roles), model.PermissionViewMembers.Id) {
 		return wc.ShouldSendEventToGuest(msg)
 	}
 
 	return true
+}
+
+// isAboutOneTeamMember tells the events sent to a whole team that are about one person, named by the event's user_id,
+// and so go only to those who can see that person (UserCanSeeOtherUser).
+func isAboutOneTeamMember(event model.WebsocketEventType) bool {
+	switch event {
+	case model.WebsocketEventAgentActivityChanged, model.WebsocketEventCommunityProfileUpdated:
+		return true
+	}
+	return false
 }
 
 func (wc *WebConn) notInChannel(val string) bool {

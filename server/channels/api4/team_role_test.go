@@ -6,6 +6,7 @@ package api4
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"testing"
 
@@ -327,6 +328,47 @@ func TestTeamRolePermissions(t *testing.T) {
 		require.NoError(t, err)
 		resp.Body.Close()
 	})
+}
+
+// Someone who manages a community's roles without a ranked role of their own makes roles below all of the
+// community's, however many groups the whole server has: a page of the server's first thousand groups once missed
+// the community's roles, and let them make a role at the top and give it to themselves.
+func TestUnrankedRoleManagerOnABusyServer(t *testing.T) {
+	th := Setup(t).InitBasic(t)
+	defaultPerms := th.SaveDefaultRolePermissions(t)
+	defer th.RestoreDefaultRolePermissions(t, defaultPerms)
+	th.AddPermissionToRole(t, model.PermissionManageTeamRoles.Id, model.TeamUserRoleId)
+
+	// More custom groups than one page, all listed (by display name) before the community's role.
+	for i := range 1001 {
+		_, err := th.App.Srv().Store().Group().Create(&model.Group{
+			Name:           model.NewPointer(fmt.Sprintf("filler%04d%s", i, model.NewId()[:6])),
+			DisplayName:    fmt.Sprintf("0000 filler %04d", i),
+			Source:         model.GroupSourceCustom,
+			AllowReference: true,
+		})
+		require.NoError(t, err)
+	}
+	last, _, err := th.SystemAdminClient.CreateGroup(context.Background(), &model.Group{
+		Name:           model.NewPointer("zzzlast" + model.NewId()[:8]),
+		DisplayName:    "zzz last",
+		Source:         model.GroupSourceCustom,
+		AllowReference: true,
+		TeamId:         th.BasicTeam.Id,
+		Position:       5,
+	})
+	require.NoError(t, err)
+
+	made, _, err := th.Client.CreateGroup(context.Background(), &model.Group{
+		Name:           model.NewPointer("mine" + model.NewId()[:8]),
+		DisplayName:    "mine",
+		Source:         model.GroupSourceCustom,
+		AllowReference: true,
+		TeamId:         th.BasicTeam.Id,
+		Position:       0,
+	})
+	require.NoError(t, err)
+	assert.Greater(t, made.Position, last.Position, "it lands below the community's roles")
 }
 
 // Roles open to all of their team are taken and left by people themselves; teams hold their onboarding.

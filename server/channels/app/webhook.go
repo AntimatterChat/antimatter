@@ -205,6 +205,10 @@ func (a *App) TriggerWebhook(rctx request.CTX, payload *model.OutgoingWebhookPay
 				if *a.Config().ServiceSettings.EnablePostIconOverride && hook.IconURL != "" && webhookResp.IconURL == "" {
 					webhookResp.IconURL = hook.IconURL
 				}
+				if a.hookOwnerSilenced(rctx, channel, hook.CreatorId) {
+					logger.Debug("Dropped an outgoing webhook's answer: its owner may not post in the channel")
+					return
+				}
 				if _, err := a.CreateWebhookPost(rctx, hook.CreatorId, channel, text, webhookResp.Username, webhookResp.IconURL, "", webhookResp.Props, webhookResp.Type, postRootId, webhookResp.Priority, false); err != nil {
 					logger.Error("Failed to create response post.", mlog.Err(err))
 				}
@@ -212,6 +216,24 @@ func (a *App) TriggerWebhook(rctx request.CTX, payload *model.OutgoingWebhookPay
 		}()
 	}
 	wg.Wait()
+}
+
+// hookOwnerSilenced tells whether a hook, which speaks as its owner, must keep quiet in a channel: while they're
+// timed out in its community, or where they're a member a channel override keeps from posting. In a public channel
+// they haven't joined it still posts, as upstream. Incoming hooks, outgoing hooks' answers and message actions' answers
+// all go through it, so that none of them lets a silenced owner speak through someone else's message or click.
+func (a *App) hookOwnerSilenced(rctx request.CTX, channel *model.Channel, ownerID string) bool {
+	if channel.TeamId == "" {
+		return false
+	}
+	if a.isTimedOut(rctx, channel.TeamId, ownerID) {
+		return true
+	}
+	if _, err := a.Srv().Store().Channel().GetMember(rctx, channel.Id, ownerID); err != nil {
+		return false
+	}
+	canPost, _ := a.HasPermissionToChannel(rctx, ownerID, channel.Id, model.PermissionCreatePost)
+	return !canPost
 }
 
 func (a *App) doOutgoingWebhookRequest(url string, body io.Reader, contentType string, accessToken *model.OutgoingOAuthConnectionToken) (*model.OutgoingWebhookResponse, error) {
@@ -1112,19 +1134,8 @@ func (a *App) HandleIncomingWebhook(rctx request.CTX, hookID string, req *model.
 		return model.NewAppError("HandleIncomingWebhook", "web.incoming_webhook.permissions.app_error", map[string]any{"user": hook.UserId, "channel": channel.Id}, "", http.StatusForbidden)
 	}
 
-	// The hook speaks as its owner: not while they're timed out, nor where they're a member a channel override keeps
-	// from posting. In a public channel they haven't joined it still posts, as upstream.
-	if channel.TeamId != "" {
-		silenced := a.isTimedOut(rctx, channel.TeamId, hook.UserId)
-		if !silenced {
-			if _, err := a.Srv().Store().Channel().GetMember(rctx, channel.Id, hook.UserId); err == nil {
-				canPost, _ := a.HasPermissionToChannel(rctx, hook.UserId, channel.Id, model.PermissionCreatePost)
-				silenced = !canPost
-			}
-		}
-		if silenced {
-			return model.NewAppError("HandleIncomingWebhook", "web.incoming_webhook.permissions.app_error", map[string]any{"user": hook.UserId, "channel": channel.Id}, "", http.StatusForbidden)
-		}
+	if a.hookOwnerSilenced(rctx, channel, hook.UserId) {
+		return model.NewAppError("HandleIncomingWebhook", "web.incoming_webhook.permissions.app_error", map[string]any{"user": hook.UserId, "channel": channel.Id}, "", http.StatusForbidden)
 	}
 
 	if scopeErr := a.checkIncomingWebhookDirectChannelTeamScope(rctx, hook, channel); scopeErr != nil {

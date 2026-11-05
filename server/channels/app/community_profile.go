@@ -130,13 +130,19 @@ func (a *App) saveCommunityProfile(rctx request.CTX, profile *model.CommunityPro
 		}
 	}
 
-	// The profile itself goes in the event: the community's members don't read the profiles again for each change.
+	a.Publish(communityProfileEvent(profile))
+	return nil
+}
+
+// communityProfileEvent tells a community's members of a changed profile. The profile itself goes in the event: they
+// don't read the profiles again for each change. Only those who can see the person get it (see
+// isAboutOneTeamMember in platform/web_conn.go), as GetCommunityProfilesForUser gives them.
+func communityProfileEvent(profile *model.CommunityProfile) *model.WebSocketEvent {
 	message := model.NewWebSocketEvent(model.WebsocketEventCommunityProfileUpdated, profile.TeamId, "", "", nil, "")
 	message.Add("team_id", profile.TeamId)
 	message.Add("user_id", profile.UserId)
 	message.Add("profile", profile)
-	a.Publish(message)
-	return nil
+	return message
 }
 
 // PatchCommunityProfile changes the person's own nickname in a community.

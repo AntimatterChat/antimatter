@@ -129,6 +129,69 @@ func TestAIMCPSignInsAreThePersons(t *testing.T) {
 	require.Error(t, err, "the person's own sign-out")
 }
 
+// A community admin may edit their community's MCP servers but not read their secrets: moving a server to another
+// address over two patches, through another sign-in kind and back, mustn't send its saved secrets there.
+func TestAIMCPServerSecretsDontFollowAKindSwitch(t *testing.T) {
+	th, clients := setupAIConnectionsAPI(t)
+	ctx := context.Background()
+	elsewhere := "https://elsewhere.example.com/mcp"
+
+	t.Run("service account headers", func(t *testing.T) {
+		req := aiMCPServerRequest(th.BasicTeam.Id)
+		req.Auth = model.AIMCPAuthServiceAccount
+		req.OAuthClientId = ""
+		req.OAuthClientSecret = ""
+		req.Headers = map[string]string{"Authorization": "Bearer shared-account-token-5678"}
+		created, _, err := clients.communityAdmin.CreateAIMCPServer(ctx, req)
+		require.NoError(t, err)
+
+		moved, _, err := clients.communityAdmin.PatchAIMCPServer(ctx, created.Id, &model.AIMCPServerPatch{Auth: model.NewPointer(model.AIMCPAuthNone), URL: &elsewhere})
+		require.NoError(t, err, "a server without sign-in may go anywhere")
+		assert.Empty(t, moved.HeaderNames, "without the headers")
+
+		_, resp, err := clients.communityAdmin.PatchAIMCPServer(ctx, created.Id, &model.AIMCPServerPatch{Auth: model.NewPointer(model.AIMCPAuthServiceAccount)})
+		require.Error(t, err, "back to a service account needs its headers again")
+		CheckBadRequestStatus(t, resp)
+
+		stored, appErr := th.App.GetAIMCPServer(th.Context, created.Id)
+		require.Nil(t, appErr)
+		assert.Equal(t, elsewhere, stored.URL)
+		assert.Empty(t, stored.HeadersSealed, "the old headers are gone")
+	})
+
+	t.Run("a client secret typed in", func(t *testing.T) {
+		created, _, err := clients.communityAdmin.CreateAIMCPServer(ctx, aiMCPServerRequest(th.BasicTeam.Id))
+		require.NoError(t, err)
+		require.True(t, created.OAuthClientSecretSet)
+
+		_, _, err = clients.communityAdmin.PatchAIMCPServer(ctx, created.Id, &model.AIMCPServerPatch{
+			Auth:    model.NewPointer(model.AIMCPAuthServiceAccount),
+			URL:     &elsewhere,
+			Headers: &map[string]string{"X-Mine": "my-own-value"},
+		})
+		require.NoError(t, err, "a service account with its own headers may go anywhere")
+
+		back, _, err := clients.communityAdmin.PatchAIMCPServer(ctx, created.Id, &model.AIMCPServerPatch{Auth: model.NewPointer(model.AIMCPAuthOAuth)})
+		require.NoError(t, err)
+		assert.False(t, back.OAuthClientSecretSet, "the old client secret didn't come back with OAuth")
+		assert.Empty(t, back.HeaderNames, "nor do the headers stay")
+
+		stored, appErr := th.App.GetAIMCPServer(th.Context, created.Id)
+		require.Nil(t, appErr)
+		assert.Equal(t, elsewhere, stored.URL)
+		assert.Empty(t, stored.OAuthClientSecretSealed)
+		assert.Empty(t, stored.HeadersSealed)
+	})
+
+	t.Run("the same kind keeps its secrets", func(t *testing.T) {
+		created, _, err := clients.communityAdmin.CreateAIMCPServer(ctx, aiMCPServerRequest(th.BasicTeam.Id))
+		require.NoError(t, err)
+		renamed, _, err := clients.communityAdmin.PatchAIMCPServer(ctx, created.Id, &model.AIMCPServerPatch{Name: model.NewPointer("Renamed")})
+		require.NoError(t, err)
+		assert.True(t, renamed.OAuthClientSecretSet)
+	})
+}
+
 // The page an authorisation server sends people back to needs their session, and refuses a sign-in that isn't theirs.
 func TestAIMCPOAuthCallback(t *testing.T) {
 	_, clients := setupAIConnectionsAPI(t)
