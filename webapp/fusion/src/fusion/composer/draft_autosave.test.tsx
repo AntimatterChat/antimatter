@@ -22,6 +22,10 @@ jest.mock('actions/views/drafts', () => {
 const fileOf = (id: string) => ({id, name: id + '.mp4'}) as FileInfo;
 const storedDraft = (key: string) => (globalStore.getState() as {storage: {storage: Record<string, {value: PostDraft}>}}).storage.storage[key]?.value;
 
+// Fake timers freeze Date, and stored items only take a write with a newer timestamp: a write made later is moved a
+// millisecond on, as it would be in real use.
+const later = () => jest.advanceTimersByTime(1);
+
 const draftOf = (channelId: string, message: string): PostDraft => ({message, fileInfos: [], uploadsInProgress: [], channelId, rootId: '', createAt: 1, updateAt: 1});
 
 describe('fusion/composer/useDraftAutosave', () => {
@@ -129,6 +133,7 @@ describe('fusion/composer/useDraftAutosave', () => {
         test('adds the file to what is shown, and stores it', () => {
             const {result} = render({draft_a: draftOf('a', 'look')});
 
+            later();
             act(() => result.current.addFiles([fileOf('f1')]));
 
             expect(result.current.draft.fileInfos.map((f) => f.id)).toEqual(['f1']);
@@ -154,6 +159,7 @@ describe('fusion/composer/useDraftAutosave', () => {
             const addFiles = result.current.addFiles;
 
             unmount();
+            later();
             act(() => addFiles([fileOf('f1')]));
 
             expect(storedDraft('draft_a')).toEqual(expect.objectContaining({message: 'the video', channelId: 'a', fileInfos: [expect.objectContaining({id: 'f1'})], show: true}));
