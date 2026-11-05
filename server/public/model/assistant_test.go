@@ -4,11 +4,44 @@
 package model
 
 import (
+	"encoding/json"
 	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
+
+// The rules engine's data fields default to the JSON null they are stored as, so a defaulted config equals itself
+// after a JSON round trip; an admin's own data, an empty list included, is kept.
+func TestAssistantSettingsRulesDataDefaults(t *testing.T) {
+	s := &AssistantSettings{}
+	s.SetDefaults()
+	for name, raw := range map[string]json.RawMessage{"Patterns": s.Patterns, "SeedEntities": s.SeedEntities, "DictionarySources": s.DictionarySources} {
+		assert.Equal(t, json.RawMessage("null"), raw, name)
+	}
+	assert.Nil(t, s.isValid())
+
+	buf, err := json.Marshal(s)
+	require.NoError(t, err)
+	var loaded AssistantSettings
+	require.NoError(t, json.Unmarshal(buf, &loaded))
+	assert.Equal(t, s, &loaded)
+
+	patterns, appErr := ParseAssistantPatterns(s.Patterns)
+	assert.Nil(t, appErr)
+	assert.Nil(t, patterns, "null still means the built-in patterns")
+
+	own := &AssistantSettings{
+		Patterns:          json.RawMessage(`[]`),
+		SeedEntities:      json.RawMessage(`[{"type":"host","value":"www-1"}]`),
+		DictionarySources: json.RawMessage(`[]`),
+	}
+	own.SetDefaults()
+	assert.Equal(t, json.RawMessage(`[]`), own.Patterns, "an empty list (no patterns) is not turned into null (the built-in ones)")
+	assert.Equal(t, json.RawMessage(`[{"type":"host","value":"www-1"}]`), own.SeedEntities)
+	assert.Equal(t, json.RawMessage(`[]`), own.DictionarySources)
+}
 
 // The assistant's preferences: a channel's switch (on or off, named by the channel) and the muted tools.
 func TestAssistantPreferences(t *testing.T) {

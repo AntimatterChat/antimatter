@@ -585,11 +585,13 @@ func assistantCardKind(tool *model.AITool) string {
 // names only, never the message's words.
 func assistantRuleCandidates(post *model.Post, dict *assistantDictionary, patterns []*assistantCompiledPattern, tools []*aiResolvedTool) ([]*assistantCandidate, string) {
 	normalised, entities := assistantNormalise(post.Message, dict)
-	if len(entities) == 0 {
-		return nil, "no entity"
-	}
 	matches := assistantMatchNormalised(normalised, entities, patterns)
 	if len(matches) == 0 {
+		// Only a reason, never a shortcut before matching: a pattern without slots ("\bsay hello\b") matches a
+		// message that has no entity.
+		if len(entities) == 0 {
+			return nil, "no entity"
+		}
 		types := make([]string, 0, len(entities))
 		for _, e := range entities {
 			if !slices.Contains(types, e.Type) {

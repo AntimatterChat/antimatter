@@ -58,6 +58,29 @@ func TestConfigDefaults(t *testing.T) {
 		c.SetDefaults()
 		recursivelyUninitialize(&c, "config", reflect.ValueOf(&c).Elem())
 	})
+
+	// The config store clones, saves and reloads configs through JSON and compares them with fresh defaults, so a
+	// default that JSON changes (a nil json.RawMessage comes back as the bytes "null") makes an unchanged config look
+	// changed. This compares every field, so a new settings section with such a type fails here.
+	t.Run("defaults survive a JSON round trip unchanged", func(t *testing.T) {
+		c := Config{}
+		c.SetDefaults()
+
+		require.Equal(t, &c, c.Clone(), "Clone")
+
+		buf, err := json.Marshal(&c)
+		require.NoError(t, err)
+		var loaded Config
+		require.NoError(t, json.Unmarshal(buf, &loaded))
+		require.Equal(t, c, loaded, "Marshal then Unmarshal")
+
+		// The reloaded config counts as an update (Config.isUpdate), and FileSettings.SetDefaults then generates the
+		// public link salt that a blank config leaves empty on purpose. That is the one intended difference.
+		loaded.SetDefaults()
+		require.Len(t, *loaded.FileSettings.PublicLinkSalt, 32, "a reloaded config gets its link salt")
+		*loaded.FileSettings.PublicLinkSalt = ""
+		require.Equal(t, c, loaded, "SetDefaults again on the reloaded config")
+	})
 	t.Run("report a problem defaults", func(t *testing.T) {
 		c := Config{}
 		c.SetDefaults()
