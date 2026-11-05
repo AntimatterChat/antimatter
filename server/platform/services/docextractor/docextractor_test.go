@@ -292,14 +292,23 @@ func TestExtractContextCancellation(t *testing.T) {
 		ctx, cancel := context.WithCancel(context.Background())
 		cancel() // cancel before extraction starts
 
+		// The extraction still runs, detached, and holds a concurrency slot until it ends: wait for it, or the
+		// slot is still taken when the parallel subtests of TestArchiveMaxFileSize start (a flake on 4-CPU CI).
+		extractDone := make(chan struct{})
 		start := time.Now()
-		text, err := ExtractWithExtraExtractors(logger, "file.txt", bytes.NewReader(data), ExtractSettings{Ctx: ctx}, []Extractor{&slowExtractor{delay: 500 * time.Millisecond}})
+		text, err := ExtractWithExtraExtractors(logger, "file.txt", bytes.NewReader(data), ExtractSettings{Ctx: ctx}, []Extractor{&slowExtractor{delay: 500 * time.Millisecond, done: extractDone}})
 		elapsed := time.Since(start)
 
 		require.Error(t, err)
 		require.Empty(t, text)
 		assert.Contains(t, err.Error(), "cancelled")
 		assert.Less(t, elapsed, 200*time.Millisecond, "should return without waiting for the extraction")
+
+		select {
+		case <-extractDone:
+		case <-time.After(2 * time.Second):
+			require.FailNow(t, "detached extraction did not finish within the deadline")
+		}
 	})
 
 	t.Run("context cancelled mid-extraction unblocks caller", func(t *testing.T) {
@@ -328,14 +337,21 @@ func TestExtractContextCancellation(t *testing.T) {
 		defer cancel()
 
 		// Timeout of 5s, but ctx cancelled after 50ms — ctx should win.
+		extractDone := make(chan struct{})
 		go func() { time.Sleep(50 * time.Millisecond); cancel() }()
 		start := time.Now()
-		text, err := ExtractWithExtraExtractors(logger, "file.txt", bytes.NewReader(data), ExtractSettings{Ctx: ctx, Timeout: 5 * time.Second}, []Extractor{&slowExtractor{delay: 500 * time.Millisecond}})
+		text, err := ExtractWithExtraExtractors(logger, "file.txt", bytes.NewReader(data), ExtractSettings{Ctx: ctx, Timeout: 5 * time.Second}, []Extractor{&slowExtractor{delay: 500 * time.Millisecond, done: extractDone}})
 		elapsed := time.Since(start)
 
 		require.Error(t, err)
 		require.Empty(t, text)
 		assert.Less(t, elapsed, 200*time.Millisecond, "ctx cancellation should preempt the longer timeout")
+
+		select {
+		case <-extractDone:
+		case <-time.After(2 * time.Second):
+			require.FailNow(t, "detached extraction did not finish within the deadline")
+		}
 	})
 }
 
