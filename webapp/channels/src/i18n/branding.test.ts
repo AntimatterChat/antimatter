@@ -21,6 +21,7 @@ const ALLOWED: Record<string, string> = {
 
     // Identifiers that keep their name (rule 17).
     'admin.accesscontrol.trustProxyDeviceIdentityHeader.desc': 'the X-Mattermost-Session-Attribute-Device-Id HTTP header',
+    'admin.customization.minimumDesktopAppVersionDesc': 'the "Mattermost/" user-agent token the minimum desktop app version is compared with',
 
     // Strings that tell admins something is Mattermost's, not Antimatter's.
     'admin.email.mattermostPushServer': 'warns that a push server is run by Mattermost, Inc. and only serves its apps',

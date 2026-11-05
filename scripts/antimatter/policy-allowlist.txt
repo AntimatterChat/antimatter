@@ -31,6 +31,11 @@ branding  webapp/*/src/i18n/en.json  ^admin\.accesscontrol\.trustProxyDeviceIden
 branding  webapp/*/src/i18n/en.json  ^admin\.plugin\.addOn\.notSupported(Warning)?:
 branding  webapp/fusion/src/i18n/en.json  ^fusion\.layout\.workplaceDesc:
 
+# The minimum desktop app version help text is a compatibility note: the server compares the version after the
+# literal "Mattermost/" user-agent token, which Antimatter Desktop fills with the Mattermost version it is compatible
+# with (6.4.0), so the admin has to know which number to enter (commit 2518855e28).
+branding  webapp/*/src/i18n/en.json  ^admin\.customization\.minimumDesktopAppVersionDesc:
+
 # User-agent detection: the official desktop app still identifies itself as Mattermost/x.y.z.
 branding  webapp/fusion/src/fusion/calls/screen_picker.ts  Antimatter\|Mattermost\)\\/
 branding  webapp/fusion/src/packages/mattermost-redux/src/utils/browser_info.ts  userAgent\.indexOf\('Mattermost'\)|/Mattermost\\/\(
